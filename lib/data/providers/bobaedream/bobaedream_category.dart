@@ -1,6 +1,6 @@
 enum BobaedreamCategory {
   // 스페셜
-  best('베스트 글', '/best'),
+  strange('유머게시판', '/strange'),
   // yusik('김유식 대표 에세이'),
   // event_voicere('보이스 리플'),
   // dclottery('디시 로터리'),

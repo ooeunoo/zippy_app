@@ -9,14 +9,20 @@ import 'package:http/http.dart' as http;
 
 void main() {
   group('BobaedreamAPI 테스트', () {
-    test('getArticle 호출 테스트', () async {
-      final api = BobaedreamAPI();
-      const category = 'best';
-      const page = 733982;
+    // test('getArticle 호출 테스트', () async {
+    //   final api = BobaedreamAPI();
+    //   const category = 'best';
+    //   const page = 733982;
 
-      // 테스트할 때 주석을 해제하고, 로컬 서버가 실행 중이어야 합니다.
-      final result = await api.getArticle(category, page);
-      print(result);
+    //   final result = await api.getArticle(category, page);
+    //   print(result);
+    // });
+    test('getArticleLastPageIndex 호출 테스트', () async {
+      final api = BobaedreamAPI();
+      const category = 'strange';
+
+      final result = await api.getArticleLastPageIndex(category);
+      print(int.parse(result));
     });
   });
 }

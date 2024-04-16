@@ -56,4 +56,30 @@ class BobaedreamAPI extends GetConnect implements GetxService {
 
     return scriptContent;
   }
+
+  Future<String> getArticleLastPageIndex(String category) async {
+    final response =
+        await get('https://www.bobaedream.co.kr/list?code=$category');
+    String html = response.body;
+    BeautifulSoup bs = BeautifulSoup(html);
+
+    List<Bs4Element> tds = bs.findAll('td', class_: 'pl14');
+
+    for (Bs4Element td in tds) {
+      Bs4Element? atag = td.find('a', class_: 'bsubject');
+      if (atag == null) continue;
+
+      String href = atag['href']!;
+      Uri uri = Uri.parse(href);
+      String num = uri.queryParameters['No']!;
+      if (int.tryParse(num) != null) {
+        return num.trim();
+      }
+
+      // if (int.tryParse(num) != null) {
+      // return num.trim();
+      // }
+    }
+    return '0';
+  }
 }

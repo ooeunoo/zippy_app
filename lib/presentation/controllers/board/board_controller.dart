@@ -9,6 +9,7 @@ import 'package:cocomu/domain/entities/page_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/src/rx_workers/utils/debouncer.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 enum Pos { prev, cur, next }
@@ -18,7 +19,7 @@ enum ViewType { specific, random }
 class BoardController extends GetxController {
   Rx<ViewType> viewType = Rx<ViewType>(ViewType.specific).obs();
 
-  Rx<bool> isExceed = Rx<bool>(false).obs();
+  Rx<bool> isScrolling = Rx<bool>(false).obs();
   RxList<String> prevUrls = RxList<String>([]).obs();
   RxMap<Pos, int> pos = RxMap({Pos.prev: 0, Pos.cur: 1, Pos.next: 2}).obs();
   List<WebViewController> webViewControllers = [
@@ -36,7 +37,7 @@ class BoardController extends GetxController {
       PpomppuCategory.freeboard: const PageInfo(max: 8757903, view: 8757903),
     },
     Community.bobaedream: {
-      BobaedreamCategory.best: const PageInfo(max: 733990, view: 733990),
+      BobaedreamCategory.strange: const PageInfo(max: 733990, view: 733990),
     }
   }).obs();
 
@@ -45,6 +46,10 @@ class BoardController extends GetxController {
   @override
   onInit() {
     super.onInit();
+    ever(pos, (value) async {
+      String? url = await webViewControllers[value[Pos.cur]!].currentUrl();
+      print('현재 주소: $url');
+    });
     _createWebViewController(webViewControllers[0], 0);
     _createWebViewController(webViewControllers[1], 1);
     _createWebViewController(webViewControllers[2], 2);
@@ -52,6 +57,13 @@ class BoardController extends GetxController {
     _loadWebView(webViewControllers[0]);
     _loadWebView(webViewControllers[1]);
     _loadWebView(webViewControllers[2]);
+    clearCache();
+  }
+
+  clearCache() {
+    webViewControllers[0].clearCache();
+    webViewControllers[1].clearCache();
+    webViewControllers[2].clearCache();
   }
 
   WebViewController _createWebViewController(
@@ -63,6 +75,8 @@ class BoardController extends GetxController {
         NavigationDelegate(onPageStarted: (String url) {
           loadings[index] = true;
         }, onPageFinished: (String url) {
+          print('현재 위치: ${pos[Pos.cur]} // $index, $url');
+
           loadings[index] = false;
         }, onProgress: (int progress) {
           progresses[index] = progress;
@@ -107,12 +121,12 @@ class BoardController extends GetxController {
     } else {
       List<Community> communities = Community.values;
       Random random = Random();
-      Community randomCommunity =
-          communities[random.nextInt(communities.length)];
+      Community community = Community.dcinside;
+      // communities[random.nextInt(communities.length)];
 
       String nextUrl = '';
-
-      switch (randomCommunity) {
+      String injectjs = getCommunityInjectJS(community);
+      switch (community) {
         case Community.dcinside:
           PageInfo info =
               pageInfo[Community.dcinside]![DcinsideCategory.dcbest]!;
@@ -137,22 +151,47 @@ class BoardController extends GetxController {
 
         case Community.bobaedream:
           PageInfo info =
-              pageInfo[Community.bobaedream]![BobaedreamCategory.best]!;
+              pageInfo[Community.bobaedream]![BobaedreamCategory.strange]!;
           int curView = info.view - 1;
-          pageInfo[Community.bobaedream]![BobaedreamCategory.best] =
-              pageInfo[Community.bobaedream]![BobaedreamCategory.best]!
+          pageInfo[Community.bobaedream]![BobaedreamCategory.strange] =
+              pageInfo[Community.bobaedream]![BobaedreamCategory.strange]!
                   .copyWith(view: curView);
 
-          nextUrl = 'https://www.bobaedream.co.kr/view?code=best&No=$curView';
+          nextUrl =
+              'https://www.bobaedream.co.kr/view?code=strange&No=$curView';
           break;
       }
 
-      return controller..loadRequest(Uri.parse(nextUrl));
+      return controller
+        ..loadRequest(Uri.parse(nextUrl))
+        ..setNavigationDelegate(
+          NavigationDelegate(
+            onPageFinished: (String url) {
+              controller.runJavaScript(injectjs);
+            },
+          ),
+        );
     }
   }
 
-  @override
-  refresh() {
-    print('refresh');
+  refreshScrollState(bool state) {
+    Debouncer debouncer = Debouncer(delay: const Duration(milliseconds: 2000));
+
+    if (state) {
+      isScrolling.value = true;
+    } else {
+      debouncer.call(() => isScrolling.value = false);
+    }
+  }
+}
+
+String getCommunityInjectJS(Community community) {
+  switch (community) {
+    case Community.dcinside:
+      return '''''';
+    case Community.ppomppu:
+      return '''''';
+    case Community.bobaedream:
+      return '''''';
   }
 }

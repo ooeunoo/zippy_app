@@ -31,22 +31,27 @@ class DcinsideAPI extends GetConnect implements GetxService {
     // print('numReviews: $numReviews');
     // print('createdAt: $createdAt');
     print('content: ${content.outerHtml}');
-    print('scripts: ${extractScriptFromHtml(content.outerHtml)} ');
 
     if (response.status.hasError) {
       return Future.error({response.statusText});
     } else {}
   }
 
-  String extractScriptFromHtml(String htmlContent) {
-    RegExp scriptRegex = RegExp(r'<script[^>]*>([\s\S]*?)<\/script>');
-    Iterable<Match> matches = scriptRegex.allMatches(htmlContent);
-    String scriptContent = '';
+  Future<String> getArticleLastPageIndex(String category) async {
+    final response =
+        await get('https://gall.dcinside.com/board/lists?id=$category');
+    String html = response.body;
+    BeautifulSoup bs = BeautifulSoup(html);
 
-    for (Match match in matches) {
-      scriptContent += match.group(1)!;
+    List<Bs4Element> trs = bs.findAll('tr', class_: 'ub-content us-post');
+
+    for (Bs4Element tr in trs) {
+      String num = tr.find('td', class_: 'gall_num')!.text;
+
+      if (int.tryParse(num) != null) {
+        return num.trim();
+      }
     }
-
-    return scriptContent;
+    return '0';
   }
 }
