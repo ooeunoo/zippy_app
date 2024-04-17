@@ -1,53 +1,54 @@
-import 'package:cocomu/app/utils/styles/dimens.dart';
-import 'package:cocomu/app/widgets/app.snak_bar.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:get/get_rx/src/rx_workers/utils/debouncer.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
-class CocomuWebview extends StatelessWidget {
-  final WebViewController controller;
-  final bool loading;
-  final Function(bool state) refreshScrollState;
+class CocomuWebview extends StatefulWidget {
+  final String uri;
 
   const CocomuWebview({
     super.key,
-    required this.controller,
-    required this.loading,
-    required this.refreshScrollState,
+    required this.uri,
   });
 
   @override
+  State<CocomuWebview> createState() => _CocomuWebviewState();
+}
+
+class _CocomuWebviewState extends State<CocomuWebview> {
+  String get uri => widget.uri;
+
+  late double _progress = 0;
+  late InAppWebViewController inAppWebViewController;
+
+  @override
   Widget build(BuildContext context) {
-    return loading
-        ? const Center(child: CupertinoActivityIndicator())
-        : Stack(children: [
-            WebViewWidget(
-                controller: controller,
-                gestureRecognizers: {}
-                  ..add(Factory<AllowVerticalDragGestureRecognizer>(() {
-                    return AllowVerticalDragGestureRecognizer()
-                      ..onStart = (DragStartDetails details) {
-                        // refreshScrollState(true);
-                      }
-                      ..onUpdate = (DragUpdateDetails detials) {
-                        // refreshScrollState(true);
-                      }
-                      ..onEnd = (DragEndDetails details) {
-                        // refreshScrollState(false);
-                      };
-                  }))),
-            // Action
-          ]);
+    return SafeArea(
+      child: Scaffold(
+          body: Stack(
+        children: [
+          InAppWebView(
+            initialUrlRequest: URLRequest(
+              url: WebUri(uri),
+            ),
+            onWebViewCreated: (InAppWebViewController controller) {
+              inAppWebViewController = controller;
+            },
+            onProgressChanged:
+                (InAppWebViewController controller, int progress) {
+              setState(() {
+                _progress = progress / 100;
+              });
+            },
+          ),
+          //
+          progressBar(_progress)
+        ],
+      )),
+    );
   }
 }
 
-class AllowVerticalDragGestureRecognizer extends VerticalDragGestureRecognizer {
-  @override
-  void rejectGesture(int pointer) {
-    acceptGesture(pointer); //override rejectGesture here
-  }
+Widget progressBar(double progress) {
+  return progress < 1
+      ? Container(child: LinearProgressIndicator(value: progress))
+      : const SizedBox();
 }
