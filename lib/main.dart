@@ -12,8 +12,8 @@ void main() async {
     () async {
       WidgetsFlutterBinding.ensureInitialized();
 
+      await dotenv.load(fileName: Assets.env);
       await GetStorage.init();
-      // await dotenv.load(fileName: Assets.env);
 
       await initializeDateFormatting('ko_KR', null);
 

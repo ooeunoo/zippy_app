@@ -1,0 +1,54 @@
+// ignore_for_file: non_constant_identifier_names
+
+import 'dart:async';
+
+import 'package:cocomu/app/failures/failure.dart';
+import 'package:cocomu/data/entity/item_entity.dart';
+import 'package:cocomu/data/providers/supabase_provider.dart';
+import 'package:cocomu/data/sources/interfaces/item_data_source.dart';
+import 'package:cocomu/domain/model/item.dart';
+import 'package:dartz/dartz.dart';
+import 'package:get/get.dart';
+
+String TABLE = 'item';
+
+class ItemDatasourceImpl implements ItemDatasource {
+  SupabaseProvider provider = Get.find();
+
+  @override
+  Future<Either<Failure, List<Item>>> getItems() async {
+    try {
+      List<Map<String, dynamic>> response =
+          await provider.client.from(TABLE).select('*');
+
+      List<Item> result =
+          response.map((r) => ItemEntity.fromJson(r).toModel()).toList();
+
+      return Right(result);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Item>> getItem(int id) async {
+    try {
+      Map<String, dynamic> response =
+          await provider.client.from(TABLE).select('*').eq('id', id).single();
+
+      Item result = ItemEntity.fromJson(response).toModel();
+
+      return Right(result);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Stream<List<Item>> subscribeItems() {
+    return provider.client.from(TABLE).stream(primaryKey: ['id']).map((data) =>
+        data
+            .map((itemData) => ItemEntity.fromJson(itemData).toModel())
+            .toList());
+  }
+}
