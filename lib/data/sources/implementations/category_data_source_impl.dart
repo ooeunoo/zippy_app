@@ -24,7 +24,7 @@ class CategoryDatasourceIml implements CategoryDatasource {
 
       return Right(result);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure());
     }
   }
 
@@ -38,7 +38,7 @@ class CategoryDatasourceIml implements CategoryDatasource {
 
       return Right(result);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure());
     }
   }
 }

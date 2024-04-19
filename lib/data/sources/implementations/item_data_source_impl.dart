@@ -26,7 +26,7 @@ class ItemDatasourceImpl implements ItemDatasource {
 
       return Right(result);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure());
     }
   }
 
@@ -40,15 +40,20 @@ class ItemDatasourceImpl implements ItemDatasource {
 
       return Right(result);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure());
     }
   }
 
   @override
   Stream<List<Item>> subscribeItems() {
-    return provider.client.from(TABLE).stream(primaryKey: ['id']).map((data) =>
-        data
-            .map((itemData) => ItemEntity.fromJson(itemData).toModel())
-            .toList());
+    return provider.client
+        .from(TABLE)
+        .stream(primaryKey: ['id'])
+        .order('created_at') // 최신순
+        // .limit(3)
+        .map((data) => data.map((item) {
+              // print('item: $item');
+              return ItemEntity.fromJson(item).toModel();
+            }).toList());
   }
 }

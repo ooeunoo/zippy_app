@@ -5,4 +5,7 @@ class Assets {
 
   // icons
   static const String user01 = '';
+
+  // images
+  static const String humorunivLogo = 'assets/images/humoruniv.png';
 }

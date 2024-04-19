@@ -24,7 +24,7 @@ class CommunityDatasourceIml implements CommunityDatasource {
 
       return Right(result);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure());
     }
   }
 
@@ -38,7 +38,7 @@ class CommunityDatasourceIml implements CommunityDatasource {
 
       return Right(result);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure());
     }
   }
 }

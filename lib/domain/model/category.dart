@@ -33,6 +33,19 @@ class Category extends Equatable {
         "latestItemIndex": latestItemIndex,
       };
 
+  Map<int, Category> toIdAssign(Map<int, Category> map) {
+    if (id != null) {
+      map[id!] = Category(
+        name: name,
+        communityId: communityId,
+        path: path,
+        status: status,
+        latestItemIndex: latestItemIndex,
+      );
+    }
+    return map;
+  }
+
   @override
   String toString() {
     return toJson().toString();
