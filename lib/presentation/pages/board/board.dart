@@ -15,14 +15,9 @@ class Board extends StatefulWidget {
 }
 
 class _BoardState extends State<Board> {
-  final PageController _pageController = PageController();
-  final StreamController<int> _pageStreamController = StreamController<int>();
-
   List<Color> colors = [Colors.red, Colors.blue, Colors.yellow, Colors.green];
   @override
   void dispose() {
-    _pageController.dispose();
-    _pageStreamController.close();
     super.dispose();
   }
 
