@@ -9,12 +9,12 @@ ThemeData themeLight(BuildContext context) => ThemeData(
       useMaterial3: true,
       highlightColor: Colors.transparent,
       splashColor: const Color.fromRGBO(0, 0, 0, 0),
-      scaffoldBackgroundColor: AppColor.gray100,
+      scaffoldBackgroundColor: AppColor.graymodern950,
       appBarTheme: const AppBarTheme(
-          backgroundColor: AppColor.gray100,
-          surfaceTintColor: AppColor.gray100),
+          backgroundColor: AppColor.graymodern950,
+          surfaceTintColor: AppColor.graymodern950),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          backgroundColor: AppColor.gray100,
+          backgroundColor: AppColor.graymodern950,
           type: BottomNavigationBarType.fixed,
           selectedIconTheme:
               IconThemeData(size: AppDimens.width(24), color: AppColor.gray900),

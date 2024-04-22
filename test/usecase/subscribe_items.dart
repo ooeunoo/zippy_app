@@ -1,6 +1,6 @@
 import 'package:cocomu/data/sources/implementations/item_data_source_impl.dart';
 import 'package:cocomu/data/sources/interfaces/item_data_source.dart';
-import 'package:cocomu/domain/repositories/implementations/item_repository.dart';
+import 'package:cocomu/domain/repositories/implementations/item_repository_impl.dart';
 import 'package:cocomu/domain/repositories/interfaces/item_repository.dart';
 import 'package:cocomu/domain/usecases/subscirbe_items.dart';
 import 'package:flutter_test/flutter_test.dart';

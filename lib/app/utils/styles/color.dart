@@ -367,4 +367,6 @@ class AppColor {
   static const Color yellow800 = Color(0xff854A0E);
   static const Color yellow900 = Color(0xff713B12);
   static const Color yellow950 = Color(0xff542C0D);
+
+  static const Color kakaoBase = Color(0xffFEE500);
 }

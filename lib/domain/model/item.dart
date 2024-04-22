@@ -10,7 +10,7 @@ class Item extends Equatable {
   final int itemIndex;
   final String author;
   final String contentText;
-  final String contentImgUrl;
+  final String? contentImgUrl;
 
   const Item({
     this.id,
@@ -20,7 +20,7 @@ class Item extends Equatable {
     required this.itemIndex,
     required this.author,
     required this.contentText,
-    required this.contentImgUrl,
+    this.contentImgUrl,
   });
 
   @override
@@ -32,7 +32,6 @@ class Item extends Equatable {
       itemIndex,
       author,
       contentText,
-      contentImgUrl
     ];
   }
 

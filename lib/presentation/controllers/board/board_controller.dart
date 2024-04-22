@@ -1,4 +1,3 @@
-import 'package:another_transformer_page_view/another_transformer_page_view.dart';
 import 'package:cocomu/app/failures/failure.dart';
 import 'package:cocomu/domain/model/category.dart';
 import 'package:cocomu/domain/model/community.dart';
@@ -7,6 +6,7 @@ import 'package:cocomu/domain/usecases/get_categories.dart';
 import 'package:cocomu/domain/usecases/get_communities.dart';
 import 'package:cocomu/domain/usecases/subscirbe_items.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class BoardController extends GetxController {
@@ -16,12 +16,7 @@ class BoardController extends GetxController {
 
   BoardController(this.subscribeItems, this.getCommunites, this.getCategories);
 
-  late TransformerPageController pageController = TransformerPageController(
-    initialPage: 0,
-    loop: true,
-    itemCount: subscribers.length,
-    reverse: true,
-  );
+  PageController pageController = PageController(initialPage: 0);
 
   RxList<Item> subscribers = RxList<Item>([]).obs();
   RxMap<int, Community> communities = RxMap<int, Community>({}).obs();
@@ -31,6 +26,7 @@ class BoardController extends GetxController {
   @override
   onInit() async {
     super.onInit();
+
     subscribers.bindStream(subscribe());
 
     await _setupCommunity();

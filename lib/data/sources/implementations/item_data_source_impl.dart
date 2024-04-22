@@ -49,8 +49,8 @@ class ItemDatasourceImpl implements ItemDatasource {
     return provider.client
         .from(TABLE)
         .stream(primaryKey: ['id'])
-        .order('created_at') // 최신순
-        // .limit(3)
+        .order('created_at', ascending: false) // Ascending order
+        // .limit(2)
         .map((data) => data.map((item) {
               // print('item: $item');
               return ItemEntity.fromJson(item).toModel();

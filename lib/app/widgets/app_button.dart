@@ -60,14 +60,11 @@ class AppButton extends StatelessWidget {
             children: [
               if (leadingIcon != null)
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.only(right: AppDimens.width(2)),
-                      child: SizedBox(
-                        child: leadingIcon,
-                      ),
-                    ),
-                    AppSpacerH(value: AppDimens.width(8)),
+                    leadingIcon!,
+                    AppSpacerH(value: AppDimens.width(40)),
                   ],
                 ),
               AppText(title, style: titleStyleWrap(context))

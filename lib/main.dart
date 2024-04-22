@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
@@ -12,6 +13,7 @@ void main() async {
     () async {
       WidgetsFlutterBinding.ensureInitialized();
 
+      MobileAds.instance.initialize();
       await dotenv.load(fileName: Assets.env);
       await GetStorage.init();
 
