@@ -1,4 +1,4 @@
-import 'package:cocomu/domain/model/user.dart';
+import 'package:zippy/domain/model/user.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
@@ -7,18 +7,18 @@ class UserEntity extends Equatable {
   final String id;
   final String email;
   final String name;
-  final String nickname;
+  final String? nickname;
 
   const UserEntity({
     required this.id,
     required this.email,
     required this.name,
-    required this.nickname,
+    this.nickname,
   });
 
   @override
   List<Object> get props {
-    return [id, email, name, nickname];
+    return [id, email, name];
   }
 
   factory UserEntity.fromJson(Map<String, dynamic> json) {
@@ -35,7 +35,7 @@ class UserEntity extends Equatable {
       id: id,
       email: email,
       name: name,
-      nickname: nickname,
+      nickname: nickname ?? "",
     );
   }
 }

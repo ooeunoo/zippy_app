@@ -1,10 +1,10 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:cocomu/app/failures/failure.dart';
-import 'package:cocomu/data/entity/category_entity.dart';
-import 'package:cocomu/data/providers/supabase_provider.dart';
-import 'package:cocomu/data/sources/interfaces/category_data_source.dart';
-import 'package:cocomu/domain/model/category.dart';
+import 'package:zippy/app/failures/failure.dart';
+import 'package:zippy/data/entity/category_entity.dart';
+import 'package:zippy/data/providers/supabase_provider.dart';
+import 'package:zippy/data/sources/interfaces/category_data_source.dart';
+import 'package:zippy/domain/model/category.dart';
 import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
 

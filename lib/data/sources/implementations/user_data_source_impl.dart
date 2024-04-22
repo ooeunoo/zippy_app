@@ -1,15 +1,15 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:cocomu/app/failures/failure.dart';
-import 'package:cocomu/data/entity/user_entity.dart';
-import 'package:cocomu/data/providers/supabase_provider.dart';
-import 'package:cocomu/data/sources/interfaces/user_data_source.dart';
-import 'package:cocomu/domain/model/user.dart';
+import 'package:zippy/app/failures/failure.dart';
+import 'package:zippy/data/entity/user_entity.dart';
+import 'package:zippy/data/providers/supabase_provider.dart';
+import 'package:zippy/data/sources/interfaces/user_data_source.dart';
+import 'package:zippy/domain/model/user.dart';
 import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-String TABLE = 'users';
+String TABLE = 'user';
 
 class UserDatasourceIml implements UserDatasource {
   SupabaseProvider provider = Get.find();

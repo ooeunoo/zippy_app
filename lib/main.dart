@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:cocomu/app/utils/assets.dart';
-import 'package:cocomu/cocomu_app.dart';
+import 'package:zippy/app/utils/assets.dart';
+import 'package:zippy/zippy_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -24,7 +24,7 @@ void main() async {
           DeviceOrientation.portraitUp,
           DeviceOrientation.portraitDown,
         ],
-      ).then((_) => runApp(const CocomuApp()));
+      ).then((_) => runApp(const ZippyApp()));
     },
     (error, stackTrace) async {
       print('error: $error - $stackTrace');

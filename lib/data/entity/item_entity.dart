@@ -1,6 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:cocomu/domain/model/item.dart';
+import 'package:zippy/domain/model/item.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 

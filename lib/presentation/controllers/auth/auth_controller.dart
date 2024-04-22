@@ -1,13 +1,11 @@
-import 'package:cocomu/app/failures/failure.dart';
-import 'package:cocomu/app/routes/app_pages.dart';
-import 'package:cocomu/data/entity/user_entity.dart';
-import 'package:cocomu/domain/model/user.dart';
-import 'package:cocomu/domain/usecases/get_user.dart';
-import 'package:cocomu/domain/usecases/login_with_kakao.dart';
-import 'package:cocomu/domain/usecases/logout.dart';
-import 'package:cocomu/domain/usecases/subscirbe_user.dart';
+import 'package:zippy/app/failures/failure.dart';
+import 'package:zippy/app/routes/app_pages.dart';
+import 'package:zippy/domain/model/user.dart';
+import 'package:zippy/domain/usecases/get_user.dart';
+import 'package:zippy/domain/usecases/login_with_kakao.dart';
+import 'package:zippy/domain/usecases/logout.dart';
+import 'package:zippy/domain/usecases/subscirbe_user.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthController extends GetxController {
@@ -24,11 +22,15 @@ class AuthController extends GetxController {
   Rxn<String> error = Rxn<String>();
 
   @override
-  onInit() async {
+  onInit() {
     super.onInit();
-    _subscribeUser().listen((event) {
-      print(event);
+    _subscribeUser().listen((user) async {
+      await _refreshUser(user);
+      await _navigateDependUser(user);
     });
+
+    // TODO: remove
+    ever(error, (e) => print(e));
   }
 
   loginKakaoUser() async {
@@ -44,15 +46,32 @@ class AuthController extends GetxController {
     return result;
   }
 
-  _refreshUser(String id) async {
-    final result = await getUser.execute(id);
+  UserModel? getSignedUser() {
+    return user.value;
+  }
 
-    result.fold((failure) {
-      if (failure == ServerFailure()) {
-        error.value = "Error Fetching Customer!";
-      }
-    }, (data) {
-      user.value = data;
-    });
+  Future<void> _refreshUser(User? data) async {
+    if (data == null) {
+      user.value = null;
+    } else {
+      String userId = data.id;
+      final result = await getUser.execute(userId);
+
+      result.fold((failure) {
+        if (failure == ServerFailure()) {
+          error.value = "Error Fetching Customer!";
+        }
+      }, (response) {
+        user.value = response;
+      });
+    }
+  }
+
+  _navigateDependUser(user) {
+    if (user == null) {
+      Get.offAllNamed(Routes.login);
+    } else {
+      Get.offAllNamed(Routes.base);
+    }
   }
 }

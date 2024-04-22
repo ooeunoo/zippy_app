@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
-class CocomuWebview extends StatefulWidget {
+class ZippyWebview extends StatefulWidget {
   final String uri;
 
-  const CocomuWebview({
+  const ZippyWebview({
     super.key,
     required this.uri,
   });
 
   @override
-  State<CocomuWebview> createState() => _CocomuWebviewState();
+  State<ZippyWebview> createState() => _ZippyWebviewState();
 }
 
-class _CocomuWebviewState extends State<CocomuWebview> {
+class _ZippyWebviewState extends State<ZippyWebview> {
   String get uri => widget.uri;
 
   late double _progress = 0;

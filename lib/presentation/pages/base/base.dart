@@ -1,7 +1,8 @@
-import 'package:cocomu/app/utils/assets.dart';
-import 'package:cocomu/app/utils/styles/color.dart';
-import 'package:cocomu/app/widgets/app_svg.dart';
-import 'package:cocomu/presentation/controllers/base/base_controller.dart';
+import 'package:zippy/app/utils/assets.dart';
+import 'package:zippy/app/utils/styles/color.dart';
+import 'package:zippy/app/utils/styles/dimens.dart';
+import 'package:zippy/app/widgets/app_svg.dart';
+import 'package:zippy/presentation/controllers/base/base_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,14 +13,15 @@ class Base extends GetView<BaseController> {
   Widget build(BuildContext context) {
     return Scaffold(
         bottomNavigationBar: Obx(() => Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+                  topRight: Radius.circular(AppDimens.size(20)),
+                  topLeft: Radius.circular(AppDimens.size(20))),
             ),
             child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20.0),
-                topRight: Radius.circular(20.0),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(AppDimens.size(20)),
+                topRight: Radius.circular(AppDimens.size(20)),
               ),
               child: BottomNavigationBar(
                 elevation: 1,
@@ -27,8 +29,8 @@ class Base extends GetView<BaseController> {
                 onTap: controller.goToTab,
                 items: [
                   tabItem(Assets.home01, '', 0),
-                  tabItem(Assets.search, '', 1),
-                  tabItem(Assets.user01, '', 2),
+                  // tabItem(Assets.search, '', 1),
+                  tabItem(Assets.user01, '', 1),
                 ],
               ),
             ))),

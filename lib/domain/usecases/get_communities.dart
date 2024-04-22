@@ -1,6 +1,6 @@
-import 'package:cocomu/app/failures/failure.dart';
-import 'package:cocomu/domain/model/community.dart';
-import 'package:cocomu/domain/repositories/interfaces/community_repository.dart';
+import 'package:zippy/app/failures/failure.dart';
+import 'package:zippy/domain/model/community.dart';
+import 'package:zippy/domain/repositories/interfaces/community_repository.dart';
 import 'package:dartz/dartz.dart';
 
 class GetCommunites {

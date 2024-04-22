@@ -1,38 +1,36 @@
-import 'dart:ui';
-
-import 'package:cocomu/app/utils/assets.dart';
-import 'package:cocomu/app/utils/styles/color.dart';
-import 'package:cocomu/app/utils/styles/dimens.dart';
-import 'package:cocomu/app/utils/styles/theme.dart';
-import 'package:cocomu/app/widgets/app_shadow_overlay.dart';
-import 'package:cocomu/app/widgets/app_spacer_h.dart';
-import 'package:cocomu/app/widgets/app_spacer_v.dart';
-import 'package:cocomu/app/widgets/app_svg.dart';
-import 'package:cocomu/app/widgets/app_text.dart';
-import 'package:cocomu/domain/model/community.dart';
-import 'package:cocomu/domain/model/item.dart';
+import 'package:zippy/app/utils/assets.dart';
+import 'package:zippy/app/utils/styles/color.dart';
+import 'package:zippy/app/utils/styles/dimens.dart';
+import 'package:zippy/app/utils/styles/theme.dart';
+import 'package:zippy/app/widgets/app_shadow_overlay.dart';
+import 'package:zippy/app/widgets/app_spacer_h.dart';
+import 'package:zippy/app/widgets/app_spacer_v.dart';
+import 'package:zippy/app/widgets/app_svg.dart';
+import 'package:zippy/app/widgets/app_text.dart';
+import 'package:zippy/domain/model/community.dart';
+import 'package:zippy/domain/model/item.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter/src/painting/gradient.dart' as gradient;
 
-class CocomuCard extends StatefulWidget {
-  final Community community;
+class ZippyCard extends StatefulWidget {
+  final Community? community;
   final Item item;
   final bool isBookMarked;
+  final Function(int id) toggleBookmark;
 
-  const CocomuCard(
+  const ZippyCard(
       {super.key,
       required this.community,
       required this.item,
-      required this.isBookMarked});
+      required this.isBookMarked,
+      required this.toggleBookmark});
 
   @override
-  State<CocomuCard> createState() => _CocomuCardState();
+  State<ZippyCard> createState() => _ZippyCardState();
 }
 
-class _CocomuCardState extends State<CocomuCard> {
+class _ZippyCardState extends State<ZippyCard> {
   late Future<void> _imageFuture;
 
   @override
@@ -41,6 +39,13 @@ class _CocomuCardState extends State<CocomuCard> {
     super.didChangeDependencies();
     _imageFuture =
         precacheImage(NetworkImage(widget.item.contentImgUrl ?? ""), context);
+  }
+
+  void toogleBookMark() {
+    int? itemId = widget.item.id;
+    if (itemId != null) {
+      widget.toggleBookmark(itemId);
+    }
   }
 
   @override
@@ -78,34 +83,27 @@ class _CocomuCardState extends State<CocomuCard> {
         } else if (snapshot.hasError) {
           return const Center(child: Text('Error loading image'));
         } else {
-          if (widget.item.contentImgUrl == null) {
-            return CachedNetworkImage(
-              imageUrl: widget.item.contentImgUrl!,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Container(
-                color: Colors.black.withOpacity(0.5),
-              ),
-            );
-          } else {
-            return CachedNetworkImage(
-              imageUrl: widget.item.contentImgUrl!,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Container(
-                color: Colors.black.withOpacity(0.5),
-              ),
-              imageBuilder: (context, imageProvider) => AppShadowOverlay(
-                shadowColor: AppColor.graymodern950,
-                child: Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: imageProvider,
-                      fit: BoxFit.cover,
-                    ),
+          return CachedNetworkImage(
+            imageUrl: widget.item.contentImgUrl!,
+            fit: BoxFit.cover,
+            placeholder: (context, url) => Container(
+              color: Colors.black.withOpacity(0.5),
+            ),
+            errorWidget: (context, url, error) => const Center(
+              child: Text("error"),
+            ),
+            imageBuilder: (context, imageProvider) => AppShadowOverlay(
+              shadowColor: AppColor.graymodern950,
+              child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
-            );
-          }
+            ),
+          );
         }
       },
     );
@@ -129,7 +127,8 @@ class _CocomuCardState extends State<CocomuCard> {
                     width: AppDimens.size(24),
                     child: CircleAvatar(
                       radius: AppDimens.size(16),
-                      backgroundImage: AssetImage(widget.community.logo!),
+                      backgroundImage:
+                          AssetImage(widget.community?.logo ?? Assets.logo),
                     ),
                   ),
                   AppSpacerH(value: AppDimens.width(10)),
@@ -150,9 +149,7 @@ class _CocomuCardState extends State<CocomuCard> {
               Row(
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      print('bookmark');
-                    },
+                    onTap: toogleBookMark,
                     child: AppSvg(
                       Assets.bookmark,
                       size: AppDimens.size(23),

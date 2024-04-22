@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:cocomu/app/failures/failure.dart';
-import 'package:cocomu/domain/model/user.dart';
+import 'package:zippy/app/failures/failure.dart';
+import 'package:zippy/domain/model/user.dart';
 import "package:dartz/dartz.dart";
 import 'package:supabase_flutter/supabase_flutter.dart';
 

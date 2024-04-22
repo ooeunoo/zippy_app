@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "cocomu" "\0"
+            VALUE "FileDescription", "zippy" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "cocomu" "\0"
+            VALUE "InternalName", "zippy" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "cocomu.exe" "\0"
-            VALUE "ProductName", "cocomu" "\0"
+            VALUE "OriginalFilename", "zippy.exe" "\0"
+            VALUE "ProductName", "zippy" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

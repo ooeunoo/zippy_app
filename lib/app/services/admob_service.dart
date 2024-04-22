@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:cocomu/app/utils/env.dart';
+import 'package:zippy/app/utils/env.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -14,14 +14,13 @@ class AdmobService extends GetxService {
   late BannerAd banner;
   RxBool isBannerReady = false.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    initBanner();
-  }
+  // @override
+  // void onInit() {
+  //   super.onInit();
+  //   // initBanner();
+  // }
 
   void initBanner() {
-    print("initBanner");
     String targetUnitId = Platform.isIOS ? iosTestUnitId : aosTestUnitId;
     BannerAd banner = BannerAd(
       size: AdSize.banner,

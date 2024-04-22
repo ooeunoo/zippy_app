@@ -1,5 +1,5 @@
-import 'package:cocomu/domain/model/item.dart';
-import 'package:cocomu/domain/repositories/interfaces/item_repository.dart';
+import 'package:zippy/domain/model/item.dart';
+import 'package:zippy/domain/repositories/interfaces/item_repository.dart';
 
 class SubscribeItems {
   final ItemRepository repo;

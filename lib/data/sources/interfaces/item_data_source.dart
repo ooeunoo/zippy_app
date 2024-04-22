@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:cocomu/app/failures/failure.dart';
-import 'package:cocomu/data/entity/category_entity.dart';
-import 'package:cocomu/domain/model/category.dart';
-import 'package:cocomu/domain/model/item.dart';
+import 'package:zippy/app/failures/failure.dart';
+import 'package:zippy/data/entity/category_entity.dart';
+import 'package:zippy/domain/model/category.dart';
+import 'package:zippy/domain/model/item.dart';
 import "package:dartz/dartz.dart";
 
 abstract class ItemDatasource {

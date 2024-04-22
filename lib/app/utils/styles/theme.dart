@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:cocomu/app/utils/styles/color.dart';
-import 'package:cocomu/app/utils/styles/dimens.dart';
+import 'package:zippy/app/utils/styles/color.dart';
+import 'package:zippy/app/utils/styles/dimens.dart';
 
 /// Light theme
 ThemeData themeLight(BuildContext context) => ThemeData(

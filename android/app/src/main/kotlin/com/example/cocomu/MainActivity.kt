@@ -1,4 +1,4 @@
-package com.example.cocomu
+package com.example.zippy
 
 import io.flutter.embedding.android.FlutterActivity
 

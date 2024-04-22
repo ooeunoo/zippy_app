@@ -1,5 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:cocomu/app/utils/env.dart';
+import 'package:zippy/app/utils/env.dart';
 
 class SupabaseProvider {
   SupabaseClient get _client => Supabase.instance.client;

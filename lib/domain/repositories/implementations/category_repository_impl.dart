@@ -1,7 +1,7 @@
-import 'package:cocomu/app/failures/failure.dart';
-import 'package:cocomu/data/sources/interfaces/category_data_source.dart';
-import 'package:cocomu/domain/model/category.dart';
-import 'package:cocomu/domain/repositories/interfaces/category_repository.dart';
+import 'package:zippy/app/failures/failure.dart';
+import 'package:zippy/data/sources/interfaces/category_data_source.dart';
+import 'package:zippy/domain/model/category.dart';
+import 'package:zippy/domain/repositories/interfaces/category_repository.dart';
 import 'package:dartz/dartz.dart';
 
 class CategoryRepositoryImpl implements CategoryRepository {

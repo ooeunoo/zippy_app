@@ -1,6 +1,6 @@
-import 'package:cocomu/presentation/pages/board/board.dart';
-import 'package:cocomu/presentation/pages/profile/profile.dart';
-import 'package:cocomu/presentation/pages/search/search.dart';
+import 'package:zippy/presentation/pages/board/board.dart';
+import 'package:zippy/presentation/pages/profile/profile.dart';
+import 'package:zippy/presentation/pages/search/search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,14 +11,18 @@ class BaseController extends GetxController {
 
   List<Widget> pages = [
     const Board(),
-    const Search(),
+    // const Search(),
     const Profile(),
   ];
 
+  BaseController() {
+    ever(currentPage, (v) => print(v));
+  }
+
   @override
   void onInit() {
-    pageController = PageController(initialPage: 0);
     super.onInit();
+    pageController = PageController(initialPage: 0);
   }
 
   void goToTab(int page) {

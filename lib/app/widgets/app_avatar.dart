@@ -2,11 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:cocomu/app/utils/assets.dart';
-import 'package:cocomu/app/utils/styles/color.dart';
-import 'package:cocomu/app/utils/styles/dimens.dart';
-import 'package:cocomu/app/widgets/app_loader.dart';
-import 'package:cocomu/app/widgets/app_svg.dart';
+import 'package:zippy/app/utils/assets.dart';
+import 'package:zippy/app/utils/styles/color.dart';
+import 'package:zippy/app/utils/styles/dimens.dart';
+import 'package:zippy/app/widgets/app_loader.dart';
+import 'package:zippy/app/widgets/app_svg.dart';
 
 class AppAvatar extends StatelessWidget {
   final String? imageUrl;

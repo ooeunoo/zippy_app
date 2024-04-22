@@ -1,7 +1,7 @@
-import 'package:cocomu/app/failures/failure.dart';
-import 'package:cocomu/data/sources/interfaces/item_data_source.dart';
-import 'package:cocomu/domain/model/item.dart';
-import 'package:cocomu/domain/repositories/interfaces/item_repository.dart';
+import 'package:zippy/app/failures/failure.dart';
+import 'package:zippy/data/sources/interfaces/item_data_source.dart';
+import 'package:zippy/domain/model/item.dart';
+import 'package:zippy/domain/repositories/interfaces/item_repository.dart';
 import 'package:dartz/dartz.dart';
 
 class ItemRepositoryImpl implements ItemRepository {

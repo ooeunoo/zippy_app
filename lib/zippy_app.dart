@@ -1,15 +1,15 @@
-import 'package:cocomu/app/routes/app_pages.dart';
-import 'package:cocomu/app/utils/styles/dimens.dart';
-import 'package:cocomu/app/utils/styles/theme.dart';
-import 'package:cocomu/cocomu_dependency.dart';
-import 'package:cocomu/cocomu_translation.dart';
-import 'package:cocomu/presentation/controllers/theme/theme_controller.dart';
+import 'package:zippy/app/routes/app_pages.dart';
+import 'package:zippy/app/utils/styles/dimens.dart';
+import 'package:zippy/app/utils/styles/theme.dart';
+import 'package:zippy/zippy_dependency.dart';
+import 'package:zippy/zippy_translation.dart';
+import 'package:zippy/presentation/controllers/theme/theme_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-class CocomuApp extends StatelessWidget {
-  const CocomuApp({super.key});
+class ZippyApp extends StatelessWidget {
+  const ZippyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,15 +20,15 @@ class CocomuApp extends StatelessWidget {
         builder: (context, __) {
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,
-            title: "Cocomu",
+            title: "Zippy",
             defaultTransition: Transition.fade,
+            initialBinding: ZippyBindings(),
             getPages: AppPages.routes,
             initialRoute: AppPages.initial,
-            initialBinding: CocomuBindings(),
             theme: themeLight(context),
             darkTheme: themeDark(context),
             themeMode: getThemeMode(themeController.theme),
-            translations: CocomuTranslations(),
+            translations: ZippyTranslations(),
             locale: Get.deviceLocale,
             fallbackLocale: const Locale('ko', 'KR'),
           );

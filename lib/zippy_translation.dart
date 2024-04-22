@@ -4,7 +4,7 @@ class Message {
   Message._();
 }
 
-class CocomuTranslations extends Translations {
+class ZippyTranslations extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
         'ko_KR': {},

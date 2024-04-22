@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cocomu/app/utils/styles/dimens.dart';
+import 'package:zippy/app/utils/styles/dimens.dart';
 
 class AppSpacerV extends StatelessWidget {
   const AppSpacerV({super.key, this.value});

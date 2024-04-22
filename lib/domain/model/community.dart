@@ -1,4 +1,4 @@
-import 'package:cocomu/app/utils/assets.dart';
+import 'package:zippy/app/utils/assets.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 

@@ -1,20 +1,21 @@
-import 'package:cocomu/app/utils/assets.dart';
-import 'package:cocomu/app/utils/styles/color.dart';
-import 'package:cocomu/app/utils/styles/dimens.dart';
-import 'package:cocomu/app/utils/styles/theme.dart';
-import 'package:cocomu/app/widgets/app_menu.dart';
-import 'package:cocomu/app/widgets/app_spacer_v.dart';
-import 'package:cocomu/app/widgets/app_text.dart';
+import 'package:get/get.dart';
+import 'package:zippy/app/utils/assets.dart';
+import 'package:zippy/app/utils/styles/color.dart';
+import 'package:zippy/app/utils/styles/dimens.dart';
+import 'package:zippy/app/utils/styles/theme.dart';
+import 'package:zippy/app/widgets/app_menu.dart';
+import 'package:zippy/app/widgets/app_spacer_v.dart';
+import 'package:zippy/app/widgets/app_text.dart';
 import 'package:flutter/material.dart';
+import 'package:zippy/presentation/controllers/auth/auth_controller.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends GetView<AuthController> {
   const Profile({super.key});
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-            // appBar: appBar(context),
             body: Container(
       padding: EdgeInsets.symmetric(
           horizontal: AppDimens.width(20), vertical: AppDimens.height(20)),
@@ -22,7 +23,12 @@ class Profile extends StatelessWidget {
         children: [
           Column(
             mainAxisSize: MainAxisSize.min,
-            children: [avatarInfo(context), const AppSpacerV(), menu(context)],
+            children: [
+              const AppSpacerV(),
+              avatarInfo(context),
+              const AppSpacerV(),
+              menu(context)
+            ],
           ),
           Align(alignment: Alignment.bottomCenter, child: logout(context))
         ],
@@ -42,15 +48,20 @@ class Profile extends StatelessWidget {
   }
 
   Widget logout(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: AppDimens.height(10)),
-      child: AppText(
-        "로그아웃",
-        style: Theme.of(context).textTheme.textSM.copyWith(
-              decoration: TextDecoration.underline,
-              color: AppColor.graymodern500,
-              decorationColor: AppColor.graymodern500,
-            ),
+    return GestureDetector(
+      onTap: () {
+        controller.logoutUser();
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: AppDimens.height(10)),
+        child: AppText(
+          "로그아웃",
+          style: Theme.of(context).textTheme.textSM.copyWith(
+                decoration: TextDecoration.underline,
+                color: AppColor.graymodern500,
+                decorationColor: AppColor.graymodern500,
+              ),
+        ),
       ),
     );
   }
@@ -62,8 +73,8 @@ class Profile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              height: AppDimens.size(50),
-              width: AppDimens.size(50),
+              height: AppDimens.size(80),
+              width: AppDimens.size(80),
               child: CircleAvatar(
                 radius: AppDimens.size(16),
                 // backgroundImage: const AssetImage(Assets.avatarDefault),
@@ -75,11 +86,11 @@ class Profile extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AppText("seongenugne.adsfdsf@gam",
+            Obx(() => AppText(controller.user.value?.email ?? "",
                 style: Theme.of(context)
                     .textTheme
                     .textMD
-                    .copyWith(color: AppColor.graymodern100))
+                    .copyWith(color: AppColor.graymodern100)))
           ],
         )
       ],

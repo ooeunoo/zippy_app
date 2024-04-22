@@ -1,7 +1,7 @@
-import 'package:cocomu/presentation/pages/base/base.dart';
-import 'package:cocomu/presentation/pages/base/bindings/base_binding.dart';
-import 'package:cocomu/presentation/pages/login/bindings/login_binding.dart';
-import 'package:cocomu/presentation/pages/login/login.dart';
+import 'package:zippy/presentation/pages/base/base.dart';
+import 'package:zippy/presentation/pages/base/bindings/base_binding.dart';
+import 'package:zippy/presentation/pages/login/bindings/login_binding.dart';
+import 'package:zippy/presentation/pages/login/login.dart';
 import 'package:get/route_manager.dart';
 
 class AppPages {
