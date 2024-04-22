@@ -62,6 +62,8 @@ extension CustomTextStyles on TextTheme {
   TextStyle get displayMD => TextStyle(fontSize: 36.sp);
   TextStyle get displaySM => TextStyle(fontSize: 30.sp);
   TextStyle get displayXS => TextStyle(fontSize: 24.sp);
+  TextStyle get text2XL =>
+      (TextStyle(fontSize: 22.sp, color: AppColor.gray900));
   TextStyle get textXL => (TextStyle(fontSize: 20.sp, color: AppColor.gray900));
   TextStyle get textLG => TextStyle(fontSize: 18.sp, color: AppColor.gray800);
   TextStyle get textMD => TextStyle(fontSize: 16.sp, color: AppColor.gray700);

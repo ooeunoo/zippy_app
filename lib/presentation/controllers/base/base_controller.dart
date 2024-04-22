@@ -1,6 +1,5 @@
 import 'package:zippy/presentation/pages/board/board.dart';
 import 'package:zippy/presentation/pages/profile/profile.dart';
-import 'package:zippy/presentation/pages/search/search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

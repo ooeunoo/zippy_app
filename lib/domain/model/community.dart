@@ -51,16 +51,17 @@ class Community extends Equatable {
 
   String? getLogoAssetPath() {
     switch (id) {
-      // case 2: // 디시
-      //   break;
-      // case 3: // 뽐뿌
-      //   break;
-      // case 4: // 인스티즈
-      //   break;
+      case 2: // 디시
+        return Assets.dcinsideLogo;
+      case 3: // 뽐뿌
+        return Assets.ppomppuLogo;
+      case 4: // 인스티즈
+        return Assets.instizLogo;
       case 5: // 웃긴대학
         return Assets.humorunivLogo;
+      default:
+        return '';
     }
-    return null;
   }
 
   @override

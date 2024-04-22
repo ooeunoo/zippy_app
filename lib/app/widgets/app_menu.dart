@@ -6,9 +6,10 @@ import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:zippy/domain/model/menu.dart';
 
 class AppMenu extends StatelessWidget {
-  final List<Map<String, dynamic>> menu;
+  final List<MenuSection> menu;
   final Color backgroundColor;
 
   const AppMenu({
@@ -24,8 +25,9 @@ class AppMenu extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: menu.length,
         itemBuilder: (BuildContext context, int index) {
-          final section = menu[index]['section'] as String;
-          final items = (menu[index]['items'] as List<dynamic>)
+          final section = menu[index].section;
+          final items = menu[index]
+              .items
               .map<Widget>((item) => _buildMenuItem(context, item))
               .toList();
           return Column(
@@ -51,16 +53,18 @@ class AppMenu extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuItem(BuildContext context, Map<String, dynamic> item) {
-    final icon = item['icon'] as String;
-    final title = item['title'] as String;
-    final onTap = item['onTap'] as void Function();
+  Widget _buildMenuItem(BuildContext context, MenuItem item) {
+    final icon = item.icon;
+    final title = item.title;
+    final onTap = item.onTap;
 
     return Padding(
       padding: EdgeInsets.symmetric(
           horizontal: AppDimens.width(10), vertical: AppDimens.height(12)),
       child: GestureDetector(
-        onTap: onTap,
+        onTap: () {
+          onTap();
+        },
         child: Row(
           children: [
             AppSvg(

@@ -35,7 +35,6 @@ class _ZippyCardState extends State<ZippyCard> {
 
   @override
   void didChangeDependencies() {
-    print(widget.item.contentImgUrl);
     super.didChangeDependencies();
     _imageFuture =
         precacheImage(NetworkImage(widget.item.contentImgUrl ?? ""), context);

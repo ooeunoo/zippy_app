@@ -10,6 +10,7 @@ import 'package:zippy/domain/usecases/delete_bookmark.dart';
 import 'package:zippy/domain/usecases/get_bookmarks_by_user_id.dart';
 import 'package:zippy/domain/usecases/get_categories.dart';
 import 'package:zippy/domain/usecases/get_communities.dart';
+import 'package:zippy/domain/usecases/get_user_community_by_user_id.dart';
 import 'package:zippy/domain/usecases/subscirbe_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -18,12 +19,14 @@ import 'package:zippy/presentation/controllers/auth/auth_controller.dart';
 
 class BoardController extends GetxController {
   final authController = Get.find<AuthController>();
+  
   final SubscribeItems subscribeItems;
   final GetCommunites getCommunites;
   final GetCategories getCategories;
   final CreateBookmark createBookmark;
   final DeleteBookmark deleteBookmark;
   final GetBookmarksByUserId getBookmarksByUserId;
+  final GetUserCommunityByUserId getUserCommunityByUserId;
 
   BoardController(
     this.subscribeItems,
@@ -32,16 +35,15 @@ class BoardController extends GetxController {
     this.createBookmark,
     this.deleteBookmark,
     this.getBookmarksByUserId,
+    this.getUserCommunityByUserId,
   );
 
   PageController pageController = PageController(initialPage: 0);
-
   RxList<Item> subscribers = RxList<Item>([]).obs();
   RxMap<int, Community> communities = RxMap<int, Community>({}).obs();
   RxMap<int, Category> categories = RxMap<int, Category>({}).obs();
   RxMap<int, int> bookmarkItemMap = RxMap<int, int>({}).obs();
   RxList<int> bookmarkItemIds = RxList<int>([]).obs();
-
   Rxn<String> error = Rxn<String>();
 
   @override

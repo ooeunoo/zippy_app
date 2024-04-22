@@ -16,6 +16,9 @@ class Assets {
   static const String kakaoLogo = 'assets/icons/kakao.svg';
 
   // images
-  static const String logo = 'assets/images/logo.png';
+  static const String logo = 'assets/icons/logo.svg';
   static const String humorunivLogo = 'assets/images/humoruniv.png';
+  static const String dcinsideLogo = 'assets/images/dcinside.png';
+  static const String ppomppuLogo = 'assets/images/ppomppu.png';
+  static const String instizLogo = 'assets/images/instiz.png';
 }

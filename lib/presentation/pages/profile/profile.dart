@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/utils/styles/color.dart';
 import 'package:zippy/app/utils/styles/dimens.dart';
@@ -7,7 +8,9 @@ import 'package:zippy/app/widgets/app_menu.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:flutter/material.dart';
+import 'package:zippy/domain/model/menu.dart';
 import 'package:zippy/presentation/controllers/auth/auth_controller.dart';
+import 'package:zippy/presentation/pages/subscribe_channel/subscribe_channel.dart';
 
 class Profile extends GetView<AuthController> {
   const Profile({super.key});
@@ -98,45 +101,43 @@ class Profile extends GetView<AuthController> {
   }
 
   Widget menu(BuildContext context) {
-    return AppMenu(menu: [
-      {
-        'section': 'My',
-        'items': [
-          {
-            'icon': Assets.sliders04,
-            'title': "구독 채널 관리",
-            'onTap': () {
-              print('hello');
-            }
-          },
-          {
-            'icon': Assets.bookmarkLine,
-            'title': "저장한 콘텐츠",
-            'onTap': () {
-              print('hello');
-            }
-          }
-        ]
-      },
-      {
-        'section': '고객지원 및 정보',
-        'items': [
-          {
-            'icon': Assets.file02,
-            'title': "개인정보처리방침",
-            'onTap': () {
-              print('hello');
-            }
-          },
-          {
-            'icon': Assets.file06,
-            'title': "서비스 이용약관",
-            'onTap': () {
-              print('hello');
-            }
-          }
-        ]
-      }
-    ], backgroundColor: AppColor.gray100);
+    List<MenuSection> menu = [
+      MenuSection(
+        section: 'My',
+        items: [
+          MenuItem(
+              icon: Assets.sliders04,
+              title: '구독 채널 관리',
+              onTap: () {
+                print('클릭');
+                Get.toNamed(
+                  Routes.subscribeChannel,
+                );
+              }),
+          MenuItem(
+              icon: Assets.bookmarkLine,
+              title: '저장한 콘텐츠',
+              onTap: () {
+                print('저장한 콘텐츠');
+              })
+        ],
+      ),
+      MenuSection(section: '고객지원 및 정보', items: [
+        MenuItem(
+            icon: Assets.file02,
+            title: '개인정보처리방침',
+            onTap: () {
+              print('개인정보처리방침');
+            }),
+        MenuItem(
+            icon: Assets.file06,
+            title: '서비스 이용약관',
+            onTap: () {
+              print('서비스 이용약관');
+            })
+      ])
+    ];
+
+    return AppMenu(menu: menu, backgroundColor: AppColor.gray100);
   }
 }
