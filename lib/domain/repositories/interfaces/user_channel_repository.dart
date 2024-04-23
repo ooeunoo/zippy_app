@@ -7,7 +7,7 @@ abstract class UserChannelRepository {
   Future<Either<Failure, List<UserChannel>>> getUserChannelByUserId(
       String userId);
   Future<Either<Failure, bool>> createUserChannel(
-      UserChannelEntity userChannel);
+      List<UserChannelEntity> channels);
   Future<Either<Failure, bool>> deleteUserChannel(
-      UserChannelEntity userChannel);
+      List<UserChannelEntity> channels);
 }

@@ -8,7 +8,7 @@ class DeleteUserChannel {
 
   DeleteUserChannel(this.repo);
 
-  Future<Either<Failure, bool>> execute(UserChannelEntity userChannel) {
-    return repo.deleteUserChannel(userChannel);
+  Future<Either<Failure, bool>> execute(List<UserChannelEntity> channels) {
+    return repo.deleteUserChannel(channels);
   }
 }

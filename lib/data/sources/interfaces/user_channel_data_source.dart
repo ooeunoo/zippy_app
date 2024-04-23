@@ -8,7 +8,7 @@ import 'package:zippy/domain/model/user_channel.dart';
 abstract class UserChannelDatasource {
   Future<Either<Failure, List<UserChannel>>> getUserChannels(String userId);
   Future<Either<Failure, bool>> createUserChannel(
-      UserChannelEntity userChannel);
+      List<UserChannelEntity> channels);
   Future<Either<Failure, bool>> deleteUserChannel(
-      UserChannelEntity userChannel);
+      List<UserChannelEntity> channels);
 }

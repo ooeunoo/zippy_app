@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 @immutable
 class ChannelEntity extends Equatable {
   final int? id;
-  final ChannelType type;
+  final String type;
   final String name;
   final String name_ko;
   final String base_url;

@@ -8,7 +8,7 @@ class GetCategories {
 
   GetCategories(this.repo);
 
-  Future<Either<Failure, List<Category>>> execute() {
-    return repo.getCategories();
+  Future<Either<Failure, List<Category>>> execute({String? channelId}) {
+    return repo.getCategories(channelId: channelId);
   }
 }

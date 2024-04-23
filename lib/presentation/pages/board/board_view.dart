@@ -3,7 +3,7 @@ import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/domain/model/channel.dart';
 import 'package:zippy/domain/model/item.dart';
 import 'package:zippy/presentation/controllers/board/board_controller.dart';
-import 'package:zippy/presentation/pages/board/widgets/cocomu_card.dart';
+import 'package:zippy/presentation/pages/board/widgets/zippy_card.dart';
 import 'package:zippy/app/widgets/app_webview.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

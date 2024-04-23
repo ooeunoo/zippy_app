@@ -9,7 +9,7 @@ class Item extends Equatable {
   final String title;
   final int itemIndex;
   final String author;
-  final String contentText;
+  final String? contentText;
   final String? contentImgUrl;
 
   const Item({
@@ -19,7 +19,7 @@ class Item extends Equatable {
     required this.title,
     required this.itemIndex,
     required this.author,
-    required this.contentText,
+    this.contentText,
     this.contentImgUrl,
   });
 
@@ -31,13 +31,13 @@ class Item extends Equatable {
       title,
       itemIndex,
       author,
-      contentText,
     ];
   }
 
   dynamic toJson() => {
         'id': id,
         'categoryId': categoryId,
+        'url': url,
         'title': title,
         'itemIndex': itemIndex,
         "author": author,

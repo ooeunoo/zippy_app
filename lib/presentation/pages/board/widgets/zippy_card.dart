@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
+import 'package:zippy/app/utils/validate.dart';
 import 'package:zippy/app/widgets/app_shadow_overlay.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
@@ -34,12 +37,29 @@ class ZippyCard extends StatefulWidget {
 
 class _ZippyCardState extends State<ZippyCard> {
   late Future<void> _imageFuture;
+  late bool _noRelatedImageWarning;
+  late String _imageUrl;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _imageFuture =
-        precacheImage(NetworkImage(widget.item.contentImgUrl ?? ""), context);
+    if (isUrl) {
+      _imageFuture =
+          precacheImage(NetworkImage(widget.item.contentImgUrl!), context,
+              onError: (Object exception, StackTrace? stackTrace) {
+        String number = Random().nextInt(100000).toString();
+        _imageUrl = 'https://source.unsplash.com/random/$number';
+        _noRelatedImageWarning = true;
+        _imageFuture = precacheImage(NetworkImage(_imageUrl), context);
+      });
+      _imageUrl = widget.item.contentImgUrl!;
+      _noRelatedImageWarning = false;
+    } else {
+      String number = Random().nextInt(100000).toString();
+      _imageUrl = 'https://source.unsplash.com/random/$number';
+      _imageFuture = precacheImage(NetworkImage(_imageUrl), context);
+      _noRelatedImageWarning = true;
+    }
   }
 
   void toogleBookmark() {
@@ -48,6 +68,10 @@ class _ZippyCardState extends State<ZippyCard> {
       widget.toggleBookmark(itemId);
     }
   }
+
+  bool get isUrl =>
+      widget.item.contentImgUrl != null &&
+      isValidUrl(widget.item.contentImgUrl!);
 
   @override
   Widget build(BuildContext context) {
@@ -82,28 +106,18 @@ class _ZippyCardState extends State<ZippyCard> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CupertinoActivityIndicator());
         } else if (snapshot.hasError) {
-          return const Center(child: Text('Error loading image'));
+          return Center(
+              child: AppText('Error loading image',
+                  style: Theme.of(context).textTheme.textSM));
         } else {
           return CachedNetworkImage(
-            imageUrl: widget.item.contentImgUrl!,
+            imageUrl: _imageUrl,
             fit: BoxFit.cover,
             placeholder: (context, url) => Container(
-              color: Colors.black.withOpacity(0.5),
+              color: AppColor.graymodern950.withOpacity(0.5),
             ),
-            errorWidget: (context, url, error) => const Center(
-              child: Text("error"),
-            ),
-            imageBuilder: (context, imageProvider) => AppShadowOverlay(
-              shadowColor: AppColor.graymodern950,
-              child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
+            imageBuilder: (context, imageProvider) =>
+                imageWidget(imageProvider),
           );
         }
       },
@@ -184,6 +198,34 @@ class _ZippyCardState extends State<ZippyCard> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget imageWidget(ImageProvider provider) {
+    return Stack(
+      children: [
+        AppShadowOverlay(
+          shadowColor: AppColor.graymodern950,
+          child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: provider,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ),
+        if (_noRelatedImageWarning) ...{
+          Align(
+            alignment: Alignment.center,
+            child: AppText("해당 이미지는 콘텐츠와 관련없습니다.",
+                style: Theme.of(context)
+                    .textTheme
+                    .textSM
+                    .copyWith(color: AppColor.graymodern100)),
+          )
+        }
+      ],
     );
   }
 }

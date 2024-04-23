@@ -10,8 +10,8 @@ class CategoryRepositoryImpl implements CategoryRepository {
   CategoryRepositoryImpl(this.datasource);
 
   @override
-  Future<Either<Failure, List<Category>>> getCategories() {
-    return datasource.getCategories();
+  Future<Either<Failure, List<Category>>> getCategories({String? channelId}) {
+    return datasource.getCategories(channelId: channelId);
   }
 
   @override

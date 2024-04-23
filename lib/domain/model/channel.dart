@@ -7,7 +7,7 @@ enum ChannelType { community, news }
 @immutable
 class Channel extends Equatable {
   final int? id;
-  final ChannelType type;
+  final String type;
   final String name;
   final String nameKo;
   final String baseUrl;
@@ -65,8 +65,10 @@ class Channel extends Equatable {
         return Assets.instizLogo;
       case 5: // 웃긴대학
         return Assets.humorunivLogo;
+      case 6: // 클리앙
+        return Assets.clienLogo;
       default:
-        return '';
+        return Assets.logo;
     }
   }
 

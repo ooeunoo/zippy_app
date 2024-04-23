@@ -15,24 +15,30 @@ class UserChannelDatasourceIml implements UserChannelDatasource {
 
   @override
   Future<Either<Failure, bool>> createUserChannel(
-      UserChannelEntity userChannel) async {
+      List<UserChannelEntity> channels) async {
     try {
-      await provider.client.from(TABLE).insert(userChannel.toParams());
+      List<Map<String, dynamic>> channelParamsList = [];
+
+      for (UserChannelEntity channel in channels) {
+        channelParamsList.add(channel.toParams());
+      }
+
+      await provider.client.from(TABLE).insert(channelParamsList);
       return const Right(true);
     } catch (e) {
-      print(e);
       return Left(ServerFailure());
     }
   }
 
   @override
   Future<Either<Failure, bool>> deleteUserChannel(
-      UserChannelEntity userChannel) async {
+      List<UserChannelEntity> channels) async {
     try {
-      await provider.client.from(TABLE).delete().match(userChannel.toParams());
+      for (UserChannelEntity channel in channels) {
+        await provider.client.from(TABLE).delete().match(channel.toParams());
+      }
       return const Right(true);
     } catch (e) {
-      print(e);
       return Left(ServerFailure());
     }
   }
@@ -43,7 +49,7 @@ class UserChannelDatasourceIml implements UserChannelDatasource {
     try {
       List<Map<String, dynamic>> response = await provider.client
           .from(TABLE)
-          .select('*')
+          .select('*, category(*)')
           .match({"user_id": userId});
 
       List<UserChannel> result =

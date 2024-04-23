@@ -14,10 +14,17 @@ class CategoryDatasourceIml implements CategoryDatasource {
   SupabaseProvider provider = Get.find();
 
   @override
-  Future<Either<Failure, List<Category>>> getCategories() async {
+  Future<Either<Failure, List<Category>>> getCategories(
+      {String? channelId}) async {
     try {
+      Map<String, dynamic> where = {};
+
+      if (channelId != null) {
+        where['channel_id'] = channelId;
+      }
+
       List<Map<String, dynamic>> response =
-          await provider.client.from(TABLE).select('*');
+          await provider.client.from(TABLE).select('*').match(where);
 
       List<Category> result =
           response.map((r) => CategoryEntity.fromJson(r).toModel()).toList();

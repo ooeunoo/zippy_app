@@ -4,6 +4,7 @@ class Assets {
   static String env = '.env';
 
   // icons
+  static const String logo = 'assets/icons/logo.svg';
   static const String home01 = 'assets/icons/home-01.svg';
   static const String user01 = 'assets/icons/user-01.svg';
   static const String search = 'assets/icons/search-md.svg';
@@ -16,9 +17,12 @@ class Assets {
   static const String kakaoLogo = 'assets/icons/kakao.svg';
 
   // images
-  static const String logo = 'assets/icons/logo.svg';
   static const String humorunivLogo = 'assets/images/humoruniv.png';
   static const String dcinsideLogo = 'assets/images/dcinside.png';
   static const String ppomppuLogo = 'assets/images/ppomppu.png';
   static const String instizLogo = 'assets/images/instiz.png';
+  static const String clienLogo = 'assets/images/clien.png';
+
+  // random
+  static const String random01 = 'assets/images/random01.jpg';
 }

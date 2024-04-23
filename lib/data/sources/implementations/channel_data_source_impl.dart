@@ -19,7 +19,6 @@ class ChannelDatasourceIml implements ChannelDatasource {
       List<Map<String, dynamic>> response =
           await provider.client.from(TABLE).select('*');
 
-      print(response);
       List<Channel> result =
           response.map((r) => ChannelEntity.fromJson(r).toModel()).toList();
       return Right(result);

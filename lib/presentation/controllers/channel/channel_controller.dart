@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:zippy/app/failures/failure.dart';
+import 'package:zippy/data/entity/channel_entity.dart';
 import 'package:zippy/data/entity/user_channel_entity.dart';
+import 'package:zippy/domain/model/category.dart';
 import 'package:zippy/domain/model/channel.dart';
 import 'package:zippy/domain/model/user.dart';
 import 'package:zippy/domain/model/user_channel.dart';
@@ -29,7 +31,9 @@ class ChannelController extends GetxController {
   );
 
   RxList<Channel> channels = RxList<Channel>([]).obs();
-  RxList<int> userSubscribeChannelIds = RxList<int>([]).obs();
+  RxList<Category> categories = RxList<Category>([]).obs();
+  RxList<int> userSubscribeChannelIds = RxList<int>([]).obs(); // TODO: Change
+  RxList<int> userSubscribeCategoryIds = RxList<int>([]).obs();
   Rxn<String> error = Rxn<String>();
 
   @override
@@ -37,20 +41,31 @@ class ChannelController extends GetxController {
     super.onInit();
     await _setupChannel();
     await _setupUserChannel();
+    await _setupCategories();
   }
 
   Future<void> toggleChannel(int channelId) async {
     UserModel? user = authController.getSignedUser();
     if (user != null) {
-      UserChannelEntity entity =
-          UserChannel(userId: user.id, channelId: channelId).toCreateEntity();
+      List<Category> channelCategories = categories
+          .where((category) => category.channelId == channelId)
+          .toList();
 
-      if (userSubscribeChannelIds.contains(channelId)) {
-        await deleteUserChannel.execute(entity);
-        userSubscribeChannelIds.remove(channelId);
-      } else {
-        await createUserChannel.execute(entity);
-        userSubscribeChannelIds.add(channelId);
+      List<UserChannelEntity> channels = [];
+
+      for (Category category in channelCategories) {
+        UserChannelEntity entity =
+            UserChannel(userId: user.id, categoryId: category.id!)
+                .toCreateEntity();
+        channels.add(entity);
+
+        if (userSubscribeChannelIds.contains(channelId)) {
+          await deleteUserChannel.execute(channels);
+          userSubscribeChannelIds.remove(channelId);
+        } else {
+          await createUserChannel.execute(channels);
+          userSubscribeChannelIds.add(channelId);
+        }
       }
     }
   }
@@ -72,11 +87,31 @@ class ChannelController extends GetxController {
           error.value = 'Error Fetching Bookmark!';
         }
       }, (data) {
-        List<int> list = [];
+        List<int> channelIds = [];
+        List<int> categoryIds = [];
         for (var userChannel in data) {
-          list.add(userChannel.channelId);
+          channelIds.add(userChannel.category!.channelId);
+          categoryIds.add(userChannel.categoryId);
         }
-        userSubscribeChannelIds.assignAll(list);
+        userSubscribeChannelIds.assignAll(channelIds);
+      });
+    }
+  }
+
+  _setupCategories() async {
+    UserModel? user = authController.user.value;
+    if (user != null) {
+      final result = await getCategories.execute();
+      result.fold((failure) {
+        if (failure == ServerFailure()) {
+          error.value = 'Error Fetching Bookmark!';
+        }
+      }, (data) {
+        List<Category> list = [];
+        for (var category in data) {
+          list.add(category);
+        }
+        categories.assignAll(list);
       });
     }
   }

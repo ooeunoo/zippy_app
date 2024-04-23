@@ -12,8 +12,8 @@ class ItemEntity extends Equatable {
   final String title;
   final int item_index;
   final String author;
-  final String content_text;
-  final String content_img_url;
+  final String? content_text;
+  final String? content_img_url;
 
   const ItemEntity({
     this.id,
@@ -22,8 +22,8 @@ class ItemEntity extends Equatable {
     required this.title,
     required this.item_index,
     required this.author,
-    required this.content_text,
-    required this.content_img_url,
+    this.content_text,
+    this.content_img_url,
   });
 
   @override
@@ -34,8 +34,6 @@ class ItemEntity extends Equatable {
       title,
       item_index,
       author,
-      content_text,
-      content_img_url
     ];
   }
 

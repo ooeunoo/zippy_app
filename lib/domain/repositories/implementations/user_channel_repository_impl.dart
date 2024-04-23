@@ -18,13 +18,13 @@ class UserChannelRepositoryImpl implements UserChannelRepository {
 
   @override
   Future<Either<Failure, bool>> createUserChannel(
-      UserChannelEntity userChannel) {
-    return datasource.createUserChannel(userChannel);
+      List<UserChannelEntity> channels) {
+    return datasource.createUserChannel(channels);
   }
 
   @override
   Future<Either<Failure, bool>> deleteUserChannel(
-      UserChannelEntity userChannel) {
-    return datasource.deleteUserChannel(userChannel);
+      List<UserChannelEntity> channels) {
+    return datasource.deleteUserChannel(channels);
   }
 }

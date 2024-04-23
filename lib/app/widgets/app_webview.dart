@@ -29,8 +29,14 @@ class _AppWebviewState extends State<AppWebview> {
             initialUrlRequest: URLRequest(
               url: WebUri(uri),
             ),
+            initialSettings:
+                InAppWebViewSettings(allowsInlineMediaPlayback: true),
             onWebViewCreated: (InAppWebViewController controller) {
               inAppWebViewController = controller;
+            },
+            onReceivedError: (InAppWebViewController controller,
+                WebResourceRequest request, WebResourceError error) {
+              print('webView error');
             },
             onProgressChanged:
                 (InAppWebViewController controller, int progress) {
