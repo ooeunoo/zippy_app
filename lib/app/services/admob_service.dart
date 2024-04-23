@@ -1,46 +1,82 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:io';
 
-import 'package:zippy/app/utils/env.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+int DEFAULT_CREDIT = 5;
+
 class AdmobService extends GetxService {
-  static AdmobService get to => Get.find();
-  // TEST ADMOB
+  static String get bannerAdUnitId {
+    if (Platform.isAndroid) {
+      return 'ca-app-pub-3940256099942544/6300978111';
+    } else if (Platform.isIOS) {
+      return 'ca-app-pub-3940256099942544/2934735716';
+    } else {
+      throw UnsupportedError('Unsupported platform');
+    }
+  }
 
-  final String aosTestUnitId = ENV.GOOGLE_ADMOB_DEV_BANNER_AOS;
-  final String iosTestUnitId = ENV.GOOGLE_ADMOB_DEV_BANNER_IOS;
+  static String get interstitialAdUnitId {
+    if (Platform.isAndroid) {
+      return "ca-app-pub-3940256099942544/1033173712";
+    } else if (Platform.isIOS) {
+      return "ca-app-pub-3940256099942544/4411468910";
+    } else {
+      throw UnsupportedError("Unsupported platform");
+    }
+  }
 
-  late BannerAd banner;
-  RxBool isBannerReady = false.obs;
+  static String get rewardedAdUnitId {
+    if (Platform.isAndroid) {
+      return "ca-app-pub-3940256099942544/5224354917";
+    } else if (Platform.isIOS) {
+      return "ca-app-pub-3940256099942544/1712485313";
+    } else {
+      throw UnsupportedError("Unsupported platform");
+    }
+  }
 
-  // @override
-  // void onInit() {
-  //   super.onInit();
-  //   // initBanner();
-  // }
+  Rx<int> credits = Rx<int>(0);
+  Rxn<InterstitialAd> interstitialAd = Rxn<InterstitialAd>();
 
-  void initBanner() {
-    String targetUnitId = Platform.isIOS ? iosTestUnitId : aosTestUnitId;
-    BannerAd banner = BannerAd(
-      size: AdSize.banner,
-      adUnitId: targetUnitId,
+  @override
+  onInit() {
+    super.onInit();
+    resetCredit();
+
+    ever(credits, (v) {
+      print('credit: $v');
+      if (v == 0) {
+        loadInterstitialAd();
+        resetCredit();
+      }
+    });
+  }
+
+  void loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: interstitialAdUnitId,
       request: const AdRequest(),
-      listener: BannerAdListener(
+      adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
-          isBannerReady(true);
-          print("ready true");
+          // ad.fullScreenContentCallback = const FullScreenContentCallback();
+          interstitialAd.value = ad;
         },
-        onAdFailedToLoad: (ad, error) {
-          print(ad.toString());
-
-          print(error);
-
-          isBannerReady(false);
-          print("ready false");
+        onAdFailedToLoad: (err) {
+          print('Failed to load an interstitial ad: ${err.message}');
         },
       ),
-    )..load();
-    banner = banner;
+    );
+  }
+
+  void useCredit() {
+    credits.value = credits.value - 1;
+  }
+
+  void resetCredit() {
+    credits.value = DEFAULT_CREDIT;
   }
 }

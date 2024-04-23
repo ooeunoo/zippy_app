@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:zippy/app/failures/failure.dart';
+import 'package:zippy/app/utils/vibrates.dart';
 import 'package:zippy/app/widgets/app.snak_bar.dart';
 import 'package:zippy/data/entity/bookmark_entity.dart';
 import 'package:zippy/data/entity/user_channel_entity.dart';
@@ -91,7 +92,7 @@ class BoardController extends GetxService {
     if (user != null) {
       BookmarkEntity entity =
           Bookmark(userId: user.id, itemId: itemId).toCreateEntity();
-
+      onHeavyVibration();
       if (userBookmarkItemIds.contains(itemId)) {
         await deleteBookmark.execute(entity);
       } else {

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
+import 'package:zippy/app/utils/share.dart';
 import 'package:zippy/app/widgets/app_divider.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
@@ -11,6 +12,7 @@ import 'package:zippy/app/widgets/app_webview.dart';
 import 'package:zippy/domain/model/bookmark.dart';
 import 'package:zippy/presentation/controllers/bookmark/bookmark_controller.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:share_plus/share_plus.dart';
 
 class BookmarkView extends StatefulWidget {
   const BookmarkView({super.key});
@@ -25,8 +27,6 @@ class _BookmarkViewState extends State<BookmarkView>
 
   final _tabs = [
     const Tab(text: '전체보기'),
-    const Tab(text: '디시인사드'),
-    const Tab(text: '뽐뿌'),
   ];
 
   @override
@@ -53,8 +53,6 @@ class _BookmarkViewState extends State<BookmarkView>
             child: TabBarView(
               controller: _tabController,
               children: [
-                bookmarkLists(context, controller),
-                bookmarkLists(context, controller),
                 bookmarkLists(context, controller),
               ],
             ),
@@ -139,8 +137,12 @@ class _BookmarkViewState extends State<BookmarkView>
               icon: Icons.delete,
               label: 'Delete',
             ),
-            const SlidableAction(
-              onPressed: null,
+            SlidableAction(
+              onPressed: (BuildContext context) async {
+                if (bookmark.item != null) {
+                  await toShare(bookmark.item!.url, bookmark.item!.title);
+                }
+              },
               backgroundColor: AppColor.green700,
               foregroundColor: AppColor.white,
               icon: Icons.share,

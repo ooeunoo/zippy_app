@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:zippy/app/routes/app_pages.dart';
+import 'package:zippy/app/helpers/ad_helper.dart';
 import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
+import 'package:zippy/app/utils/vibrates.dart';
 import 'package:zippy/app/widgets/app_browser.dart';
 import 'package:zippy/app/widgets/app_button.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
@@ -31,12 +33,10 @@ class BoardView extends StatefulWidget {
 }
 
 class _BoardViewState extends State<BoardView> {
-  final browser = AppBrowser();
-
-  final settings = InAppBrowserClassSettings(
-      browserSettings: InAppBrowserSettings(hideUrlBar: false),
-      webViewSettings: InAppWebViewSettings(
-          javaScriptEnabled: true, isInspectable: kDebugMode));
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +88,9 @@ class _BoardViewState extends State<BoardView> {
                   pageSnapping: true,
                   dragStartBehavior: DragStartBehavior.start,
                   controller: controller.pageController,
+                  onPageChanged: (_) {
+                    // onLightVibration();
+                  },
                   itemBuilder: (BuildContext context, int index) {
                     return Obx(() {
                       Item item = controller.items[index];
@@ -97,9 +100,12 @@ class _BoardViewState extends State<BoardView> {
                           controller.userBookmarkItemIds.contains(item.id!);
                       return GestureDetector(
                         onTap: () {
-                          // browser.openUrlRequest(
-                          //     urlRequest: URLRequest(url: WebUri(item.url)),
-                          //     settings: settings);
+                          admobService.useCredit();
+
+                          if (admobService.interstitialAd.value != null) {
+                            admobService.interstitialAd.value!.show();
+                          }
+
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -117,24 +123,17 @@ class _BoardViewState extends State<BoardView> {
                   },
                   itemCount: controller.items.length);
             }
-          })
-
-          // Positioned(
-          //   bottom: 0,
-          //   left: 0,
-          //   right: 0,
-          //   child: SizedBox(
-          //     // 배너의 높이에 맞게 조정
-          //     child: Obx(() {
-          //       if (admobService.isBannerReady.value) {
-          //         return AdWidget(ad: admobService.banner);
-          //       } else {
-          //         return Container(
-          //             child: const Text("Error to load admob"));
-          //       }
-          //     }),
+          }),
+          // if (_bannerAd != null)
+          //   Align(
+          //     alignment: Alignment.bottomCenter,
+          //     child: SizedBox(
+          //       width: double.infinity,
+          //       // width: _bannerAd!.size.width.(),
+          //       height: _bannerAd!.size.height.toDouble(),
+          //       child: AdWidget(ad: _bannerAd!),
+          //     ),
           //   ),
-          // ),
         ],
       ),
     );
