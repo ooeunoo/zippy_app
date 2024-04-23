@@ -1,14 +1,9 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:zippy/app/routes/app_pages.dart';
-import 'package:zippy/app/helpers/ad_helper.dart';
 import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
-import 'package:zippy/app/utils/vibrates.dart';
-import 'package:zippy/app/widgets/app_browser.dart';
 import 'package:zippy/app/widgets/app_button.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
@@ -21,7 +16,6 @@ import 'package:zippy/app/widgets/app_webview.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class BoardView extends StatefulWidget {
   const BoardView({
@@ -124,16 +118,6 @@ class _BoardViewState extends State<BoardView> {
                   itemCount: controller.items.length);
             }
           }),
-          // if (_bannerAd != null)
-          //   Align(
-          //     alignment: Alignment.bottomCenter,
-          //     child: SizedBox(
-          //       width: double.infinity,
-          //       // width: _bannerAd!.size.width.(),
-          //       height: _bannerAd!.size.height.toDouble(),
-          //       child: AdWidget(ad: _bannerAd!),
-          //     ),
-          //   ),
         ],
       ),
     );
