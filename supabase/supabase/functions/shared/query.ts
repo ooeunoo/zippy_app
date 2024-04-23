@@ -21,19 +21,19 @@ export const getSavedCategoryMaxItemIndex = async (categoryId: number) => {
   return data;
 };
 
-export const getCommunity = async (name: string) => {
+export const getChannel = async (name: string) => {
   const { data } = await supabaseClient
-    .from("community")
+    .from("channel")
     .select("*")
     .eq("name", name)
     .single();
   return data;
 };
 
-export const getCategories = async (communityId: number) => {
+export const getCategories = async (channelId: number) => {
   const { data } = await supabaseClient
     .from("category")
     .select("*")
-    .eq("community_id", communityId);
+    .eq("channel_id", channelId);
   return data;
 };

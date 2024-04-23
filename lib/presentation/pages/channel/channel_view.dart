@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/utils/styles/color.dart';
 import 'package:zippy/app/utils/styles/dimens.dart';
 import 'package:zippy/app/utils/styles/theme.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
-import 'package:zippy/domain/model/community.dart';
-import 'package:zippy/presentation/controllers/subscribe_channel/subscribe_channel_controller.dart';
+import 'package:zippy/domain/model/channel.dart';
+import 'package:zippy/presentation/controllers/channel/channel_controller.dart';
 
-class SubscribeChannel extends StatefulWidget {
-  const SubscribeChannel({super.key});
+class ChannelView extends StatefulWidget {
+  const ChannelView({super.key});
 
   @override
-  State<SubscribeChannel> createState() => _SubscribeChannelState();
+  State<ChannelView> createState() => _ChannelViewState();
 }
 
-class _SubscribeChannelState extends State<SubscribeChannel> {
-  SubscribeChannelController controller = Get.find();
+class _ChannelViewState extends State<ChannelView> {
+  ChannelController controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -63,29 +62,35 @@ class _SubscribeChannelState extends State<SubscribeChannel> {
       child: Obx(() => ListView.builder(
             itemCount: controller.communities.length,
             itemBuilder: (BuildContext context, int index) {
-              Community community = controller.communities[index];
-              return ListTile(
-                leading: SizedBox(
-                  height: AppDimens.size(30),
-                  width: AppDimens.size(30),
-                  child: CircleAvatar(
-                    radius: AppDimens.size(16),
-                    backgroundImage:
-                        AssetImage(community.getLogoAssetPath() ?? ""),
+              return Obx(() {
+                Channel channel = controller.communities[index];
+                bool isSubscribe =
+                    controller.userSubscribeChannelIds.contains(channel.id);
+                return ListTile(
+                  leading: SizedBox(
+                    height: AppDimens.size(30),
+                    width: AppDimens.size(30),
+                    child: CircleAvatar(
+                      radius: AppDimens.size(16),
+                      backgroundImage:
+                          AssetImage(channel.getLogoAssetPath() ?? ""),
+                    ),
                   ),
-                ),
-                title: AppText(community.nameKo,
-                    style: Theme.of(context)
-                        .textTheme
-                        .textLG
-                        .copyWith(color: AppColor.graymodern200)),
-                trailing: Switch(
-                  value: false,
-                  onChanged: (bool value) {
-                    // 스위치가 토글될 때의 동작
-                  },
-                ),
-              );
+                  title: AppText(channel.nameKo,
+                      style: Theme.of(context)
+                          .textTheme
+                          .textLG
+                          .copyWith(color: AppColor.graymodern200)),
+                  trailing: Switch(
+                    value: isSubscribe,
+                    activeColor: AppColor.brand600,
+                    inactiveThumbColor: AppColor.graymodern600,
+                    onChanged: (bool value) {
+                      controller.toggleChannel(channel.id!);
+                    },
+                  ),
+                );
+              });
             },
           )),
     );

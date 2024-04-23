@@ -1,5 +1,5 @@
-import 'package:zippy/presentation/pages/board/board.dart';
-import 'package:zippy/presentation/pages/profile/profile.dart';
+import 'package:zippy/presentation/pages/board/board_view.dart';
+import 'package:zippy/presentation/pages/profile/profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,9 +9,9 @@ class BaseController extends GetxController {
   var currentPage = 0.obs;
 
   List<Widget> pages = [
-    const Board(),
+    const BoardView(),
     // const Search(),
-    const Profile(),
+    const ProfileView(),
   ];
 
   BaseController() {

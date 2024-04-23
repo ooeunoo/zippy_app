@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 @immutable
-class Community extends Equatable {
+class Channel extends Equatable {
   final int? id;
   final String name;
   final String nameKo;
@@ -12,7 +12,7 @@ class Community extends Equatable {
   final String itemViewUrl;
   final String? logo; // after assign by toIdAssign()
 
-  const Community(
+  const Channel(
       {this.id,
       required this.name,
       required this.nameKo,
@@ -35,9 +35,9 @@ class Community extends Equatable {
         "itemViewUrl": itemViewUrl,
       };
 
-  Map<int, Community> toIdAssign(Map<int, Community> map) {
+  Map<int, Channel> toIdAssign(Map<int, Channel> map) {
     if (id != null) {
-      map[id!] = Community(
+      map[id!] = Channel(
         name: name,
         nameKo: nameKo,
         baseUrl: baseUrl,

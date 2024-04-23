@@ -1,11 +1,11 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:zippy/domain/model/community.dart';
+import 'package:zippy/domain/model/channel.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 @immutable
-class CommunityEntity extends Equatable {
+class ChannelEntity extends Equatable {
   final int? id;
   final String name;
   final String name_ko;
@@ -13,7 +13,7 @@ class CommunityEntity extends Equatable {
   final String list_view_url;
   final String item_view_url;
 
-  const CommunityEntity(
+  const ChannelEntity(
       {this.id,
       required this.name,
       required this.name_ko,
@@ -26,8 +26,8 @@ class CommunityEntity extends Equatable {
     return [name, name_ko, base_url, list_view_url, item_view_url];
   }
 
-  factory CommunityEntity.fromJson(Map<String, dynamic> json) {
-    return CommunityEntity(
+  factory ChannelEntity.fromJson(Map<String, dynamic> json) {
+    return ChannelEntity(
       id: json['id'],
       name: json['name'],
       name_ko: json['name_ko'],
@@ -37,8 +37,8 @@ class CommunityEntity extends Equatable {
     );
   }
 
-  Community toModel() {
-    return Community(
+  Channel toModel() {
+    return Channel(
       id: id,
       name: name,
       nameKo: name_ko,

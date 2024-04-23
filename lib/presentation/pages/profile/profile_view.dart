@@ -6,47 +6,47 @@ import 'package:zippy/app/utils/styles/dimens.dart';
 import 'package:zippy/app/utils/styles/theme.dart';
 import 'package:zippy/app/widgets/app_menu.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
+import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:zippy/domain/model/menu.dart';
 import 'package:zippy/presentation/controllers/auth/auth_controller.dart';
-import 'package:zippy/presentation/pages/subscribe_channel/subscribe_channel.dart';
+import 'package:zippy/presentation/pages/channel/channel_view.dart';
 
-class Profile extends GetView<AuthController> {
-  const Profile({super.key});
+class ProfileView extends GetView<AuthController> {
+  const ProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-            body: Container(
-      padding: EdgeInsets.symmetric(
-          horizontal: AppDimens.width(20), vertical: AppDimens.height(20)),
-      child: Stack(
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const AppSpacerV(),
-              avatarInfo(context),
-              const AppSpacerV(),
-              menu(context)
-            ],
-          ),
-          Align(alignment: Alignment.bottomCenter, child: logout(context))
-        ],
+    return Scaffold(
+        // appBar: appBar(context),
+        body: SafeArea(
+      child: Container(
+        padding: EdgeInsets.symmetric(
+            horizontal: AppDimens.width(20), vertical: AppDimens.height(0)),
+        child: Stack(
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                appLogo(context),
+                avatarInfo(context),
+                const AppSpacerV(),
+                menu(context)
+              ],
+            ),
+            Align(alignment: Alignment.bottomCenter, child: logout(context))
+          ],
+        ),
       ),
-    )));
+    ));
   }
 
-  AppBar appBar(BuildContext context) {
-    return AppBar(
-      title: AppText("프로필",
-          style: Theme.of(context)
-              .textTheme
-              .displaySM
-              .copyWith(color: AppColor.graymodern100)),
-      centerTitle: false,
+  Widget appLogo(BuildContext context) {
+    return AppSvg(
+      Assets.logo,
+      size: AppDimens.size(80),
     );
   }
 
@@ -80,7 +80,6 @@ class Profile extends GetView<AuthController> {
               width: AppDimens.size(80),
               child: CircleAvatar(
                 radius: AppDimens.size(16),
-                // backgroundImage: const AssetImage(Assets.avatarDefault),
               ),
             )
           ],
@@ -109,16 +108,17 @@ class Profile extends GetView<AuthController> {
               icon: Assets.sliders04,
               title: '구독 채널 관리',
               onTap: () {
-                print('클릭');
                 Get.toNamed(
-                  Routes.subscribeChannel,
+                  Routes.channel,
                 );
               }),
           MenuItem(
               icon: Assets.bookmarkLine,
               title: '저장한 콘텐츠',
               onTap: () {
-                print('저장한 콘텐츠');
+                Get.toNamed(
+                  Routes.bookmark,
+                );
               })
         ],
       ),

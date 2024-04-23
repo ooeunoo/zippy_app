@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
-class ZippyWebview extends StatefulWidget {
+class AppWebview extends StatefulWidget {
   final String uri;
 
-  const ZippyWebview({
+  const AppWebview({
     super.key,
     required this.uri,
   });
 
   @override
-  State<ZippyWebview> createState() => _ZippyWebviewState();
+  State<AppWebview> createState() => _AppWebviewState();
 }
 
-class _ZippyWebviewState extends State<ZippyWebview> {
+class _AppWebviewState extends State<AppWebview> {
   String get uri => widget.uri;
 
   late double _progress = 0;

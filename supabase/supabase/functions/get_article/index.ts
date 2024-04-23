@@ -8,7 +8,7 @@ import {
 } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
 
 Deno.serve(async (req) => {
-  const { community, url } = await req.json();
+  const { channel, url } = await req.json();
 
   const response = await fetch(new Request(url), { method: "Get" });
 

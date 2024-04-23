@@ -1,25 +1,25 @@
 import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/utils/styles/color.dart';
-import 'package:zippy/domain/model/community.dart';
+import 'package:zippy/domain/model/channel.dart';
 import 'package:zippy/domain/model/item.dart';
 import 'package:zippy/presentation/controllers/board/board_controller.dart';
 import 'package:zippy/presentation/pages/board/widgets/cocomu_card.dart';
-import 'package:zippy/presentation/pages/board/widgets/cocomu_webview.dart';
+import 'package:zippy/app/widgets/app_webview.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-class Board extends StatefulWidget {
-  const Board({
+class BoardView extends StatefulWidget {
+  const BoardView({
     super.key,
   });
 
   @override
-  State<Board> createState() => _BoardState();
+  State<BoardView> createState() => _BoardViewState();
 }
 
-class _BoardState extends State<Board> {
+class _BoardViewState extends State<BoardView> {
   @override
   Widget build(BuildContext context) {
     BoardController controller = Get.find();
@@ -37,8 +37,8 @@ class _BoardState extends State<Board> {
               itemBuilder: (BuildContext context, int index) {
                 return Obx(() {
                   Item item = controller.subscribers[index];
-                  Community? community =
-                      controller.getCommunityByCategoryId(item.categoryId);
+                  Channel? channel =
+                      controller.getChannelByCategoryId(item.categoryId);
                   bool isBookmarked =
                       controller.bookmarkItemIds.contains(item.id);
                   return GestureDetector(
@@ -46,13 +46,13 @@ class _BoardState extends State<Board> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ZippyWebview(
+                              builder: (context) => AppWebview(
                                     uri: item.url,
                                   )));
                     },
                     child: ZippyCard(
                         item: item,
-                        community: community,
+                        channel: channel,
                         isBookMarked: isBookmarked,
                         toggleBookmark: controller.toggleBookmark),
                   );

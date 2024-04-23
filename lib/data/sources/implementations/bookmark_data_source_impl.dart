@@ -19,7 +19,6 @@ class BookmarkDatasourceIml implements BookmarkDatasource {
       await provider.client.from(TABLE).insert(bookmark.toParams());
       return const Right(true);
     } catch (e) {
-      print(e);
       return Left(ServerFailure());
     }
   }
@@ -35,18 +34,23 @@ class BookmarkDatasourceIml implements BookmarkDatasource {
   }
 
   @override
-  Future<Either<Failure, List<Bookmark>>> getBookmarksByUserId(
-      String userId) async {
+  Future<Either<Failure, List<Bookmark>>> getBookmarksByUserId(String userId,
+      {bool withItem = false}) async {
     try {
+      String selectString = '*';
+      if (withItem) {
+        selectString += ', item(*)';
+      }
+
       List<Map<String, dynamic>> response = await provider.client
           .from(TABLE)
-          .select('*')
+          .select(selectString)
           .match({"user_id": userId});
-
       List<Bookmark> result =
           response.map((r) => BookmarkEntity.fromJson(r).toModel()).toList();
       return Right(result);
     } catch (e) {
+      print(e);
       return Left(ServerFailure());
     }
   }

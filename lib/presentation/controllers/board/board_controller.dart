@@ -2,15 +2,15 @@ import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/data/entity/bookmark_entity.dart';
 import 'package:zippy/domain/model/bookmark.dart';
 import 'package:zippy/domain/model/category.dart';
-import 'package:zippy/domain/model/community.dart';
+import 'package:zippy/domain/model/channel.dart';
 import 'package:zippy/domain/model/item.dart';
 import 'package:zippy/domain/model/user.dart';
 import 'package:zippy/domain/usecases/create_bookmark.dart';
 import 'package:zippy/domain/usecases/delete_bookmark.dart';
 import 'package:zippy/domain/usecases/get_bookmarks_by_user_id.dart';
 import 'package:zippy/domain/usecases/get_categories.dart';
-import 'package:zippy/domain/usecases/get_communities.dart';
-import 'package:zippy/domain/usecases/get_user_community_by_user_id.dart';
+import 'package:zippy/domain/usecases/get_channels.dart';
+import 'package:zippy/domain/usecases/get_user_channel_by_user_id.dart';
 import 'package:zippy/domain/usecases/subscirbe_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -19,28 +19,28 @@ import 'package:zippy/presentation/controllers/auth/auth_controller.dart';
 
 class BoardController extends GetxController {
   final authController = Get.find<AuthController>();
-  
+
   final SubscribeItems subscribeItems;
-  final GetCommunites getCommunites;
+  final GetChannels getChannels;
   final GetCategories getCategories;
   final CreateBookmark createBookmark;
   final DeleteBookmark deleteBookmark;
   final GetBookmarksByUserId getBookmarksByUserId;
-  final GetUserCommunityByUserId getUserCommunityByUserId;
+  final GetUserChannelByUserId getUserChannelByUserId;
 
   BoardController(
     this.subscribeItems,
-    this.getCommunites,
+    this.getChannels,
     this.getCategories,
     this.createBookmark,
     this.deleteBookmark,
     this.getBookmarksByUserId,
-    this.getUserCommunityByUserId,
+    this.getUserChannelByUserId,
   );
 
   PageController pageController = PageController(initialPage: 0);
   RxList<Item> subscribers = RxList<Item>([]).obs();
-  RxMap<int, Community> communities = RxMap<int, Community>({}).obs();
+  RxMap<int, Channel> communities = RxMap<int, Channel>({}).obs();
   RxMap<int, Category> categories = RxMap<int, Category>({}).obs();
   RxMap<int, int> bookmarkItemMap = RxMap<int, int>({}).obs();
   RxList<int> bookmarkItemIds = RxList<int>([]).obs();
@@ -52,7 +52,7 @@ class BoardController extends GetxController {
 
     subscribers.bindStream(subscribe());
 
-    await _setupCommunity();
+    await _setupChannel();
     await _setupCategories();
     await _setupBookmarks();
 
@@ -64,10 +64,10 @@ class BoardController extends GetxController {
     return result;
   }
 
-  Community? getCommunityByCategoryId(int categoryId) {
+  Channel? getChannelByCategoryId(int categoryId) {
     Category? category = categories[categoryId];
     if (category != null) {
-      return communities[categories[categoryId]!.communityId]!;
+      return communities[categories[categoryId]!.channelId]!;
     } else {
       return null;
     }
@@ -89,16 +89,16 @@ class BoardController extends GetxController {
     }
   }
 
-  _setupCommunity() async {
-    final result = await getCommunites.execute();
+  _setupChannel() async {
+    final result = await getChannels.execute();
     result.fold((failure) {
       if (failure == ServerFailure()) {
-        error.value = "Error Fetching Community!";
+        error.value = "Error Fetching Channel!";
       }
     }, (data) {
-      Map<int, Community> map = {};
-      for (var community in data) {
-        map = community.toIdAssign(map);
+      Map<int, Channel> map = {};
+      for (var channel in data) {
+        map = channel.toIdAssign(map);
       }
       communities.assignAll(map);
     });
@@ -137,7 +137,6 @@ class BoardController extends GetxController {
         }
         bookmarkItemIds.assignAll(list);
         bookmarkItemMap.assignAll(map);
-        print('bookmarkItemMap: $bookmarkItemMap');
       });
     }
   }

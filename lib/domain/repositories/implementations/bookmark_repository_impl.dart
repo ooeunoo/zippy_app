@@ -11,8 +11,9 @@ class BookmarkRepositoryImpl implements BookmarkRepository {
   BookmarkRepositoryImpl(this.datasource);
 
   @override
-  Future<Either<Failure, List<Bookmark>>> getBookmarksByUserId(String userId) {
-    return datasource.getBookmarksByUserId(userId);
+  Future<Either<Failure, List<Bookmark>>> getBookmarksByUserId(String userId,
+      {bool withItem = false}) {
+    return datasource.getBookmarksByUserId(userId, withItem: withItem);
   }
 
   @override

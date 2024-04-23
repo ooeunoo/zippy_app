@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 @immutable
 class Category extends Equatable {
   final int? id;
-  final int communityId;
+  final int channelId;
   final String name;
   final String path;
   final bool status;
@@ -12,7 +12,7 @@ class Category extends Equatable {
 
   const Category({
     this.id,
-    required this.communityId,
+    required this.channelId,
     required this.name,
     required this.path,
     required this.status,
@@ -21,12 +21,12 @@ class Category extends Equatable {
 
   @override
   List<Object> get props {
-    return [communityId, name, path, status, latestItemIndex];
+    return [channelId, name, path, status, latestItemIndex];
   }
 
   dynamic toJson() => {
         'id': id,
-        'communityId': communityId,
+        'channelId': channelId,
         'name': name,
         'path': path,
         'status': status,
@@ -37,7 +37,7 @@ class Category extends Equatable {
     if (id != null) {
       map[id!] = Category(
         name: name,
-        communityId: communityId,
+        channelId: channelId,
         path: path,
         status: status,
         latestItemIndex: latestItemIndex,

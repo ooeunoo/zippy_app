@@ -8,7 +8,8 @@ class GetBookmarksByUserId {
 
   GetBookmarksByUserId(this.repo);
 
-  Future<Either<Failure, List<Bookmark>>> execute(String userId) {
-    return repo.getBookmarksByUserId(userId);
+  Future<Either<Failure, List<Bookmark>>> execute(String userId,
+      {bool withItem = false}) {
+    return repo.getBookmarksByUserId(userId, withItem: withItem);
   }
 }

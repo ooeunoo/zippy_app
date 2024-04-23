@@ -12,8 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
-class Login extends GetView<AuthController> {
-  const Login({super.key});
+class LoginView extends GetView<AuthController> {
+  const LoginView({super.key});
 
   @override
   Widget build(BuildContext context) {

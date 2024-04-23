@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 @immutable
 class CategoryEntity extends Equatable {
   final int? id;
-  final int community_id;
+  final int channel_id;
   final String name;
   final String path;
   final bool status;
@@ -15,7 +15,7 @@ class CategoryEntity extends Equatable {
 
   const CategoryEntity(
       {this.id,
-      required this.community_id,
+      required this.channel_id,
       required this.name,
       required this.path,
       required this.status,
@@ -23,13 +23,13 @@ class CategoryEntity extends Equatable {
 
   @override
   List<Object> get props {
-    return [community_id, name, path, status, latest_item_index];
+    return [channel_id, name, path, status, latest_item_index];
   }
 
   factory CategoryEntity.fromJson(Map<String, dynamic> json) {
     return CategoryEntity(
       id: json['id'],
-      community_id: json['community_id'],
+      channel_id: json['channel_id'],
       name: json['name'],
       path: json['path'],
       status: json['status'],
@@ -40,7 +40,7 @@ class CategoryEntity extends Equatable {
   Category toModel() {
     return Category(
       id: id,
-      communityId: community_id,
+      channelId: channel_id,
       name: name,
       path: path,
       status: status,

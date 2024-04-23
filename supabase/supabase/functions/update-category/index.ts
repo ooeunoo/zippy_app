@@ -11,27 +11,27 @@ import {
 interface HTMLElement extends Element {}
 
 Deno.serve(async (req) => {
-  const { data: communities, error: communityCallError } = await supabaseClient
-    .from("community")
+  const { data: communities, error: channelCallError } = await supabaseClient
+    .from("channel")
     .select("*");
 
   // TODO: error
 
   for await (const {
-    id: communityId,
-    name: communityName,
+    id: channelId,
+    name: channelName,
     list_view_url: listViewUrl,
   } of communities!) {
     const { data: categories, error: categoryCallError } = await supabaseClient
       .from("category")
       .select("*")
-      .eq("community_id", communityId)
+      .eq("channel_id", channelId)
       .eq("status", true);
 
     // TODO: error
     for await (const category of categories!) {
       const { id: categoryId, path } = category;
-      await parser(communityName, listViewUrl, categoryId, path);
+      await parser(channelName, listViewUrl, categoryId, path);
     }
   }
 
@@ -41,7 +41,7 @@ Deno.serve(async (req) => {
 });
 
 async function parser(
-  communityName: string,
+  channelName: string,
   listViewUrl: string,
   categoryId: string,
   categoryPath: string
@@ -60,7 +60,7 @@ async function parser(
 
   try {
     let max: number = 0;
-    switch (communityName) {
+    switch (channelName) {
       case "dcinside": {
         const table = document.querySelector("tbody.listwrap2")!;
         const rows: NodeList = table.querySelectorAll("tr");

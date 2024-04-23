@@ -1,32 +1,32 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:zippy/data/entity/user_community_entity.dart';
+import 'package:zippy/data/entity/user_channel_entity.dart';
 
 @immutable
-class UserCommunity extends Equatable {
+class UserChannel extends Equatable {
   final int? id;
   final String userId;
-  final int communityId;
+  final int channelId;
 
-  const UserCommunity({
+  const UserChannel({
     this.id,
     required this.userId,
-    required this.communityId,
+    required this.channelId,
   });
 
   @override
   List<Object> get props {
-    return [userId, communityId];
+    return [userId, channelId];
   }
 
   dynamic toJson() => {
         'id': id,
         'userId': userId,
-        'communityId': communityId,
+        'channelId': channelId,
       };
 
-  UserCommunityEntity toCreateEntity() =>
-      UserCommunityEntity(user_id: userId, community_id: communityId);
+  UserChannelEntity toCreateEntity() =>
+      UserChannelEntity(user_id: userId, channel_id: channelId);
 
   @override
   String toString() {
