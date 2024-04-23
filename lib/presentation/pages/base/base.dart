@@ -1,6 +1,6 @@
 import 'package:zippy/app/utils/assets.dart';
-import 'package:zippy/app/utils/styles/color.dart';
-import 'package:zippy/app/utils/styles/dimens.dart';
+import 'package:zippy/app/styles/color.dart';
+import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/presentation/controllers/base/base_controller.dart';
 import 'package:flutter/material.dart';

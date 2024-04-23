@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/data/entity/bookmark_entity.dart';
 import 'package:zippy/domain/model/bookmark.dart';
@@ -40,7 +42,7 @@ class BoardController extends GetxController {
 
   PageController pageController = PageController(initialPage: 0);
   RxList<Item> subscribers = RxList<Item>([]).obs();
-  RxMap<int, Channel> communities = RxMap<int, Channel>({}).obs();
+  RxMap<int, Channel> channels = RxMap<int, Channel>({}).obs();
   RxMap<int, Category> categories = RxMap<int, Category>({}).obs();
   RxMap<int, int> bookmarkItemMap = RxMap<int, int>({}).obs();
   RxList<int> bookmarkItemIds = RxList<int>([]).obs();
@@ -67,7 +69,7 @@ class BoardController extends GetxController {
   Channel? getChannelByCategoryId(int categoryId) {
     Category? category = categories[categoryId];
     if (category != null) {
-      return communities[categories[categoryId]!.channelId]!;
+      return channels[categories[categoryId]!.channelId]!;
     } else {
       return null;
     }
@@ -100,7 +102,7 @@ class BoardController extends GetxController {
       for (var channel in data) {
         map = channel.toIdAssign(map);
       }
-      communities.assignAll(map);
+      channels.assignAll(map);
     });
   }
 

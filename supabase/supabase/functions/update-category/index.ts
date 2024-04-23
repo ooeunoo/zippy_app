@@ -11,7 +11,7 @@ import {
 interface HTMLElement extends Element {}
 
 Deno.serve(async (req) => {
-  const { data: communities, error: channelCallError } = await supabaseClient
+  const { data: channels, error: channelCallError } = await supabaseClient
     .from("channel")
     .select("*");
 
@@ -21,7 +21,7 @@ Deno.serve(async (req) => {
     id: channelId,
     name: channelName,
     list_view_url: listViewUrl,
-  } of communities!) {
+  } of channels!) {
     const { data: categories, error: categoryCallError } = await supabaseClient
       .from("category")
       .select("*")

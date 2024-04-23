@@ -6,7 +6,7 @@ import "package:dartz/dartz.dart";
 import 'package:zippy/domain/model/user_channel.dart';
 
 abstract class UserChannelDatasource {
-  Future<Either<Failure, List<UserChannel>>> getUserCommunities(String userId);
+  Future<Either<Failure, List<UserChannel>>> getUserChannels(String userId);
   Future<Either<Failure, bool>> createUserChannel(
       UserChannelEntity userChannel);
   Future<Either<Failure, bool>> deleteUserChannel(

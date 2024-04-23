@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:zippy/app/utils/styles/dimens.dart';
+import 'package:zippy/app/styles/dimens.dart';
 
 class AppSvg extends StatelessWidget {
   final String path;

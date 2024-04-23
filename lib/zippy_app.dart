@@ -1,6 +1,6 @@
 import 'package:zippy/app/routes/app_pages.dart';
-import 'package:zippy/app/utils/styles/dimens.dart';
-import 'package:zippy/app/utils/styles/theme.dart';
+import 'package:zippy/app/styles/dimens.dart';
+import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/zippy_dependency.dart';
 import 'package:zippy/zippy_translation.dart';
 import 'package:zippy/presentation/controllers/theme/theme_controller.dart';

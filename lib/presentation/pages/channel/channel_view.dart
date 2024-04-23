@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:zippy/app/utils/styles/color.dart';
-import 'package:zippy/app/utils/styles/dimens.dart';
-import 'package:zippy/app/utils/styles/theme.dart';
+import 'package:zippy/app/styles/color.dart';
+import 'package:zippy/app/styles/dimens.dart';
+import 'package:zippy/app/styles/theme.dart';
+import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/channel.dart';
@@ -41,11 +42,23 @@ class _ChannelViewState extends State<ChannelView> {
       centerTitle: false,
       leading: Container(),
       leadingWidth: AppDimens.width(5),
-      title: AppText("나의 채널 관리하기",
-          style: Theme.of(context)
-              .textTheme
-              .displayXS
-              .copyWith(color: AppColor.gray100)),
+      title: Row(
+        children: [
+          const Icon(
+            Icons.chevron_left,
+            size: 30,
+            color: AppColor.white,
+          ),
+          AppSpacerH(value: AppDimens.size(5)),
+          AppText(
+            "나의 채널 관리하기",
+            style: Theme.of(context)
+                .textTheme
+                .displayXS
+                .copyWith(color: AppColor.gray100),
+          ),
+        ],
+      ),
     );
   }
 
@@ -60,10 +73,10 @@ class _ChannelViewState extends State<ChannelView> {
   Widget channel(BuildContext context) {
     return Expanded(
       child: Obx(() => ListView.builder(
-            itemCount: controller.communities.length,
+            itemCount: controller.channels.length,
             itemBuilder: (BuildContext context, int index) {
               return Obx(() {
-                Channel channel = controller.communities[index];
+                Channel channel = controller.channels[index];
                 bool isSubscribe =
                     controller.userSubscribeChannelIds.contains(channel.id);
                 return ListTile(

@@ -38,7 +38,7 @@ class UserChannelDatasourceIml implements UserChannelDatasource {
   }
 
   @override
-  Future<Either<Failure, List<UserChannel>>> getUserCommunities(
+  Future<Either<Failure, List<UserChannel>>> getUserChannels(
       String userId) async {
     try {
       List<Map<String, dynamic>> response = await provider.client

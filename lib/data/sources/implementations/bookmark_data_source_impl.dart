@@ -8,7 +8,7 @@ import 'package:zippy/domain/model/bookmark.dart';
 import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
 
-String TABLE = 'bookmark';
+String TABLE = 'user_bookmark';
 
 class BookmarkDatasourceIml implements BookmarkDatasource {
   SupabaseProvider provider = Get.find();
@@ -29,6 +29,7 @@ class BookmarkDatasourceIml implements BookmarkDatasource {
       await provider.client.from(TABLE).delete().match(bookmark.toParams());
       return const Right(true);
     } catch (e) {
+      print(e);
       return Left(ServerFailure());
     }
   }

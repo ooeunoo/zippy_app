@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:zippy/app/utils/styles/color.dart';
-import 'package:zippy/app/utils/styles/dimens.dart';
+import 'package:zippy/app/styles/color.dart';
+import 'package:zippy/app/styles/dimens.dart';
 
 class AppDivider extends StatelessWidget {
   const AppDivider({super.key});

@@ -28,7 +28,7 @@ class ChannelController extends GetxController {
     this.getCategories,
   );
 
-  RxList<Channel> communities = RxList<Channel>([]).obs();
+  RxList<Channel> channels = RxList<Channel>([]).obs();
   RxList<int> userSubscribeChannelIds = RxList<int>([]).obs();
   Rxn<String> error = Rxn<String>();
 
@@ -59,7 +59,7 @@ class ChannelController extends GetxController {
     final result = await getChannels.execute();
 
     result.fold((failure) {}, (data) {
-      communities.assignAll(data);
+      channels.assignAll(data);
     });
   }
 

@@ -13,7 +13,7 @@ class UserChannelRepositoryImpl implements UserChannelRepository {
   @override
   Future<Either<Failure, List<UserChannel>>> getUserChannelByUserId(
       String userId) {
-    return datasource.getUserCommunities(userId);
+    return datasource.getUserChannels(userId);
   }
 
   @override

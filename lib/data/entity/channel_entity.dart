@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 @immutable
 class ChannelEntity extends Equatable {
   final int? id;
+  final ChannelType type;
   final String name;
   final String name_ko;
   final String base_url;
@@ -15,6 +16,7 @@ class ChannelEntity extends Equatable {
 
   const ChannelEntity(
       {this.id,
+      required this.type,
       required this.name,
       required this.name_ko,
       required this.base_url,
@@ -23,12 +25,13 @@ class ChannelEntity extends Equatable {
 
   @override
   List<Object> get props {
-    return [name, name_ko, base_url, list_view_url, item_view_url];
+    return [type, name, name_ko, base_url, list_view_url, item_view_url];
   }
 
   factory ChannelEntity.fromJson(Map<String, dynamic> json) {
     return ChannelEntity(
       id: json['id'],
+      type: json['type'],
       name: json['name'],
       name_ko: json['name_ko'],
       base_url: json['base_url'],
@@ -40,6 +43,7 @@ class ChannelEntity extends Equatable {
   Channel toModel() {
     return Channel(
       id: id,
+      type: type,
       name: name,
       nameKo: name_ko,
       baseUrl: base_url,

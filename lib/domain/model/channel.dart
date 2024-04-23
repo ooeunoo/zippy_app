@@ -2,9 +2,12 @@ import 'package:zippy/app/utils/assets.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
+enum ChannelType { community, news }
+
 @immutable
 class Channel extends Equatable {
   final int? id;
+  final ChannelType type;
   final String name;
   final String nameKo;
   final String baseUrl;
@@ -14,6 +17,7 @@ class Channel extends Equatable {
 
   const Channel(
       {this.id,
+      required this.type,
       required this.name,
       required this.nameKo,
       required this.baseUrl,
@@ -23,11 +27,12 @@ class Channel extends Equatable {
 
   @override
   List<Object> get props {
-    return [name, nameKo, baseUrl, listViewUrl, itemViewUrl];
+    return [type, name, nameKo, baseUrl, listViewUrl, itemViewUrl];
   }
 
   Map<String, dynamic> toJson() => {
         'id': id,
+        'type': type,
         'name': name,
         'nameKo': nameKo,
         'baseUrl': baseUrl,
@@ -38,6 +43,7 @@ class Channel extends Equatable {
   Map<int, Channel> toIdAssign(Map<int, Channel> map) {
     if (id != null) {
       map[id!] = Channel(
+        type: type,
         name: name,
         nameKo: nameKo,
         baseUrl: baseUrl,

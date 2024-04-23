@@ -1,8 +1,8 @@
 import 'package:zippy/app/utils/assets.dart';
-import 'package:zippy/app/utils/styles/color.dart';
-import 'package:zippy/app/utils/styles/dimens.dart';
-import 'package:zippy/app/utils/styles/font.dart';
-import 'package:zippy/app/utils/styles/theme.dart';
+import 'package:zippy/app/styles/color.dart';
+import 'package:zippy/app/styles/dimens.dart';
+import 'package:zippy/app/styles/font.dart';
+import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/widgets/app_button.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';

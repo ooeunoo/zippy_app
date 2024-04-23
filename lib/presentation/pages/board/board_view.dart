@@ -1,5 +1,5 @@
 import 'package:zippy/app/services/admob_service.dart';
-import 'package:zippy/app/utils/styles/color.dart';
+import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/domain/model/channel.dart';
 import 'package:zippy/domain/model/item.dart';
 import 'package:zippy/presentation/controllers/board/board_controller.dart';

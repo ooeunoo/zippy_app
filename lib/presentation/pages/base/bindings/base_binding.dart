@@ -53,8 +53,8 @@ class BaseBinding implements Bindings {
     Get.put<DeleteBookmark>(DeleteBookmark(Get.find()));
     Get.put<GetUserChannelByUserId>(GetUserChannelByUserId(Get.find()));
 
-    Get.put<BoardController>(
-      BoardController(Get.find(), Get.find(), Get.find(), Get.find(),
+    Get.lazyPut<BoardController>(
+      () => BoardController(Get.find(), Get.find(), Get.find(), Get.find(),
           Get.find(), Get.find(), Get.find()),
     );
   }

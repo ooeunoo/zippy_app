@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:zippy/app/utils/styles/color.dart';
-import 'package:zippy/app/utils/styles/dimens.dart';
+import 'package:zippy/app/styles/color.dart';
+import 'package:zippy/app/styles/dimens.dart';
 
 class AppHandleBar extends StatelessWidget {
   const AppHandleBar({super.key});
