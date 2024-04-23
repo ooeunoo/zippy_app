@@ -32,8 +32,8 @@ class ChannelController extends GetxController {
 
   RxList<Channel> channels = RxList<Channel>([]).obs();
   RxList<Category> categories = RxList<Category>([]).obs();
-  RxList<int> userSubscribeChannelIds = RxList<int>([]).obs(); // TODO: Change
-  RxList<int> userSubscribeCategoryIds = RxList<int>([]).obs();
+  RxList<int> userSubscribeChannelIds = RxList<int>([]).obs();
+  // RxList<int> userSubscribeCategoryIds = RxList<int>([]).obs();
   Rxn<String> error = Rxn<String>();
 
   @override
@@ -58,14 +58,14 @@ class ChannelController extends GetxController {
             UserChannel(userId: user.id, categoryId: category.id!)
                 .toCreateEntity();
         channels.add(entity);
+      }
 
-        if (userSubscribeChannelIds.contains(channelId)) {
-          await deleteUserChannel.execute(channels);
-          userSubscribeChannelIds.remove(channelId);
-        } else {
-          await createUserChannel.execute(channels);
-          userSubscribeChannelIds.add(channelId);
-        }
+      if (userSubscribeChannelIds.contains(channelId)) {
+        await deleteUserChannel.execute(channels);
+        userSubscribeChannelIds.remove(channelId);
+      } else {
+        await createUserChannel.execute(channels);
+        userSubscribeChannelIds.add(channelId);
       }
     }
   }
@@ -81,17 +81,19 @@ class ChannelController extends GetxController {
   Future<void> _setupUserChannel() async {
     UserModel? user = authController.getSignedUser();
     if (user != null) {
-      final result = await getUserChannelByUserId.execute(user.id);
+      final result = await getUserChannelByUserId.execute(
+        user.id,
+      );
       result.fold((failure) {
         if (failure == ServerFailure()) {
           error.value = 'Error Fetching Bookmark!';
         }
       }, (data) {
         List<int> channelIds = [];
-        List<int> categoryIds = [];
+        // List<int> categoryIds = [];
         for (var userChannel in data) {
           channelIds.add(userChannel.category!.channelId);
-          categoryIds.add(userChannel.categoryId);
+          // categoryIds.add(userChannel.categoryId);
         }
         userSubscribeChannelIds.assignAll(channelIds);
       });

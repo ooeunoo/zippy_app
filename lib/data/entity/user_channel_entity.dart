@@ -30,7 +30,7 @@ class UserChannelEntity extends Equatable {
       category_id: json['category_id'],
       category: json['category'] != null
           ? CategoryEntity.fromJson(json['category'])
-          : null, // ite
+          : null, //
     );
   }
 
@@ -41,9 +41,9 @@ class UserChannelEntity extends Equatable {
 
   UserChannel toModel() {
     return UserChannel(
-      id: id,
-      userId: user_id,
-      categoryId: category_id,
-    );
+        id: id,
+        userId: user_id,
+        categoryId: category_id,
+        category: category?.toModel());
   }
 }

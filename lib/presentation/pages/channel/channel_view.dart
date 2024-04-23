@@ -79,6 +79,7 @@ class _ChannelViewState extends State<ChannelView> {
                 Channel channel = controller.channels[index];
                 bool isSubscribe =
                     controller.userSubscribeChannelIds.contains(channel.id);
+
                 return ListTile(
                   leading: SizedBox(
                     height: AppDimens.size(30),
@@ -98,8 +99,8 @@ class _ChannelViewState extends State<ChannelView> {
                     value: isSubscribe,
                     activeColor: AppColor.brand600,
                     inactiveThumbColor: AppColor.graymodern600,
-                    onChanged: (bool value) {
-                      controller.toggleChannel(channel.id!);
+                    onChanged: (bool value) async {
+                      await controller.toggleChannel(channel.id!);
                     },
                   ),
                 );

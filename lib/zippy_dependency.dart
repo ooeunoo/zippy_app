@@ -40,27 +40,6 @@ class ZippyBindings implements Bindings {
     Get.put<SupabaseProvider>(SupabaseProvider(), permanent: true);
     Get.put<AdmobService>(AdmobService(), permanent: true);
 
-    // Get.put<BaseController>(BaseController(), permanent: true);
-
-    // Get.put<ChannelDatasource>(ChannelDatasourceIml(), permanent: true);
-    // Get.put<ChannelRepository>(ChannelRepositoryImpl(Get.find()),
-    //     permanent: true);
-
-    // Get.put<CategoryDatasource>(CategoryDatasourceIml(), permanent: true);
-    // Get.put<CategoryRepository>(CategoryRepositoryImpl(Get.find()),
-    //     permanent: true);
-
-    // Get.put<ItemDatasource>(ItemDatasourceImpl(), permanent: true);
-    // Get.put<ItemRepository>(ItemRepositoryImpl(Get.find()), permanent: true);
-
-    // Get.put<BookmarkDatasource>(BookmarkDatasourceIml(), permanent: true);
-    // Get.put<BookmarkRepository>(BookmarkRepositoryImpl(Get.find()),
-    //     permanent: true);
-
-    Get.put<UserChannelDatasource>(UserChannelDatasourceIml(), permanent: true);
-    Get.put<UserChannelRepository>(UserChannelRepositoryImpl(Get.find()),
-        permanent: true);
-
     Get.put<UserDatasource>(UserDatasourceIml(), permanent: true);
     Get.put<UserRepository>(UserRepositoryImpl(Get.find()), permanent: true);
 

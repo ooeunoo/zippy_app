@@ -27,4 +27,9 @@ class UserChannelRepositoryImpl implements UserChannelRepository {
       List<UserChannelEntity> channels) {
     return datasource.deleteUserChannel(channels);
   }
+
+  @override
+  Stream<List<UserChannel>> subscribeUserChannel(String userId) {
+    return datasource.subscribeUserChannel(userId);
+  }
 }

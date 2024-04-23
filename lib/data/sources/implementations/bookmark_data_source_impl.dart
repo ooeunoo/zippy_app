@@ -55,4 +55,15 @@ class BookmarkDatasourceIml implements BookmarkDatasource {
       return Left(ServerFailure());
     }
   }
+
+  @override
+  Stream<List<Bookmark>> subscribeUserBookmark(String userId) {
+    return provider.client
+        .from(TABLE)
+        .stream(primaryKey: ['id'])
+        .eq('user_id', userId)
+        .map((data) => data.map((item) {
+              return BookmarkEntity.fromJson(item).toModel();
+            }).toList());
+  }
 }

@@ -1,12 +1,17 @@
 import 'dart:ui';
 
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:zippy/app/failures/failure.dart';
+import 'package:zippy/app/widgets/app.snak_bar.dart';
 import 'package:zippy/data/entity/bookmark_entity.dart';
+import 'package:zippy/data/entity/user_channel_entity.dart';
+import 'package:zippy/data/providers/supabase_provider.dart';
 import 'package:zippy/domain/model/bookmark.dart';
 import 'package:zippy/domain/model/category.dart';
 import 'package:zippy/domain/model/channel.dart';
 import 'package:zippy/domain/model/item.dart';
 import 'package:zippy/domain/model/user.dart';
+import 'package:zippy/domain/model/user_channel.dart';
 import 'package:zippy/domain/usecases/create_bookmark.dart';
 import 'package:zippy/domain/usecases/delete_bookmark.dart';
 import 'package:zippy/domain/usecases/get_bookmarks_by_user_id.dart';
@@ -17,12 +22,18 @@ import 'package:zippy/domain/usecases/subscirbe_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:zippy/domain/usecases/subscirbe_user_bookmark.dart';
+import 'package:zippy/domain/usecases/subscirbe_user_channel.dart';
 import 'package:zippy/presentation/controllers/auth/auth_controller.dart';
 
-class BoardController extends GetxController {
+class BoardController extends GetxService {
   final authController = Get.find<AuthController>();
+  SupabaseProvider provider = Get.find();
 
   final SubscribeItems subscribeItems;
+  final SubscribeUserChannel subscribeUserChannel;
+  final SubscribeUserBookmark subscribeUserBookmark;
+
   final GetChannels getChannels;
   final GetCategories getCategories;
   final CreateBookmark createBookmark;
@@ -32,6 +43,8 @@ class BoardController extends GetxController {
 
   BoardController(
     this.subscribeItems,
+    this.subscribeUserChannel,
+    this.subscribeUserBookmark,
     this.getChannels,
     this.getCategories,
     this.createBookmark,
@@ -41,29 +54,27 @@ class BoardController extends GetxController {
   );
 
   PageController pageController = PageController(initialPage: 0);
-  RxList<Item> subscribers = RxList<Item>([]).obs();
+  RxList<Item> items = RxList<Item>([]).obs();
+  RxList<UserChannel> userChannels = RxList<UserChannel>([]).obs();
+  RxList<int> userBookmarkItemIds = RxList<int>([]).obs();
   RxMap<int, Channel> channels = RxMap<int, Channel>({}).obs();
   RxMap<int, Category> categories = RxMap<int, Category>({}).obs();
-  RxMap<int, int> bookmarkItemMap = RxMap<int, int>({}).obs();
-  RxList<int> bookmarkItemIds = RxList<int>([]).obs();
   Rxn<String> error = Rxn<String>();
 
   @override
   onInit() async {
-    super.onInit();
-
-    subscribers.bindStream(subscribe());
-
     await _setupChannel();
     await _setupCategories();
-    await _setupBookmarks();
 
-    ever(error, (e) => print(e));
+    _listenUserChannel();
+    _listenUserBookmark();
+
+    super.onInit();
   }
 
-  Stream<List<Item>> subscribe() {
-    Stream<List<Item>> result = subscribeItems.execute();
-    return result;
+  void refreshItem(List<UserChannel> channels) {
+    Stream<List<Item>> result = subscribeItems.execute(channels);
+    items.bindStream(result);
   }
 
   Channel? getChannelByCategoryId(int categoryId) {
@@ -81,13 +92,36 @@ class BoardController extends GetxController {
       BookmarkEntity entity =
           Bookmark(userId: user.id, itemId: itemId).toCreateEntity();
 
-      if (bookmarkItemIds.contains(itemId)) {
+      if (userBookmarkItemIds.contains(itemId)) {
         await deleteBookmark.execute(entity);
-        bookmarkItemIds.remove(itemId);
       } else {
         await createBookmark.execute(entity);
-        bookmarkItemIds.add(itemId);
       }
+    }
+  }
+
+  void _listenUserChannel() {
+    UserModel? user = authController.getSignedUser();
+    if (user != null) {
+      Stream<List<UserChannel>> result = subscribeUserChannel.execute(user.id);
+      userChannels.bindStream(result);
+      result.listen((channels) {
+        refreshItem(channels);
+      });
+    }
+  }
+
+  void _listenUserBookmark() {
+    UserModel? user = authController.getSignedUser();
+    if (user != null) {
+      Stream<List<Bookmark>> result = subscribeUserBookmark.execute(user.id);
+      result.listen((bookmarks) {
+        List<int> itemIds = [];
+        for (var bookmark in bookmarks) {
+          itemIds.add(bookmark.itemId);
+        }
+        userBookmarkItemIds.assignAll(itemIds);
+      });
     }
   }
 
@@ -120,26 +154,5 @@ class BoardController extends GetxController {
       }
       categories.assignAll(map);
     });
-  }
-
-  _setupBookmarks() async {
-    UserModel? user = authController.user.value;
-    if (user != null) {
-      final result = await getBookmarksByUserId.execute(user.id);
-      result.fold((failure) {
-        if (failure == ServerFailure()) {
-          error.value = 'Error Fetching Bookmark!';
-        }
-      }, (data) {
-        List<int> list = [];
-        Map<int, int> map = {};
-        for (var bookmark in data) {
-          list.add(bookmark.itemId);
-          map[bookmark.itemId] = bookmark.id!;
-        }
-        bookmarkItemIds.assignAll(list);
-        bookmarkItemMap.assignAll(map);
-      });
-    }
   }
 }

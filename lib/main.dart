@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/zippy_app.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,10 @@ void main() async {
   runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+
+      if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+        await InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
+      }
 
       MobileAds.instance.initialize();
       await dotenv.load(fileName: Assets.env);

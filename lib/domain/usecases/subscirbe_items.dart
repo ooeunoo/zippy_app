@@ -1,4 +1,5 @@
 import 'package:zippy/domain/model/item.dart';
+import 'package:zippy/domain/model/user_channel.dart';
 import 'package:zippy/domain/repositories/interfaces/item_repository.dart';
 
 class SubscribeItems {
@@ -6,7 +7,7 @@ class SubscribeItems {
 
   SubscribeItems(this.repo);
 
-  Stream<List<Item>> execute() {
-    return repo.subscribeItems();
+  Stream<List<Item>> execute(List<UserChannel> channels) {
+    return repo.subscribeItems(channels);
   }
 }

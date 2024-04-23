@@ -1,9 +1,10 @@
 import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/domain/model/item.dart';
 import 'package:dartz/dartz.dart';
+import 'package:zippy/domain/model/user_channel.dart';
 
 abstract class ItemRepository {
   Future<Either<Failure, List<Item>>> getItems();
   Future<Either<Failure, Item>> getItem(int id);
-  Stream<List<Item>> subscribeItems();
+  Stream<List<Item>> subscribeItems(List<UserChannel> channels);
 }

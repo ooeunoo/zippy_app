@@ -8,4 +8,5 @@ abstract class BookmarkDatasource {
       {bool withItem});
   Future<Either<Failure, bool>> createBookmark(BookmarkEntity bookmark);
   Future<Either<Failure, bool>> deleteBookmark(BookmarkEntity bookmark);
+  Stream<List<Bookmark>> subscribeUserBookmark(String userId);
 }

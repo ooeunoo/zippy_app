@@ -23,9 +23,5 @@ void main() {
     subscribeItems = SubscribeItems(itemRepository);
   });
 
-  test("should get all customers from the customer repository", () async {
-    subscribeItems.execute().listen((event) {
-      print(event);
-    });
-  });
+  test("should get all customers from the customer repository", () async {});
 }

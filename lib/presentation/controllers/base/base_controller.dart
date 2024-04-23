@@ -14,10 +14,6 @@ class BaseController extends GetxController {
     const ProfileView(),
   ];
 
-  BaseController() {
-    ever(currentPage, (v) => print(v));
-  }
-
   @override
   void onInit() {
     super.onInit();

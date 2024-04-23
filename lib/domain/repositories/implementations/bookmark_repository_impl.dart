@@ -25,4 +25,9 @@ class BookmarkRepositoryImpl implements BookmarkRepository {
   Future<Either<Failure, bool>> deleteBookmark(BookmarkEntity bookmark) {
     return datasource.deleteBookmark(bookmark);
   }
+
+  @override
+  Stream<List<Bookmark>> subscribeUserBookmark(String userId) {
+    return datasource.subscribeUserBookmark(userId);
+  }
 }

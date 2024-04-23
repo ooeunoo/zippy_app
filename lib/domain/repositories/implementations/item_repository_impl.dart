@@ -1,6 +1,7 @@
 import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/data/sources/interfaces/item_data_source.dart';
 import 'package:zippy/domain/model/item.dart';
+import 'package:zippy/domain/model/user_channel.dart';
 import 'package:zippy/domain/repositories/interfaces/item_repository.dart';
 import 'package:dartz/dartz.dart';
 
@@ -20,7 +21,7 @@ class ItemRepositoryImpl implements ItemRepository {
   }
 
   @override
-  Stream<List<Item>> subscribeItems() {
-    return datasource.subscribeItems();
+  Stream<List<Item>> subscribeItems(List<UserChannel> channels) {
+    return datasource.subscribeItems(channels);
   }
 }

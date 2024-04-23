@@ -9,6 +9,7 @@ import 'package:zippy/data/sources/interfaces/item_data_source.dart';
 import 'package:zippy/domain/model/item.dart';
 import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
+import 'package:zippy/domain/model/user_channel.dart';
 
 String TABLE = 'item';
 
@@ -45,14 +46,19 @@ class ItemDatasourceImpl implements ItemDatasource {
   }
 
   @override
-  Stream<List<Item>> subscribeItems() {
+  Stream<List<Item>> subscribeItems(List<UserChannel> channels) {
+    List<int> categoryIds = [];
+    for (UserChannel channel in channels) {
+      categoryIds.add(channel.categoryId);
+    }
+
     return provider.client
         .from(TABLE)
         .stream(primaryKey: ['id'])
+        .inFilter('category_id', categoryIds)
         .order('created_at', ascending: false) // Ascending order
         // .limit(2)
         .map((data) => data.map((item) {
-              // print('item: $item');
               return ItemEntity.fromJson(item).toModel();
             }).toList());
   }

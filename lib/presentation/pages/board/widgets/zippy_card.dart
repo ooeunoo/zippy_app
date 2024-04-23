@@ -47,19 +47,22 @@ class _ZippyCardState extends State<ZippyCard> {
       _imageFuture =
           precacheImage(NetworkImage(widget.item.contentImgUrl!), context,
               onError: (Object exception, StackTrace? stackTrace) {
-        String number = Random().nextInt(100000).toString();
-        _imageUrl = 'https://source.unsplash.com/random/$number';
-        _noRelatedImageWarning = true;
-        _imageFuture = precacheImage(NetworkImage(_imageUrl), context);
+        _setupRandomImage();
       });
       _imageUrl = widget.item.contentImgUrl!;
       _noRelatedImageWarning = false;
     } else {
-      String number = Random().nextInt(100000).toString();
-      _imageUrl = 'https://source.unsplash.com/random/$number';
+      _setupRandomImage();
+    }
+  }
+
+  void _setupRandomImage() {
+    String number = Random().nextInt(100000).toString();
+    setState(() {
+      _imageUrl = Assets.randomImage(number);
       _imageFuture = precacheImage(NetworkImage(_imageUrl), context);
       _noRelatedImageWarning = true;
-    }
+    });
   }
 
   void toogleBookmark() {

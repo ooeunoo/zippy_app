@@ -25,4 +25,7 @@ class Assets {
 
   // random
   static const String random01 = 'assets/images/random01.jpg';
+
+  static String randomImage(String number) =>
+      'https://source.unsplash.com/random/$number';
 }

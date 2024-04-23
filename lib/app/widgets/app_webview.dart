@@ -29,15 +29,33 @@ class _AppWebviewState extends State<AppWebview> {
             initialUrlRequest: URLRequest(
               url: WebUri(uri),
             ),
-            initialSettings:
-                InAppWebViewSettings(allowsInlineMediaPlayback: true),
+            initialSettings: InAppWebViewSettings(
+                // javaScriptCanOpenWindowsAutomatically: true,
+                // javaScriptEnabled: true,
+                // //   useOnDownloadStart: true,
+                // //   useOnLoadResource: true,
+                // //   useShouldOverrideUrlLoading: true,
+                // mediaPlaybackRequiresUserGesture: false,
+                // allowFileAccessFromFileURLs: true,
+                // horizontalScrollBarEnabled: false,
+
+                // //   allowUniversalAccessFromFileURLs: true,
+                // //   verticalScrollBarEnabled: true,
+                // userAgent: null,
+                // //   useHybridComposition: true,
+                // //   allowContentAccess: true,
+                // //   builtInZoomControls: true,
+                // //   thirdPartyCookiesEnabled: true,
+                // //   allowFileAccess: true,
+                // //   supportMultipleWindows: true,
+                // allowsInlineMediaPlayback: true,
+                //   allowsBackForwardNavigationGestures: true,
+                ),
             onWebViewCreated: (InAppWebViewController controller) {
               inAppWebViewController = controller;
             },
             onReceivedError: (InAppWebViewController controller,
-                WebResourceRequest request, WebResourceError error) {
-              print('webView error');
-            },
+                WebResourceRequest request, WebResourceError error) {},
             onProgressChanged:
                 (InAppWebViewController controller, int progress) {
               setState(() {

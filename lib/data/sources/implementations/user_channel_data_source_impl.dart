@@ -51,12 +51,22 @@ class UserChannelDatasourceIml implements UserChannelDatasource {
           .from(TABLE)
           .select('*, category(*)')
           .match({"user_id": userId});
-
       List<UserChannel> result =
           response.map((r) => UserChannelEntity.fromJson(r).toModel()).toList();
       return Right(result);
     } catch (e) {
       return Left(ServerFailure());
     }
+  }
+
+  @override
+  Stream<List<UserChannel>> subscribeUserChannel(String userId) {
+    return provider.client
+        .from(TABLE)
+        .stream(primaryKey: ['id'])
+        .eq('user_id', userId)
+        .map((data) => data.map((item) {
+              return UserChannelEntity.fromJson(item).toModel();
+            }).toList());
   }
 }

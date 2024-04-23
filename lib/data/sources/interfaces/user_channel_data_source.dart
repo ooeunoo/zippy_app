@@ -11,4 +11,5 @@ abstract class UserChannelDatasource {
       List<UserChannelEntity> channels);
   Future<Either<Failure, bool>> deleteUserChannel(
       List<UserChannelEntity> channels);
+  Stream<List<UserChannel>> subscribeUserChannel(String userId);
 }
