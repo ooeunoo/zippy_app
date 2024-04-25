@@ -1,11 +1,13 @@
 import 'dart:ui';
 
+import 'package:get/get_rx/get_rx.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:zippy/app/failures/failure.dart';
+import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/utils/vibrates.dart';
 import 'package:zippy/app/widgets/app.snak_bar.dart';
+import 'package:zippy/app/widgets/app_webview.dart';
 import 'package:zippy/data/entity/bookmark_entity.dart';
-import 'package:zippy/data/entity/user_channel_entity.dart';
 import 'package:zippy/data/providers/supabase_provider.dart';
 import 'package:zippy/domain/model/bookmark.dart';
 import 'package:zippy/domain/model/category.dart';
@@ -28,7 +30,9 @@ import 'package:zippy/domain/usecases/subscirbe_user_channel.dart';
 import 'package:zippy/presentation/controllers/auth/auth_controller.dart';
 
 class BoardController extends GetxService {
+  final admobService = Get.find<AdmobService>();
   final authController = Get.find<AuthController>();
+
   SupabaseProvider provider = Get.find();
 
   final SubscribeItems subscribeItems;
@@ -60,6 +64,7 @@ class BoardController extends GetxService {
   RxList<int> userBookmarkItemIds = RxList<int>([]).obs();
   RxMap<int, Channel> channels = RxMap<int, Channel>({}).obs();
   RxMap<int, Category> categories = RxMap<int, Category>({}).obs();
+  RxBool isLoadingItems = RxBool(false).obs();
   Rxn<String> error = Rxn<String>();
 
   @override
@@ -74,8 +79,10 @@ class BoardController extends GetxService {
   }
 
   void refreshItem(List<UserChannel> channels) {
+    isLoadingItems.value = true;
     Stream<List<Item>> result = subscribeItems.execute(channels);
     items.bindStream(result);
+    isLoadingItems.value = false;
   }
 
   Channel? getChannelByCategoryId(int categoryId) {
@@ -101,7 +108,19 @@ class BoardController extends GetxService {
     }
   }
 
-  void _listenUserChannel() {
+  void onClickItem(Item item) {
+    admobService.useCredit();
+
+    if (admobService.interstitialAd.value != null) {
+      admobService.interstitialAd.value!.show();
+    }
+
+    Get.to(() => AppWebview(uri: item.url),
+        transition: Transition.rightToLeftWithFade);
+  }
+
+  _listenUserChannel() {
+    isLoadingItems.value = true;
     UserModel? user = authController.getSignedUser();
     if (user != null) {
       Stream<List<UserChannel>> result = subscribeUserChannel.execute(user.id);
@@ -112,7 +131,7 @@ class BoardController extends GetxService {
     }
   }
 
-  void _listenUserBookmark() {
+  _listenUserBookmark() {
     UserModel? user = authController.getSignedUser();
     if (user != null) {
       Stream<List<Bookmark>> result = subscribeUserBookmark.execute(user.id);

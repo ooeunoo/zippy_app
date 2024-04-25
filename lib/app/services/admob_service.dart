@@ -2,11 +2,12 @@
 
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:zippy/app/styles/color.dart';
 
-int DEFAULT_CREDIT = 5;
+int DEFAULT_CREDIT = 2;
 
 class AdmobService extends GetxService {
   static String get bannerAdUnitId {
@@ -39,13 +40,25 @@ class AdmobService extends GetxService {
     }
   }
 
+  static String get nativeAdUnitId {
+    if (Platform.isAndroid) {
+      return "ca-app-pub-3940256099942544/2247696110";
+    } else if (Platform.isIOS) {
+      return "ca-app-pub-3940256099942544/3986624511";
+    } else {
+      throw UnsupportedError("Unsupported platform");
+    }
+  }
+
   Rx<int> credits = Rx<int>(0);
   Rxn<InterstitialAd> interstitialAd = Rxn<InterstitialAd>();
+  Rxn<NativeAd> nativeAd = Rxn<NativeAd>();
 
   @override
   onInit() {
     super.onInit();
     resetCredit();
+    loadNativeAd();
 
     ever(credits, (v) {
       print('credit: $v');
@@ -53,6 +66,9 @@ class AdmobService extends GetxService {
         loadInterstitialAd();
         resetCredit();
       }
+    });
+    ever(nativeAd, (d) {
+      if (d != null) print('ready');
     });
   }
 
@@ -70,6 +86,47 @@ class AdmobService extends GetxService {
         },
       ),
     );
+  }
+
+  void loadNativeAd() {
+    nativeAd.value ??= NativeAd(
+        adUnitId: nativeAdUnitId,
+        listener: NativeAdListener(
+          onAdLoaded: (ad) {},
+          onAdFailedToLoad: (ad, error) {
+            print(error);
+            ad.dispose();
+          },
+        ),
+        request: const AdRequest(),
+        // Styling
+        nativeTemplateStyle: NativeTemplateStyle(
+            // Required: Choose a template.
+            templateType: TemplateType.medium,
+            // Optional: Customize the ad's style.
+            mainBackgroundColor: Colors.purple,
+            cornerRadius: 10.0,
+            callToActionTextStyle: NativeTemplateTextStyle(
+                textColor: Colors.cyan,
+                backgroundColor: Colors.red,
+                style: NativeTemplateFontStyle.monospace,
+                size: 16.0),
+            primaryTextStyle: NativeTemplateTextStyle(
+                textColor: Colors.red,
+                backgroundColor: Colors.cyan,
+                style: NativeTemplateFontStyle.italic,
+                size: 16.0),
+            secondaryTextStyle: NativeTemplateTextStyle(
+                textColor: Colors.green,
+                backgroundColor: Colors.black,
+                style: NativeTemplateFontStyle.bold,
+                size: 16.0),
+            tertiaryTextStyle: NativeTemplateTextStyle(
+                textColor: Colors.brown,
+                backgroundColor: Colors.amber,
+                style: NativeTemplateFontStyle.normal,
+                size: 16.0)))
+      ..load();
   }
 
   void useCredit() {

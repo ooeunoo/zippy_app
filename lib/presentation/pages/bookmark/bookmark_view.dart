@@ -164,7 +164,7 @@ class _BookmarkViewState extends State<BookmarkView>
               ),
             ),
             title: AppText(
-              bookmark.item?.title ?? '',
+              bookmark.item?.title.trim() ?? '',
               maxLines: 2,
               style: Theme.of(context)
                   .textTheme

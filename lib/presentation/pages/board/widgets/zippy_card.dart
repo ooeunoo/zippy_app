@@ -57,7 +57,7 @@ class _ZippyCardState extends State<ZippyCard> {
   }
 
   void _setupRandomImage() {
-    String number = Random().nextInt(100000).toString();
+    String number = widget.item.id.toString();
     setState(() {
       _imageUrl = Assets.randomImage(number);
       _imageFuture = precacheImage(NetworkImage(_imageUrl), context);
@@ -154,7 +154,9 @@ class _ZippyCardState extends State<ZippyCard> {
                   SizedBox(
                     width: AppDimens.size(100),
                     child: AppText(
-                      widget.item.author,
+                      widget.item.author == ""
+                          ? widget.channel!.nameKo
+                          : widget.item.author,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context)
@@ -193,7 +195,7 @@ class _ZippyCardState extends State<ZippyCard> {
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context)
                       .textTheme
-                      .textXL
+                      .text2XL
                       .copyWith(color: AppColor.gray50),
                 ),
               ),

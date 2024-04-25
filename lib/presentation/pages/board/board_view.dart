@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/styles/color.dart';
@@ -42,7 +44,13 @@ class _BoardViewState extends State<BoardView> {
       body: Stack(
         children: [
           Obx(() {
-            if (controller.items.isEmpty) {
+            if (controller.isLoadingItems.value) {
+              return const Center(
+                child: CupertinoActivityIndicator(
+                  color: AppColor.brand600,
+                ),
+              );
+            } else if (controller.userChannels.isEmpty) {
               return Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -92,21 +100,9 @@ class _BoardViewState extends State<BoardView> {
                           controller.getChannelByCategoryId(item.categoryId);
                       bool isBookmarked =
                           controller.userBookmarkItemIds.contains(item.id!);
+
                       return GestureDetector(
-                        onTap: () {
-                          admobService.useCredit();
-
-                          if (admobService.interstitialAd.value != null) {
-                            admobService.interstitialAd.value!.show();
-                          }
-
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AppWebview(
-                                        uri: item.url,
-                                      )));
-                        },
+                        onTap: () => controller.onClickItem(item),
                         child: ZippyCard(
                             item: item,
                             channel: channel,
@@ -119,6 +115,17 @@ class _BoardViewState extends State<BoardView> {
             }
           }),
         ],
+      ),
+    );
+  }
+
+  Widget bannerAdWidget(AdmobService admobService) {
+    return StatefulBuilder(
+      builder: (context, setState) => Container(
+        width: double.infinity,
+        height: 100.0,
+        alignment: Alignment.center,
+        child: AdWidget(ad: admobService.nativeAd.value!),
       ),
     );
   }
