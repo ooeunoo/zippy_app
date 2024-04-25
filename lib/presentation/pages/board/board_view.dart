@@ -10,11 +10,13 @@ import 'package:zippy/app/widgets/app_button.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
+import 'package:zippy/domain/model/ad_content.dart';
 import 'package:zippy/domain/model/channel.dart';
+import 'package:zippy/domain/model/content.dart';
 import 'package:zippy/domain/model/item.dart';
 import 'package:zippy/presentation/controllers/board/board_controller.dart';
-import 'package:zippy/presentation/pages/board/widgets/zippy_card.dart';
-import 'package:zippy/app/widgets/app_webview.dart';
+import 'package:zippy/presentation/pages/board/widgets/zippy_ad_content_card.dart';
+import 'package:zippy/presentation/pages/board/widgets/zippy_content_card.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -85,33 +87,41 @@ class _BoardViewState extends State<BoardView> {
                     )),
                   ]);
             } else {
-              return PageView.builder(
+              return Obx(() => PageView.builder(
                   scrollDirection: Axis.vertical,
                   pageSnapping: true,
                   dragStartBehavior: DragStartBehavior.start,
                   controller: controller.pageController,
-                  onPageChanged: (_) {
-                    // onLightVibration();
-                  },
+                  onPageChanged: (int pageIndex) =>
+                      controller.onChangedItem(pageIndex),
                   itemBuilder: (BuildContext context, int index) {
                     return Obx(() {
                       Item item = controller.items[index];
-                      Channel? channel =
-                          controller.getChannelByCategoryId(item.categoryId);
-                      bool isBookmarked =
-                          controller.userBookmarkItemIds.contains(item.id!);
 
-                      return GestureDetector(
-                        onTap: () => controller.onClickItem(item),
-                        child: ZippyCard(
-                            item: item,
-                            channel: channel,
-                            isBookMarked: isBookmarked,
-                            toggleBookmark: controller.toggleBookmark),
-                      );
+                      if (item.isAd) {
+                        AdContent content = item as AdContent;
+
+                        return ZippyAdContentCard(content: content);
+                      } else {
+                        Content content = item as Content;
+
+                        Channel? channel = controller
+                            .getChannelByCategoryId(content.categoryId);
+                        bool isBookmarked = controller.userBookmarkItemIds
+                            .contains(content.id!);
+
+                        return GestureDetector(
+                          onTap: () => controller.onClickItem(content),
+                          child: ZippyContentCard(
+                              content: content,
+                              channel: channel,
+                              isBookMarked: isBookmarked,
+                              toggleBookmark: controller.toggleBookmark),
+                        );
+                      }
                     });
                   },
-                  itemCount: controller.items.length);
+                  itemCount: controller.items.length));
             }
           }),
         ],

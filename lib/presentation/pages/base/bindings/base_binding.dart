@@ -35,5 +35,37 @@ class BaseBinding implements Bindings {
   @override
   void dependencies() {
     Get.put<BaseController>(BaseController(), permanent: true);
+
+    Get.lazyPut<ChannelDatasource>(() => ChannelDatasourceIml());
+    Get.lazyPut<ChannelRepository>(() => ChannelRepositoryImpl(Get.find()));
+
+    Get.lazyPut<CategoryDatasource>(() => CategoryDatasourceIml());
+    Get.lazyPut<CategoryRepository>(() => CategoryRepositoryImpl(Get.find()));
+
+    Get.lazyPut<ItemDatasource>(() => ItemDatasourceImpl());
+    Get.lazyPut<ItemRepository>(() => ItemRepositoryImpl(Get.find()));
+
+    Get.lazyPut<BookmarkDatasource>(() => BookmarkDatasourceIml());
+    Get.lazyPut<BookmarkRepository>(() => BookmarkRepositoryImpl(Get.find()));
+
+    Get.lazyPut<UserChannelDatasource>(() => UserChannelDatasourceIml());
+    Get.lazyPut<UserChannelRepository>(
+        () => UserChannelRepositoryImpl(Get.find()));
+
+    Get.lazyPut<SubscribeItems>(() => SubscribeItems(Get.find()));
+    Get.lazyPut<SubscribeUserChannel>(() => SubscribeUserChannel(Get.find()));
+    Get.lazyPut<SubscribeUserBookmark>(() => SubscribeUserBookmark(Get.find()));
+    Get.lazyPut<GetChannels>(() => GetChannels(Get.find()));
+    Get.lazyPut<GetCategories>(() => GetCategories(Get.find()));
+    Get.lazyPut<GetBookmarksByUserId>(() => GetBookmarksByUserId(Get.find()));
+    Get.lazyPut<CreateBookmark>(() => CreateBookmark(Get.find()));
+    Get.lazyPut<DeleteBookmark>(() => DeleteBookmark(Get.find()));
+    Get.lazyPut<GetUserChannelByUserId>(
+        () => GetUserChannelByUserId(Get.find()));
+
+    Get.lazyPut<BoardController>(
+      () => BoardController(Get.find(), Get.find(), Get.find(), Get.find(),
+          Get.find(), Get.find(), Get.find(), Get.find(), Get.find()),
+    );
   }
 }

@@ -1,14 +1,14 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:zippy/data/entity/bookmark_entity.dart';
-import 'package:zippy/domain/model/item.dart';
+import 'package:zippy/domain/model/content.dart';
 
 @immutable
 class Bookmark extends Equatable {
   final int? id;
   final String userId;
   final int itemId;
-  final Item? item;
+  final Content? item;
 
   const Bookmark({
     this.id,

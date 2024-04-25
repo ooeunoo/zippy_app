@@ -1,6 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:zippy/domain/model/item.dart';
+import 'package:zippy/domain/model/content.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
@@ -50,8 +50,8 @@ class ItemEntity extends Equatable {
     );
   }
 
-  Item toModel() {
-    return Item(
+  Content toModel() {
+    return Content(
         id: id,
         categoryId: category_id,
         url: url,

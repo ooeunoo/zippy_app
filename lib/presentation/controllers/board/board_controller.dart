@@ -1,17 +1,15 @@
-import 'dart:ui';
-
-import 'package:get/get_rx/get_rx.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/utils/vibrates.dart';
-import 'package:zippy/app/widgets/app.snak_bar.dart';
 import 'package:zippy/app/widgets/app_webview.dart';
 import 'package:zippy/data/entity/bookmark_entity.dart';
 import 'package:zippy/data/providers/supabase_provider.dart';
+import 'package:zippy/domain/model/ad_content.dart';
 import 'package:zippy/domain/model/bookmark.dart';
 import 'package:zippy/domain/model/category.dart';
 import 'package:zippy/domain/model/channel.dart';
+import 'package:zippy/domain/model/content.dart';
 import 'package:zippy/domain/model/item.dart';
 import 'package:zippy/domain/model/user.dart';
 import 'package:zippy/domain/model/user_channel.dart';
@@ -58,6 +56,7 @@ class BoardController extends GetxService {
     this.getUserChannelByUserId,
   );
 
+  Rx<int> prevPageIndex = Rx<int>(0);
   PageController pageController = PageController(initialPage: 0);
   RxList<Item> items = RxList<Item>([]).obs();
   RxList<UserChannel> userChannels = RxList<UserChannel>([]).obs();
@@ -80,9 +79,10 @@ class BoardController extends GetxService {
 
   void refreshItem(List<UserChannel> channels) {
     isLoadingItems.value = true;
-    Stream<List<Item>> result = subscribeItems.execute(channels);
-    items.bindStream(result);
-    isLoadingItems.value = false;
+    subscribeItems.execute(channels).listen((List<Item> itemList) {
+      items.assignAll(itemList);
+      isLoadingItems.value = false;
+    });
   }
 
   Channel? getChannelByCategoryId(int categoryId) {
@@ -108,15 +108,33 @@ class BoardController extends GetxService {
     }
   }
 
-  void onClickItem(Item item) {
-    admobService.useCredit();
+  onChangedItem(int curPageIndex) {
+    if (curPageIndex < prevPageIndex.value) return;
 
-    if (admobService.interstitialAd.value != null) {
-      admobService.interstitialAd.value!.show();
+    admobService.useNativeAdCredits();
+    NativeAd? nativeAd = admobService.useNativeAd();
+    if (nativeAd != null) {
+      AdContent adContent = AdContent(nativeAd: nativeAd);
+      items.insert(curPageIndex + 1, adContent);
+      items.refresh();
     }
 
-    Get.to(() => AppWebview(uri: item.url),
-        transition: Transition.rightToLeftWithFade);
+    prevPageIndex.value = curPageIndex;
+  }
+
+  onClickItem(Item item) {
+    if (!item.isAd) {
+      Content content = item as Content;
+
+      admobService.useIntersitialAdCredits();
+
+      if (admobService.interstitialAd.value != null) {
+        admobService.interstitialAd.value!.show();
+      }
+
+      Get.to(() => AppWebview(uri: content.url),
+          transition: Transition.rightToLeftWithFade);
+    }
   }
 
   _listenUserChannel() {

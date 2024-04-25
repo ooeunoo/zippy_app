@@ -7,7 +7,8 @@ import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/styles/color.dart';
 
-int DEFAULT_CREDIT = 2;
+int DEFAULT_INTERSTIAL_CREDIT = 2;
+int DEFAULT_NATIVE_CREDIT = 4;
 
 class AdmobService extends GetxService {
   static String get bannerAdUnitId {
@@ -50,25 +51,29 @@ class AdmobService extends GetxService {
     }
   }
 
-  Rx<int> credits = Rx<int>(0);
+  Rx<int> intersitialAdCredits = Rx<int>(0);
+  Rx<int> nativeAdCredits = Rx<int>(0);
   Rxn<InterstitialAd> interstitialAd = Rxn<InterstitialAd>();
   Rxn<NativeAd> nativeAd = Rxn<NativeAd>();
 
   @override
   onInit() {
     super.onInit();
-    resetCredit();
-    loadNativeAd();
+    resetNativeAd();
+    resetIntersitialAdCredits();
 
-    ever(credits, (v) {
-      print('credit: $v');
-      if (v == 0) {
+    ever(intersitialAdCredits, (credits) {
+      if (credits == 0) {
         loadInterstitialAd();
-        resetCredit();
+        resetIntersitialAdCredits();
       }
     });
-    ever(nativeAd, (d) {
-      if (d != null) print('ready');
+
+    ever(nativeAdCredits, (credits) {
+      print(credits);
+      if (credits == 0) {
+        loadNativeAd();
+      }
     });
   }
 
@@ -78,62 +83,79 @@ class AdmobService extends GetxService {
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
-          // ad.fullScreenContentCallback = const FullScreenContentCallback();
           interstitialAd.value = ad;
         },
-        onAdFailedToLoad: (err) {
-          print('Failed to load an interstitial ad: ${err.message}');
-        },
+        onAdFailedToLoad: (err) {},
       ),
     );
   }
 
   void loadNativeAd() {
-    nativeAd.value ??= NativeAd(
+    NativeAd ad = NativeAd(
         adUnitId: nativeAdUnitId,
+        // factoryId: 'adFactoryExample',
         listener: NativeAdListener(
           onAdLoaded: (ad) {},
           onAdFailedToLoad: (ad, error) {
-            print(error);
             ad.dispose();
           },
         ),
         request: const AdRequest(),
-        // Styling
         nativeTemplateStyle: NativeTemplateStyle(
-            // Required: Choose a template.
             templateType: TemplateType.medium,
-            // Optional: Customize the ad's style.
-            mainBackgroundColor: Colors.purple,
-            cornerRadius: 10.0,
+            mainBackgroundColor: AppColor.graymodern950,
+            // cornerRadius: 10.0,
             callToActionTextStyle: NativeTemplateTextStyle(
-                textColor: Colors.cyan,
-                backgroundColor: Colors.red,
+                textColor: AppColor.graymodern100,
+                backgroundColor: AppColor.graymodern950,
                 style: NativeTemplateFontStyle.monospace,
                 size: 16.0),
             primaryTextStyle: NativeTemplateTextStyle(
-                textColor: Colors.red,
-                backgroundColor: Colors.cyan,
+                textColor: AppColor.graymodern100,
+                backgroundColor: AppColor.graymodern950,
                 style: NativeTemplateFontStyle.italic,
                 size: 16.0),
             secondaryTextStyle: NativeTemplateTextStyle(
-                textColor: Colors.green,
-                backgroundColor: Colors.black,
+                textColor: AppColor.graymodern100,
+                backgroundColor: AppColor.graymodern950,
                 style: NativeTemplateFontStyle.bold,
                 size: 16.0),
             tertiaryTextStyle: NativeTemplateTextStyle(
-                textColor: Colors.brown,
-                backgroundColor: Colors.amber,
+                textColor: AppColor.graymodern100,
+                backgroundColor: AppColor.graymodern950,
                 style: NativeTemplateFontStyle.normal,
                 size: 16.0)))
       ..load();
+    nativeAd.value = ad;
   }
 
-  void useCredit() {
-    credits.value = credits.value - 1;
+  void useIntersitialAdCredits() {
+    intersitialAdCredits.value = intersitialAdCredits.value - 1;
   }
 
-  void resetCredit() {
-    credits.value = DEFAULT_CREDIT;
+  void resetIntersitialAdCredits() {
+    intersitialAdCredits.value = DEFAULT_INTERSTIAL_CREDIT;
+  }
+
+  void useNativeAdCredits() {
+    if (nativeAdCredits.value <= 0) {
+      nativeAdCredits.value = 0;
+    } else {
+      nativeAdCredits.value = nativeAdCredits.value - 1;
+    }
+  }
+
+  void resetNativeAd() {
+    nativeAd.value = null;
+    nativeAdCredits.value = DEFAULT_NATIVE_CREDIT;
+  }
+
+  NativeAd? useNativeAd() {
+    if (nativeAd.value != null) {
+      NativeAd ad = nativeAd.value!;
+      resetNativeAd();
+      return ad;
+    }
+    return null;
   }
 }

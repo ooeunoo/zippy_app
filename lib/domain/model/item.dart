@@ -2,48 +2,17 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 @immutable
-class Item extends Equatable {
-  final int? id;
-  final int categoryId;
-  final String url;
-  final String title;
-  final int itemIndex;
-  final String author;
-  final String? contentText;
-  final String? contentImgUrl;
+abstract class Item extends Equatable {
+  final bool isAd;
 
-  const Item({
-    this.id,
-    required this.categoryId,
-    required this.url,
-    required this.title,
-    required this.itemIndex,
-    required this.author,
-    this.contentText,
-    this.contentImgUrl,
-  });
+  const Item({this.isAd = false});
 
   @override
   List<Object> get props {
-    return [
-      categoryId,
-      url,
-      title,
-      itemIndex,
-      author,
-    ];
+    return [isAd];
   }
 
-  dynamic toJson() => {
-        'id': id,
-        'categoryId': categoryId,
-        'url': url,
-        'title': title,
-        'itemIndex': itemIndex,
-        "author": author,
-        "contentText": contentText,
-        "contentImgUrl": contentImgUrl,
-      };
+  dynamic toJson() => {'isAd': isAd};
 
   @override
   String toString() {

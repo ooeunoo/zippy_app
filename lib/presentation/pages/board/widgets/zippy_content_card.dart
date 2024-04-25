@@ -13,29 +13,29 @@ import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/channel.dart';
-import 'package:zippy/domain/model/item.dart';
+import 'package:zippy/domain/model/content.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 
-class ZippyCard extends StatefulWidget {
+class ZippyContentCard extends StatefulWidget {
   final Channel? channel;
-  final Item item;
+  final Content content;
   final bool isBookMarked;
   final Function(int id) toggleBookmark;
 
-  const ZippyCard(
+  const ZippyContentCard(
       {super.key,
       required this.channel,
-      required this.item,
+      required this.content,
       required this.isBookMarked,
       required this.toggleBookmark});
 
   @override
-  State<ZippyCard> createState() => _ZippyCardState();
+  State<ZippyContentCard> createState() => _ZippyCardState();
 }
 
-class _ZippyCardState extends State<ZippyCard> {
+class _ZippyCardState extends State<ZippyContentCard> {
   late Future<void> _imageFuture;
   late bool _noRelatedImageWarning;
   late String _imageUrl;
@@ -45,11 +45,11 @@ class _ZippyCardState extends State<ZippyCard> {
     super.didChangeDependencies();
     if (isUrl) {
       _imageFuture =
-          precacheImage(NetworkImage(widget.item.contentImgUrl!), context,
+          precacheImage(NetworkImage(widget.content.contentImgUrl!), context,
               onError: (Object exception, StackTrace? stackTrace) {
         _setupRandomImage();
       });
-      _imageUrl = widget.item.contentImgUrl!;
+      _imageUrl = widget.content.contentImgUrl!;
       _noRelatedImageWarning = false;
     } else {
       _setupRandomImage();
@@ -57,7 +57,7 @@ class _ZippyCardState extends State<ZippyCard> {
   }
 
   void _setupRandomImage() {
-    String number = widget.item.id.toString();
+    String number = widget.content.id.toString();
     setState(() {
       _imageUrl = Assets.randomImage(number);
       _imageFuture = precacheImage(NetworkImage(_imageUrl), context);
@@ -66,15 +66,13 @@ class _ZippyCardState extends State<ZippyCard> {
   }
 
   void toogleBookmark() {
-    int? itemId = widget.item.id;
-    if (itemId != null) {
-      widget.toggleBookmark(itemId);
-    }
+    int? itemId = widget.content.id;
+    widget.toggleBookmark(itemId!);
   }
 
   bool get isUrl =>
-      widget.item.contentImgUrl != null &&
-      isValidUrl(widget.item.contentImgUrl!);
+      widget.content.contentImgUrl != null &&
+      isValidUrl(widget.content.contentImgUrl!);
 
   @override
   Widget build(BuildContext context) {
@@ -154,9 +152,9 @@ class _ZippyCardState extends State<ZippyCard> {
                   SizedBox(
                     width: AppDimens.size(100),
                     child: AppText(
-                      widget.item.author == ""
+                      widget.content.author == ""
                           ? widget.channel!.nameKo
-                          : widget.item.author,
+                          : widget.content.author,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context)
@@ -190,7 +188,7 @@ class _ZippyCardState extends State<ZippyCard> {
             children: [
               Expanded(
                 child: AppText(
-                  widget.item.title,
+                  widget.content.title,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context)

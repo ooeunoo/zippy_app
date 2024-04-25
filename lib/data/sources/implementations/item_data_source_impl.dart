@@ -6,7 +6,7 @@ import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/data/entity/item_entity.dart';
 import 'package:zippy/data/providers/supabase_provider.dart';
 import 'package:zippy/data/sources/interfaces/item_data_source.dart';
-import 'package:zippy/domain/model/item.dart';
+import 'package:zippy/domain/model/content.dart';
 import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
 import 'package:zippy/domain/model/user_channel.dart';
@@ -17,12 +17,12 @@ class ItemDatasourceImpl implements ItemDatasource {
   SupabaseProvider provider = Get.find();
 
   @override
-  Future<Either<Failure, List<Item>>> getItems() async {
+  Future<Either<Failure, List<Content>>> getItems() async {
     try {
       List<Map<String, dynamic>> response =
           await provider.client.from(TABLE).select('*');
 
-      List<Item> result =
+      List<Content> result =
           response.map((r) => ItemEntity.fromJson(r).toModel()).toList();
 
       return Right(result);
@@ -32,12 +32,12 @@ class ItemDatasourceImpl implements ItemDatasource {
   }
 
   @override
-  Future<Either<Failure, Item>> getItem(int id) async {
+  Future<Either<Failure, Content>> getItem(int id) async {
     try {
       Map<String, dynamic> response =
           await provider.client.from(TABLE).select('*').eq('id', id).single();
 
-      Item result = ItemEntity.fromJson(response).toModel();
+      Content result = ItemEntity.fromJson(response).toModel();
 
       return Right(result);
     } catch (e) {
@@ -46,7 +46,7 @@ class ItemDatasourceImpl implements ItemDatasource {
   }
 
   @override
-  Stream<List<Item>> subscribeItems(List<UserChannel> channels) {
+  Stream<List<Content>> subscribeItems(List<UserChannel> channels) {
     List<int> categoryIds = [];
     for (UserChannel channel in channels) {
       categoryIds.add(channel.categoryId);

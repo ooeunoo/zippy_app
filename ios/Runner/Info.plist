@@ -50,6 +50,9 @@
 		<!-- AD MOB -->
 		<key>GADApplicationIdentifier</key>
 		<string>ca-app-pub-3940256099942544~1458002511</string>
+		<!-- native ad validator 지우기  -->
+		<key>GADNativeAdValidatorEnabled</key>
+		<false />
 		<!-- ###### -->
 
 		<!-- ###### -->
