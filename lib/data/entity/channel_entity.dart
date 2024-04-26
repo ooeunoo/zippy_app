@@ -13,6 +13,8 @@ class ChannelEntity extends Equatable {
   final String base_url;
   final String list_view_url;
   final String item_view_url;
+  final String? image_url;
+  final bool status;
 
   const ChannelEntity(
       {this.id,
@@ -21,11 +23,21 @@ class ChannelEntity extends Equatable {
       required this.name_ko,
       required this.base_url,
       required this.list_view_url,
-      required this.item_view_url});
+      required this.item_view_url,
+      this.image_url,
+      required this.status});
 
   @override
   List<Object> get props {
-    return [type, name, name_ko, base_url, list_view_url, item_view_url];
+    return [
+      type,
+      name,
+      name_ko,
+      base_url,
+      list_view_url,
+      item_view_url,
+      status
+    ];
   }
 
   factory ChannelEntity.fromJson(Map<String, dynamic> json) {
@@ -37,18 +49,21 @@ class ChannelEntity extends Equatable {
       base_url: json['base_url'],
       list_view_url: json['list_view_url'],
       item_view_url: json['item_view_url'],
+      image_url: json['image_url'],
+      status: json['status'],
     );
   }
 
   Channel toModel() {
     return Channel(
-      id: id,
-      type: type,
-      name: name,
-      nameKo: name_ko,
-      baseUrl: base_url,
-      listViewUrl: list_view_url,
-      itemViewUrl: item_view_url,
-    );
+        id: id,
+        type: type,
+        name: name,
+        nameKo: name_ko,
+        baseUrl: base_url,
+        listViewUrl: list_view_url,
+        itemViewUrl: item_view_url,
+        imageUrl: image_url,
+        status: status);
   }
 }

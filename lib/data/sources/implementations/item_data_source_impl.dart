@@ -56,8 +56,7 @@ class ItemDatasourceImpl implements ItemDatasource {
         .from(TABLE)
         .stream(primaryKey: ['id'])
         .inFilter('category_id', categoryIds)
-        .order('created_at', ascending: false) // Ascending order
-        // .limit(2)
+        .order('created_at', ascending: false)
         .map((data) => data.map((item) {
               return ItemEntity.fromJson(item).toModel();
             }).toList());

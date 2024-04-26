@@ -111,11 +111,12 @@ class BoardController extends GetxService {
   onChangedItem(int curPageIndex) {
     if (curPageIndex < prevPageIndex.value) return;
 
-    admobService.useNativeAdCredits();
-    NativeAd? nativeAd = admobService.useNativeAd();
-    if (nativeAd != null) {
-      AdContent adContent = AdContent(nativeAd: nativeAd);
-      items.insert(curPageIndex + 1, adContent);
+    int credit = admobService.useAdContentCredits();
+
+    if (credit == 0) {
+      final (nAds, bAd) = admobService.useAdContent();
+      AdContent adContent = AdContent(nativeAds: nAds, bannerAd: bAd);
+      items.insert(curPageIndex + PRELOAD_NATIVE_AD_INDEX, adContent);
       items.refresh();
     }
 

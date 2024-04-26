@@ -1,21 +1,22 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/domain/model/item.dart';
 
 @immutable
 class AdContent extends Item {
-  final NativeAd nativeAd;
+  final List<NativeAd> nativeAds;
+  final BannerAd bannerAd;
 
-  const AdContent({required this.nativeAd}) : super(isAd: true);
+  const AdContent({required this.nativeAds, required this.bannerAd})
+      : super(isAd: true);
 
   @override
   List<Object> get props {
-    return [...super.props, nativeAd];
+    return [...super.props, nativeAds];
   }
 
   @override
-  toJson() => {'isAd': isAd, 'nativeAd': nativeAd};
+  toJson() => {'isAd': isAd, 'nativeAds': nativeAds};
 
   @override
   String toString() {

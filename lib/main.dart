@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:zippy/app/utils/assets.dart';

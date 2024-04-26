@@ -17,7 +17,7 @@ class ChannelDatasourceIml implements ChannelDatasource {
   Future<Either<Failure, List<Channel>>> getChannels() async {
     try {
       List<Map<String, dynamic>> response =
-          await provider.client.from(TABLE).select('*');
+          await provider.client.from(TABLE).select('*').eq('status', true);
 
       List<Channel> result =
           response.map((r) => ChannelEntity.fromJson(r).toModel()).toList();
@@ -30,8 +30,12 @@ class ChannelDatasourceIml implements ChannelDatasource {
   @override
   Future<Either<Failure, Channel>> getChannel(int id) async {
     try {
-      Map<String, dynamic> response =
-          await provider.client.from(TABLE).select('*').eq('id', id).single();
+      Map<String, dynamic> response = await provider.client
+          .from(TABLE)
+          .select('*')
+          .eq('id', id)
+          .eq('status', true)
+          .single();
 
       Channel result = ChannelEntity.fromJson(response).toModel();
 

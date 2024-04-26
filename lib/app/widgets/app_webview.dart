@@ -29,10 +29,10 @@ class _AppWebviewState extends State<AppWebview> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          SafeArea(
-            child: InAppWebView(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            InAppWebView(
               initialUrlRequest: URLRequest(
                 url: WebUri(uri),
               ),
@@ -45,7 +45,6 @@ class _AppWebviewState extends State<AppWebview> {
                   // mediaPlaybackRequiresUserGesture: false,
                   // allowFileAccessFromFileURLs: true,
                   // horizontalScrollBarEnabled: false,
-
                   // //   allowUniversalAccessFromFileURLs: true,
                   // //   verticalScrollBarEnabled: true,
                   // userAgent: null,
@@ -70,10 +69,10 @@ class _AppWebviewState extends State<AppWebview> {
                 });
               },
             ),
-          ),
-          //
-          progressBar(_progress)
-        ],
+            //
+            progressBar(_progress)
+          ],
+        ),
       ),
     );
   }

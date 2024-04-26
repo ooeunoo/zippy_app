@@ -27,7 +27,6 @@ class AppAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var user01;
     return Stack(
       children: [
         GestureDetector(

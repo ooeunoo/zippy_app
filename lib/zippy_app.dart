@@ -1,3 +1,4 @@
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
@@ -8,8 +9,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-class ZippyApp extends StatelessWidget {
+class ZippyApp extends StatefulWidget {
   const ZippyApp({super.key});
+
+  @override
+  State<ZippyApp> createState() => _ZippyAppState();
+}
+
+class _ZippyAppState extends State<ZippyApp> {
+  @override
+  void initState() {
+    initPlugin();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,5 +62,13 @@ class ZippyApp extends StatelessWidget {
     }
 
     return themeMode;
+  }
+
+  // App Tracking Transparency
+  Future<void> initPlugin() async {
+    if (await AppTrackingTransparency.trackingAuthorizationStatus ==
+        TrackingStatus.notDetermined) {
+      await AppTrackingTransparency.requestTrackingAuthorization();
+    }
   }
 }

@@ -39,7 +39,6 @@ class _BoardViewState extends State<BoardView> {
   @override
   Widget build(BuildContext context) {
     BoardController controller = Get.find();
-    AdmobService admobService = Get.find();
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -100,7 +99,7 @@ class _BoardViewState extends State<BoardView> {
 
                       if (item.isAd) {
                         AdContent content = item as AdContent;
-
+                        // TODO: nativeAd null
                         return ZippyAdContentCard(content: content);
                       } else {
                         Content content = item as Content;
@@ -129,14 +128,14 @@ class _BoardViewState extends State<BoardView> {
     );
   }
 
-  Widget bannerAdWidget(AdmobService admobService) {
-    return StatefulBuilder(
-      builder: (context, setState) => Container(
-        width: double.infinity,
-        height: 100.0,
-        alignment: Alignment.center,
-        child: AdWidget(ad: admobService.nativeAd.value!),
-      ),
-    );
-  }
+  // Widget bannerAdWidget(AdmobService admobService) {
+  //   return StatefulBuilder(
+  //     builder: (context, setState) => Container(
+  //       width: double.infinity,
+  //       height: 100.0,
+  //       alignment: Alignment.center,
+  //       child: AdWidget(ad: admobService.nativeAd.value!),
+  //     ),
+  //   );
+  // }
 }

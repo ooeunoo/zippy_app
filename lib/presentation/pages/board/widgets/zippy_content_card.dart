@@ -7,6 +7,7 @@ import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/validate.dart';
+import 'package:zippy/app/widgets/app_loader.dart';
 import 'package:zippy/app/widgets/app_shadow_overlay.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
@@ -36,35 +37,6 @@ class ZippyContentCard extends StatefulWidget {
 }
 
 class _ZippyCardState extends State<ZippyContentCard> {
-  late Future<void> _imageFuture;
-  late bool _noRelatedImageWarning;
-  late String _imageUrl;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (isUrl) {
-      _imageFuture =
-          precacheImage(NetworkImage(widget.content.contentImgUrl!), context,
-              onError: (Object exception, StackTrace? stackTrace) {
-        _setupRandomImage();
-      });
-      _imageUrl = widget.content.contentImgUrl!;
-      _noRelatedImageWarning = false;
-    } else {
-      _setupRandomImage();
-    }
-  }
-
-  void _setupRandomImage() {
-    String number = widget.content.id.toString();
-    setState(() {
-      _imageUrl = Assets.randomImage(number);
-      _imageFuture = precacheImage(NetworkImage(_imageUrl), context);
-      _noRelatedImageWarning = true;
-    });
-  }
-
   void toogleBookmark() {
     int? itemId = widget.content.id;
     widget.toggleBookmark(itemId!);
@@ -101,28 +73,19 @@ class _ZippyCardState extends State<ZippyContentCard> {
   }
 
   Widget imageSection() {
-    return FutureBuilder<void>(
-      future: _imageFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CupertinoActivityIndicator());
-        } else if (snapshot.hasError) {
-          return Center(
-              child: AppText('Error loading image',
-                  style: Theme.of(context).textTheme.textSM));
-        } else {
-          return CachedNetworkImage(
-            imageUrl: _imageUrl,
-            fit: BoxFit.cover,
-            placeholder: (context, url) => Container(
-              color: AppColor.graymodern950.withOpacity(0.5),
-            ),
-            imageBuilder: (context, imageProvider) =>
-                imageWidget(imageProvider),
-          );
-        }
-      },
-    );
+    if (widget.content.contentImgUrl != null) {
+      return CachedNetworkImage(
+        imageUrl: widget.content.contentImgUrl!,
+        fit: BoxFit.cover,
+        placeholder: (context, url) => Container(
+          color: AppColor.graymodern950.withOpacity(0.5),
+        ),
+        errorWidget: (context, url, error) => randomImageWidget(),
+        imageBuilder: (context, imageProvider) => imageWidget(imageProvider),
+      );
+    } else {
+      return randomImageWidget();
+    }
   }
 
   Widget infoSection() {
@@ -141,12 +104,21 @@ class _ZippyCardState extends State<ZippyContentCard> {
                   SizedBox(
                     height: AppDimens.size(24),
                     width: AppDimens.size(24),
-                    child: CircleAvatar(
-                      radius: AppDimens.size(16),
-                      backgroundImage: widget.channel?.logo != null
-                          ? AssetImage(widget.channel!.logo!)
-                          : null,
-                    ),
+                    child: widget.channel?.imageUrl != null
+                        ? CachedNetworkImage(
+                            imageUrl: widget.channel!.imageUrl!,
+                            placeholder: (context, url) => const AppLoader(),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                            imageBuilder: (context, imageProvider) =>
+                                CircleAvatar(
+                              backgroundImage: imageProvider,
+                              backgroundColor: Colors.transparent,
+                              foregroundColor: Colors
+                                  .black, // Change to your desired foreground color
+                            ),
+                          )
+                        : const AppSvg(Assets.logo, color: AppColor.gray600),
                   ),
                   AppSpacerH(value: AppDimens.width(10)),
                   SizedBox(
@@ -218,16 +190,33 @@ class _ZippyCardState extends State<ZippyContentCard> {
             ),
           ),
         ),
-        if (_noRelatedImageWarning) ...{
-          Align(
-            alignment: Alignment.center,
-            child: AppText("해당 이미지는 콘텐츠와 관련없습니다.",
-                style: Theme.of(context)
-                    .textTheme
-                    .textSM
-                    .copyWith(color: AppColor.graymodern100)),
-          )
-        }
+      ],
+    );
+  }
+
+  Widget randomImageWidget() {
+    return Stack(
+      children: [
+        AppShadowOverlay(
+          shadowColor: AppColor.graymodern950,
+          child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(
+                    Assets.randomImage(widget.content.id.toString())),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.center,
+          child: AppText("해당 이미지는 콘텐츠와 관련없습니다",
+              style: Theme.of(context)
+                  .textTheme
+                  .textSM
+                  .copyWith(color: AppColor.graymodern100)),
+        )
       ],
     );
   }
