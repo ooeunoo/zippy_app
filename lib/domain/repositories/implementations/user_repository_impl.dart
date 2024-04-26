@@ -16,6 +16,11 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
+  Future<Either<Failure, bool>> loginWithNaver() {
+    return datasource.loginWithNaver();
+  }
+
+  @override
   Future<Either<Failure, bool>> loginWithApple() {
     return datasource.loginWithApple();
   }

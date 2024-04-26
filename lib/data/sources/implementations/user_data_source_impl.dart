@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/data/entity/user_entity.dart';
 import 'package:zippy/data/providers/supabase_provider.dart';
@@ -58,6 +59,31 @@ class UserDatasourceIml implements UserDatasource {
   }
 
   @override
+  Future<Either<Failure, bool>> loginWithNaver() async {
+    try {
+      FlutterNaverLogin.logOut();
+      NaverLoginResult result = await FlutterNaverLogin.logIn();
+      String email = result.account.email;
+      String id = result.account.id;
+      String name = result.account.name;
+
+      bool? user = await _getUserByEmail(email, 'naver');
+
+      await provider.client.auth.signUp(email: email, password: id);
+
+      return const Right(true);
+    } catch (e) {
+      if (e is AuthException) {
+        String? code = e.statusCode;
+        if (code == FailureCode.alreadyRegisteredUserEmailFailure.code) {
+          return Left(AlreadyRegisteredUserEmailFailure());
+        }
+      }
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
   Future<Either<Failure, bool>> logout() async {
     try {
       await provider.client.auth.signOut();
@@ -74,6 +100,20 @@ class UserDatasourceIml implements UserDatasource {
       User? user = event.session?.user;
       return user;
     });
+  }
+
+  Future<bool> _getUserByEmail(String email, String loginProvider) async {
+    try {
+      final response = await provider.client
+          .from(TABLE)
+          .select('*')
+          .match({email: email, provider: loginProvider});
+      print(response);
+      // UserModel result = UserEntity.fromJson(response).toModel();
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   _updateUserProvider() {}

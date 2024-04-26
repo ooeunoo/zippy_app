@@ -6,3 +6,14 @@ abstract class Failure extends Equatable {
 }
 
 class ServerFailure extends Failure {}
+
+// 422
+class AlreadyRegisteredUserEmailFailure extends Failure {}
+
+enum FailureCode {
+  alreadyRegisteredUserEmailFailure('422');
+
+  const FailureCode(this.code);
+
+  final String code;
+}
