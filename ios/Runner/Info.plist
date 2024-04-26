@@ -65,11 +65,27 @@
 				<key>CFBundleURLSchemes</key>
 				<array>
 					<string>com.miro.zippy</string>
+					<string>com.miro.zippy.naver</string>
 				</array>
 			</dict>
 		</array>
 		<!-- ###### -->
-
+		<!-- ##### -->
+		<!-- naver -->
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>naversearchapp</string>
+			<string>naversearchthirdlogin</string>
+		</array>
+		<key>naverServiceAppUrlScheme</key>
+		<string>com.miro.zippy.naver</string>
+		<key>naverConsumerKey</key>
+		<string>rMlHGuz4uUXaEAXXDi6x</string>
+		<key>naverConsumerSecret</key>
+		<string>jAfcDUxLRP</string>
+		<key>naverServiceAppName</key>
+		<string>zippy</string>
+		<!-- ##### -->
 		<!-- ###### -->
 		<!-- WebView -->
 		<key>NSAppTransportSecurity</key>
@@ -78,6 +94,23 @@
 			<true />
 			<key>NSAllowsArbitraryLoadsInWebContent</key>
 			<true />
+			<key>NSExceptionDomains</key>
+			<dict>
+				<key>naver.com</key>
+				<dict>
+					<key>NSExceptionRequiresForwardSecrecy</key>
+					<false />
+					<key>NSIncludesSubdomains</key>
+					<true />
+				</dict>
+				<key>naver.net</key>
+				<dict>
+					<key>NSExceptionRequiresForwardSecrecy</key>
+					<false />
+					<key>NSIncludesSubdomains</key>
+					<true />
+				</dict>
+			</dict>
 		</dict>
 		<!-- ###### -->
 
