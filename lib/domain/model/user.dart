@@ -6,26 +6,22 @@ class UserModel extends Equatable {
   final String id;
   final String email;
   final String name;
-  final String nickname;
+  final String provider;
 
   const UserModel({
     required this.id,
     required this.email,
     required this.name,
-    required this.nickname,
+    required this.provider,
   });
 
   @override
   List<Object> get props {
-    return [id, email, name, nickname];
+    return [id, email, name, provider];
   }
 
-  dynamic toJson() => {
-        'id': id,
-        'email': email,
-        'name': name,
-        'nickname': nickname,
-      };
+  dynamic toJson() =>
+      {'id': id, 'email': email, 'name': name, 'provider': provider};
 
   @override
   String toString() {

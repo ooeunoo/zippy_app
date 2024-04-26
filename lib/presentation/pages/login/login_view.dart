@@ -77,10 +77,10 @@ class LoginView extends GetView<AuthController> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         GestureDetector(
-          onTap: () {
-            notifyAlreadyRegisteredUserEmail();
-          },
-          // onTap: controller.loginWithKakaoUser,
+          // onTap: () {
+          //   notifyAlreadyRegisteredUserEmail();
+          // },
+          onTap: controller.loginWithKakaoUser,
           child: CircleAvatar(
               backgroundColor: AppColor.kakaoBase,
               radius: AppDimens.size(30),

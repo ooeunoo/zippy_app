@@ -47,13 +47,19 @@ class UserDatasourceIml implements UserDatasource {
   @override
   Future<Either<Failure, bool>> loginWithKakao() async {
     try {
+      // UserModel? user = await _isRegisteredUserByEmail(email);
       final response = await provider.client.auth.signInWithOAuth(
         OAuthProvider.kakao,
       );
 
       return Right(response);
     } catch (e) {
-      print(e);
+      if (e is AuthException) {
+        String? code = e.statusCode;
+        if (code == FailureCode.alreadyRegisteredUserEmailFailure.code) {
+          return Left(AlreadyRegisteredUserEmailFailure());
+        }
+      }
       return Left(ServerFailure());
     }
   }
@@ -67,9 +73,26 @@ class UserDatasourceIml implements UserDatasource {
       String id = result.account.id;
       String name = result.account.name;
 
-      bool? user = await _getUserByEmail(email, 'naver');
+      UserModel? user = await _isRegisteredUserByEmail(email);
 
-      await provider.client.auth.signUp(email: email, password: id);
+      if (user != null) {
+        print(user);
+        if (user.provider != 'naver') {
+          return Left(AlreadyRegisteredUserEmailFailure());
+        }
+
+        await provider.client.auth
+            .signInWithPassword(email: email, password: id);
+      } else {
+        await provider.client.auth.signUp(email: email, password: id, data: {
+          "name": name,
+          "email": email,
+          "full_name": name,
+          "user_name": name,
+          'preferred_username': name,
+          'provider_id': "naver",
+        });
+      }
 
       return const Right(true);
     } catch (e) {
@@ -102,17 +125,18 @@ class UserDatasourceIml implements UserDatasource {
     });
   }
 
-  Future<bool> _getUserByEmail(String email, String loginProvider) async {
+  Future<UserModel?> _isRegisteredUserByEmail(String email) async {
     try {
       final response = await provider.client
           .from(TABLE)
           .select('*')
-          .match({email: email, provider: loginProvider});
-      print(response);
-      // UserModel result = UserEntity.fromJson(response).toModel();
-      return true;
+          .match({email: email}).single();
+
+      UserModel result = UserEntity.fromJson(response).toModel();
+
+      return result;
     } catch (e) {
-      return false;
+      return null;
     }
   }
 

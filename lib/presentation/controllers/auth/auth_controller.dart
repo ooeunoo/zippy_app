@@ -43,11 +43,21 @@ class AuthController extends GetxController {
       } else if (failure == AlreadyRegisteredUserEmailFailure()) {
         notifyAlreadyRegisteredUserEmail();
       }
-    }, (data) {});
+    }, (data) {
+      return true;
+    });
   }
 
   Future<void> loginWithKakaoUser() async {
-    loginWithKakao.execute();
+    final result = await loginWithKakao.execute();
+    result.fold((failure) {
+      if (failure == ServerFailure()) {
+      } else if (failure == AlreadyRegisteredUserEmailFailure()) {
+        notifyAlreadyRegisteredUserEmail();
+      }
+    }, (data) {
+      return true;
+    });
   }
 
   logoutUser() async {
