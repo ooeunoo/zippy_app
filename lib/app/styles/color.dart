@@ -369,4 +369,5 @@ class AppColor {
   static const Color yellow950 = Color(0xff542C0D);
 
   static const Color kakaoBase = Color(0xffFEE500);
+  static const Color naverBase = Color(0xff03C75A);
 }
