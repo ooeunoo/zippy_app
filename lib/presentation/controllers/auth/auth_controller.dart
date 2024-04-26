@@ -59,7 +59,7 @@ class AuthController extends GetxController {
 
       result.fold((failure) {
         if (failure == ServerFailure()) {
-          error.value = "Error Fetching Customer!";
+          error.value = "Error Fetching user!";
         }
       }, (response) {
         user.value = response;

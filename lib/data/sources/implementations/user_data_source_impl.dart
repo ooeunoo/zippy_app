@@ -24,6 +24,7 @@ class UserDatasourceIml implements UserDatasource {
 
       return Right(result);
     } catch (e) {
+      print(e);
       return Left(ServerFailure());
     }
   }
@@ -37,6 +38,7 @@ class UserDatasourceIml implements UserDatasource {
 
       return Right(response);
     } catch (e) {
+      print(e);
       return Left(ServerFailure());
     }
   }
@@ -50,6 +52,7 @@ class UserDatasourceIml implements UserDatasource {
 
       return Right(response);
     } catch (e) {
+      print(e);
       return Left(ServerFailure());
     }
   }
@@ -60,6 +63,7 @@ class UserDatasourceIml implements UserDatasource {
       await provider.client.auth.signOut();
       return const Right(true);
     } catch (e) {
+      print(e);
       return Left(ServerFailure());
     }
   }
@@ -71,4 +75,6 @@ class UserDatasourceIml implements UserDatasource {
       return user;
     });
   }
+
+  _updateUserProvider() {}
 }
