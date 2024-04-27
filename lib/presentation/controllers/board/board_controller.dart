@@ -116,7 +116,7 @@ class BoardController extends GetxService {
     if (credit == 0) {
       final (nAds, bAd) = admobService.useAdContent();
       AdContent adContent = AdContent(nativeAds: nAds, bannerAd: bAd);
-      items.insert(curPageIndex + PRELOAD_NATIVE_AD_INDEX, adContent);
+      items.insert(curPageIndex + 1, adContent);
       items.refresh();
     }
 

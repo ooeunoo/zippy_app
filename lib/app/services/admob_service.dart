@@ -2,17 +2,14 @@
 
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/utils/random.dart';
 
-int DEFAULT_INTERSTIAL_CREDIT = randomInt(8, 10);
-int DEFAULT_NATIVE_CREDIT = randomInt(2, 3);
-int PRELOAD_NATIVE_AD_INDEX = 1; // Must less than DEFAULT_NATIVE_CREDIT MIN
+int PRELOAD_NATIVE_AD_INDEX =
+    3; // Must less than DEFAULT_NATIVE_CREDIT min value
 
 class AdmobService extends GetxService {
   static String get bannerAdUnitId {
@@ -55,11 +52,11 @@ class AdmobService extends GetxService {
     }
   }
 
-  Rx<int> intersitialAdCredits = Rx<int>(0);
-  Rx<int> adContentCredits = Rx<int>(0);
-  Rxn<InterstitialAd> interstitialAd = Rxn<InterstitialAd>();
-  RxList<NativeAd> nativeAds = RxList<NativeAd>();
-  Rxn<BannerAd> bannerAd = Rxn<BannerAd>();
+  Rx<int> intersitialAdCredits = Rx<int>(0).obs();
+  Rx<int> adContentCredits = Rx<int>(0).obs();
+  Rxn<InterstitialAd> interstitialAd = Rxn<InterstitialAd>().obs();
+  RxList<NativeAd> nativeAds = RxList<NativeAd>().obs();
+  Rxn<BannerAd> bannerAd = Rxn<BannerAd>().obs();
 
   @override
   onInit() {
@@ -97,9 +94,8 @@ class AdmobService extends GetxService {
 
   void loadNativeAd() {
     NativeAd ad1 = _getNativeAdTemplate()..load();
-    NativeAd ad2 = _getNativeAdTemplate()..load();
-    print('$ad1, $ad2');
-    nativeAds.assignAll([ad1, ad2]);
+    // NativeAd ad2 = _getNativeAdTemplate()..load();
+    nativeAds.assignAll([ad1]);
   }
 
   void loadBannerAd() {
@@ -123,7 +119,7 @@ class AdmobService extends GetxService {
   }
 
   void resetIntersitialAdCredits() {
-    intersitialAdCredits.value = DEFAULT_INTERSTIAL_CREDIT;
+    intersitialAdCredits.value = randomInt(8, 10);
   }
 
   int useAdContentCredits() {
@@ -138,7 +134,7 @@ class AdmobService extends GetxService {
   void resetAdContent() {
     nativeAds.value = [];
     bannerAd.value = null;
-    adContentCredits.value = DEFAULT_NATIVE_CREDIT;
+    adContentCredits.value = randomInt(5, 8);
   }
 
   (List<NativeAd>, BannerAd) useAdContent() {

@@ -23,14 +23,15 @@ class ZippyAdContentCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            AppSpacerV(value: AppDimens.height(150)),
             Expanded(child: nativeAdSection(content.nativeAds[0])),
-            Expanded(child: nativeAdSection(content.nativeAds[1])),
+            // Expanded(child: nativeAdSection(content.nativeAds[1])),
             // AppSpacerV(value: AppDimens.height(150)),
-            // SizedBox(
-            //   width: content.bannerAd.size.width.toDouble(),
-            //   height: content.bannerAd.size.height.toDouble(),
-            //   child: AdWidget(ad: content.bannerAd),
-            // )
+            SizedBox(
+              width: content.bannerAd.size.width.toDouble(),
+              height: content.bannerAd.size.height.toDouble(),
+              child: AdWidget(ad: content.bannerAd),
+            )
           ],
         ),
       ),
