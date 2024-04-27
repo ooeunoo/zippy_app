@@ -71,18 +71,10 @@ class BoardController extends GetxService {
     await _setupChannel();
     await _setupCategories();
 
-    _listenUserChannel();
+    await refreshItem();
     _listenUserBookmark();
 
     super.onInit();
-  }
-
-  void refreshItem(List<UserChannel> channels) {
-    isLoadingItems.value = true;
-    subscribeItems.execute(channels).listen((List<Item> itemList) {
-      items.assignAll(itemList);
-      isLoadingItems.value = false;
-    });
   }
 
   Channel? getChannelByCategoryId(int categoryId) {
@@ -138,14 +130,17 @@ class BoardController extends GetxService {
     }
   }
 
-  _listenUserChannel() {
+  refreshItem() {
     isLoadingItems.value = true;
     UserModel? user = authController.getSignedUser();
     if (user != null) {
       Stream<List<UserChannel>> result = subscribeUserChannel.execute(user.id);
       userChannels.bindStream(result);
       result.listen((channels) {
-        refreshItem(channels);
+        subscribeItems.execute(channels).listen((List<Item> itemList) {
+          items.assignAll(itemList);
+          isLoadingItems.value = false;
+        });
       });
     }
   }

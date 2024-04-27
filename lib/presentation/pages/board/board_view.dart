@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/routes/app_pages.dart';
-import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/widgets/app_button.dart';
+import 'package:zippy/app/widgets/app_color.loader.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
@@ -47,6 +46,9 @@ class _BoardViewState extends State<BoardView> {
           Obx(() {
             if (controller.isLoadingItems.value) {
               return const Center(
+                //     child: AppColorLoader(
+                //   radius: 20,
+                // )
                 child: CupertinoActivityIndicator(
                   color: AppColor.brand600,
                 ),
@@ -86,7 +88,15 @@ class _BoardViewState extends State<BoardView> {
                     )),
                   ]);
             } else {
-              return Obx(() => PageView.builder(
+              return RefreshIndicator(
+                color: AppColor.brand600,
+                backgroundColor: AppColor.graymodern950,
+                displacement: 50,
+                strokeWidth: 3,
+                onRefresh: () async {
+                  await controller.refreshItem();
+                },
+                child: PageView.builder(
                   scrollDirection: Axis.vertical,
                   pageSnapping: true,
                   dragStartBehavior: DragStartBehavior.start,
@@ -120,7 +130,9 @@ class _BoardViewState extends State<BoardView> {
                       }
                     });
                   },
-                  itemCount: controller.items.length));
+                  itemCount: controller.items.length,
+                ),
+              );
             }
           }),
         ],
