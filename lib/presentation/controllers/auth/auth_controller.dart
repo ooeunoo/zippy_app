@@ -3,6 +3,7 @@ import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/app/widgets/app.snak_bar.dart';
 import 'package:zippy/domain/model/user.dart';
 import 'package:zippy/domain/usecases/get_user.dart';
+import 'package:zippy/domain/usecases/login_with_google.dart';
 import 'package:zippy/domain/usecases/login_with_kakao.dart';
 import 'package:zippy/domain/usecases/login_with_naver.dart';
 import 'package:zippy/domain/usecases/logout.dart';
@@ -13,13 +14,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class AuthController extends GetxController {
   final SubscribeUser subscribeUser;
   final LoginWithNaver loginWithNaver;
+  final LoginWithGoogle loginWithGoogle;
   final LoginWithKakao loginWithKakao;
   final Logout logout;
 
   final GetUser getUser;
 
   AuthController(this.getUser, this.loginWithKakao, this.logout,
-      this.subscribeUser, this.loginWithNaver);
+      this.subscribeUser, this.loginWithNaver, this.loginWithGoogle);
 
   Rxn<UserModel> user = Rxn<UserModel>().obs();
   Rxn<String> error = Rxn<String>();
@@ -40,6 +42,7 @@ class AuthController extends GetxController {
     final result = await loginWithNaver.execute();
     result.fold((failure) {
       if (failure == ServerFailure()) {
+        error.value = "Fail to login with naver";
       } else if (failure == AlreadyRegisteredUserEmailFailure()) {
         notifyAlreadyRegisteredUserEmail();
       }
@@ -52,6 +55,20 @@ class AuthController extends GetxController {
     final result = await loginWithKakao.execute();
     result.fold((failure) {
       if (failure == ServerFailure()) {
+        error.value = "Fail to login with kakao";
+      } else if (failure == AlreadyRegisteredUserEmailFailure()) {
+        notifyAlreadyRegisteredUserEmail();
+      }
+    }, (data) {
+      return true;
+    });
+  }
+
+  Future<void> loginWithGoogleUser() async {
+    final result = await loginWithGoogle.execute();
+    result.fold((failure) {
+      if (failure == ServerFailure()) {
+        error.value = "Fail to login with google";
       } else if (failure == AlreadyRegisteredUserEmailFailure()) {
         notifyAlreadyRegisteredUserEmail();
       }

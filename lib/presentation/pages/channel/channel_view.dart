@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
@@ -48,10 +49,13 @@ class _ChannelViewState extends State<ChannelView> {
       leadingWidth: AppDimens.width(5),
       title: Row(
         children: [
-          const Icon(
-            Icons.chevron_left,
-            size: 30,
-            color: AppColor.white,
+          GestureDetector(
+            onTap: Get.back,
+            child: const Icon(
+              Icons.chevron_left,
+              size: 30,
+              color: AppColor.white,
+            ),
           ),
           AppSpacerH(value: AppDimens.size(5)),
           AppText(

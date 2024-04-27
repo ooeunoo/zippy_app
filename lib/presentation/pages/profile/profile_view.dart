@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
+import 'package:random_avatar/random_avatar.dart';
 import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
+import 'package:zippy/app/utils/random.dart';
 import 'package:zippy/app/widgets/app_menu.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
@@ -11,7 +13,6 @@ import 'package:zippy/app/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:zippy/domain/model/menu.dart';
 import 'package:zippy/presentation/controllers/auth/auth_controller.dart';
-import 'package:zippy/presentation/pages/channel/channel_view.dart';
 
 class ProfileView extends GetView<AuthController> {
   const ProfileView({super.key});
@@ -78,9 +79,9 @@ class ProfileView extends GetView<AuthController> {
             SizedBox(
               height: AppDimens.size(80),
               width: AppDimens.size(80),
-              child: CircleAvatar(
-                radius: AppDimens.size(16),
-              ),
+              child: RandomAvatar(
+                  controller.user.value?.email ?? randomInt(0, 10).toString(),
+                  trBackground: true),
             )
           ],
         ),

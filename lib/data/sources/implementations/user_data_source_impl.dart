@@ -25,7 +25,6 @@ class UserDatasourceIml implements UserDatasource {
 
       return Right(result);
     } catch (e) {
-      print(e);
       return Left(ServerFailure());
     }
   }
@@ -39,7 +38,31 @@ class UserDatasourceIml implements UserDatasource {
 
       return Right(response);
     } catch (e) {
-      print(e);
+      if (e is AuthException) {
+        String? code = e.statusCode;
+        if (code == FailureCode.alreadyRegisteredUserEmailFailure.code) {
+          return Left(AlreadyRegisteredUserEmailFailure());
+        }
+      }
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> loginWithGoogle() async {
+    try {
+      final response = await provider.client.auth.signInWithOAuth(
+        OAuthProvider.google,
+      );
+
+      return Right(response);
+    } catch (e) {
+      if (e is AuthException) {
+        String? code = e.statusCode;
+        if (code == FailureCode.alreadyRegisteredUserEmailFailure.code) {
+          return Left(AlreadyRegisteredUserEmailFailure());
+        }
+      }
       return Left(ServerFailure());
     }
   }
@@ -47,7 +70,6 @@ class UserDatasourceIml implements UserDatasource {
   @override
   Future<Either<Failure, bool>> loginWithKakao() async {
     try {
-      // UserModel? user = await _isRegisteredUserByEmail(email);
       final response = await provider.client.auth.signInWithOAuth(
         OAuthProvider.kakao,
       );
@@ -76,7 +98,6 @@ class UserDatasourceIml implements UserDatasource {
       UserModel? user = await _isRegisteredUserByEmail(email);
 
       if (user != null) {
-        print(user);
         if (user.provider != 'naver') {
           return Left(AlreadyRegisteredUserEmailFailure());
         }

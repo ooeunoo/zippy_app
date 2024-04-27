@@ -31,6 +31,7 @@ dependencies:
   share_plus: ^9.0.0
   app_tracking_transparency: ^2.0.4
   flutter_naver_login: ^1.8.0
+  random_avatar: ^0.0.8
   
 dev_dependencies:
   flutter_test:

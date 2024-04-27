@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class AppFontWeight {
+abstract class AppFontWeight {
   AppFontWeight._();
 
   static FontWeight regular = FontWeight.w400;
@@ -10,7 +10,7 @@ class AppFontWeight {
   static FontWeight bold = FontWeight.w700;
 }
 
-class AppFontSize {
+abstract class AppFontSize {
   AppFontSize._();
 
   static double display2XL = 72.sp;

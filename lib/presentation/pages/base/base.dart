@@ -29,16 +29,14 @@ class Base extends GetView<BaseController> {
                 onTap: controller.goToTab,
                 items: [
                   tabItem(Assets.home01, '', 0),
-                  // tabItem(Assets.search, '', 1),
                   tabItem(Assets.user01, '', 1),
                 ],
               ),
             ))),
-        body: PageView(
-          controller: controller.pageController,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [...controller.pages],
-        ));
+        body: Obx(() => IndexedStack(
+              index: controller.currentPage.value,
+              children: [...controller.pages],
+            )));
   }
 
   BottomNavigationBarItem tabItem(String iconPath, String label, int index) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
@@ -21,89 +22,104 @@ class BookmarkView extends StatefulWidget {
   State<BookmarkView> createState() => _BookmarkViewState();
 }
 
-class _BookmarkViewState extends State<BookmarkView>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+// class _BookmarkViewState extends State<BookmarkView>
+//     with SingleTickerProviderStateMixin {
+//   late TabController _tabController;
 
-  final _tabs = [
-    const Tab(text: '전체보기'),
-  ];
+//   final _tabs = [
+//     const Tab(text: '전체보기'),
+//   ];
 
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: _tabs.length, vsync: this);
-  }
+//   @override
+//   void initState() {
+//     super.initState();
+//     _tabController = TabController(length: _tabs.length, vsync: this);
+//   }
 
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
+//   @override
+//   void dispose() {
+//     _tabController.dispose();
+//     super.dispose();
+//   }
 
+//   @override
+//   Widget build(BuildContext context) {
+//     BookmarkController controller = Get.find();
+//     return DefaultTabController(
+//       length: 2,
+//       child: Scaffold(
+//           appBar: appBar(context),
+//           body: Padding(
+//             padding: EdgeInsets.only(top: AppDimens.height(20)),
+//             child: TabBarView(
+//               controller: _tabController,
+//               children: [
+//                 bookmarkLists(context, controller),
+//               ],
+//             ),
+//           )),
+//     );
+//   }
+class _BookmarkViewState extends State<BookmarkView> {
   @override
   Widget build(BuildContext context) {
     BookmarkController controller = Get.find();
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-          appBar: appBar(context),
-          body: Padding(
-            padding: EdgeInsets.only(top: AppDimens.height(20)),
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                bookmarkLists(context, controller),
-              ],
-            ),
-          )),
-    );
+    return Scaffold(
+        appBar: appBar(context),
+        body: Padding(
+          padding: EdgeInsets.only(top: AppDimens.height(20)),
+          child: bookmarkLists(context, controller),
+        ));
   }
 
   AppBar appBar(BuildContext context) {
     return AppBar(
-        centerTitle: false,
-        leading: Container(),
-        leadingWidth: AppDimens.width(5),
-        title: Row(
-          children: [
-            const Icon(
+      centerTitle: false,
+      leading: Container(),
+      leadingWidth: AppDimens.width(5),
+      title: Row(
+        children: [
+          GestureDetector(
+            onTap: Get.back,
+            child: const Icon(
               Icons.chevron_left,
               size: 30,
               color: AppColor.white,
             ),
-            AppSpacerH(value: AppDimens.size(5)),
-            AppText(
-              "저장한 콘텐츠",
-              style: Theme.of(context)
-                  .textTheme
-                  .displayXS
-                  .copyWith(color: AppColor.gray100),
-            ),
-          ],
-        ),
-        bottom: tabBar());
-  }
-
-  TabBar tabBar() {
-    return TabBar(
-      controller: _tabController,
-      isScrollable: true,
-      splashFactory: NoSplash.splashFactory,
-      tabAlignment: TabAlignment.start,
-      dividerColor: AppColor.graymodern950,
-      indicatorColor: Colors.transparent,
-      labelPadding: const EdgeInsets.only(left: 0, right: 0),
-      labelColor: AppColor.brand600,
-      labelStyle: Theme.of(context).textTheme.textMD,
-      unselectedLabelColor: AppColor.graymodern500,
-      tabs: _tabs
-          .map((tab) => Padding(
-              padding: EdgeInsets.only(left: AppDimens.size(20)),
-              child: Tab(text: tab.text)))
-          .toList(),
+          ),
+          AppSpacerH(value: AppDimens.size(5)),
+          AppText(
+            "저장한 콘텐츠",
+            style: Theme.of(context)
+                .textTheme
+                .displayXS
+                .copyWith(color: AppColor.gray100),
+          ),
+        ],
+      ),
+      // bottom: tabBar()
     );
   }
+
+  // TabBar tabBar() {
+  //   return TabBar(
+  //     controller: _tabController,
+  //     isScrollable: true,
+  //     splashFactory: NoSplash.splashFactory,
+  //     tabAlignment: TabAlignment.start,
+  //     dividerColor: AppColor.graymodern950,
+  //     indicatorColor: Colors.transparent,
+  //     labelPadding: const EdgeInsets.only(left: 0, right: 0),
+  //     labelColor: AppColor.brand600,
+  //     labelStyle: Theme.of(context).textTheme.textMD,
+  //     unselectedLabelColor: AppColor.graymodern500,
+  //     tabs: _tabs
+  //         .map((tab) => Padding(
+  //             padding: EdgeInsets.only(left: AppDimens.size(20)),
+  //             child: Tab(text: tab.text)))
+  //         .toList(),
+  //   );
+  // }
 
   Widget bookmarkLists(BuildContext context, BookmarkController controller) {
     return Obx(() => ListView.builder(

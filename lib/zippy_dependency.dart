@@ -5,6 +5,7 @@ import 'package:zippy/data/sources/interfaces/user_data_source.dart';
 import 'package:zippy/domain/repositories/implementations/user_repository_impl.dart';
 import 'package:zippy/domain/repositories/interfaces/user_repository.dart';
 import 'package:zippy/domain/usecases/get_user.dart';
+import 'package:zippy/domain/usecases/login_with_google.dart';
 import 'package:zippy/domain/usecases/login_with_kakao.dart';
 import 'package:zippy/domain/usecases/login_with_naver.dart';
 import 'package:zippy/domain/usecases/logout.dart';
@@ -17,21 +18,21 @@ class ZippyBindings implements Bindings {
   void dependencies() {
     SupabaseProvider.init();
     Get.put<SupabaseProvider>(SupabaseProvider(), permanent: true);
+    Get.put<AdmobService>(AdmobService(), permanent: true);
 
-    Get.put<UserDatasource>(UserDatasourceIml(), permanent: true);
-    Get.put<UserRepository>(UserRepositoryImpl(Get.find()), permanent: true);
+    Get.lazyPut<UserDatasource>(() => UserDatasourceIml());
+    Get.lazyPut<UserRepository>(() => UserRepositoryImpl(Get.find()));
 
-    Get.put<LoginWithNaver>(LoginWithNaver(Get.find()), permanent: true);
-    Get.put<LoginWithKakao>(LoginWithKakao(Get.find()), permanent: true);
-    Get.put<SubscribeUser>(SubscribeUser(Get.find()), permanent: true);
-    Get.put<Logout>(Logout(Get.find()), permanent: true);
-    Get.put<GetUser>(GetUser(Get.find()), permanent: true);
+    Get.lazyPut<LoginWithNaver>(() => LoginWithNaver(Get.find()));
+    Get.lazyPut<LoginWithKakao>(() => LoginWithKakao(Get.find()));
+    Get.lazyPut<LoginWithGoogle>(() => LoginWithGoogle(Get.find()));
+    Get.lazyPut<SubscribeUser>(() => SubscribeUser(Get.find()));
+    Get.lazyPut<Logout>(() => Logout(Get.find()));
+    Get.lazyPut<GetUser>(() => GetUser(Get.find()));
 
     Get.put<AuthController>(
-        AuthController(
-            Get.find(), Get.find(), Get.find(), Get.find(), Get.find()),
+        AuthController(Get.find(), Get.find(), Get.find(), Get.find(),
+            Get.find(), Get.find()),
         permanent: true);
-
-    Get.put<AdmobService>(AdmobService(), permanent: true);
   }
 }

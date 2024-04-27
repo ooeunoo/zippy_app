@@ -1,19 +1,14 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
-import 'package:zippy/app/widgets/app.snak_bar.dart';
-import 'package:zippy/app/widgets/app_button.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/presentation/controllers/auth/auth_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class LoginView extends GetView<AuthController> {
@@ -77,9 +72,6 @@ class LoginView extends GetView<AuthController> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         GestureDetector(
-          // onTap: () {
-          //   notifyAlreadyRegisteredUserEmail();
-          // },
           onTap: controller.loginWithKakaoUser,
           child: CircleAvatar(
               backgroundColor: AppColor.kakaoBase,
@@ -87,13 +79,21 @@ class LoginView extends GetView<AuthController> {
               child: const AppSvg(Assets.kakaoLogo)),
         ),
         const AppSpacerH(),
+        // GestureDetector(
+        //   onTap: controller.loginWithNaverUser,
+        //   child: CircleAvatar(
+        //       backgroundColor: AppColor.naverBase,
+        //       radius: AppDimens.size(30),
+        //       child: const AppSvg(Assets.naverLogo)),
+        // ),
+        const AppSpacerH(),
         GestureDetector(
-          onTap: controller.loginWithNaverUser,
+          onTap: controller.loginWithGoogleUser,
           child: CircleAvatar(
-              backgroundColor: AppColor.naverBase,
+              backgroundColor: AppColor.googleBase,
               radius: AppDimens.size(30),
-              child: const AppSvg(Assets.naverLogo)),
-        )
+              child: const AppSvg(Assets.googleLogo)),
+        ),
       ],
     );
   }

@@ -1,15 +1,12 @@
-import 'dart:ffi';
-
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/failures/failure.dart';
+import 'package:zippy/app/widgets/app.snak_bar.dart';
 import 'package:zippy/data/entity/bookmark_entity.dart';
 import 'package:zippy/domain/model/bookmark.dart';
-import 'package:zippy/domain/model/category.dart';
 import 'package:zippy/domain/model/user.dart';
-import 'package:zippy/domain/usecases/create_bookmark.dart';
 import 'package:zippy/domain/usecases/delete_bookmark.dart';
 import 'package:zippy/domain/usecases/get_bookmarks_by_user_id.dart';
-import 'package:zippy/domain/usecases/get_categories.dart';
 import 'package:zippy/presentation/controllers/auth/auth_controller.dart';
 
 class BookmarkController extends GetxController {
@@ -24,7 +21,6 @@ class BookmarkController extends GetxController {
   );
 
   RxList<Bookmark> bookmarks = RxList<Bookmark>([]).obs();
-
   Rxn<String> error = Rxn<String>();
 
   @override
@@ -32,7 +28,9 @@ class BookmarkController extends GetxController {
     super.onInit();
     await _setupBookmarks();
 
-    ever(error, (e) => print(e));
+    // ever(error, (e) {
+    //   notifyErrorMessage('');
+    // });
   }
 
   Future<void> deleteBookmarkItem(Bookmark bookmark) async {

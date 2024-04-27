@@ -11,25 +11,11 @@ class BaseController extends GetxController {
 
   List<Widget> pages = [
     const BoardView(),
-    // const Search(),
     const ProfileView(),
   ];
-
-  @override
-  void onInit() {
-    super.onInit();
-    pageController = PageController(initialPage: 0);
-  }
 
   void goToTab(int page) {
     onHeavyVibration();
     currentPage.value = page;
-    pageController.jumpToPage(page);
-  }
-
-  @override
-  void dispose() {
-    pageController.dispose();
-    super.dispose();
   }
 }

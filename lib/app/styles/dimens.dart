@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class AppDimens {
+abstract class AppDimens {
   AppDimens._();
 
   static double screenW = 375;

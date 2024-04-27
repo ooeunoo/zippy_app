@@ -47,6 +47,27 @@ import 'package:get/get.dart';
 //   );
 // }
 
+notifyErrorMessage(String message) {
+  Get.showSnackbar(
+    GetSnackBar(
+      // message: '이미 동일한 이메일로 가입된 계정이 있어요.',
+      messageText: AppText(message,
+          style: Theme.of(Get.context!)
+              .textTheme
+              .textMD
+              .copyWith(color: AppColor.graymodern100)),
+      duration: const Duration(seconds: 3),
+      backgroundColor: AppColor.brand600,
+      snackPosition: SnackPosition.BOTTOM,
+      borderRadius: 10,
+      animationDuration: const Duration(seconds: 1),
+      margin: EdgeInsets.symmetric(horizontal: AppDimens.width(20)),
+      padding: EdgeInsets.symmetric(
+          horizontal: AppDimens.width(20), vertical: AppDimens.height(15)),
+    ),
+  );
+}
+
 notifyAlreadyRegisteredUserEmail() {
   Get.showSnackbar(
     GetSnackBar(

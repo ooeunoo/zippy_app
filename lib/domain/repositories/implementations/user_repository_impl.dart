@@ -26,6 +26,11 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
+  Future<Either<Failure, bool>> loginWithGoogle() {
+    return datasource.loginWithGoogle();
+  }
+
+  @override
   Future<Either<Failure, bool>> loginWithKakao() {
     return datasource.loginWithKakao();
   }
