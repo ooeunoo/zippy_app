@@ -2,18 +2,26 @@
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class ENV {
+String production = 'production';
+
+abstract class ENV {
   ENV._();
+
+  static String ZIPPY_ENV = dotenv.env['ENV'] as String;
 
   static String SUPABASE_URL = dotenv.env['SUPABASE_URL'] as String;
   static String SUPABASE_ANON_KEY = dotenv.env['SUPABASE_ANON_KEY'] as String;
 
-  static String GOOGLE_ADMOB_DEV_BANNER_IOS =
-      dotenv.env['GOOGLE_ADMOB_DEV_BANNER_IOS'] as String;
-  static String GOOGLE_ADMOB_DEV_BANNER_AOS =
-      dotenv.env['GOOGLE_ADMOB_DEV_BANNER_AOS'] as String;
   static String GOOGLE_ADMOB_PROD_BANNER_IOS =
       dotenv.env['GOOGLE_ADMOB_PROD_BANNER_IOS'] as String;
   static String GOOGLE_ADMOB_PROD_BANNER_AOS =
       dotenv.env['GOOGLE_ADMOB_PROD_BANNER_AOS'] as String;
+  static String GOOGLE_ADMOB_PROD_INTERSTITIAL_IOS =
+      dotenv.env['GOOGLE_ADMOB_PROD_INTERSTITIAL_IOS'] as String;
+  static String GOOGLE_ADMOB_PROD_INTERSTITIAL_AOS =
+      dotenv.env['GOOGLE_ADMOB_PROD_INTERSTITIAL_AOS'] as String;
+  static String GOOGLE_ADMOB_PROD_NATIVE_IOS =
+      dotenv.env['GOOGLE_ADMOB_PROD_NATIVE_IOS'] as String;
+  static String GOOGLE_ADMOB_PROD_NATIVE_AOS =
+      dotenv.env['GOOGLE_ADMOB_PROD_NATIVE_AOS'] as String;
 }

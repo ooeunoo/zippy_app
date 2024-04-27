@@ -4,19 +4,19 @@ import 'package:zippy/domain/model/item.dart';
 
 @immutable
 class AdContent extends Item {
-  final List<NativeAd> nativeAds;
+  final NativeAd nativeAd;
   final BannerAd bannerAd;
 
-  const AdContent({required this.nativeAds, required this.bannerAd})
+  const AdContent({required this.nativeAd, required this.bannerAd})
       : super(isAd: true);
 
   @override
   List<Object> get props {
-    return [...super.props, nativeAds];
+    return [...super.props, nativeAd, bannerAd];
   }
 
   @override
-  toJson() => {'isAd': isAd, 'nativeAds': nativeAds};
+  toJson() => {'isAd': isAd, 'nativeAd': nativeAd, 'bannerAd': bannerAd};
 
   @override
   String toString() {

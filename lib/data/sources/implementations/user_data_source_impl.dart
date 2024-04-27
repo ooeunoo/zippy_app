@@ -133,7 +133,6 @@ class UserDatasourceIml implements UserDatasource {
       await provider.client.auth.signOut();
       return const Right(true);
     } catch (e) {
-      print(e);
       return Left(ServerFailure());
     }
   }

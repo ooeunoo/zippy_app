@@ -125,12 +125,7 @@ class ProfileView extends GetView<AuthController> {
         ],
       ),
       MenuSection(section: '고객지원 및 정보', items: [
-        MenuItem(
-            icon: Assets.file06,
-            title: '개발자 문의하기',
-            onTap: () {
-              print('서비스 이용약관');
-            }),
+        MenuItem(icon: Assets.file06, title: '개발자 문의하기', onTap: () {}),
         MenuItem(
             icon: Assets.file02,
             title: '개인정보처리방침',

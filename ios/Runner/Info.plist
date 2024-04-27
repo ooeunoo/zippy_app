@@ -49,10 +49,10 @@
 		<!-- ###### -->
 		<!-- AD MOB -->
 		<key>GADApplicationIdentifier</key>
-		<string>ca-app-pub-3940256099942544~1458002511</string>
+		<string>ca-app-pub-2434467954234557~5355701550</string>
 		<!-- native ad validator 지우기  -->
-		<key>GADNativeAdValidatorEnabled</key>
-		<false />
+		<!-- <key>GADNativeAdValidatorEnabled</key> -->
+		<!-- <false /> -->
 		<!-- ###### -->
 
 		<!-- ###### -->

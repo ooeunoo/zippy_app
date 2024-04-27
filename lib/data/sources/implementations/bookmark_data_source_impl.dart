@@ -29,7 +29,6 @@ class BookmarkDatasourceIml implements BookmarkDatasource {
       await provider.client.from(TABLE).delete().match(bookmark.toParams());
       return const Right(true);
     } catch (e) {
-      print(e);
       return Left(ServerFailure());
     }
   }
@@ -51,7 +50,6 @@ class BookmarkDatasourceIml implements BookmarkDatasource {
           response.map((r) => BookmarkEntity.fromJson(r).toModel()).toList();
       return Right(result);
     } catch (e) {
-      print(e);
       return Left(ServerFailure());
     }
   }

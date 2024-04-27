@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/app/services/admob_service.dart';
@@ -102,14 +104,14 @@ class BoardController extends GetxService {
 
   onChangedItem(int curPageIndex) {
     if (curPageIndex < prevPageIndex.value) return;
-
     int credit = admobService.useAdContentCredits();
-
-    if (credit == 0) {
-      final (nAds, bAd) = admobService.useAdContent();
-      AdContent adContent = AdContent(nativeAds: nAds, bannerAd: bAd);
+    NativeAd? nativeAd = admobService.nativeAd.value;
+    BannerAd? bannerAd = admobService.bannerAd.value;
+    if (credit == 0 && nativeAd != null && bannerAd != null) {
+      AdContent adContent = AdContent(nativeAd: nativeAd, bannerAd: bannerAd);
       items.insert(curPageIndex + 1, adContent);
       items.refresh();
+      admobService.resetAdContent();
     }
 
     prevPageIndex.value = curPageIndex;
@@ -118,11 +120,11 @@ class BoardController extends GetxService {
   onClickItem(Item item) {
     if (!item.isAd) {
       Content content = item as Content;
-
-      admobService.useIntersitialAdCredits();
-
-      if (admobService.interstitialAd.value != null) {
+      int credit = admobService.useIntersitialAdCredits();
+      InterstitialAd? interstitialAd = admobService.interstitialAd.value;
+      if (credit == 0 && interstitialAd != null) {
         admobService.interstitialAd.value!.show();
+        admobService.resetIntersitialAdCredits();
       }
 
       Get.to(() => AppWebview(uri: content.url),

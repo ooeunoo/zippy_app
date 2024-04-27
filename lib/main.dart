@@ -20,7 +20,7 @@ void main() async {
         await InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
       }
 
-      MobileAds.instance.initialize();
+      await MobileAds.instance.initialize();
       await dotenv.load(fileName: Assets.env);
       await GetStorage.init();
 

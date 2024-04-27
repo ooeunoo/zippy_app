@@ -33,9 +33,6 @@ class AuthController extends GetxController {
       await _refreshUser(user);
       await _navigateDependUser(user);
     });
-
-    // TODO: remove
-    ever(error, (e) => print(e));
   }
 
   Future<void> loginWithNaverUser() async {

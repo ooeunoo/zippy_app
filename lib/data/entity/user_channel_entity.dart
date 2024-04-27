@@ -1,6 +1,4 @@
 import 'package:zippy/data/entity/category_entity.dart';
-import 'package:zippy/domain/model/category.dart';
-import 'package:zippy/domain/model/user.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:zippy/domain/model/user_channel.dart';

@@ -8,11 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 
-class ZippyAdContentCard extends StatelessWidget {
+class ZippyAdContentCard extends StatefulWidget {
   final AdContent content;
 
   const ZippyAdContentCard({super.key, required this.content});
 
+  @override
+  State<ZippyAdContentCard> createState() => _ZippyAdContentCardState();
+}
+
+class _ZippyAdContentCardState extends State<ZippyAdContentCard> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -24,13 +29,11 @@ class ZippyAdContentCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             AppSpacerV(value: AppDimens.height(150)),
-            Expanded(child: nativeAdSection(content.nativeAds[0])),
-            // Expanded(child: nativeAdSection(content.nativeAds[1])),
-            // AppSpacerV(value: AppDimens.height(150)),
+            Expanded(child: nativeAdSection(widget.content.nativeAd)),
             SizedBox(
-              width: content.bannerAd.size.width.toDouble(),
-              height: content.bannerAd.size.height.toDouble(),
-              child: AdWidget(ad: content.bannerAd),
+              width: widget.content.bannerAd.size.width.toDouble(),
+              height: widget.content.bannerAd.size.height.toDouble(),
+              child: AdWidget(ad: widget.content.bannerAd),
             )
           ],
         ),
