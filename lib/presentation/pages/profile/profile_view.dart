@@ -13,6 +13,7 @@ import 'package:zippy/app/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:zippy/domain/model/menu.dart';
 import 'package:zippy/presentation/controllers/auth/auth_controller.dart';
+import 'package:zippy/presentation/pages/profile/widgets/privacy.dart';
 
 class ProfileView extends GetView<AuthController> {
   const ProfileView({super.key});
@@ -125,17 +126,18 @@ class ProfileView extends GetView<AuthController> {
       ),
       MenuSection(section: '고객지원 및 정보', items: [
         MenuItem(
+            icon: Assets.file06,
+            title: '개발자 문의하기',
+            onTap: () {
+              print('서비스 이용약관');
+            }),
+        MenuItem(
             icon: Assets.file02,
             title: '개인정보처리방침',
             onTap: () {
-              print('개인정보처리방침');
+              Get.to(() => const PrivacyView(),
+                  transition: Transition.rightToLeft);
             }),
-        MenuItem(
-            icon: Assets.file06,
-            title: '서비스 이용약관',
-            onTap: () {
-              print('서비스 이용약관');
-            })
       ])
     ];
 
