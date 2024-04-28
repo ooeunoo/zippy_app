@@ -3,9 +3,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/domain/model/ad_content.dart';
-import 'package:zippy/domain/model/content.dart';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 
 class ZippyAdContentCard extends StatefulWidget {

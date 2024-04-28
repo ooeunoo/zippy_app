@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
+import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/widgets/app_loader.dart';
@@ -60,10 +61,8 @@ class _ChannelViewState extends State<ChannelView> {
           AppSpacerH(value: AppDimens.size(5)),
           AppText(
             "나의 채널 관리하기",
-            style: Theme.of(context)
-                .textTheme
-                .displayXS
-                .copyWith(color: AppColor.gray100),
+            style: Theme.of(context).textTheme.textXL.copyWith(
+                color: AppColor.gray100, fontWeight: AppFontWeight.medium),
           ),
         ],
       ),

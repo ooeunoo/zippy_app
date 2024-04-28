@@ -10,7 +10,7 @@ import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/utils/env.dart';
 import 'package:zippy/app/utils/random.dart';
 
-int PRELOAD_AD_INDEX = 3; // Must less than DEFAULT_NATIVE_CREDIT min value
+int PRELOAD_AD_INDEX = 3;
 
 class AdmobService extends GetxService {
   static bool isProduction = ENV.ZIPPY_ENV == production;
@@ -102,7 +102,7 @@ class AdmobService extends GetxService {
   }
 
   void resetIntersitialAdCredits() {
-    intersitialAdCredits.value = randomInt(8, 10);
+    intersitialAdCredits.value = randomInt(5, 8);
   }
 
   void resetAdContent() {

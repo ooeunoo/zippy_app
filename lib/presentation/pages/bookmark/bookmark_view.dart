@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
+import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/share.dart';
 import 'package:zippy/app/widgets/app_divider.dart';
@@ -90,10 +91,8 @@ class _BookmarkViewState extends State<BookmarkView> {
           AppSpacerH(value: AppDimens.size(5)),
           AppText(
             "저장한 콘텐츠",
-            style: Theme.of(context)
-                .textTheme
-                .displayXS
-                .copyWith(color: AppColor.gray100),
+            style: Theme.of(context).textTheme.textXL.copyWith(
+                color: AppColor.gray100, fontWeight: AppFontWeight.medium),
           ),
         ],
       ),
@@ -148,7 +147,7 @@ class _BookmarkViewState extends State<BookmarkView> {
           children: [
             SlidableAction(
               onPressed: (BuildContext context) => delete(bookmark),
-              backgroundColor: AppColor.rose700,
+              backgroundColor: AppColor.rose700.withOpacity(0.9),
               foregroundColor: AppColor.white,
               icon: Icons.delete,
               label: 'Delete',
@@ -159,7 +158,7 @@ class _BookmarkViewState extends State<BookmarkView> {
                   await toShare(bookmark.item!.url, bookmark.item!.title);
                 }
               },
-              backgroundColor: AppColor.green700,
+              backgroundColor: AppColor.brand600.withOpacity(0.9),
               foregroundColor: AppColor.white,
               icon: Icons.share,
               label: 'Share',
