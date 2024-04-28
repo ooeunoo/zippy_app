@@ -171,12 +171,12 @@ class AdmobService extends GetxService {
                 size: 16.0),
             secondaryTextStyle: NativeTemplateTextStyle(
                 textColor: AppColor.graymodern600,
-                backgroundColor: AppColor.rose700,
+                backgroundColor: AppColor.white,
                 style: NativeTemplateFontStyle.bold,
                 size: 16.0),
             tertiaryTextStyle: NativeTemplateTextStyle(
                 textColor: AppColor.graymodern600,
-                backgroundColor: AppColor.cyan700,
+                backgroundColor: AppColor.white,
                 style: NativeTemplateFontStyle.normal,
                 size: 16.0)));
   }
