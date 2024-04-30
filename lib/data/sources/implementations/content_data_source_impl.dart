@@ -11,7 +11,7 @@ import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
 import 'package:zippy/domain/model/user_category.dart';
 
-String TABLE = 'item';
+String TABLE = 'content';
 
 class ContentDatasourceImpl implements ContentDatasource {
   SupabaseProvider provider = Get.find();
