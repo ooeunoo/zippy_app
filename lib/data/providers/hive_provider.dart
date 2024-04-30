@@ -22,7 +22,5 @@ class HiveProvider {
   openBox() async {
     userBookMarks = await Hive.openBox(USER_BOOKMARKS_BOX);
     userCategories = await Hive.openBox(USER_CATEGORIES_BOX);
-    // await Hive.box(USER_CATEGORIES_BOX).clear();
-    // await Hive.box(USER_BOOKMARKS_BOX).clear();
   }
 }
