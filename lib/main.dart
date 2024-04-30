@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:get/get.dart';
 import 'package:zippy/app/utils/assets.dart';
+import 'package:zippy/data/providers/hive_provider.dart';
 import 'package:zippy/zippy_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,9 +22,9 @@ void main() async {
         await InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
       }
 
+      await initHive();
       await MobileAds.instance.initialize();
       await dotenv.load(fileName: Assets.env);
-      await GetStorage.init();
 
       await initializeDateFormatting('ko_KR', null);
 
@@ -37,4 +39,11 @@ void main() async {
       print('error: $error - $stackTrace');
     },
   );
+}
+
+Future<void> initHive() async {
+  HiveProvider hiveProvider = HiveProvider();
+  await hiveProvider.init();
+  await hiveProvider.openBox();
+  Get.put<HiveProvider>(hiveProvider, permanent: true);
 }

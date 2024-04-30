@@ -1,60 +1,52 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:zippy/domain/model/item.dart';
+import 'package:zippy/data/entity/user_bookmark_entity.dart';
 
 @immutable
-class Content extends Equatable {
-  final int? id;
-  final int categoryId;
+class UserBookmark extends Equatable {
+  final int id;
   final String url;
   final String title;
-  final int itemIndex;
-  final String author;
   final String? contentText;
   final String? contentImgUrl;
 
-  //
-  final bool isAd;
-
-  const Content({
-    this.id,
-    required this.categoryId,
+  const UserBookmark({
+    required this.id,
     required this.url,
     required this.title,
-    required this.itemIndex,
-    required this.author,
     this.contentText,
     this.contentImgUrl,
-    this.isAd = false,
   });
 
   @override
   List<Object> get props {
     return [
-      categoryId,
+      id,
       url,
       title,
-      itemIndex,
-      author,
-      isAd,
     ];
   }
 
-  @override
   dynamic toJson() => {
         'id': id,
-        'categoryId': categoryId,
         'url': url,
         'title': title,
-        'itemIndex': itemIndex,
-        "author": author,
         "contentText": contentText,
         "contentImgUrl": contentImgUrl,
-        'isAd': isAd
       };
 
   @override
   String toString() {
     return toJson().toString();
+  }
+
+  UserBookmarkEntity toCreateEntity() {
+    return UserBookmarkEntity(
+      id: id,
+      url: url,
+      title: title,
+      contentText: contentText,
+      contentImgUrl: contentImgUrl,
+    );
   }
 }

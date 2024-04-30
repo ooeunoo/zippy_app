@@ -1,21 +1,21 @@
 import 'package:get/get.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:random_avatar/random_avatar.dart';
 import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
-import 'package:zippy/app/styles/theme.dart';
+import 'package:zippy/app/utils/constants.dart';
 import 'package:zippy/app/utils/random.dart';
 import 'package:zippy/app/widgets/app_menu.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
-import 'package:zippy/app/widgets/app_text.dart';
 import 'package:flutter/material.dart';
+import 'package:zippy/app/widgets/app_webview.dart';
 import 'package:zippy/domain/model/menu.dart';
-import 'package:zippy/presentation/controllers/auth/auth_controller.dart';
-import 'package:zippy/presentation/pages/profile/widgets/privacy.dart';
+import 'package:zippy/presentation/pages/profile/widgets/inquiry.dart';
 
-class ProfileView extends GetView<AuthController> {
+class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
 
   @override
@@ -38,7 +38,6 @@ class ProfileView extends GetView<AuthController> {
                 menu(context)
               ],
             ),
-            Align(alignment: Alignment.bottomCenter, child: logout(context))
           ],
         ),
       ),
@@ -52,25 +51,6 @@ class ProfileView extends GetView<AuthController> {
     );
   }
 
-  Widget logout(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        controller.logoutUser();
-      },
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: AppDimens.height(10)),
-        child: AppText(
-          "로그아웃",
-          style: Theme.of(context).textTheme.textSM.copyWith(
-                decoration: TextDecoration.underline,
-                color: AppColor.graymodern500,
-                decorationColor: AppColor.graymodern500,
-              ),
-        ),
-      ),
-    );
-  }
-
   Widget avatarInfo(BuildContext context) {
     return Column(
       children: [
@@ -80,23 +60,12 @@ class ProfileView extends GetView<AuthController> {
             SizedBox(
               height: AppDimens.size(80),
               width: AppDimens.size(80),
-              child: RandomAvatar(
-                  controller.user.value?.email ?? randomInt(0, 10).toString(),
-                  trBackground: true),
+              child:
+                  RandomAvatar(randomInt(0, 10).toString(), trBackground: true),
             )
           ],
         ),
         const AppSpacerV(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Obx(() => AppText(controller.user.value?.email ?? "",
-                style: Theme.of(context)
-                    .textTheme
-                    .textMD
-                    .copyWith(color: AppColor.graymodern100)))
-          ],
-        )
       ],
     );
   }
@@ -125,15 +94,23 @@ class ProfileView extends GetView<AuthController> {
         ],
       ),
       MenuSection(section: '고객지원 및 정보', items: [
-        MenuItem(icon: Assets.file06, title: '개발자 문의하기', onTap: () {}),
         MenuItem(
-            icon: Assets.file02,
-            title: '개인정보처리방침',
-            onTap: () {
-              Get.to(() => const PrivacyView(),
-                  transition: Transition.rightToLeft);
+            icon: Assets.message,
+            title: '리뷰 남기기',
+            onTap: () async {
+              final InAppReview inAppReview = InAppReview.instance;
+              if (await inAppReview.isAvailable()) {
+                inAppReview.requestReview();
+              }
             }),
-      ])
+        MenuItem(
+            icon: Assets.file06,
+            title: '의견 보내기',
+            onTap: () {
+              Get.to(() => const InquryView(),
+                  transition: Transition.rightToLeftWithFade);
+            }),
+      ]),
     ];
 
     return AppMenu(menu: menu, backgroundColor: AppColor.gray100);

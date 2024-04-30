@@ -84,8 +84,8 @@ class _ChannelViewState extends State<ChannelView> {
             itemBuilder: (BuildContext context, int index) {
               return Obx(() {
                 Channel channel = controller.channels[index];
-                bool isSubscribe =
-                    controller.userSubscribeChannelIds.contains(channel.id);
+                bool isSubscribe = controller.userSubscribeCategories
+                    .any((category) => category.channelId == channel.id);
 
                 return ListTile(
                   leading: SizedBox(

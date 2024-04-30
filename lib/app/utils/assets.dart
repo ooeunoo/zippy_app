@@ -14,9 +14,7 @@ class Assets {
   static const String file02 = 'assets/icons/file-02.svg';
   static const String file06 = 'assets/icons/file-06.svg';
   static const String avatarDefault = 'assets/icons/avatar-default.svg';
-  static const String kakaoLogo = 'assets/icons/kakao.svg';
-  static const String naverLogo = 'assets/icons/naver.svg';
-  static const String googleLogo = 'assets/icons/google.svg';
+  static const String message = 'assets/icons/message.svg';
 
   // images
   static const String humorunivLogo = 'assets/images/humoruniv.png';

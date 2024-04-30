@@ -1,11 +1,9 @@
-import 'dart:ffi';
-
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/utils/vibrates.dart';
 import 'package:zippy/app/widgets/app_webview.dart';
-import 'package:zippy/data/entity/bookmark_entity.dart';
+import 'package:zippy/data/entity/user_bookmark_entity.dart';
 import 'package:zippy/data/providers/supabase_provider.dart';
 import 'package:zippy/domain/model/ad_content.dart';
 import 'package:zippy/domain/model/bookmark.dart';
@@ -13,69 +11,63 @@ import 'package:zippy/domain/model/category.dart';
 import 'package:zippy/domain/model/channel.dart';
 import 'package:zippy/domain/model/content.dart';
 import 'package:zippy/domain/model/item.dart';
-import 'package:zippy/domain/model/user.dart';
-import 'package:zippy/domain/model/user_channel.dart';
-import 'package:zippy/domain/usecases/create_bookmark.dart';
-import 'package:zippy/domain/usecases/delete_bookmark.dart';
-import 'package:zippy/domain/usecases/get_bookmarks_by_user_id.dart';
+import 'package:zippy/domain/model/user_bookmark.dart';
+import 'package:zippy/domain/model/user_category.dart';
+import 'package:zippy/domain/usecases/create_user_bookmark.dart';
+import 'package:zippy/domain/usecases/delete_user_bookmark.dart';
 import 'package:zippy/domain/usecases/get_categories.dart';
 import 'package:zippy/domain/usecases/get_channels.dart';
-import 'package:zippy/domain/usecases/get_user_channel_by_user_id.dart';
-import 'package:zippy/domain/usecases/subscirbe_items.dart';
+import 'package:zippy/domain/usecases/get_user_bookmark.dart';
+import 'package:zippy/domain/usecases/get_user_category.dart';
+import 'package:zippy/domain/usecases/subscirbe_contents.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_bookmark.dart';
-import 'package:zippy/domain/usecases/subscirbe_user_channel.dart';
-import 'package:zippy/presentation/controllers/auth/auth_controller.dart';
+import 'package:zippy/domain/usecases/subscirbe_user_category%20.dart';
 
 class BoardController extends GetxService {
   final admobService = Get.find<AdmobService>();
-  final authController = Get.find<AuthController>();
+  // final authController = Get.find<AuthController>();
 
   SupabaseProvider provider = Get.find();
 
-  final SubscribeItems subscribeItems;
-  final SubscribeUserChannel subscribeUserChannel;
+  final SubscribeContents subscribeContents;
   final SubscribeUserBookmark subscribeUserBookmark;
-
+  final SubscribeUserCategory subscribeUserCategory;
   final GetChannels getChannels;
   final GetCategories getCategories;
-  final CreateBookmark createBookmark;
-  final DeleteBookmark deleteBookmark;
-  final GetBookmarksByUserId getBookmarksByUserId;
-  final GetUserChannelByUserId getUserChannelByUserId;
+  final CreateUserBookmark createUserBookmark;
+  final DeleteUserBookmark deleteUserBookmark;
+  final GetUserBookmark getUserBookmark;
+  final GetUserCategory getUserCategory;
 
   BoardController(
-    this.subscribeItems,
-    this.subscribeUserChannel,
+    this.subscribeContents,
     this.subscribeUserBookmark,
+    this.subscribeUserCategory,
     this.getChannels,
     this.getCategories,
-    this.createBookmark,
-    this.deleteBookmark,
-    this.getBookmarksByUserId,
-    this.getUserChannelByUserId,
+    this.createUserBookmark,
+    this.deleteUserBookmark,
+    this.getUserBookmark,
+    this.getUserCategory,
   );
 
   Rx<int> prevPageIndex = Rx<int>(0);
   PageController pageController = PageController(initialPage: 0);
-  RxList<Item> items = RxList<Item>([]).obs();
-  RxList<UserChannel> userChannels = RxList<UserChannel>([]).obs();
-  RxList<int> userBookmarkItemIds = RxList<int>([]).obs();
   RxMap<int, Channel> channels = RxMap<int, Channel>({}).obs();
   RxMap<int, Category> categories = RxMap<int, Category>({}).obs();
-  RxBool isLoadingItems = RxBool(false).obs();
+  RxBool isLoadingItems = RxBool(true).obs();
+  RxBool isLoadingUserCategory = RxBool(true).obs();
+  RxList<Content> contents = RxList<Content>([]).obs();
+  RxList<UserCategory> userCategories = RxList<UserCategory>([]).obs();
+  RxList<UserBookmark> userBookmarks = RxList<UserBookmark>([]).obs();
   Rxn<String> error = Rxn<String>();
 
   @override
   onInit() async {
-    await _setupChannel();
-    await _setupCategories();
-
-    await refreshItem();
-    _listenUserBookmark();
-
+    await _initialize();
     super.onInit();
   }
 
@@ -88,18 +80,24 @@ class BoardController extends GetxService {
     }
   }
 
-  Future<void> toggleBookmark(int itemId) async {
-    UserModel? user = authController.getSignedUser();
-    if (user != null) {
-      BookmarkEntity entity =
-          Bookmark(userId: user.id, itemId: itemId).toCreateEntity();
-      onHeavyVibration();
-      if (userBookmarkItemIds.contains(itemId)) {
-        await deleteBookmark.execute(entity);
-      } else {
-        await createBookmark.execute(entity);
-      }
+  Future<void> toggleBookmark(Content content) async {
+    UserBookmarkEntity entity = UserBookmark(
+      id: content.id!,
+      title: content.title,
+      url: content.url,
+      contentText: content.contentText,
+      contentImgUrl: content.contentImgUrl,
+    ).toCreateEntity();
+    onHeavyVibration();
+    if (isBookmarked(content.id!)) {
+      await deleteUserBookmark.execute(entity);
+    } else {
+      await createUserBookmark.execute(entity);
     }
+  }
+
+  bool isBookmarked(int itemId) {
+    return userBookmarks.any((bookmark) => bookmark.id == itemId);
   }
 
   onChangedItem(int curPageIndex) {
@@ -108,18 +106,20 @@ class BoardController extends GetxService {
     NativeAd? nativeAd = admobService.nativeAd.value;
     BannerAd? bannerAd = admobService.bannerAd.value;
     if (credit == 0 && nativeAd != null && bannerAd != null) {
-      AdContent adContent = AdContent(nativeAd: nativeAd, bannerAd: bannerAd);
-      items.insert(curPageIndex + 1, adContent);
-      items.refresh();
+      AdContent adContent = AdContent(
+        nativeAd: nativeAd,
+        bannerAd: bannerAd,
+      );
+      contents.insert(curPageIndex + 1, adContent);
+      contents.refresh();
       admobService.resetAdContent();
     }
 
     prevPageIndex.value = curPageIndex;
   }
 
-  onClickItem(Item item) {
-    if (!item.isAd) {
-      Content content = item as Content;
+  onClickItem(Content content) {
+    if (!content.isAd) {
       int credit = admobService.useIntersitialAdCredits();
       InterstitialAd? interstitialAd = admobService.interstitialAd.value;
       if (credit == 0 && interstitialAd != null) {
@@ -134,34 +134,37 @@ class BoardController extends GetxService {
 
   refreshItem() {
     isLoadingItems.value = true;
-    UserModel? user = authController.getSignedUser();
-    if (user != null) {
-      Stream<List<UserChannel>> result = subscribeUserChannel.execute(user.id);
-      userChannels.bindStream(result);
-      result.listen((channels) {
-        subscribeItems.execute(channels).listen((List<Item> itemList) {
-          items.assignAll(itemList);
-          isLoadingItems.value = false;
-        });
-      });
-    }
+    subscribeContents
+        .execute(userCategories)
+        .listen((List<Content> newContents) {
+      contents.bindStream(Stream.value(newContents));
+    });
+
+    isLoadingItems.value = false;
   }
 
-  _listenUserBookmark() {
-    UserModel? user = authController.getSignedUser();
-    if (user != null) {
-      Stream<List<Bookmark>> result = subscribeUserBookmark.execute(user.id);
-      result.listen((bookmarks) {
-        List<int> itemIds = [];
-        for (var bookmark in bookmarks) {
-          itemIds.add(bookmark.itemId);
-        }
-        userBookmarkItemIds.assignAll(itemIds);
-      });
-    }
+  //////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////
+  /// 초기화
+  //////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////
+  Future<void> _initialize() async {
+    await _setupChannel();
+    await _setupCategories();
+    await _setupUserCategory();
+    await _setupUserBookmark();
+
+    _listenUserCategories();
+    _listenUserBookmark();
+
+    await refreshItem();
+
+    ever(userCategories, (v) {
+      refreshItem();
+    });
   }
 
-  _setupChannel() async {
+  Future<void> _setupChannel() async {
     final result = await getChannels.execute();
     result.fold((failure) {
       if (failure == ServerFailure()) {
@@ -176,7 +179,7 @@ class BoardController extends GetxService {
     });
   }
 
-  _setupCategories() async {
+  Future<void> _setupCategories() async {
     final result = await getCategories.execute();
 
     result.fold((failure) {
@@ -189,6 +192,42 @@ class BoardController extends GetxService {
         map = category.toIdAssign(map);
       }
       categories.assignAll(map);
+    });
+  }
+
+  Future<void> _setupUserCategory() async {
+    isLoadingUserCategory.value = true;
+    final categories = await getUserCategory.execute();
+    categories.fold((failure) {
+      if (failure == ServerFailure()) {
+        error.value = 'Error Fetching channel!';
+      }
+    }, (data) {
+      userCategories.assignAll(data);
+    });
+    isLoadingUserCategory.value = false;
+  }
+
+  Future<void> _setupUserBookmark() async {
+    final bookmarks = await getUserBookmark.execute();
+    bookmarks.fold((failure) {
+      if (failure == ServerFailure()) {
+        error.value = 'Error Fetching channel!';
+      }
+    }, (data) {
+      userBookmarks.assignAll(data);
+    });
+  }
+
+  void _listenUserCategories() {
+    subscribeUserCategory.execute().listen((List<UserCategory> event) {
+      userCategories.bindStream(Stream.value(event));
+    });
+  }
+
+  void _listenUserBookmark() {
+    subscribeUserBookmark.execute().listen((List<UserBookmark> event) {
+      userBookmarks.bindStream(Stream.value(event));
     });
   }
 }

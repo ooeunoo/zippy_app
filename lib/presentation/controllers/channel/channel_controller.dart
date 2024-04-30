@@ -1,120 +1,124 @@
 import 'package:get/get.dart';
 import 'package:zippy/app/failures/failure.dart';
-import 'package:zippy/data/entity/channel_entity.dart';
-import 'package:zippy/data/entity/user_channel_entity.dart';
+import 'package:zippy/data/entity/user_category_entity.dart';
 import 'package:zippy/domain/model/category.dart';
 import 'package:zippy/domain/model/channel.dart';
-import 'package:zippy/domain/model/user.dart';
-import 'package:zippy/domain/model/user_channel.dart';
-import 'package:zippy/domain/usecases/create_user_channel.dart';
-import 'package:zippy/domain/usecases/delete_user_channel.dart';
+import 'package:zippy/domain/model/user_category.dart';
+import 'package:zippy/domain/usecases/create_user_category.dart';
+import 'package:zippy/domain/usecases/delete_user_category.dart';
 import 'package:zippy/domain/usecases/get_categories.dart';
 import 'package:zippy/domain/usecases/get_channels.dart';
-import 'package:zippy/domain/usecases/get_user_channel_by_user_id.dart';
-import 'package:zippy/presentation/controllers/auth/auth_controller.dart';
+import 'package:zippy/domain/usecases/get_user_category.dart';
+import 'package:zippy/domain/usecases/subscirbe_user_category%20.dart';
 
 class ChannelController extends GetxController {
-  final authController = Get.find<AuthController>();
-
   final GetChannels getChannels;
   final GetCategories getCategories;
-  final CreateUserChannel createUserChannel;
-  final DeleteUserChannel deleteUserChannel;
-  final GetUserChannelByUserId getUserChannelByUserId;
+  final CreateUserCategory createUserCategory;
+  final DeleteUserCategory deleteUserCategory;
+  final GetUserCategory getUserCategory;
+  final SubscribeUserCategory subscribeUserCategory;
 
   ChannelController(
-    this.createUserChannel,
-    this.deleteUserChannel,
-    this.getUserChannelByUserId,
-    this.getChannels,
-    this.getCategories,
-  );
+      this.createUserCategory,
+      this.deleteUserCategory,
+      this.getUserCategory,
+      this.getChannels,
+      this.getCategories,
+      this.subscribeUserCategory);
 
   RxList<Channel> channels = RxList<Channel>([]).obs();
   RxList<Category> categories = RxList<Category>([]).obs();
-  RxList<int> userSubscribeChannelIds = RxList<int>([]).obs();
-  // RxList<int> userSubscribeCategoryIds = RxList<int>([]).obs();
   Rxn<String> error = Rxn<String>();
+  RxList<UserCategory> userSubscribeCategories = RxList<UserCategory>([]).obs();
 
   @override
   onInit() async {
     super.onInit();
-    await _setupChannel();
-    await _setupUserChannel();
-    await _setupCategories();
+    await _initialize();
   }
 
   Future<void> toggleChannel(int channelId) async {
-    UserModel? user = authController.getSignedUser();
-    if (user != null) {
-      List<Category> channelCategories = categories
-          .where((category) => category.channelId == channelId)
-          .toList();
+    List<Category> channelCategories = categories
+        .where((category) => category.channelId == channelId)
+        .toList();
 
-      List<UserChannelEntity> channels = [];
+    List<UserCategoryEntity> userCategories = [];
 
-      for (Category category in channelCategories) {
-        UserChannelEntity entity =
-            UserChannel(userId: user.id, categoryId: category.id!)
-                .toCreateEntity();
-        channels.add(entity);
-      }
-
-      if (userSubscribeChannelIds.contains(channelId)) {
-        await deleteUserChannel.execute(channels);
-        userSubscribeChannelIds.remove(channelId);
-      } else {
-        await createUserChannel.execute(channels);
-        userSubscribeChannelIds.add(channelId);
-      }
+    for (Category category in channelCategories) {
+      UserCategoryEntity entity = UserCategory(
+              id: category.id!,
+              channelId: category.channelId,
+              name: category.name)
+          .toCreateEntity();
+      userCategories.add(entity);
     }
+
+    if (isAlreadySubscribeChannel(channelId)) {
+      await deleteUserCategory.execute(userCategories);
+    } else {
+      await createUserCategory.execute(userCategories);
+    }
+  }
+
+  bool isAlreadySubscribeChannel(int channelId) {
+    return userSubscribeCategories
+        .any((category) => category.channelId == channelId);
+  }
+
+  //////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////
+  /// 초기화
+  //////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////
+  Future<void> _initialize() async {
+    await _setupUserCategory();
+    await _setupChannel();
+    await _setupCategories();
+    _listenUserCategories();
+  }
+
+  Future<void> _setupUserCategory() async {
+    final categories = await getUserCategory.execute();
+    categories.fold((failure) {
+      if (failure == ServerFailure()) {
+        error.value = 'Error Fetching channel!';
+      }
+    }, (data) {
+      userSubscribeCategories.assignAll(data);
+    });
   }
 
   Future<void> _setupChannel() async {
     final result = await getChannels.execute();
 
-    result.fold((failure) {}, (data) {
+    result.fold((failure) {
+      if (failure == ServerFailure()) {
+        error.value = 'Error Fetching channel!';
+      }
+    }, (data) {
       channels.assignAll(data);
     });
   }
 
-  Future<void> _setupUserChannel() async {
-    UserModel? user = authController.getSignedUser();
-    if (user != null) {
-      final result = await getUserChannelByUserId.execute(
-        user.id,
-      );
-      result.fold((failure) {
-        if (failure == ServerFailure()) {
-          error.value = 'Error Fetching Bookmark!';
-        }
-      }, (data) {
-        List<int> channelIds = [];
-        // List<int> categoryIds = [];
-        for (var userChannel in data) {
-          channelIds.add(userChannel.category!.channelId);
-          // categoryIds.add(userChannel.categoryId);
-        }
-        userSubscribeChannelIds.assignAll(channelIds);
-      });
-    }
+  Future<void> _setupCategories() async {
+    final result = await getCategories.execute();
+    result.fold((failure) {
+      if (failure == ServerFailure()) {
+        error.value = 'Error Fetching category!';
+      }
+    }, (data) {
+      List<Category> list = [];
+      for (var category in data) {
+        list.add(category);
+      }
+      categories.assignAll(list);
+    });
   }
 
-  _setupCategories() async {
-    UserModel? user = authController.user.value;
-    if (user != null) {
-      final result = await getCategories.execute();
-      result.fold((failure) {
-        if (failure == ServerFailure()) {
-          error.value = 'Error Fetching Bookmark!';
-        }
-      }, (data) {
-        List<Category> list = [];
-        for (var category in data) {
-          list.add(category);
-        }
-        categories.assignAll(list);
-      });
-    }
+  void _listenUserCategories() {
+    subscribeUserCategory.execute().listen((List<UserCategory> event) {
+      userSubscribeCategories.bindStream(Stream.value(event));
+    });
   }
 }

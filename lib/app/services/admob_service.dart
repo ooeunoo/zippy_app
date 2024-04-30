@@ -78,7 +78,7 @@ class AdmobService extends GetxService {
     ever(adContentCredits, (credits) {
       if (credits == PRELOAD_AD_INDEX) {
         _loadNativeAd();
-        _loadBannerAd();
+        loadBannerAd();
       }
     });
   }
@@ -106,7 +106,7 @@ class AdmobService extends GetxService {
   }
 
   void resetAdContent() {
-    adContentCredits.value = randomInt(5, 8);
+    adContentCredits.value = randomInt(4, 7);
   }
 
   void _loadInterstitialAd() {
@@ -129,7 +129,7 @@ class AdmobService extends GetxService {
     nativeAd.value = ad;
   }
 
-  void _loadBannerAd() {
+  void loadBannerAd() {
     BannerAd ad = BannerAd(
       adUnitId: bannerAdUnitId,
       request: const AdRequest(),

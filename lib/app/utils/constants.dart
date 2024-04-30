@@ -1,5 +1,5 @@
-class Constants {
+abstract class Constants {
   Constants._();
 
-  static const String loginRedirectTo = 'com.example.woody://login-callback';
+  static const String inquryUrl = 'https://forms.gle/TS33Zmpj5WoHkjGM6';
 }

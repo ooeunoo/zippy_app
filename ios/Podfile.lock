@@ -23,6 +23,8 @@ PODS:
   - GoogleUserMessagingPlatform (2.3.0)
   - image_picker_ios (0.0.1):
     - Flutter
+  - in_app_review (0.2.0):
+    - Flutter
   - kakao_flutter_sdk_common (1.9.1-2):
     - Flutter
   - naveridlogin-sdk-ios (4.1.6)
@@ -51,6 +53,7 @@ DEPENDENCIES:
   - flutter_naver_login (from `.symlinks/plugins/flutter_naver_login/ios`)
   - google_mobile_ads (from `.symlinks/plugins/google_mobile_ads/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
+  - in_app_review (from `.symlinks/plugins/in_app_review/ios`)
   - kakao_flutter_sdk_common (from `.symlinks/plugins/kakao_flutter_sdk_common/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
@@ -81,6 +84,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_mobile_ads/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
+  in_app_review:
+    :path: ".symlinks/plugins/in_app_review/ios"
   kakao_flutter_sdk_common:
     :path: ".symlinks/plugins/kakao_flutter_sdk_common/ios"
   path_provider_foundation:
@@ -106,6 +111,7 @@ SPEC CHECKSUMS:
   google_mobile_ads: 5698dd1cd5a3cfc6688abec7db5428f237d6b1ac
   GoogleUserMessagingPlatform: b1ad7bb1ee3ce64749d4fec24f667b36e45c396c
   image_picker_ios: b545a5f16c0fa88e3ecbbce3ed4de45567a8ec18
+  in_app_review: 318597b3a06c22bb46dc454d56828c85f444f99d
   kakao_flutter_sdk_common: ac22d95194585407db3fbc5f838d67ced11ea0f0
   naveridlogin-sdk-ios: cdd34e3585a3d5aaf37c1d84c1f41faba4a25d1a
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c

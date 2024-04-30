@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
@@ -11,10 +10,9 @@ import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/app/widgets/app_webview.dart';
-import 'package:zippy/domain/model/bookmark.dart';
+import 'package:zippy/domain/model/user_bookmark.dart';
 import 'package:zippy/presentation/controllers/bookmark/bookmark_controller.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:share_plus/share_plus.dart';
 
 class BookmarkView extends StatefulWidget {
   const BookmarkView({super.key});
@@ -122,12 +120,12 @@ class _BookmarkViewState extends State<BookmarkView> {
 
   Widget bookmarkLists(BuildContext context, BookmarkController controller) {
     return Obx(() => ListView.builder(
-          itemCount: controller.bookmarks.length,
+          itemCount: controller.userBookmarks.length,
           itemBuilder: (BuildContext context, int index) {
             return Obx(() {
-              Bookmark bookmark = controller.bookmarks[index];
-              bool isLastItem = index == controller.bookmarks.length - 1;
-              var deleteAction = controller.deleteBookmarkItem;
+              UserBookmark bookmark = controller.userBookmarks[index];
+              bool isLastItem = index == controller.userBookmarks.length - 1;
+              var deleteAction = controller.deleteBookmarkContent;
               return Padding(
                 padding: EdgeInsets.symmetric(horizontal: AppDimens.width(10)),
                 child:
@@ -139,7 +137,7 @@ class _BookmarkViewState extends State<BookmarkView> {
   }
 
   Widget bookmarkItems(
-      BuildContext context, Bookmark bookmark, bool isLastItem, delete) {
+      BuildContext context, UserBookmark bookmark, bool isLastItem, delete) {
     return Slidable(
         key: const ValueKey(0),
         startActionPane: ActionPane(
@@ -154,9 +152,7 @@ class _BookmarkViewState extends State<BookmarkView> {
             ),
             SlidableAction(
               onPressed: (BuildContext context) async {
-                if (bookmark.item != null) {
-                  await toShare(bookmark.item!.url, bookmark.item!.title);
-                }
+                await toShare(bookmark.url, bookmark.title);
               },
               backgroundColor: AppColor.brand600.withOpacity(0.9),
               foregroundColor: AppColor.white,
@@ -173,13 +169,13 @@ class _BookmarkViewState extends State<BookmarkView> {
               width: AppDimens.size(40),
               child: CircleAvatar(
                 radius: AppDimens.size(16),
-                backgroundImage: bookmark.item?.contentImgUrl != null
-                    ? NetworkImage(bookmark.item!.contentImgUrl!)
+                backgroundImage: bookmark.contentImgUrl != null
+                    ? NetworkImage(bookmark.contentImgUrl!)
                     : null,
               ),
             ),
             title: AppText(
-              bookmark.item?.title.trim() ?? '',
+              bookmark.title.trim() ?? '',
               maxLines: 2,
               style: Theme.of(context)
                   .textTheme
@@ -187,16 +183,14 @@ class _BookmarkViewState extends State<BookmarkView> {
                   .copyWith(color: AppColor.graymodern100),
             ),
             onTap: () {
-              if (bookmark.item?.url != null) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AppWebview(uri: bookmark.item!.url),
-                  ),
-                );
-              }
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AppWebview(uri: bookmark.url),
+                ),
+              );
             },
-            minLeadingWidth: bookmark.item?.contentImgUrl != null ? 56 : 0,
+            minLeadingWidth: bookmark.contentImgUrl != null ? 56 : 0,
           ),
           AppSpacerV(value: AppDimens.size(5)),
           if (!isLastItem) const AppDivider(),

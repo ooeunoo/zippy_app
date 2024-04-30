@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/routes/app_pages.dart';
+import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
@@ -30,6 +32,15 @@ class BoardView extends StatefulWidget {
 }
 
 class _BoardViewState extends State<BoardView> {
+  // AdmobService admobService = Get.find();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // admobService.loadBannerAd();
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -44,7 +55,8 @@ class _BoardViewState extends State<BoardView> {
       body: Stack(
         children: [
           Obx(() {
-            if (controller.isLoadingItems.value) {
+            if (controller.isLoadingItems.value ||
+                controller.isLoadingUserCategory.value) {
               return const Center(
                 //     child: AppColorLoader(
                 //   radius: 20,
@@ -53,7 +65,7 @@ class _BoardViewState extends State<BoardView> {
                   color: AppColor.brand600,
                 ),
               );
-            } else if (controller.userChannels.isEmpty) {
+            } else if (controller.userCategories.isEmpty) {
               return Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -105,19 +117,17 @@ class _BoardViewState extends State<BoardView> {
                       controller.onChangedItem(pageIndex),
                   itemBuilder: (BuildContext context, int index) {
                     return Obx(() {
-                      Item item = controller.items[index];
+                      Content content = controller.contents[index];
 
-                      if (item.isAd) {
-                        AdContent content = item as AdContent;
+                      if (content.isAd) {
+                        AdContent adContent = content as AdContent;
                         // TODO: nativeAd null
-                        return ZippyAdContentCard(content: content);
+                        return ZippyAdContentCard(content: adContent);
                       } else {
-                        Content content = item as Content;
-
                         Channel? channel = controller
                             .getChannelByCategoryId(content.categoryId);
-                        bool isBookmarked = controller.userBookmarkItemIds
-                            .contains(content.id!);
+                        bool isBookmarked =
+                            controller.isBookmarked(content.id!);
 
                         return GestureDetector(
                           onTap: () => controller.onClickItem(content),
@@ -130,24 +140,25 @@ class _BoardViewState extends State<BoardView> {
                       }
                     });
                   },
-                  itemCount: controller.items.length,
+                  itemCount: controller.contents.length,
                 ),
               );
             }
           }),
+          // if (admobService.bannerAd.value != null) ...{
+          //   Align(
+          //     alignment: Alignment.bottomCenter,
+          //     child: Expanded(
+          //       child: SizedBox(
+          //         // width: admobService.bannerAd.value?.size.width.toDouble(),
+          //         height: admobService.bannerAd.value?.size.height.toDouble(),
+          //         child: AdWidget(ad: admobService.bannerAd.value!),
+          //       ),
+          //     ),
+          //   )
+          // }
         ],
       ),
     );
   }
-
-  // Widget bannerAdWidget(AdmobService admobService) {
-  //   return StatefulBuilder(
-  //     builder: (context, setState) => Container(
-  //       width: double.infinity,
-  //       height: 100.0,
-  //       alignment: Alignment.center,
-  //       child: AdWidget(ad: admobService.nativeAd.value!),
-  //     ),
-  //   );
-  // }
 }

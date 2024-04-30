@@ -1,67 +1,57 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/failures/failure.dart';
-import 'package:zippy/app/widgets/app.snak_bar.dart';
-import 'package:zippy/data/entity/bookmark_entity.dart';
-import 'package:zippy/domain/model/bookmark.dart';
-import 'package:zippy/domain/model/user.dart';
-import 'package:zippy/domain/usecases/delete_bookmark.dart';
-import 'package:zippy/domain/usecases/get_bookmarks_by_user_id.dart';
-import 'package:zippy/presentation/controllers/auth/auth_controller.dart';
+import 'package:zippy/data/entity/user_bookmark_entity.dart';
+import 'package:zippy/domain/model/user_bookmark.dart';
+import 'package:zippy/domain/usecases/delete_user_bookmark.dart';
+import 'package:zippy/domain/usecases/get_user_bookmark.dart';
+import 'package:zippy/domain/usecases/subscirbe_user_bookmark.dart';
 
 class BookmarkController extends GetxController {
-  final authController = Get.find<AuthController>();
+  final GetUserBookmark getUserBookmark;
+  final DeleteUserBookmark deleteUserBookmark;
+  final SubscribeUserBookmark subscribeUserBookmark;
 
-  final GetBookmarksByUserId getBookmarksByUserId;
-  final DeleteBookmark deleteBookmark;
+  BookmarkController(this.getUserBookmark, this.deleteUserBookmark,
+      this.subscribeUserBookmark);
 
-  BookmarkController(
-    this.getBookmarksByUserId,
-    this.deleteBookmark,
-  );
-
-  RxList<Bookmark> bookmarks = RxList<Bookmark>([]).obs();
+  RxList<UserBookmark> userBookmarks = RxList<UserBookmark>([]).obs();
   Rxn<String> error = Rxn<String>();
 
   @override
   onInit() async {
+    await _initialize();
     super.onInit();
-    await _setupBookmarks();
-
-    // ever(error, (e) {
-    //   notifyErrorMessage('');
-    // });
   }
 
-  Future<void> deleteBookmarkItem(Bookmark bookmark) async {
-    BookmarkEntity entity =
-        BookmarkEntity(user_id: bookmark.userId, item_id: bookmark.itemId);
-    final result = await deleteBookmark.execute(entity);
-    result.fold((failure) {
+  Future<void> deleteBookmarkContent(UserBookmark bookmark) async {
+    UserBookmarkEntity entity = bookmark.toCreateEntity();
+    await deleteUserBookmark.execute(entity);
+  }
+
+  //////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////
+  /// 초기화
+  //////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////
+  Future<void> _initialize() async {
+    await _setupUserBookmark();
+    _listenUserBookmark();
+  }
+
+  Future<void> _setupUserBookmark() async {
+    final bookmarks = await getUserBookmark.execute();
+    bookmarks.fold((failure) {
       if (failure == ServerFailure()) {
-        error.value = '북마크를 삭제하는 동안 오류가 발생했습니다!';
+        error.value = 'Error Fetching channel!';
       }
     }, (data) {
-      bookmarks.removeWhere((bm) => bm.id == bookmark.id);
+      userBookmarks.assignAll(data);
     });
   }
 
-  _setupBookmarks() async {
-    UserModel? user = authController.user.value;
-    if (user != null) {
-      final result =
-          await getBookmarksByUserId.execute(user.id, withItem: true);
-      result.fold((failure) {
-        if (failure == ServerFailure()) {
-          error.value = 'Error Fetching Bookmark!';
-        }
-      }, (data) {
-        List<Bookmark> list = [];
-        for (var bookmark in data) {
-          list.add(bookmark);
-        }
-        bookmarks.assignAll(list);
-      });
-    }
+  void _listenUserBookmark() {
+    subscribeUserBookmark.execute().listen((List<UserBookmark> event) {
+      userBookmarks.bindStream(Stream.value(event));
+    });
   }
 }

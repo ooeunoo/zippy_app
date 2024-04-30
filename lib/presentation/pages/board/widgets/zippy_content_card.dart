@@ -23,7 +23,7 @@ class ZippyContentCard extends StatefulWidget {
   final Channel? channel;
   final Content content;
   final bool isBookMarked;
-  final Function(int id) toggleBookmark;
+  final Function(Content content) toggleBookmark;
 
   const ZippyContentCard(
       {super.key,
@@ -38,8 +38,7 @@ class ZippyContentCard extends StatefulWidget {
 
 class _ZippyCardState extends State<ZippyContentCard> {
   void toogleBookmark() {
-    int? itemId = widget.content.id;
-    widget.toggleBookmark(itemId!);
+    widget.toggleBookmark(widget.content);
   }
 
   bool get isUrl =>

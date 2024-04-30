@@ -1,12 +1,12 @@
-import 'package:zippy/domain/model/bookmark.dart';
-import 'package:zippy/domain/repositories/interfaces/bookmark_repository.dart';
+import 'package:zippy/domain/model/user_bookmark.dart';
+import 'package:zippy/domain/repositories/interfaces/user_bookmark_repository.dart';
 
 class SubscribeUserBookmark {
-  final BookmarkRepository repo;
+  final UserBookmarkRepository repo;
 
   SubscribeUserBookmark(this.repo);
 
-  Stream<List<Bookmark>> execute(String userId) {
-    return repo.subscribeUserBookmark(userId);
+  Stream<List<UserBookmark>> execute() {
+    return repo.subscribeUserBookmarks();
   }
 }

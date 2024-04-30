@@ -3,21 +3,15 @@ import 'package:zippy/presentation/pages/base/base.dart';
 import 'package:zippy/presentation/pages/base/bindings/base_binding.dart';
 import 'package:zippy/presentation/pages/bookmark/bindings/bookmark_binding.dart';
 import 'package:zippy/presentation/pages/bookmark/bookmark_view.dart';
-import 'package:zippy/presentation/pages/login/bindings/login_binding.dart';
-import 'package:zippy/presentation/pages/login/login_view.dart';
 import 'package:get/route_manager.dart';
 import 'package:zippy/presentation/pages/channel/bindings/channel_binding.dart';
 import 'package:zippy/presentation/pages/channel/channel_view.dart';
-import 'package:zippy/presentation/pages/profile/widgets/privacy.dart';
+import 'package:zippy/presentation/pages/profile/widgets/inquiry.dart';
 
 class AppPages {
-  static const initial = _Paths.login;
+  static const initial = _Paths.base;
 
   static final routes = [
-    GetPage(
-        name: _Paths.login,
-        page: () => const LoginView(),
-        binding: LoginBinding()),
     GetPage(
         name: _Paths.base, page: () => const Base(), binding: BaseBinding()),
     GetPage(
@@ -35,7 +29,6 @@ class AppPages {
 
 abstract class Routes {
   Routes._();
-  static const login = _Paths.login;
   static const base = _Paths.base;
   static const channel = _Paths.channel;
   static const bookmark = _Paths.bookmark;
@@ -43,7 +36,6 @@ abstract class Routes {
 
 abstract class _Paths {
   _Paths._();
-  static const login = '/login';
   static const base = '/';
   static const channel = '/user/subscribe';
   static const bookmark = '/user/bookmark';
