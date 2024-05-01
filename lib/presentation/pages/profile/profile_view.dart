@@ -108,7 +108,7 @@ class ProfileView extends StatelessWidget {
             onTap: () {
               Get.to(
                   () => const AppWebview(
-                      title: '의견보내기', uri: Constants.inquriyUrl),
+                      title: '의견 보내기', uri: Constants.inquriyUrl),
                   transition: Transition.rightToLeftWithFade);
             }),
       ]),
