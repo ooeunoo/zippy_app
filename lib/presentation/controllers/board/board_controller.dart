@@ -104,11 +104,10 @@ class BoardController extends GetxService {
     if (curPageIndex < prevPageIndex.value) return;
     int credit = admobService.useAdContentCredits();
     NativeAd? nativeAd = admobService.nativeAd.value;
-    BannerAd? bannerAd = admobService.bannerAd.value;
-    if (credit == 0 && nativeAd != null && bannerAd != null) {
+
+    if (credit == 0 && nativeAd != null) {
       AdContent adContent = AdContent(
         nativeAd: nativeAd,
-        bannerAd: bannerAd,
       );
       contents.insert(curPageIndex + 1, adContent);
       contents.refresh();
@@ -122,12 +121,13 @@ class BoardController extends GetxService {
     if (!content.isAd) {
       int credit = admobService.useIntersitialAdCredits();
       InterstitialAd? interstitialAd = admobService.interstitialAd.value;
+
       if (credit == 0 && interstitialAd != null) {
         admobService.interstitialAd.value!.show();
         admobService.resetIntersitialAdCredits();
       }
 
-      Get.to(() => AppWebview(uri: content.url),
+      Get.to(() => AppWebview(title: content.title, uri: content.url),
           transition: Transition.rightToLeftWithFade);
     }
   }

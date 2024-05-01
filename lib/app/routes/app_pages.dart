@@ -6,7 +6,6 @@ import 'package:zippy/presentation/pages/bookmark/bookmark_view.dart';
 import 'package:get/route_manager.dart';
 import 'package:zippy/presentation/pages/channel/bindings/channel_binding.dart';
 import 'package:zippy/presentation/pages/channel/channel_view.dart';
-import 'package:zippy/presentation/pages/profile/widgets/inquiry.dart';
 
 class AppPages {
   static const initial = _Paths.base;

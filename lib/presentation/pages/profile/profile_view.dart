@@ -13,7 +13,6 @@ import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:zippy/app/widgets/app_webview.dart';
 import 'package:zippy/domain/model/menu.dart';
-import 'package:zippy/presentation/pages/profile/widgets/inquiry.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -107,7 +106,9 @@ class ProfileView extends StatelessWidget {
             icon: Assets.file06,
             title: '의견 보내기',
             onTap: () {
-              Get.to(() => const InquryView(),
+              Get.to(
+                  () => const AppWebview(
+                      title: '의견보내기', uri: Constants.inquriyUrl),
                   transition: Transition.rightToLeftWithFade);
             }),
       ]),

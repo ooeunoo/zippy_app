@@ -78,7 +78,6 @@ class AdmobService extends GetxService {
     ever(adContentCredits, (credits) {
       if (credits == PRELOAD_AD_INDEX) {
         _loadNativeAd();
-        loadBannerAd();
       }
     });
   }

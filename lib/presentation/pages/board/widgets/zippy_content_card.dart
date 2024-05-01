@@ -1,7 +1,3 @@
-import 'dart:math';
-
-import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
@@ -17,7 +13,6 @@ import 'package:zippy/domain/model/channel.dart';
 import 'package:zippy/domain/model/content.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 
 class ZippyContentCard extends StatefulWidget {
   final Channel? channel;
@@ -56,7 +51,7 @@ class _ZippyCardState extends State<ZippyContentCard> {
           // 이미지
           ///////////////////////
           Expanded(
-            flex: 6,
+            flex: 5,
             child: imageSection(),
           ),
           ///////////////////////
@@ -113,8 +108,7 @@ class _ZippyCardState extends State<ZippyContentCard> {
                                 CircleAvatar(
                               backgroundImage: imageProvider,
                               backgroundColor: Colors.transparent,
-                              foregroundColor: Colors
-                                  .black, // Change to your desired foreground color
+                              foregroundColor: Colors.black,
                             ),
                           )
                         : const AppSvg(Assets.logo, color: AppColor.gray600),
@@ -160,7 +154,7 @@ class _ZippyCardState extends State<ZippyContentCard> {
               Expanded(
                 child: AppText(
                   widget.content.title,
-                  maxLines: 2,
+                  maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context)
                       .textTheme

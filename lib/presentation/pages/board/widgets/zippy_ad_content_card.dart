@@ -28,11 +28,7 @@ class _ZippyAdContentCardState extends State<ZippyAdContentCard> {
           children: [
             AppSpacerV(value: AppDimens.height(150)),
             Expanded(child: nativeAdSection(widget.content.nativeAd)),
-            SizedBox(
-              width: widget.content.bannerAd.size.width.toDouble(),
-              height: widget.content.bannerAd.size.height.toDouble(),
-              child: AdWidget(ad: widget.content.bannerAd),
-            )
+            AppSpacerV(value: AppDimens.height(150)),
           ],
         ),
       ),

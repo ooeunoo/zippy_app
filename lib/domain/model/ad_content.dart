@@ -5,7 +5,6 @@ import 'package:zippy/domain/model/content.dart';
 @immutable
 class AdContent extends Content {
   final NativeAd nativeAd;
-  final BannerAd bannerAd;
 
   const AdContent({
     super.categoryId = 0,
@@ -16,20 +15,21 @@ class AdContent extends Content {
     super.contentText,
     super.contentImgUrl,
     required this.nativeAd,
-    required this.bannerAd,
     super.isAd = true,
   });
 
   @override
   List<Object> get props {
-    return [...super.props, nativeAd, bannerAd];
+    return [
+      ...super.props,
+      nativeAd,
+    ];
   }
 
   @override
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
         'nativeAd': nativeAd,
-        'bannerAd': bannerAd,
       };
 
   @override

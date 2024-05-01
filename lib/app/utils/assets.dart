@@ -23,8 +23,8 @@ class Assets {
   static const String instizLogo = 'assets/images/instiz.png';
   static const String clienLogo = 'assets/images/clien.png';
 
-  // random
-  static const String random01 = 'assets/images/random01.jpg';
+  // animation
+  static const String gestureSwipeUp = 'assets/animation/gesture_swipe_up.json';
 
   static String randomImage(String number) =>
       'https://source.unsplash.com/random/$number';

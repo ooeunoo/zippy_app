@@ -32,13 +32,13 @@ class BoardView extends StatefulWidget {
 }
 
 class _BoardViewState extends State<BoardView> {
-  // AdmobService admobService = Get.find();
+  AdmobService admobService = Get.find();
 
   @override
   void initState() {
     super.initState();
 
-    // admobService.loadBannerAd();
+    admobService.loadBannerAd();
   }
 
   @override
@@ -145,18 +145,17 @@ class _BoardViewState extends State<BoardView> {
               );
             }
           }),
-          // if (admobService.bannerAd.value != null) ...{
-          //   Align(
-          //     alignment: Alignment.bottomCenter,
-          //     child: Expanded(
-          //       child: SizedBox(
-          //         // width: admobService.bannerAd.value?.size.width.toDouble(),
-          //         height: admobService.bannerAd.value?.size.height.toDouble(),
-          //         child: AdWidget(ad: admobService.bannerAd.value!),
-          //       ),
-          //     ),
-          //   )
-          // }
+          if (admobService.bannerAd.value != null) ...{
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                color: AppColor.graymodern950,
+                width: admobService.bannerAd.value?.size.width.toDouble(),
+                height: admobService.bannerAd.value?.size.height.toDouble(),
+                child: AdWidget(ad: admobService.bannerAd.value!),
+              ),
+            )
+          }
         ],
       ),
     );
