@@ -1,6 +1,9 @@
 import 'package:get/get.dart';
 import 'package:zippy/app/failures/failure.dart';
+import 'package:zippy/app/widgets/app_webview.dart';
 import 'package:zippy/data/entity/user_bookmark_entity.dart';
+import 'package:zippy/domain/model/bookmark.dart';
+import 'package:zippy/domain/model/content.dart';
 import 'package:zippy/domain/model/user_bookmark.dart';
 import 'package:zippy/domain/usecases/delete_user_bookmark.dart';
 import 'package:zippy/domain/usecases/get_user_bookmark.dart';
@@ -26,6 +29,11 @@ class BookmarkController extends GetxController {
   Future<void> deleteBookmarkContent(UserBookmark bookmark) async {
     UserBookmarkEntity entity = bookmark.toCreateEntity();
     await deleteUserBookmark.execute(entity);
+  }
+
+  void onClickBookmark(UserBookmark bookmark) {
+    Get.to(() => AppWebview(title: bookmark.title, uri: bookmark.url),
+        transition: Transition.rightToLeftWithFade);
   }
 
   //////////////////////////////////////////////////////////////////

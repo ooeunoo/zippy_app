@@ -128,16 +128,16 @@ class _BookmarkViewState extends State<BookmarkView> {
               var deleteAction = controller.deleteBookmarkContent;
               return Padding(
                 padding: EdgeInsets.symmetric(horizontal: AppDimens.width(10)),
-                child:
-                    bookmarkItems(context, bookmark, isLastItem, deleteAction),
+                child: bookmarkItems(
+                    context, controller, bookmark, isLastItem, deleteAction),
               );
             });
           },
         ));
   }
 
-  Widget bookmarkItems(
-      BuildContext context, UserBookmark bookmark, bool isLastItem, delete) {
+  Widget bookmarkItems(BuildContext context, BookmarkController controller,
+      UserBookmark bookmark, bool isLastItem, delete) {
     return Slidable(
         key: const ValueKey(0),
         startActionPane: ActionPane(
@@ -175,21 +175,14 @@ class _BookmarkViewState extends State<BookmarkView> {
               ),
             ),
             title: AppText(
-              bookmark.title.trim() ?? '',
+              bookmark.title.trim(),
               maxLines: 2,
               style: Theme.of(context)
                   .textTheme
                   .textMD
                   .copyWith(color: AppColor.graymodern100),
             ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AppWebview(uri: bookmark.url),
-                ),
-              );
-            },
+            onTap: () => controller.onClickBookmark(bookmark),
             minLeadingWidth: bookmark.contentImgUrl != null ? 56 : 0,
           ),
           AppSpacerV(value: AppDimens.size(5)),
