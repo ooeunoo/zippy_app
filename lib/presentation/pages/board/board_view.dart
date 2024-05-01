@@ -16,6 +16,7 @@ import 'package:zippy/domain/model/channel.dart';
 import 'package:zippy/domain/model/content.dart';
 import 'package:zippy/domain/model/item.dart';
 import 'package:zippy/presentation/controllers/board/board_controller.dart';
+import 'package:zippy/presentation/pages/board/widgets/finger_gesture_overlay_guide.dart';
 import 'package:zippy/presentation/pages/board/widgets/zippy_ad_content_card.dart';
 import 'package:zippy/presentation/pages/board/widgets/zippy_content_card.dart';
 import 'package:flutter/gestures.dart';
@@ -33,18 +34,40 @@ class BoardView extends StatefulWidget {
 
 class _BoardViewState extends State<BoardView> {
   AdmobService admobService = Get.find();
+  // OverlayEntry? _overlayEntry;
+  // final bool _showOverlay = true; // Variable to control overlay visibility
 
   @override
   void initState() {
     super.initState();
 
     admobService.loadBannerAd();
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   showOverlayGuide(context);
+    // });
   }
 
   @override
   void dispose() {
     super.dispose();
   }
+
+  // void showOverlayGuide(BuildContext context) {
+  //   if (!_showOverlay) return;
+
+  //   _overlayEntry = OverlayEntry(
+  //     builder: (context) => FingerGestureOverlayGuide(
+  //       onSkipPressed: removeOverlayGuide,
+  //     ),
+  //   );
+
+  //   Overlay.of(context).insert(_overlayEntry!);
+  // }
+
+  // void removeOverlayGuide() {
+  //   _overlayEntry?.remove();
+  //   _overlayEntry = null;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +81,6 @@ class _BoardViewState extends State<BoardView> {
             if (controller.isLoadingItems.value ||
                 controller.isLoadingUserCategory.value) {
               return const Center(
-                //     child: AppColorLoader(
-                //   radius: 20,
-                // )
                 child: CupertinoActivityIndicator(
                   color: AppColor.brand600,
                 ),
@@ -121,7 +141,6 @@ class _BoardViewState extends State<BoardView> {
 
                       if (content.isAd) {
                         AdContent adContent = content as AdContent;
-                        // TODO: nativeAd null
                         return ZippyAdContentCard(content: adContent);
                       } else {
                         Channel? channel = controller

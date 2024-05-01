@@ -10,7 +10,7 @@ import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/utils/env.dart';
 import 'package:zippy/app/utils/random.dart';
 
-int PRELOAD_AD_INDEX = 3;
+int PRELOAD_AD_INDEX = 4;
 
 class AdmobService extends GetxService {
   static bool isProduction = ENV.ZIPPY_ENV == production;

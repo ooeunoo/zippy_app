@@ -1,6 +1,7 @@
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/app/services/admob_service.dart';
+import 'package:zippy/app/utils/shuffle.dart';
 import 'package:zippy/app/utils/vibrates.dart';
 import 'package:zippy/app/widgets/app_webview.dart';
 import 'package:zippy/data/entity/user_bookmark_entity.dart';
@@ -137,7 +138,7 @@ class BoardController extends GetxService {
     subscribeContents
         .execute(userCategories)
         .listen((List<Content> newContents) {
-      contents.bindStream(Stream.value(newContents));
+      contents.bindStream(Stream.value(shuffle(newContents)));
     });
 
     isLoadingItems.value = false;
