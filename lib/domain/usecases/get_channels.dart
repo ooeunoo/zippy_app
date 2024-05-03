@@ -8,7 +8,7 @@ class GetChannels {
 
   GetChannels(this.repo);
 
-  Future<Either<Failure, List<Channel>>> execute() {
-    return repo.getChannels();
+  Future<Either<Failure, List<Channel>>> execute({withCategory = false}) {
+    return repo.getChannels(withCategory: withCategory);
   }
 }

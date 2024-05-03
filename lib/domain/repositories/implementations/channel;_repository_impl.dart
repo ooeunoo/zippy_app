@@ -10,8 +10,8 @@ class ChannelRepositoryImpl implements ChannelRepository {
   ChannelRepositoryImpl(this.datasource);
 
   @override
-  Future<Either<Failure, List<Channel>>> getChannels() {
-    return datasource.getChannels();
+  Future<Either<Failure, List<Channel>>> getChannels({withCategory = false}) {
+    return datasource.getChannels(withCategory: withCategory);
   }
 
   @override

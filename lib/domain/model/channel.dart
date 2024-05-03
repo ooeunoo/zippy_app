@@ -1,6 +1,7 @@
 import 'package:zippy/app/utils/assets.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:zippy/domain/model/category.dart';
 
 enum ChannelType { community, news }
 
@@ -15,6 +16,7 @@ class Channel extends Equatable {
   final String itemViewUrl;
   final String? imageUrl;
   final bool status;
+  final List<Category>? categories;
 
   const Channel(
       {this.id,
@@ -25,7 +27,8 @@ class Channel extends Equatable {
       required this.listViewUrl,
       required this.itemViewUrl,
       this.imageUrl,
-      required this.status});
+      required this.status,
+      this.categories});
 
   @override
   List<Object> get props {
@@ -41,7 +44,8 @@ class Channel extends Equatable {
         "listViewUrl": listViewUrl,
         "itemViewUrl": itemViewUrl,
         'imageUrl': imageUrl,
-        'status': status
+        'status': status,
+        'categories': categories
       };
 
   Map<int, Channel> toIdAssign(Map<int, Channel> map) {

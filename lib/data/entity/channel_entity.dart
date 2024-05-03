@@ -1,5 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:zippy/data/entity/category_entity.dart';
+import 'package:zippy/domain/model/category.dart';
 import 'package:zippy/domain/model/channel.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,7 @@ class ChannelEntity extends Equatable {
   final String item_view_url;
   final String? image_url;
   final bool status;
+  final List<CategoryEntity>? categories;
 
   const ChannelEntity(
       {this.id,
@@ -25,7 +28,8 @@ class ChannelEntity extends Equatable {
       required this.list_view_url,
       required this.item_view_url,
       this.image_url,
-      required this.status});
+      required this.status,
+      this.categories});
 
   @override
   List<Object> get props {
@@ -51,19 +55,28 @@ class ChannelEntity extends Equatable {
       item_view_url: json['item_view_url'],
       image_url: json['image_url'],
       status: json['status'],
+      categories: json['category'] != null
+          ? List<CategoryEntity>.from(json['category']
+              .map((categoryJson) => CategoryEntity.fromJson(categoryJson)))
+          : null,
     );
   }
 
   Channel toModel() {
     return Channel(
-        id: id,
-        type: type,
-        name: name,
-        nameKo: name_ko,
-        baseUrl: base_url,
-        listViewUrl: list_view_url,
-        itemViewUrl: item_view_url,
-        imageUrl: image_url,
-        status: status);
+      id: id,
+      type: type,
+      name: name,
+      nameKo: name_ko,
+      baseUrl: base_url,
+      listViewUrl: list_view_url,
+      itemViewUrl: item_view_url,
+      imageUrl: image_url,
+      status: status,
+      categories: categories != null
+          ? List<Category>.from(
+              categories!.map((category) => category.toModel()))
+          : null,
+    );
   }
 }

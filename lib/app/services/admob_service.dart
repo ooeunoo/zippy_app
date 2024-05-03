@@ -13,17 +13,11 @@ import 'package:zippy/app/utils/random.dart';
 int PRELOAD_AD_INDEX = 4;
 
 class AdmobService extends GetxService {
-  static bool isProduction = ENV.ZIPPY_ENV == production;
-
   static String get bannerAdUnitId {
     if (Platform.isAndroid) {
-      return isProduction
-          ? ENV.GOOGLE_ADMOB_PROD_BANNER_AOS
-          : 'ca-app-pub-3940256099942544/6300978111';
+      return ENV.GOOGLE_ADMOB_PROD_BANNER_AOS;
     } else if (Platform.isIOS) {
-      return isProduction
-          ? ENV.GOOGLE_ADMOB_PROD_BANNER_IOS
-          : 'ca-app-pub-3940256099942544/2934735716';
+      return ENV.GOOGLE_ADMOB_PROD_BANNER_IOS;
     } else {
       throw UnsupportedError('Unsupported platform');
     }
@@ -31,13 +25,9 @@ class AdmobService extends GetxService {
 
   static String get interstitialAdUnitId {
     if (Platform.isAndroid) {
-      return isProduction
-          ? ENV.GOOGLE_ADMOB_PROD_INTERSTITIAL_AOS
-          : "ca-app-pub-3940256099942544/1033173712";
+      return ENV.GOOGLE_ADMOB_PROD_INTERSTITIAL_AOS;
     } else if (Platform.isIOS) {
-      return isProduction
-          ? ENV.GOOGLE_ADMOB_PROD_INTERSTITIAL_IOS
-          : "ca-app-pub-3940256099942544/4411468910";
+      return ENV.GOOGLE_ADMOB_PROD_INTERSTITIAL_IOS;
     } else {
       throw UnsupportedError("Unsupported platform");
     }
@@ -45,13 +35,9 @@ class AdmobService extends GetxService {
 
   static String get nativeAdUnitId {
     if (Platform.isAndroid) {
-      return isProduction
-          ? ENV.GOOGLE_ADMOB_PROD_NATIVE_AOS
-          : "ca-app-pub-3940256099942544/2247696110";
+      return ENV.GOOGLE_ADMOB_PROD_NATIVE_AOS;
     } else if (Platform.isIOS) {
-      return isProduction
-          ? ENV.GOOGLE_ADMOB_PROD_NATIVE_IOS
-          : "ca-app-pub-3940256099942544/3986624511";
+      return ENV.GOOGLE_ADMOB_PROD_NATIVE_IOS;
     } else {
       throw UnsupportedError("Unsupported platform");
     }

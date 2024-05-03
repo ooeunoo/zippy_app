@@ -23,7 +23,7 @@ void main() async {
 
       await initHive();
       await MobileAds.instance.initialize();
-      await dotenv.load(fileName: Assets.env);
+      await dotenv.load(fileName: kReleaseMode ? Assets.env : Assets.envDev);
       await initializeDateFormatting('ko_KR', null);
 
       return SystemChrome.setPreferredOrientations(

@@ -2,6 +2,7 @@ class Assets {
   Assets._();
 
   static String env = '.env';
+  static String envDev = '.env.development';
 
   // icons
   static const String logo = 'assets/icons/logo.svg';

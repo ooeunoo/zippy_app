@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
@@ -22,8 +21,27 @@ class ChannelView extends StatefulWidget {
   State<ChannelView> createState() => _ChannelViewState();
 }
 
-class _ChannelViewState extends State<ChannelView> {
+class _ChannelViewState extends State<ChannelView>
+    with SingleTickerProviderStateMixin {
   ChannelController controller = Get.find();
+  late TabController _tabController;
+
+  final _tabs = [
+    const Tab(text: '커뮤니티'),
+    const Tab(text: '뉴스'),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +54,12 @@ class _ChannelViewState extends State<ChannelView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
-            children: [title(context), const AppSpacerV(), channel(context)],
+            children: [
+              title(context),
+              const AppSpacerV(),
+              tabBar(),
+              // TabBarView(controller: _tabController, children: const [])
+            ],
           ),
         ),
       ),
@@ -77,56 +100,119 @@ class _ChannelViewState extends State<ChannelView> {
             .copyWith(color: AppColor.gray400));
   }
 
-  Widget channel(BuildContext context) {
-    return Expanded(
-      child: Obx(() => ListView.builder(
-            itemCount: controller.channels.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Obx(() {
-                Channel channel = controller.channels[index];
-                bool isSubscribe = controller.userSubscribeCategories
-                    .any((category) => category.channelId == channel.id);
-
-                return ListTile(
-                  leading: SizedBox(
-                    height: AppDimens.size(30),
-                    width: AppDimens.size(30),
-                    child: channel.imageUrl != null
-                        ? CachedNetworkImage(
-                            imageUrl: channel.imageUrl!,
-                            placeholder: (context, url) => const AppLoader(),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                            imageBuilder: (context, imageProvider) =>
-                                CircleAvatar(
-                              backgroundImage: imageProvider,
-                              backgroundColor: Colors.transparent,
-                              foregroundColor: Colors
-                                  .black, // Change to your desired foreground color
-                            ),
-                          )
-                        : const AppSvg(
-                            Assets.logo,
-                            color: AppColor.gray600,
-                          ),
-                  ),
-                  title: AppText(channel.nameKo,
-                      style: Theme.of(context)
-                          .textTheme
-                          .textLG
-                          .copyWith(color: AppColor.graymodern200)),
-                  trailing: Switch(
-                    value: isSubscribe,
-                    activeColor: AppColor.brand600,
-                    inactiveThumbColor: AppColor.graymodern600,
-                    onChanged: (bool value) async {
-                      await controller.toggleChannel(channel.id!);
-                    },
-                  ),
-                );
-              });
-            },
-          )),
+  TabBar tabBar() {
+    return TabBar(
+      controller: _tabController,
+      isScrollable: true,
+      splashFactory: NoSplash.splashFactory,
+      tabAlignment: TabAlignment.start,
+      dividerColor: AppColor.graymodern950,
+      indicatorColor: Colors.transparent,
+      labelPadding: const EdgeInsets.only(left: 0, right: 0),
+      labelColor: AppColor.brand600,
+      labelStyle: Theme.of(context).textTheme.textMD,
+      unselectedLabelColor: AppColor.graymodern500,
+      tabs: _tabs
+          .map((tab) => Padding(
+              padding: EdgeInsets.only(right: AppDimens.width(20)),
+              child: Tab(text: tab.text)))
+          .toList(),
     );
   }
+
+  // Widget channel(BuildContext context) {
+  //   return Expanded(
+  //     child: Obx(() => ListView.builder(
+  //           itemCount: controller.channels.length,
+  //           itemBuilder: (BuildContext context, int index) {
+  //             return Obx(() {
+  //               Channel channel = controller.channels[index];
+
+  //               return ListTile(
+  //                 leading: SizedBox(
+  //                   height: AppDimens.size(30),
+  //                   width: AppDimens.size(30),
+  //                   child: channel.imageUrl != null
+  //                       ? CachedNetworkImage(
+  //                           imageUrl: channel.imageUrl!,
+  //                           placeholder: (context, url) => const AppLoader(),
+  //                           errorWidget: (context, url, error) =>
+  //                               const Icon(Icons.error),
+  //                           imageBuilder: (context, imageProvider) =>
+  //                               CircleAvatar(
+  //                             backgroundImage: imageProvider,
+  //                             backgroundColor: Colors.transparent,
+  //                             foregroundColor: Colors
+  //                                 .black, // Change to your desired foreground color
+  //                           ),
+  //                         )
+  //                       : const AppSvg(
+  //                           Assets.logo,
+  //                           color: AppColor.gray600,
+  //                         ),
+  //                 ),
+  //                 title: AppText(channel.nameKo,
+  //                     style: Theme.of(context)
+  //                         .textTheme
+  //                         .textLG
+  //                         .copyWith(color: AppColor.graymodern200)),
+  //               );
+  //             });
+  //           },
+  //         )),
+  //   );
+  // }
+
+  // Widget channel(BuildContext context) {
+  //   return Expanded(
+  //     child: Obx(() => ListView.builder(
+  //           itemCount: controller.channels.length,
+  //           itemBuilder: (BuildContext context, int index) {
+  //             return Obx(() {
+  //               Channel channel = controller.channels[index];
+  //               bool isSubscribe = controller.userSubscribeCategories
+  //                   .any((category) => category.channelId == channel.id);
+
+  //               return ListTile(
+  //                 leading: SizedBox(
+  //                   height: AppDimens.size(30),
+  //                   width: AppDimens.size(30),
+  //                   child: channel.imageUrl != null
+  //                       ? CachedNetworkImage(
+  //                           imageUrl: channel.imageUrl!,
+  //                           placeholder: (context, url) => const AppLoader(),
+  //                           errorWidget: (context, url, error) =>
+  //                               const Icon(Icons.error),
+  //                           imageBuilder: (context, imageProvider) =>
+  //                               CircleAvatar(
+  //                             backgroundImage: imageProvider,
+  //                             backgroundColor: Colors.transparent,
+  //                             foregroundColor: Colors
+  //                                 .black, // Change to your desired foreground color
+  //                           ),
+  //                         )
+  //                       : const AppSvg(
+  //                           Assets.logo,
+  //                           color: AppColor.gray600,
+  //                         ),
+  //                 ),
+  //                 title: AppText(channel.nameKo,
+  //                     style: Theme.of(context)
+  //                         .textTheme
+  //                         .textLG
+  //                         .copyWith(color: AppColor.graymodern200)),
+  //                 trailing: Switch(
+  //                   value: isSubscribe,
+  //                   activeColor: AppColor.brand600,
+  //                   inactiveThumbColor: AppColor.graymodern600,
+  //                   onChanged: (bool value) async {
+  //                     await controller.toggleChannel(channel.id!);
+  //                   },
+  //                 ),
+  //               );
+  //             });
+  //           },
+  //         )),
+  //   );
+  // }
 }
