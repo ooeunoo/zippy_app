@@ -1,6 +1,7 @@
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/app/services/admob_service.dart';
+import 'package:zippy/app/utils/share.dart';
 import 'package:zippy/app/utils/shuffle.dart';
 import 'package:zippy/app/utils/vibrates.dart';
 import 'package:zippy/app/widgets/app_webview.dart';
@@ -26,10 +27,12 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_bookmark.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_category%20.dart';
+import 'package:zippy/domain/usecases/up_content_report_count.dart';
+import 'package:zippy/domain/usecases/up_content_view_count.dart';
+import 'package:zippy/presentation/pages/board/widgets/bottom_drop_menu.dart';
 
 class BoardController extends GetxService {
   final admobService = Get.find<AdmobService>();
-  // final authController = Get.find<AuthController>();
 
   SupabaseProvider provider = Get.find();
 
@@ -42,6 +45,8 @@ class BoardController extends GetxService {
   final DeleteUserBookmark deleteUserBookmark;
   final GetUserBookmark getUserBookmark;
   final GetUserCategory getUserCategory;
+  final UpContentViewCount upCountViewCount;
+  final UpContentReportCount upContentReportCount;
 
   BoardController(
     this.subscribeContents,
@@ -53,6 +58,8 @@ class BoardController extends GetxService {
     this.deleteUserBookmark,
     this.getUserBookmark,
     this.getUserCategory,
+    this.upCountViewCount,
+    this.upContentReportCount,
   );
 
   Rx<int> prevPageIndex = Rx<int>(0);
@@ -97,6 +104,21 @@ class BoardController extends GetxService {
     }
   }
 
+  Future<void> onOpenMenu(Content content) async {
+    Get.bottomSheet(BottomDropMenu(
+        content: content,
+        share: () async {
+          await toShare(content.title, content.url);
+        },
+        report: () async {
+          await onClickReport(content);
+        }));
+  }
+
+  Future<void> onClickReport(Content content) async {
+    await upContentReportCount.execute(content.id!);
+  }
+
   bool isBookmarked(int itemId) {
     return userBookmarks.any((bookmark) => bookmark.id == itemId);
   }
@@ -118,7 +140,7 @@ class BoardController extends GetxService {
     prevPageIndex.value = curPageIndex;
   }
 
-  onClickItem(Content content) {
+  onClickItem(Content content) async {
     if (!content.isAd) {
       int credit = admobService.useIntersitialAdCredits();
       InterstitialAd? interstitialAd = admobService.interstitialAd.value;
@@ -130,6 +152,8 @@ class BoardController extends GetxService {
 
       Get.to(() => AppWebview(title: content.title, uri: content.url),
           transition: Transition.rightToLeftWithFade);
+
+      await upCountViewCount.execute(content.id!);
     }
   }
 

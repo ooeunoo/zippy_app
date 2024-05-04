@@ -11,6 +11,7 @@ import 'package:zippy/domain/usecases/get_categories.dart';
 import 'package:zippy/domain/usecases/get_channels.dart';
 import 'package:zippy/domain/usecases/get_user_category.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_category%20.dart';
+import 'package:zippy/presentation/pages/channel/widgets/channel_category.dart';
 
 class ChannelController extends GetxController {
   final GetChannels getChannels;
@@ -28,7 +29,8 @@ class ChannelController extends GetxController {
       this.getCategories,
       this.subscribeUserCategory);
 
-  RxList<Channel> channelWithCategories = RxList<Channel>([]).obs();
+  RxList<Channel> communities = RxList<Channel>([]).obs();
+  RxList<Channel> news = RxList<Channel>([]).obs();
   Rxn<String> error = Rxn<String>();
   RxList<UserCategory> userSubscribeCategories = RxList<UserCategory>([]).obs();
 
@@ -38,32 +40,31 @@ class ChannelController extends GetxController {
     await _initialize();
   }
 
-  // Future<void> toggleChannel(int channelId) async {
-  //   List<Category> channelCategories = categories
-  //       .where((category) => category.channelId == channelId)
-  //       .toList();
+  Future<void> toggleCategory(Category category) async {
+    UserCategoryEntity entity = UserCategory(
+            id: category.id!,
+            channelId: category.channelId,
+            name: category.name)
+        .toCreateEntity();
 
-  //   List<UserCategoryEntity> userCategories = [];
+    if (isAlreadySubscribeCategory(category.id!)) {
+      await deleteUserCategory.execute([entity]);
+    } else {
+      await createUserCategory.execute([entity]);
+    }
+  }
 
-  //   for (Category category in channelCategories) {
-  //     UserCategoryEntity entity = UserCategory(
-  //             id: category.id!,
-  //             channelId: category.channelId,
-  //             name: category.name)
-  //         .toCreateEntity();
-  //     userCategories.add(entity);
-  //   }
+  void onClickChannel(Channel channel) {
+    Get.to(
+        () => ChannelCategory(
+              channel: channel,
+              toggleCategory: toggleCategory,
+            ),
+        transition: Transition.rightToLeftWithFade);
+  }
 
-  //   if (isAlreadySubscribeChannel(channelId)) {
-  //     await deleteUserCategory.execute(userCategories);
-  //   } else {
-  //     await createUserCategory.execute(userCategories);
-  //   }
-  // }
-
-  bool isAlreadySubscribeChannel(int channelId) {
-    return userSubscribeCategories
-        .any((category) => category.channelId == channelId);
+  bool isAlreadySubscribeCategory(int categoryId) {
+    return userSubscribeCategories.any((category) => category.id == categoryId);
   }
 
   //////////////////////////////////////////////////////////////////
@@ -73,7 +74,7 @@ class ChannelController extends GetxController {
   //////////////////////////////////////////////////////////////////
   Future<void> _initialize() async {
     await _setupUserCategory();
-    await _setupChannelWithCategories();
+    await _setupChannels();
     _listenUserCategories();
   }
 
@@ -88,7 +89,7 @@ class ChannelController extends GetxController {
     });
   }
 
-  Future<void> _setupChannelWithCategories() async {
+  Future<void> _setupChannels() async {
     final result = await getChannels.execute(withCategory: true);
 
     result.fold((failure) {
@@ -96,25 +97,15 @@ class ChannelController extends GetxController {
         error.value = 'Error Fetching channel!';
       }
     }, (data) {
-      longPrint(data.toList());
-      channelWithCategories.assignAll(data);
+      for (var channel in data) {
+        if (channel.type == ChannelType.community.name) {
+          communities.add(channel);
+        } else if (channel.type == ChannelType.news.name) {
+          news.add(channel);
+        }
+      }
     });
   }
-
-  // Future<void> _setupCategories() async {
-  //   final result = await getCategories.execute();
-  //   result.fold((failure) {
-  //     if (failure == ServerFailure()) {
-  //       error.value = 'Error Fetching category!';
-  //     }
-  //   }, (data) {
-  //     List<Category> list = [];
-  //     for (var category in data) {
-  //       list.add(category);
-  //     }
-  //     categories.assignAll(list);
-  //   });
-  // }
 
   void _listenUserCategories() {
     subscribeUserCategory.execute().listen((List<UserCategory> event) {

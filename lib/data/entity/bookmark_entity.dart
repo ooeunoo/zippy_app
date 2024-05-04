@@ -1,6 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:zippy/data/entity/item_entity.dart';
+import 'package:zippy/data/entity/content_entity.dart';
 import 'package:zippy/domain/model/bookmark.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +10,7 @@ class BookmarkEntity extends Equatable {
   final int? id;
   final String user_id;
   final int item_id;
-  final ItemEntity? item;
+  final ContentEntity? item;
 
   const BookmarkEntity({
     this.id,
@@ -30,7 +30,7 @@ class BookmarkEntity extends Equatable {
       user_id: json['user_id'],
       item_id: json['item_id'],
       item: json['item'] != null
-          ? ItemEntity.fromJson(json['item'])
+          ? ContentEntity.fromJson(json['item'])
           : null, // item 속성 처리
     );
   }

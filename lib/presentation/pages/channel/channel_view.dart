@@ -12,6 +12,7 @@ import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/channel.dart';
+import 'package:zippy/presentation/controllers/board/board_controller.dart';
 import 'package:zippy/presentation/controllers/channel/channel_controller.dart';
 
 class ChannelView extends StatefulWidget {
@@ -58,7 +59,9 @@ class _ChannelViewState extends State<ChannelView>
               title(context),
               const AppSpacerV(),
               tabBar(),
-              // TabBarView(controller: _tabController, children: const [])
+              Expanded(
+                child: tabBarView(context, controller),
+              )
             ],
           ),
         ),
@@ -110,7 +113,10 @@ class _ChannelViewState extends State<ChannelView>
       indicatorColor: Colors.transparent,
       labelPadding: const EdgeInsets.only(left: 0, right: 0),
       labelColor: AppColor.brand600,
-      labelStyle: Theme.of(context).textTheme.textMD,
+      labelStyle: Theme.of(context)
+          .textTheme
+          .textMD
+          .copyWith(fontWeight: AppFontWeight.bold),
       unselectedLabelColor: AppColor.graymodern500,
       tabs: _tabs
           .map((tab) => Padding(
@@ -120,48 +126,54 @@ class _ChannelViewState extends State<ChannelView>
     );
   }
 
-  // Widget channel(BuildContext context) {
-  //   return Expanded(
-  //     child: Obx(() => ListView.builder(
-  //           itemCount: controller.channels.length,
-  //           itemBuilder: (BuildContext context, int index) {
-  //             return Obx(() {
-  //               Channel channel = controller.channels[index];
+  TabBarView tabBarView(BuildContext context, ChannelController controller) {
+    return TabBarView(controller: _tabController, children: [
+      Obx(() => channelList(context, controller.communities)),
+      Obx(() => channelList(context, controller.news)),
+    ]);
+  }
 
-  //               return ListTile(
-  //                 leading: SizedBox(
-  //                   height: AppDimens.size(30),
-  //                   width: AppDimens.size(30),
-  //                   child: channel.imageUrl != null
-  //                       ? CachedNetworkImage(
-  //                           imageUrl: channel.imageUrl!,
-  //                           placeholder: (context, url) => const AppLoader(),
-  //                           errorWidget: (context, url, error) =>
-  //                               const Icon(Icons.error),
-  //                           imageBuilder: (context, imageProvider) =>
-  //                               CircleAvatar(
-  //                             backgroundImage: imageProvider,
-  //                             backgroundColor: Colors.transparent,
-  //                             foregroundColor: Colors
-  //                                 .black, // Change to your desired foreground color
-  //                           ),
-  //                         )
-  //                       : const AppSvg(
-  //                           Assets.logo,
-  //                           color: AppColor.gray600,
-  //                         ),
-  //                 ),
-  //                 title: AppText(channel.nameKo,
-  //                     style: Theme.of(context)
-  //                         .textTheme
-  //                         .textLG
-  //                         .copyWith(color: AppColor.graymodern200)),
-  //               );
-  //             });
-  //           },
-  //         )),
-  //   );
-  // }
+  Widget channelList(BuildContext context, List<Channel> channels) {
+    return ListView.builder(
+      itemCount: channels.length,
+      itemBuilder: (BuildContext context, int index) {
+        Channel channel = channels[index];
+
+        return GestureDetector(
+          onTap: () => controller.onClickChannel(channel),
+          child: ListTile(
+            leading: SizedBox(
+              height: AppDimens.size(30),
+              width: AppDimens.size(30),
+              child: channel.imageUrl != null
+                  ? CachedNetworkImage(
+                      imageUrl: channel.imageUrl!,
+                      placeholder: (context, url) => const AppLoader(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                      imageBuilder: (context, imageProvider) => CircleAvatar(
+                        backgroundImage: imageProvider,
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: Colors.black,
+                      ),
+                    )
+                  : const AppSvg(
+                      Assets.logo,
+                      color: AppColor.gray600,
+                    ),
+            ),
+            title: AppText(
+              channel.nameKo,
+              style: Theme.of(context)
+                  .textTheme
+                  .textLG
+                  .copyWith(color: AppColor.graymodern200),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   // Widget channel(BuildContext context) {
   //   return Expanded(

@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 @immutable
-class ItemEntity extends Equatable {
+class ContentEntity extends Equatable {
   final int? id;
   final int category_id;
   final String url;
@@ -15,7 +15,7 @@ class ItemEntity extends Equatable {
   final String? content_text;
   final String? content_img_url;
 
-  const ItemEntity({
+  const ContentEntity({
     this.id,
     required this.category_id,
     required this.url,
@@ -37,8 +37,8 @@ class ItemEntity extends Equatable {
     ];
   }
 
-  factory ItemEntity.fromJson(Map<String, dynamic> json) {
-    return ItemEntity(
+  factory ContentEntity.fromJson(Map<String, dynamic> json) {
+    return ContentEntity(
       id: json['id'],
       category_id: json['category_id'],
       url: json['url'],

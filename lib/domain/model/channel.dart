@@ -63,23 +63,6 @@ class Channel extends Equatable {
     return map;
   }
 
-  // String? getLogoAssetPath() {
-  //   switch (id) {
-  //     case 2: // 디시
-  //       return Assets.dcinsideLogo;
-  //     case 3: // 뽐뿌
-  //       return Assets.ppomppuLogo;
-  //     case 4: // 인스티즈
-  //       return Assets.instizLogo;
-  //     case 5: // 웃긴대학
-  //       return Assets.humorunivLogo;
-  //     case 6: // 클리앙
-  //       return Assets.clienLogo;
-  //     default:
-  //       return Assets.logo;
-  //   }
-  // }
-
   @override
   String toString() {
     return toJson().toString();

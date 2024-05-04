@@ -9,6 +9,7 @@ class CategoryEntity extends Equatable {
   final int? id;
   final int channel_id;
   final String name;
+  final String? description;
   final String path;
   final bool status;
   final int latest_item_index;
@@ -17,6 +18,7 @@ class CategoryEntity extends Equatable {
       {this.id,
       required this.channel_id,
       required this.name,
+      this.description,
       required this.path,
       required this.status,
       required this.latest_item_index});
@@ -31,6 +33,7 @@ class CategoryEntity extends Equatable {
       id: json['id'],
       channel_id: json['channel_id'],
       name: json['name'],
+      description: json['description'],
       path: json['path'],
       status: json['status'],
       latest_item_index: json['latest_item_index'],
@@ -42,6 +45,7 @@ class CategoryEntity extends Equatable {
       id: id,
       channelId: channel_id,
       name: name,
+      description: description,
       path: path,
       status: status,
       latestItemIndex: latest_item_index,

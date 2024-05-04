@@ -6,6 +6,7 @@ class Category extends Equatable {
   final int? id;
   final int channelId;
   final String name;
+  final String? description;
   final String path;
   final bool status;
   final int latestItemIndex;
@@ -14,6 +15,7 @@ class Category extends Equatable {
     this.id,
     required this.channelId,
     required this.name,
+    this.description,
     required this.path,
     required this.status,
     required this.latestItemIndex,
@@ -28,6 +30,7 @@ class Category extends Equatable {
         'id': id,
         'channelId': channelId,
         'name': name,
+        'description': description,
         'path': path,
         'status': status,
         "latestItemIndex": latestItemIndex,
@@ -37,6 +40,7 @@ class Category extends Equatable {
     if (id != null) {
       map[id!] = Category(
         name: name,
+        description: description,
         channelId: channelId,
         path: path,
         status: status,

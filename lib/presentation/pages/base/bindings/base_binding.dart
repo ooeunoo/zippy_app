@@ -31,6 +31,8 @@ import 'package:zippy/domain/usecases/get_user_category.dart';
 import 'package:zippy/domain/usecases/subscirbe_contents.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_bookmark.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_category%20.dart';
+import 'package:zippy/domain/usecases/up_content_report_count.dart';
+import 'package:zippy/domain/usecases/up_content_view_count.dart';
 import 'package:zippy/presentation/controllers/base/base_controller.dart';
 import 'package:zippy/presentation/controllers/board/board_controller.dart';
 import 'package:get/get.dart';
@@ -69,10 +71,22 @@ class BaseBinding implements Bindings {
     Get.lazyPut<SubscribeUserBookmark>(() => SubscribeUserBookmark(Get.find()));
     Get.lazyPut<SubscribeUserCategory>(() => SubscribeUserCategory(Get.find()));
     Get.lazyPut<GetUserCategory>(() => GetUserCategory(Get.find()));
+    Get.lazyPut<UpContentViewCount>(() => UpContentViewCount(Get.find()));
+    Get.lazyPut<UpContentReportCount>(() => UpContentReportCount(Get.find()));
 
     Get.lazyPut<BoardController>(
-      () => BoardController(Get.find(), Get.find(), Get.find(), Get.find(),
-          Get.find(), Get.find(), Get.find(), Get.find(), Get.find()),
+      () => BoardController(
+          Get.find(),
+          Get.find(),
+          Get.find(),
+          Get.find(),
+          Get.find(),
+          Get.find(),
+          Get.find(),
+          Get.find(),
+          Get.find(),
+          Get.find(),
+          Get.find()),
     );
   }
 }

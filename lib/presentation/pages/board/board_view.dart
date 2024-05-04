@@ -151,10 +151,12 @@ class _BoardViewState extends State<BoardView> {
                         return GestureDetector(
                           onTap: () => controller.onClickItem(content),
                           child: ZippyContentCard(
-                              content: content,
-                              channel: channel,
-                              isBookMarked: isBookmarked,
-                              toggleBookmark: controller.toggleBookmark),
+                            content: content,
+                            channel: channel,
+                            isBookMarked: isBookmarked,
+                            toggleBookmark: controller.toggleBookmark,
+                            openMenu: controller.onOpenMenu,
+                          ),
                         );
                       }
                     });

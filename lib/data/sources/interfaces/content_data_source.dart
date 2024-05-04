@@ -11,4 +11,6 @@ abstract class ContentDatasource {
   Future<Either<Failure, List<Content>>> getContents();
   Future<Either<Failure, Content>> getContent(int id);
   Stream<List<Content>> subscribeContents(List<UserCategory> categories);
+  Future<void> upContentViewCount(int id);
+  Future<void> upContentReportCount(int id);
 }

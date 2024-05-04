@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
@@ -13,32 +14,33 @@ import 'package:zippy/domain/model/channel.dart';
 import 'package:zippy/domain/model/content.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:zippy/presentation/pages/board/widgets/bottom_drop_menu.dart';
 
 class ZippyContentCard extends StatefulWidget {
   final Channel? channel;
   final Content content;
   final bool isBookMarked;
   final Function(Content content) toggleBookmark;
+  final Function(Content content) openMenu;
 
   const ZippyContentCard(
       {super.key,
       required this.channel,
       required this.content,
       required this.isBookMarked,
-      required this.toggleBookmark});
+      required this.toggleBookmark,
+      required this.openMenu});
 
   @override
   State<ZippyContentCard> createState() => _ZippyCardState();
 }
 
 class _ZippyCardState extends State<ZippyContentCard> {
-  void toogleBookmark() {
-    widget.toggleBookmark(widget.content);
-  }
-
-  bool get isUrl =>
-      widget.content.contentImgUrl != null &&
-      isValidUrl(widget.content.contentImgUrl!);
+  Channel? get channel => widget.channel;
+  Content get content => widget.content;
+  bool get isBookmarked => widget.isBookMarked;
+  Function(Content content) get toggleBookmark => widget.toggleBookmark;
+  Function(Content content) get openMenu => widget.openMenu;
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +71,7 @@ class _ZippyCardState extends State<ZippyContentCard> {
   Widget imageSection() {
     if (widget.content.contentImgUrl != null) {
       return CachedNetworkImage(
-        imageUrl: widget.content.contentImgUrl!,
+        imageUrl: content.contentImgUrl!,
         fit: BoxFit.cover,
         placeholder: (context, url) => Container(
           color: AppColor.graymodern950.withOpacity(0.5),
@@ -98,9 +100,9 @@ class _ZippyCardState extends State<ZippyContentCard> {
                   SizedBox(
                     height: AppDimens.size(24),
                     width: AppDimens.size(24),
-                    child: widget.channel?.imageUrl != null
+                    child: channel?.imageUrl != null
                         ? CachedNetworkImage(
-                            imageUrl: widget.channel!.imageUrl!,
+                            imageUrl: channel!.imageUrl!,
                             placeholder: (context, url) => const AppLoader(),
                             errorWidget: (context, url, error) =>
                                 const Icon(Icons.error),
@@ -117,9 +119,7 @@ class _ZippyCardState extends State<ZippyContentCard> {
                   SizedBox(
                     width: AppDimens.size(100),
                     child: AppText(
-                      widget.content.author == ""
-                          ? widget.channel!.nameKo
-                          : widget.content.author,
+                      content.author == "" ? channel!.nameKo : content.author,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context)
@@ -133,15 +133,24 @@ class _ZippyCardState extends State<ZippyContentCard> {
               Row(
                 children: [
                   GestureDetector(
-                    onTap: toogleBookmark,
+                    onTap: () => toggleBookmark(content),
                     child: AppSvg(
                       Assets.bookmark,
                       size: AppDimens.size(23),
-                      color: widget.isBookMarked
+                      color: isBookmarked
                           ? AppColor.rose500
                           : AppColor.graymodern600,
                     ),
-                  )
+                  ),
+                  const AppSpacerH(),
+                  GestureDetector(
+                    onTap: () => openMenu(content),
+                    child: AppSvg(
+                      Assets.dotsVertical,
+                      size: AppDimens.size(23),
+                      color: AppColor.graymodern600,
+                    ),
+                  ),
                 ],
               )
             ],
@@ -153,7 +162,7 @@ class _ZippyCardState extends State<ZippyContentCard> {
             children: [
               Expanded(
                 child: AppText(
-                  widget.content.title,
+                  content.title,
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context)
@@ -213,4 +222,6 @@ class _ZippyCardState extends State<ZippyContentCard> {
       ],
     );
   }
+
+  // Widget dropdownMenu() {}
 }

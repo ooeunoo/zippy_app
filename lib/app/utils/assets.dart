@@ -16,6 +16,8 @@ class Assets {
   static const String file06 = 'assets/icons/file-06.svg';
   static const String avatarDefault = 'assets/icons/avatar-default.svg';
   static const String message = 'assets/icons/message.svg';
+  static const String flag01 = 'assets/icons/flag-01.svg';
+  static const String dotsVertical = 'assets/icons/dots-vertical.svg';
 
   // images
   static const String humorunivLogo = 'assets/images/humoruniv.png';

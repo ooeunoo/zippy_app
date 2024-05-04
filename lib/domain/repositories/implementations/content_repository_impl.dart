@@ -24,4 +24,14 @@ class ContentRepositoryImpl implements ContentRepository {
   Stream<List<Content>> subscribeContents(List<UserCategory> categories) {
     return datasource.subscribeContents(categories);
   }
+
+  @override
+  Future<void> upContentViewCount(int id) {
+    return datasource.upContentViewCount(id);
+  }
+
+  @override
+  Future<void> upContentReportCount(int id) {
+    return datasource.upContentReportCount(id);
+  }
 }
