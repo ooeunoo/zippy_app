@@ -14,7 +14,7 @@ import 'package:zippy/domain/model/channel.dart';
 import 'package:zippy/domain/model/content.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:zippy/presentation/pages/board/widgets/bottom_drop_menu.dart';
+import 'package:zippy/presentation/pages/board/widgets/bottom_extension_menu.dart';
 
 class ZippyContentCard extends StatefulWidget {
   final Channel? channel;

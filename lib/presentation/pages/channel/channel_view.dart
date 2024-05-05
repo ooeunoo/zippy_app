@@ -12,6 +12,7 @@ import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/channel.dart';
+import 'package:zippy/domain/model/user_category.dart';
 import 'package:zippy/presentation/controllers/board/board_controller.dart';
 import 'package:zippy/presentation/controllers/channel/channel_controller.dart';
 
@@ -56,8 +57,8 @@ class _ChannelViewState extends State<ChannelView>
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              title(context),
-              const AppSpacerV(),
+              // title(context),
+              // const AppSpacerV(),
               tabBar(),
               Expanded(
                 child: tabBarView(context, controller),
@@ -92,6 +93,13 @@ class _ChannelViewState extends State<ChannelView>
           ),
         ],
       ),
+      actions: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: AppDimens.width(20)),
+          child:
+              const AppSvg(Assets.dotsVertical, color: AppColor.graymodern100),
+        )
+      ],
     );
   }
 
@@ -137,40 +145,54 @@ class _ChannelViewState extends State<ChannelView>
     return ListView.builder(
       itemCount: channels.length,
       itemBuilder: (BuildContext context, int index) {
-        Channel channel = channels[index];
+        return Obx(() {
+          Channel channel = channels[index];
+          List<UserCategory>? subscribeCategoryInChannel =
+              controller.userSubscribeCategories.value[channel.id!];
 
-        return GestureDetector(
-          onTap: () => controller.onClickChannel(channel),
-          child: ListTile(
-            leading: SizedBox(
-              height: AppDimens.size(30),
-              width: AppDimens.size(30),
-              child: channel.imageUrl != null
-                  ? CachedNetworkImage(
-                      imageUrl: channel.imageUrl!,
-                      placeholder: (context, url) => const AppLoader(),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
-                      imageBuilder: (context, imageProvider) => CircleAvatar(
-                        backgroundImage: imageProvider,
-                        backgroundColor: Colors.transparent,
-                        foregroundColor: Colors.black,
+          int total = channel.categories!.length;
+          int my = subscribeCategoryInChannel == null
+              ? 0
+              : subscribeCategoryInChannel.length;
+
+          return GestureDetector(
+            onTap: () => controller.onClickChannel(channel),
+            child: ListTile(
+              leading: SizedBox(
+                height: AppDimens.size(30),
+                width: AppDimens.size(30),
+                child: channel.imageUrl != null
+                    ? CachedNetworkImage(
+                        imageUrl: channel.imageUrl!,
+                        placeholder: (context, url) => const AppLoader(),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
+                        imageBuilder: (context, imageProvider) => CircleAvatar(
+                          backgroundImage: imageProvider,
+                          backgroundColor: Colors.transparent,
+                          foregroundColor: Colors.black,
+                        ),
+                      )
+                    : const AppSvg(
+                        Assets.logo,
+                        color: AppColor.gray600,
                       ),
-                    )
-                  : const AppSvg(
-                      Assets.logo,
-                      color: AppColor.gray600,
-                    ),
+              ),
+              title: AppText(
+                channel.nameKo,
+                style: Theme.of(context)
+                    .textTheme
+                    .textLG
+                    .copyWith(color: AppColor.graymodern200),
+              ),
+              trailing: AppText('$my/$total',
+                  style: Theme.of(context)
+                      .textTheme
+                      .textSM
+                      .copyWith(color: AppColor.graymodern500)),
             ),
-            title: AppText(
-              channel.nameKo,
-              style: Theme.of(context)
-                  .textTheme
-                  .textLG
-                  .copyWith(color: AppColor.graymodern200),
-            ),
-          ),
-        );
+          );
+        });
       },
     );
   }

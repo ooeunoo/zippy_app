@@ -13,7 +13,7 @@ import 'package:zippy/presentation/controllers/channel/channel_controller.dart';
 
 class ChannelCategory extends StatelessWidget {
   final Channel channel;
-  final Function(Category) toggleCategory;
+  final Function(Channel, Category) toggleCategory;
 
   const ChannelCategory(
       {super.key, required this.channel, required this.toggleCategory});
@@ -27,8 +27,7 @@ class ChannelCategory extends StatelessWidget {
         body: Padding(
           padding: EdgeInsets.symmetric(
               horizontal: AppDimens.width(20), vertical: AppDimens.height(10)),
-          child: SafeArea(
-              child: categoryList(context, controller, channel.categories)),
+          child: SafeArea(child: categoryList(context, controller, channel)),
         ));
   }
 
@@ -58,18 +57,18 @@ class ChannelCategory extends StatelessWidget {
     );
   }
 
-  Widget categoryList(BuildContext context, ChannelController controller,
-      List<Category>? categories) {
-    if (categories == null) {
+  Widget categoryList(
+      BuildContext context, ChannelController controller, Channel channel) {
+    if (channel.categories == null) {
       return Container();
     }
     return ListView.builder(
-        itemCount: categories.length,
+        itemCount: channel.categories!.length,
         itemBuilder: (BuildContext context, int index) {
           return Obx(() {
-            Category category = categories[index];
-            bool isSubscribe = controller.userSubscribeCategories.any(
-                (subscribeCategory) => category.id == subscribeCategory.id);
+            Category category = channel.categories![index];
+            bool isSubscribe = controller.isAlreadySubscribeCategory(
+                channel.id!, category.id!);
 
             return ListTile(
               title: AppText(category.name,
@@ -89,7 +88,7 @@ class ChannelCategory extends StatelessWidget {
                 activeColor: AppColor.brand600,
                 inactiveThumbColor: AppColor.graymodern600,
                 onChanged: (bool value) async {
-                  await toggleCategory(category);
+                  await toggleCategory(channel, category);
                 },
               ),
             );

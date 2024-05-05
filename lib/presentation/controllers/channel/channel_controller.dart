@@ -31,8 +31,9 @@ class ChannelController extends GetxController {
 
   RxList<Channel> communities = RxList<Channel>([]).obs();
   RxList<Channel> news = RxList<Channel>([]).obs();
+  Rx<Map<int, List<UserCategory>>> userSubscribeCategories =
+      Rx<Map<int, List<UserCategory>>>({}).obs();
   Rxn<String> error = Rxn<String>();
-  RxList<UserCategory> userSubscribeCategories = RxList<UserCategory>([]).obs();
 
   @override
   onInit() async {
@@ -40,14 +41,14 @@ class ChannelController extends GetxController {
     await _initialize();
   }
 
-  Future<void> toggleCategory(Category category) async {
+  Future<void> toggleCategory(Channel channel, Category category) async {
     UserCategoryEntity entity = UserCategory(
             id: category.id!,
             channelId: category.channelId,
             name: category.name)
         .toCreateEntity();
 
-    if (isAlreadySubscribeCategory(category.id!)) {
+    if (isAlreadySubscribeCategory(channel.id!, category.id!)) {
       await deleteUserCategory.execute([entity]);
     } else {
       await createUserCategory.execute([entity]);
@@ -63,8 +64,12 @@ class ChannelController extends GetxController {
         transition: Transition.rightToLeftWithFade);
   }
 
-  bool isAlreadySubscribeCategory(int categoryId) {
-    return userSubscribeCategories.any((category) => category.id == categoryId);
+  bool isAlreadySubscribeCategory(int channelId, int categoryId) {
+    if (userSubscribeCategories.value.containsKey(channelId)) {
+      List<UserCategory> categories = userSubscribeCategories.value[channelId]!;
+      return categories.any((category) => category.id == categoryId);
+    }
+    return false;
   }
 
   //////////////////////////////////////////////////////////////////
@@ -85,7 +90,8 @@ class ChannelController extends GetxController {
         error.value = 'Error Fetching channel!';
       }
     }, (data) {
-      userSubscribeCategories.assignAll(data);
+      Map<int, List<UserCategory>> groupedCategories = _groupByChannelId(data);
+      userSubscribeCategories.value = groupedCategories;
     });
   }
 
@@ -109,7 +115,20 @@ class ChannelController extends GetxController {
 
   void _listenUserCategories() {
     subscribeUserCategory.execute().listen((List<UserCategory> event) {
-      userSubscribeCategories.bindStream(Stream.value(event));
+      Map<int, List<UserCategory>> groupedCategories = _groupByChannelId(event);
+      userSubscribeCategories.value = groupedCategories;
     });
+  }
+
+  Map<int, List<UserCategory>> _groupByChannelId(
+      List<UserCategory> userCategories) {
+    Map<int, List<UserCategory>> groupedMap = {};
+    for (var category in userCategories) {
+      if (!groupedMap.containsKey(category.channelId)) {
+        groupedMap[category.channelId] = [];
+      }
+      groupedMap[category.channelId]!.add(category);
+    }
+    return groupedMap;
   }
 }

@@ -97,7 +97,10 @@ class ProfileView extends StatelessWidget {
             icon: Assets.message,
             title: '리뷰 남기기',
             onTap: () async {
+              print('in');
               final InAppReview inAppReview = InAppReview.instance;
+              print(await inAppReview.isAvailable());
+
               if (await inAppReview.isAvailable()) {
                 inAppReview.requestReview();
               }

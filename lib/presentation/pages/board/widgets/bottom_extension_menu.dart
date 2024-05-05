@@ -9,12 +9,12 @@ import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/content.dart';
 
-class BottomDropMenu extends StatelessWidget {
+class BottomExtensionMenu extends StatelessWidget {
   final Content content;
   final Function() share;
   final Function() report;
 
-  const BottomDropMenu({
+  const BottomExtensionMenu({
     super.key,
     required this.content,
     required this.share,

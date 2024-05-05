@@ -29,7 +29,7 @@ import 'package:zippy/domain/usecases/subscirbe_user_bookmark.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_category%20.dart';
 import 'package:zippy/domain/usecases/up_content_report_count.dart';
 import 'package:zippy/domain/usecases/up_content_view_count.dart';
-import 'package:zippy/presentation/pages/board/widgets/bottom_drop_menu.dart';
+import 'package:zippy/presentation/pages/board/widgets/bottom_extension_menu.dart';
 
 class BoardController extends GetxService {
   final admobService = Get.find<AdmobService>();
@@ -105,7 +105,7 @@ class BoardController extends GetxService {
   }
 
   Future<void> onOpenMenu(Content content) async {
-    Get.bottomSheet(BottomDropMenu(
+    Get.bottomSheet(BottomExtensionMenu(
         content: content,
         share: () async {
           await toShare(content.title, content.url);

@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
@@ -73,11 +74,14 @@ class AppMenu extends StatelessWidget {
               color: AppColor.graymodern400,
             ),
             AppSpacerH(value: AppDimens.width(10)),
-            AppText(title,
-                style: Theme.of(context)
-                    .textTheme
-                    .textLG
-                    .copyWith(color: AppColor.graymodern100)),
+            Expanded(
+              child: AppText(title,
+                  maxLines: 1,
+                  style: Theme.of(context)
+                      .textTheme
+                      .textLG
+                      .copyWith(color: AppColor.graymodern100)),
+            ),
           ],
         ),
       ),
