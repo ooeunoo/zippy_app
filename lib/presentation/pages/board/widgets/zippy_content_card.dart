@@ -138,7 +138,7 @@ class _ZippyCardState extends State<ZippyContentCard> {
                       Assets.bookmark,
                       size: AppDimens.size(23),
                       color: isBookmarked
-                          ? AppColor.rose500
+                          ? AppColor.brand700
                           : AppColor.graymodern600,
                     ),
                   ),

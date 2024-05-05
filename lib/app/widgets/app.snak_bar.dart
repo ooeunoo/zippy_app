@@ -68,18 +68,18 @@ notifyErrorMessage(String message) {
   );
 }
 
-notifyAlreadyRegisteredUserEmail() {
+notifyReported() {
   Get.showSnackbar(
     GetSnackBar(
-      // message: '이미 동일한 이메일로 가입된 계정이 있어요.',
-      messageText: AppText("이미 동일한 이메일로 가입된 계정이 있어요🥲",
+      messageText: AppText("신고되었습니다. \n더 나은 콘텐츠를 제공드릴 수 있도록 노력할게요",
+          align: TextAlign.center,
           style: Theme.of(Get.context!)
               .textTheme
               .textMD
               .copyWith(color: AppColor.graymodern100)),
-      duration: const Duration(seconds: 3),
+      duration: const Duration(seconds: 2),
       backgroundColor: AppColor.brand600,
-      snackPosition: SnackPosition.BOTTOM,
+      snackPosition: SnackPosition.TOP,
       borderRadius: 10,
       animationDuration: const Duration(seconds: 1),
       margin: EdgeInsets.symmetric(horizontal: AppDimens.width(20)),

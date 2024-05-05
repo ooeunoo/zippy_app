@@ -4,8 +4,11 @@ import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
+import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/widgets/app_divider.dart';
+import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
+import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/content.dart';
 
@@ -35,9 +38,9 @@ class BottomExtensionMenu extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildMenuItem(context, "공유하기", share),
+          _buildMenuItem(context, "공유하기", Icons.share, share),
           const AppDivider(),
-          _buildMenuItem(context, "신고하기", report),
+          _buildMenuItem(context, "신고하기", Icons.report, report),
           AppSpacerV(
             value: AppDimens.height(30),
           ),
@@ -46,8 +49,8 @@ class BottomExtensionMenu extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuItem(
-      BuildContext context, String title, GestureTapCallback action) {
+  Widget _buildMenuItem(BuildContext context, String title, IconData icon,
+      GestureTapCallback action) {
     return InkWell(
       onTap: () {
         action();
@@ -55,10 +58,22 @@ class BottomExtensionMenu extends StatelessWidget {
       },
       child: Container(
           padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-          child: AppText(title,
-              style: Theme.of(context).textTheme.textMD.copyWith(
-                  color: AppColor.graymodern100,
-                  fontWeight: AppFontWeight.regular))),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                color: AppColor.graymodern300,
+                size: AppDimens.size(20),
+              ),
+              const AppSpacerH(),
+              AppText(title,
+                  style: Theme.of(context).textTheme.textLG.copyWith(
+                      color: AppColor.graymodern100,
+                      fontWeight: AppFontWeight.regular)),
+              AppSpacerH(value: AppDimens.width(10)),
+            ],
+          )),
     );
   }
 }

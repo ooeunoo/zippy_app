@@ -4,6 +4,7 @@ import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/utils/share.dart';
 import 'package:zippy/app/utils/shuffle.dart';
 import 'package:zippy/app/utils/vibrates.dart';
+import 'package:zippy/app/widgets/app.snak_bar.dart';
 import 'package:zippy/app/widgets/app_webview.dart';
 import 'package:zippy/data/entity/user_bookmark_entity.dart';
 import 'package:zippy/data/providers/supabase_provider.dart';
@@ -105,6 +106,7 @@ class BoardController extends GetxService {
   }
 
   Future<void> onOpenMenu(Content content) async {
+    onHeavyVibration();
     Get.bottomSheet(BottomExtensionMenu(
         content: content,
         share: () async {
@@ -112,6 +114,7 @@ class BoardController extends GetxService {
         },
         report: () async {
           await onClickReport(content);
+          notifyReported();
         }));
   }
 
