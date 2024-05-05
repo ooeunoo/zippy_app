@@ -53,7 +53,7 @@ class _ZippyCardState extends State<ZippyContentCard> {
           // 이미지
           ///////////////////////
           Expanded(
-            flex: 5,
+            flex: 4,
             child: imageSection(),
           ),
           ///////////////////////
@@ -163,12 +163,30 @@ class _ZippyCardState extends State<ZippyContentCard> {
               Expanded(
                 child: AppText(
                   content.title,
-                  maxLines: 3,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context)
                       .textTheme
                       .text2XL
                       .copyWith(color: AppColor.gray50),
+                ),
+              ),
+            ],
+          ),
+          const AppSpacerV(),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Expanded(
+                child: AppText(
+                  content.contentText ?? "",
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context)
+                      .textTheme
+                      .textSM
+                      .copyWith(color: AppColor.graymodern400),
                 ),
               ),
             ],

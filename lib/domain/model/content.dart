@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:zippy/domain/model/item.dart';
 
 @immutable
 class Content extends Equatable {
@@ -40,7 +39,6 @@ class Content extends Equatable {
     ];
   }
 
-  @override
   dynamic toJson() => {
         'id': id,
         'categoryId': categoryId,

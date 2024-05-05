@@ -8,6 +8,7 @@ abstract class UserCategoryDatasource {
       List<UserCategoryEntity> categories);
   Future<Either<Failure, List<UserCategory>>> deleteUserCategory(
       List<UserCategoryEntity> categories);
+  Future<Either<Failure, bool>> resetAllUserCategory();
   Future<Either<Failure, List<UserCategory>>> getUserCategories();
   Stream<List<UserCategory>> subscribeUserCategories();
 }

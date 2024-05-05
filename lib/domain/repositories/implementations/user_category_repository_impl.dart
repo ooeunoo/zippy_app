@@ -23,6 +23,11 @@ class UserCategoryRepositoryImpl implements UserCategoryRepository {
   }
 
   @override
+  Future<Either<Failure, bool>> resetAllUserCategory() {
+    return datasource.resetAllUserCategory();
+  }
+
+  @override
   Future<Either<Failure, List<UserCategory>>> getUserCategories() {
     return datasource.getUserCategories();
   }

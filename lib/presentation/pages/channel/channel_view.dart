@@ -1,11 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
+import 'package:zippy/app/widgets/app_button.dart';
 import 'package:zippy/app/widgets/app_loader.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
@@ -52,21 +55,69 @@ class _ChannelViewState extends State<ChannelView>
       body: Padding(
         padding: EdgeInsets.symmetric(
             horizontal: AppDimens.width(20), vertical: AppDimens.height(10)),
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // title(context),
-              // const AppSpacerV(),
-              tabBar(),
-              Expanded(
-                child: tabBarView(context, controller),
-              )
-            ],
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            tabBar(),
+            Expanded(
+              child: tabBarView(context, controller),
+            )
+          ],
         ),
       ),
+      // floatingActionButtonLocation: ExpandableFab.location,
+      // floatingActionButton: Padding(
+      //   padding: EdgeInsets.symmetric(
+      //       horizontal: AppDimens.width(20), vertical: AppDimens.height(30)),
+      //   child: ExpandableFab(
+      //     distance: AppDimens.height(70),
+      //     openButtonBuilder: DefaultFloatingActionButtonBuilder(
+      //       child: const Icon(Icons.add),
+      //       fabSize: ExpandableFabSize.regular,
+      //       backgroundColor: AppColor.brand500,
+      //       foregroundColor: AppColor.graymodern100,
+      //       shape: const CircleBorder(),
+      //     ),
+      //     closeButtonBuilder: RotateFloatingActionButtonBuilder(
+      //       child: const Icon(Icons.close),
+      //       fabSize: ExpandableFabSize.regular,
+      //       backgroundColor: AppColor.brand500,
+      //       foregroundColor: AppColor.graymodern100,
+      //       shape: const CircleBorder(),
+      //     ),
+      //     type: ExpandableFabType.up,
+      //     children: [
+      //       AppButton(
+      //         "모든 구독 초기화하기",
+      //         color: AppColor.brand500,
+      //         height: AppDimens.height(50),
+      //         titleStyle: Theme.of(context).textTheme.textMD.copyWith(
+      //             color: AppColor.graymodern100,
+      //             fontWeight: AppFontWeight.regular),
+      //         onPressed: () {},
+      //       ),
+      //       AppButton(
+      //         "웃긴 콘텐츠 구독하기",
+      //         color: AppColor.brand500,
+      //         height: AppDimens.height(50),
+      //         titleStyle: Theme.of(context).textTheme.textMD.copyWith(
+      //             color: AppColor.graymodern100,
+      //             fontWeight: AppFontWeight.regular),
+      //         onPressed: () {},
+      //       ),
+      //       AppButton(
+      //         "뉴스 콘텐츠 구독하기",
+      //         color: AppColor.brand500,
+      //         height: AppDimens.height(50),
+      //         titleStyle: Theme.of(context).textTheme.textMD.copyWith(
+      //             color: AppColor.graymodern100,
+      //             fontWeight: AppFontWeight.regular),
+      //         onPressed: () {},
+      //       ),
+      //     ],
+      //   ),
+      // )
     );
   }
 
@@ -93,13 +144,6 @@ class _ChannelViewState extends State<ChannelView>
           ),
         ],
       ),
-      actions: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppDimens.width(20)),
-          child:
-              const AppSvg(Assets.dotsVertical, color: AppColor.graymodern100),
-        )
-      ],
     );
   }
 
@@ -149,12 +193,11 @@ class _ChannelViewState extends State<ChannelView>
           Channel channel = channels[index];
           List<UserCategory>? subscribeCategoryInChannel =
               controller.userSubscribeCategories.value[channel.id!];
-
+          print(controller.userSubscribeCategories.value);
           int total = channel.categories!.length;
           int my = subscribeCategoryInChannel == null
               ? 0
               : subscribeCategoryInChannel.length;
-
           return GestureDetector(
             onTap: () => controller.onClickChannel(channel),
             child: ListTile(
@@ -197,56 +240,35 @@ class _ChannelViewState extends State<ChannelView>
     );
   }
 
-  // Widget channel(BuildContext context) {
-  //   return Expanded(
-  //     child: Obx(() => ListView.builder(
-  //           itemCount: controller.channels.length,
-  //           itemBuilder: (BuildContext context, int index) {
-  //             return Obx(() {
-  //               Channel channel = controller.channels[index];
-  //               bool isSubscribe = controller.userSubscribeCategories
-  //                   .any((category) => category.channelId == channel.id);
+  void _showPopupMenu(BuildContext context) {
+    final RenderBox button = context.findRenderObject() as RenderBox;
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+    final Offset position =
+        button.localToGlobal(Offset.zero, ancestor: overlay);
 
-  //               return ListTile(
-  //                 leading: SizedBox(
-  //                   height: AppDimens.size(30),
-  //                   width: AppDimens.size(30),
-  //                   child: channel.imageUrl != null
-  //                       ? CachedNetworkImage(
-  //                           imageUrl: channel.imageUrl!,
-  //                           placeholder: (context, url) => const AppLoader(),
-  //                           errorWidget: (context, url, error) =>
-  //                               const Icon(Icons.error),
-  //                           imageBuilder: (context, imageProvider) =>
-  //                               CircleAvatar(
-  //                             backgroundImage: imageProvider,
-  //                             backgroundColor: Colors.transparent,
-  //                             foregroundColor: Colors
-  //                                 .black, // Change to your desired foreground color
-  //                           ),
-  //                         )
-  //                       : const AppSvg(
-  //                           Assets.logo,
-  //                           color: AppColor.gray600,
-  //                         ),
-  //                 ),
-  //                 title: AppText(channel.nameKo,
-  //                     style: Theme.of(context)
-  //                         .textTheme
-  //                         .textLG
-  //                         .copyWith(color: AppColor.graymodern200)),
-  //                 trailing: Switch(
-  //                   value: isSubscribe,
-  //                   activeColor: AppColor.brand600,
-  //                   inactiveThumbColor: AppColor.graymodern600,
-  //                   onChanged: (bool value) async {
-  //                     await controller.toggleChannel(channel.id!);
-  //                   },
-  //                 ),
-  //               );
-  //             });
-  //           },
-  //         )),
-  //   );
-  // }
+    final RelativeRect positionOffset = RelativeRect.fromRect(
+      Rect.fromPoints(
+        position,
+        position.translate(0, -button.size.height), // 버튼의 위쪽으로 이동
+      ),
+      Offset.zero & overlay.size,
+    );
+
+    showMenu(
+      context: context,
+      position: positionOffset,
+      items: <PopupMenuEntry>[
+        const PopupMenuItem(
+          child: Text('Item 1'),
+        ),
+        const PopupMenuItem(
+          child: Text('Item 2'),
+        ),
+        const PopupMenuItem(
+          child: Text('Item 3'),
+        ),
+      ],
+    );
+  }
 }

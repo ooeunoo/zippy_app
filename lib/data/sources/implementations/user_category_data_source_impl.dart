@@ -53,6 +53,17 @@ class UserCategoryDatasourceImpl implements UserCategoryDatasource {
   }
 
   @override
+  Future<Either<Failure, bool>> resetAllUserCategory() async {
+    try {
+      await box.put(UserCategoryKey.all.name, []);
+      return const Right(true);
+    } catch (e) {
+      print(e);
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
   Future<Either<Failure, List<UserCategory>>> getUserCategories() async {
     try {
       return Right(toCategoryModelAll());

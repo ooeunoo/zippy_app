@@ -10,6 +10,7 @@ import 'package:zippy/domain/usecases/delete_user_category.dart';
 import 'package:zippy/domain/usecases/get_categories.dart';
 import 'package:zippy/domain/usecases/get_channels.dart';
 import 'package:zippy/domain/usecases/get_user_category.dart';
+import 'package:zippy/domain/usecases/reset_user_category.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_category%20.dart';
 import 'package:zippy/presentation/pages/channel/widgets/channel_category.dart';
 
@@ -18,16 +19,19 @@ class ChannelController extends GetxController {
   final GetCategories getCategories;
   final CreateUserCategory createUserCategory;
   final DeleteUserCategory deleteUserCategory;
+  final ResetUserCategory resetUserCategory;
   final GetUserCategory getUserCategory;
   final SubscribeUserCategory subscribeUserCategory;
 
   ChannelController(
-      this.createUserCategory,
-      this.deleteUserCategory,
-      this.getUserCategory,
-      this.getChannels,
-      this.getCategories,
-      this.subscribeUserCategory);
+    this.createUserCategory,
+    this.deleteUserCategory,
+    this.resetUserCategory,
+    this.getUserCategory,
+    this.getChannels,
+    this.getCategories,
+    this.subscribeUserCategory,
+  );
 
   RxList<Channel> communities = RxList<Channel>([]).obs();
   RxList<Channel> news = RxList<Channel>([]).obs();
@@ -70,6 +74,10 @@ class ChannelController extends GetxController {
       return categories.any((category) => category.id == categoryId);
     }
     return false;
+  }
+
+  void resetAllSubscribeCategory() async {
+    await resetUserCategory.execute();
   }
 
   //////////////////////////////////////////////////////////////////

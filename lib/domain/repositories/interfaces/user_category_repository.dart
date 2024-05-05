@@ -9,5 +9,6 @@ abstract class UserCategoryRepository {
       List<UserCategoryEntity> categories);
   Future<Either<Failure, List<UserCategory>>> deleteUserCategory(
       List<UserCategoryEntity> categories);
+  Future<Either<Failure, bool>> resetAllUserCategory();
   Stream<List<UserCategory>> subscribeUserCategories();
 }
