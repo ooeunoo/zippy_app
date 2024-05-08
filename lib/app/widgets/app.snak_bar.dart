@@ -71,7 +71,7 @@ notifyErrorMessage(String message) {
 notifyReported() {
   Get.showSnackbar(
     GetSnackBar(
-      messageText: AppText("신고되었습니다. \n더 나은 콘텐츠를 제공드릴 수 있도록 노력할게요",
+      messageText: AppText("신고되었습니다.",
           align: TextAlign.center,
           style: Theme.of(Get.context!)
               .textTheme
