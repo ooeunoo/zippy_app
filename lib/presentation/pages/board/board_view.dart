@@ -117,6 +117,40 @@ class _BoardViewState extends State<BoardView> {
                     )),
                   ]);
             } else {
+              if (controller.contents.isEmpty) {
+                return Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AppText("아직 콘텐츠가 준비되지않았어요 🥲",
+                          align: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .displayXS
+                              .copyWith(color: AppColor.graymodern100)),
+                      AppSpacerV(value: AppDimens.height(60)),
+                      Center(
+                          child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: AppDimens.width(20)),
+                        child: AppButton(
+                          '다른 채널 구독하기',
+                          color: AppColor.brand600,
+                          titleStyle: Theme.of(context)
+                              .textTheme
+                              .textLG
+                              .copyWith(color: AppColor.graymodern100),
+                          onPressed: () {
+                            Get.toNamed(
+                              Routes.channel,
+                            );
+                          },
+                          width: double.infinity,
+                          height: AppDimens.height(50),
+                        ),
+                      )),
+                    ]);
+              }
               return RefreshIndicator(
                 color: AppColor.brand600,
                 backgroundColor: AppColor.graymodern950,
@@ -135,7 +169,6 @@ class _BoardViewState extends State<BoardView> {
                   itemBuilder: (BuildContext context, int index) {
                     return Obx(() {
                       Content content = controller.contents[index];
-
                       if (content.isAd) {
                         AdContent adContent = content as AdContent;
                         return ZippyAdContentCard(content: adContent);
@@ -144,7 +177,6 @@ class _BoardViewState extends State<BoardView> {
                             .getChannelByCategoryId(content.categoryId);
                         bool isBookmarked =
                             controller.isBookmarked(content.id!);
-
                         return GestureDetector(
                           onTap: () => controller.onClickItem(content),
                           child: ZippyContentCard(

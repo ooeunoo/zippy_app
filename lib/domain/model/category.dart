@@ -9,7 +9,6 @@ class Category extends Equatable {
   final String? description;
   final String path;
   final bool status;
-  final int latestItemIndex;
 
   const Category({
     this.id,
@@ -18,12 +17,11 @@ class Category extends Equatable {
     this.description,
     required this.path,
     required this.status,
-    required this.latestItemIndex,
   });
 
   @override
   List<Object> get props {
-    return [channelId, name, path, status, latestItemIndex];
+    return [channelId, name, path, status];
   }
 
   dynamic toJson() => {
@@ -33,7 +31,6 @@ class Category extends Equatable {
         'description': description,
         'path': path,
         'status': status,
-        "latestItemIndex": latestItemIndex,
       };
 
   Map<int, Category> toIdAssign(Map<int, Category> map) {
@@ -44,7 +41,6 @@ class Category extends Equatable {
         channelId: channelId,
         path: path,
         status: status,
-        latestItemIndex: latestItemIndex,
       );
     }
     return map;

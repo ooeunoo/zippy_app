@@ -12,20 +12,19 @@ class CategoryEntity extends Equatable {
   final String? description;
   final String path;
   final bool status;
-  final int latest_item_index;
 
-  const CategoryEntity(
-      {this.id,
-      required this.channel_id,
-      required this.name,
-      this.description,
-      required this.path,
-      required this.status,
-      required this.latest_item_index});
+  const CategoryEntity({
+    this.id,
+    required this.channel_id,
+    required this.name,
+    this.description,
+    required this.path,
+    required this.status,
+  });
 
   @override
   List<Object> get props {
-    return [channel_id, name, path, status, latest_item_index];
+    return [channel_id, name, path, status];
   }
 
   factory CategoryEntity.fromJson(Map<String, dynamic> json) {
@@ -36,7 +35,6 @@ class CategoryEntity extends Equatable {
       description: json['description'],
       path: json['path'],
       status: json['status'],
-      latest_item_index: json['latest_item_index'],
     );
   }
 
@@ -48,7 +46,6 @@ class CategoryEntity extends Equatable {
       description: description,
       path: path,
       status: status,
-      latestItemIndex: latest_item_index,
     );
   }
 }

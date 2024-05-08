@@ -7,7 +7,6 @@ class Content extends Equatable {
   final int categoryId;
   final String url;
   final String title;
-  final int itemIndex;
   final String author;
   final String? contentText;
   final String? contentImgUrl;
@@ -20,7 +19,6 @@ class Content extends Equatable {
     required this.categoryId,
     required this.url,
     required this.title,
-    required this.itemIndex,
     required this.author,
     this.contentText,
     this.contentImgUrl,
@@ -33,7 +31,6 @@ class Content extends Equatable {
       categoryId,
       url,
       title,
-      itemIndex,
       author,
       isAd,
     ];
@@ -44,7 +41,6 @@ class Content extends Equatable {
         'categoryId': categoryId,
         'url': url,
         'title': title,
-        'itemIndex': itemIndex,
         "author": author,
         "contentText": contentText,
         "contentImgUrl": contentImgUrl,

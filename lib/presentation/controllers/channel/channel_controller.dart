@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:zippy/app/failures/failure.dart';
-import 'package:zippy/app/utils/log.dart';
 import 'package:zippy/data/entity/user_category_entity.dart';
 import 'package:zippy/domain/model/category.dart';
 import 'package:zippy/domain/model/channel.dart';
@@ -12,7 +11,6 @@ import 'package:zippy/domain/usecases/get_channels.dart';
 import 'package:zippy/domain/usecases/get_user_category.dart';
 import 'package:zippy/domain/usecases/reset_user_category.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_category%20.dart';
-import 'package:zippy/presentation/pages/channel/widgets/channel_category.dart';
 
 class ChannelController extends GetxController {
   final GetChannels getChannels;
@@ -33,10 +31,10 @@ class ChannelController extends GetxController {
     this.subscribeUserCategory,
   );
 
+  RxList<Category> categories = RxList<Category>([]).obs();
   RxList<Channel> communities = RxList<Channel>([]).obs();
   RxList<Channel> news = RxList<Channel>([]).obs();
-  Rx<Map<int, List<UserCategory>>> userSubscribeCategories =
-      Rx<Map<int, List<UserCategory>>>({}).obs();
+  RxList<UserCategory> userSubscribeCategories = RxList<UserCategory>([]).obs();
   Rxn<String> error = Rxn<String>();
 
   @override
@@ -45,40 +43,54 @@ class ChannelController extends GetxController {
     await _initialize();
   }
 
-  Future<void> toggleCategory(Channel channel, Category category) async {
-    UserCategoryEntity entity = UserCategory(
-            id: category.id!,
-            channelId: category.channelId,
-            name: category.name)
-        .toCreateEntity();
+  Future<void> toggleChannel(int channelId) async {
+    List<Category> channelCategories = categories
+        .where((category) => category.channelId == channelId)
+        .toList();
 
-    if (isAlreadySubscribeCategory(channel.id!, category.id!)) {
-      await deleteUserCategory.execute([entity]);
+    List<UserCategoryEntity> userCategories = [];
+
+    for (Category category in channelCategories) {
+      UserCategoryEntity entity = UserCategory(
+              id: category.id!,
+              channelId: category.channelId,
+              name: category.name)
+          .toCreateEntity();
+      userCategories.add(entity);
+    }
+
+    if (isAlreadySubscribeChannel(channelId)) {
+      await deleteUserCategory.execute(userCategories);
     } else {
-      await createUserCategory.execute([entity]);
+      await createUserCategory.execute(userCategories);
     }
   }
 
-  void onClickChannel(Channel channel) {
-    Get.to(
-        () => ChannelCategory(
-              channel: channel,
-              toggleCategory: toggleCategory,
-            ),
-        transition: Transition.rightToLeftWithFade);
+  bool isAlreadySubscribeChannel(int channelId) {
+    return userSubscribeCategories
+        .any((category) => category.channelId == channelId);
   }
 
-  bool isAlreadySubscribeCategory(int channelId, int categoryId) {
-    if (userSubscribeCategories.value.containsKey(channelId)) {
-      List<UserCategory> categories = userSubscribeCategories.value[channelId]!;
-      return categories.any((category) => category.id == categoryId);
-    }
-    return false;
-  }
+  // void onClickChannel(Channel channel) {
+  //   Get.to(
+  //       () => ChannelCategory(
+  //             channel: channel,
+  //             toggleCategory: toggleCategory,
+  //           ),
+  //       transition: Transition.rightToLeftWithFade);
+  // }
 
-  void resetAllSubscribeCategory() async {
-    await resetUserCategory.execute();
-  }
+  // bool isAlreadySubscribeCategory(int channelId, int categoryId) {
+  //   if (userSubscribeCategories.value.containsKey(channelId)) {
+  //     List<UserCategory> categories = userSubscribeCategories.value[channelId];
+  //     return categories.any((category) => category.id == categoryId);
+  //   }
+  //   return false;
+  // }
+
+  // void resetAllSubscribeCategory() async {
+  //   await resetUserCategory.execute();
+  // }
 
   //////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////
@@ -88,6 +100,7 @@ class ChannelController extends GetxController {
   Future<void> _initialize() async {
     await _setupUserCategory();
     await _setupChannels();
+    await _setupCategories();
     _listenUserCategories();
   }
 
@@ -98,8 +111,7 @@ class ChannelController extends GetxController {
         error.value = 'Error Fetching channel!';
       }
     }, (data) {
-      Map<int, List<UserCategory>> groupedCategories = _groupByChannelId(data);
-      userSubscribeCategories.value = groupedCategories;
+      userSubscribeCategories.assignAll(data);
     });
   }
 
@@ -121,22 +133,25 @@ class ChannelController extends GetxController {
     });
   }
 
-  void _listenUserCategories() {
-    subscribeUserCategory.execute().listen((List<UserCategory> event) {
-      Map<int, List<UserCategory>> groupedCategories = _groupByChannelId(event);
-      userSubscribeCategories.value = groupedCategories;
+  Future<void> _setupCategories() async {
+    final result = await getCategories.execute();
+    result.fold((failure) {
+      if (failure == ServerFailure()) {
+        error.value = 'Error Fetching category!';
+      }
+    }, (data) {
+      List<Category> list = [];
+      for (var category in data) {
+        list.add(category);
+      }
+      categories.assignAll(list);
     });
   }
 
-  Map<int, List<UserCategory>> _groupByChannelId(
-      List<UserCategory> userCategories) {
-    Map<int, List<UserCategory>> groupedMap = {};
-    for (var category in userCategories) {
-      if (!groupedMap.containsKey(category.channelId)) {
-        groupedMap[category.channelId] = [];
-      }
-      groupedMap[category.channelId]!.add(category);
-    }
-    return groupedMap;
+  void _listenUserCategories() {
+    subscribeUserCategory.execute().listen((List<UserCategory> event) {
+      print(event);
+      userSubscribeCategories.bindStream(Stream.value(event));
+    });
   }
 }

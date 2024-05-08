@@ -23,8 +23,11 @@ class CategoryDatasourceIml implements CategoryDatasource {
         where['channel_id'] = channelId;
       }
 
-      List<Map<String, dynamic>> response =
-          await provider.client.from(TABLE).select('*').match(where);
+      List<Map<String, dynamic>> response = await provider.client
+          .from(TABLE)
+          .select('*')
+          .eq('status', true)
+          .match(where);
 
       List<Category> result =
           response.map((r) => CategoryEntity.fromJson(r).toModel()).toList();
@@ -38,8 +41,12 @@ class CategoryDatasourceIml implements CategoryDatasource {
   @override
   Future<Either<Failure, Category>> getCategory(int id) async {
     try {
-      Map<String, dynamic> response =
-          await provider.client.from(TABLE).select('*').eq('id', id).single();
+      Map<String, dynamic> response = await provider.client
+          .from(TABLE)
+          .select('*')
+          .eq('id', id)
+          .eq('status', true)
+          .single();
 
       Category result = CategoryEntity.fromJson(response).toModel();
 

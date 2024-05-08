@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -181,7 +183,8 @@ class _ChannelViewState extends State<ChannelView>
   TabBarView tabBarView(BuildContext context, ChannelController controller) {
     return TabBarView(controller: _tabController, children: [
       Obx(() => channelList(context, controller.communities)),
-      Obx(() => channelList(context, controller.news)),
+      // Obx(() => channelList(context, controller.news)),
+      notifyReadyChannel(context),
     ]);
   }
 
@@ -191,48 +194,44 @@ class _ChannelViewState extends State<ChannelView>
       itemBuilder: (BuildContext context, int index) {
         return Obx(() {
           Channel channel = channels[index];
-          List<UserCategory>? subscribeCategoryInChannel =
-              controller.userSubscribeCategories.value[channel.id!];
-          print(controller.userSubscribeCategories.value);
-          int total = channel.categories!.length;
-          int my = subscribeCategoryInChannel == null
-              ? 0
-              : subscribeCategoryInChannel.length;
-          return GestureDetector(
-            onTap: () => controller.onClickChannel(channel),
-            child: ListTile(
-              leading: SizedBox(
-                height: AppDimens.size(30),
-                width: AppDimens.size(30),
-                child: channel.imageUrl != null
-                    ? CachedNetworkImage(
-                        imageUrl: channel.imageUrl!,
-                        placeholder: (context, url) => const AppLoader(),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
-                        imageBuilder: (context, imageProvider) => CircleAvatar(
-                          backgroundImage: imageProvider,
-                          backgroundColor: Colors.transparent,
-                          foregroundColor: Colors.black,
-                        ),
-                      )
-                    : const AppSvg(
-                        Assets.logo,
-                        color: AppColor.gray600,
+          bool isSubscribe = controller.userSubscribeCategories
+              .any((category) => category.channelId == channel.id);
+
+          return ListTile(
+            leading: SizedBox(
+              height: AppDimens.size(30),
+              width: AppDimens.size(30),
+              child: channel.imageUrl != null
+                  ? CachedNetworkImage(
+                      imageUrl: channel.imageUrl!,
+                      placeholder: (context, url) => const AppLoader(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                      imageBuilder: (context, imageProvider) => CircleAvatar(
+                        backgroundImage: imageProvider,
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: Colors.black,
                       ),
-              ),
-              title: AppText(
-                channel.nameKo,
-                style: Theme.of(context)
-                    .textTheme
-                    .textLG
-                    .copyWith(color: AppColor.graymodern200),
-              ),
-              trailing: AppText('$my/$total',
-                  style: Theme.of(context)
-                      .textTheme
-                      .textSM
-                      .copyWith(color: AppColor.graymodern500)),
+                    )
+                  : const AppSvg(
+                      Assets.logo,
+                      color: AppColor.gray600,
+                    ),
+            ),
+            title: AppText(
+              channel.nameKo,
+              style: Theme.of(context)
+                  .textTheme
+                  .textLG
+                  .copyWith(color: AppColor.graymodern200),
+            ),
+            trailing: Switch(
+              value: isSubscribe,
+              activeColor: AppColor.brand600,
+              inactiveThumbColor: AppColor.graymodern600,
+              onChanged: (bool value) async {
+                await controller.toggleChannel(channel.id!);
+              },
             ),
           );
         });
@@ -240,35 +239,49 @@ class _ChannelViewState extends State<ChannelView>
     );
   }
 
-  void _showPopupMenu(BuildContext context) {
-    final RenderBox button = context.findRenderObject() as RenderBox;
-    final RenderBox overlay =
-        Overlay.of(context).context.findRenderObject() as RenderBox;
-    final Offset position =
-        button.localToGlobal(Offset.zero, ancestor: overlay);
-
-    final RelativeRect positionOffset = RelativeRect.fromRect(
-      Rect.fromPoints(
-        position,
-        position.translate(0, -button.size.height), // 버튼의 위쪽으로 이동
-      ),
-      Offset.zero & overlay.size,
-    );
-
-    showMenu(
-      context: context,
-      position: positionOffset,
-      items: <PopupMenuEntry>[
-        const PopupMenuItem(
-          child: Text('Item 1'),
-        ),
-        const PopupMenuItem(
-          child: Text('Item 2'),
-        ),
-        const PopupMenuItem(
-          child: Text('Item 3'),
-        ),
+  Widget notifyReadyChannel(BuildContext context) {
+    return Column(
+      children: [
+        const AppSpacerV(),
+        AppText("채널이 준비 중이에요.",
+            style: Theme.of(context)
+                .textTheme
+                .textLG
+                .copyWith(color: AppColor.graymodern300)),
+        const AppSpacerV(),
       ],
     );
   }
+
+  // void _showPopupMenu(BuildContext context) {
+  //   final RenderBox button = context.findRenderObject() as RenderBox;
+  //   final RenderBox overlay =
+  //       Overlay.of(context).context.findRenderObject() as RenderBox;
+  //   final Offset position =
+  //       button.localToGlobal(Offset.zero, ancestor: overlay);
+
+  //   final RelativeRect positionOffset = RelativeRect.fromRect(
+  //     Rect.fromPoints(
+  //       position,
+  //       position.translate(0, -button.size.height), // 버튼의 위쪽으로 이동
+  //     ),
+  //     Offset.zero & overlay.size,
+  //   );
+
+  //   showMenu(
+  //     context: context,
+  //     position: positionOffset,
+  //     items: <PopupMenuEntry>[
+  //       const PopupMenuItem(
+  //         child: Text('Item 1'),
+  //       ),
+  //       const PopupMenuItem(
+  //         child: Text('Item 2'),
+  //       ),
+  //       const PopupMenuItem(
+  //         child: Text('Item 3'),
+  //       ),
+  //     ],
+  //   );
+  // }
 }

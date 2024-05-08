@@ -10,7 +10,6 @@ class AdContent extends Content {
     super.categoryId = 0,
     super.url = '',
     super.title = '',
-    super.itemIndex = 0,
     super.author = '',
     super.contentText,
     super.contentImgUrl,

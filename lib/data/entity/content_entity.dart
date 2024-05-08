@@ -10,7 +10,6 @@ class ContentEntity extends Equatable {
   final int category_id;
   final String url;
   final String title;
-  final int item_index;
   final String author;
   final String? content_text;
   final String? content_img_url;
@@ -20,7 +19,6 @@ class ContentEntity extends Equatable {
     required this.category_id,
     required this.url,
     required this.title,
-    required this.item_index,
     required this.author,
     this.content_text,
     this.content_img_url,
@@ -32,7 +30,6 @@ class ContentEntity extends Equatable {
       category_id,
       url,
       title,
-      item_index,
       author,
     ];
   }
@@ -43,7 +40,6 @@ class ContentEntity extends Equatable {
       category_id: json['category_id'],
       url: json['url'],
       title: json['title'],
-      item_index: json['item_index'],
       author: json['author'],
       content_text: json['content_text'],
       content_img_url: json['content_img_url'],
@@ -56,7 +52,6 @@ class ContentEntity extends Equatable {
         categoryId: category_id,
         url: url,
         title: title,
-        itemIndex: item_index,
         author: author,
         contentText: content_text,
         contentImgUrl: content_img_url);
