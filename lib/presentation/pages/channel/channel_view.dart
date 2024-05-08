@@ -183,12 +183,15 @@ class _ChannelViewState extends State<ChannelView>
   TabBarView tabBarView(BuildContext context, ChannelController controller) {
     return TabBarView(controller: _tabController, children: [
       Obx(() => channelList(context, controller.communities)),
-      // Obx(() => channelList(context, controller.news)),
-      notifyReadyChannel(context),
+      Obx(() => channelList(context, controller.news)),
+      // notifyReadyChannel(context),
     ]);
   }
 
   Widget channelList(BuildContext context, List<Channel> channels) {
+    if (channels.isEmpty) {
+      return notifyReadyChannel(context);
+    }
     return ListView.builder(
       itemCount: channels.length,
       itemBuilder: (BuildContext context, int index) {
@@ -243,7 +246,7 @@ class _ChannelViewState extends State<ChannelView>
     return Column(
       children: [
         const AppSpacerV(),
-        AppText("채널이 준비 중이에요.",
+        AppText("채널을 준비 중이에요.",
             style: Theme.of(context)
                 .textTheme
                 .textLG
