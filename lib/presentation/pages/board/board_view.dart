@@ -11,6 +11,7 @@ import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/ad_content.dart';
+import 'package:zippy/domain/model/category.dart';
 import 'package:zippy/domain/model/channel.dart';
 import 'package:zippy/domain/model/content.dart';
 import 'package:zippy/presentation/controllers/board/board_controller.dart';

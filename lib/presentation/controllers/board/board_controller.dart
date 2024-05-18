@@ -82,6 +82,7 @@ class BoardController extends GetxService {
 
   Channel? getChannelByCategoryId(int categoryId) {
     Category? category = categories[categoryId];
+
     if (category != null) {
       return channels[categories[categoryId]!.channelId]!;
     } else {

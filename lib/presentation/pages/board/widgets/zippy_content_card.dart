@@ -53,7 +53,7 @@ class _ZippyCardState extends State<ZippyContentCard> {
           // 이미지
           ///////////////////////
           Expanded(
-            flex: 4,
+            flex: 3,
             child: imageSection(),
           ),
           ///////////////////////
@@ -90,89 +90,9 @@ class _ZippyCardState extends State<ZippyContentCard> {
           horizontal: AppDimens.width(25), vertical: AppDimens.height(20)),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: AppDimens.size(24),
-                    width: AppDimens.size(24),
-                    child: channel?.imageUrl != null
-                        ? CachedNetworkImage(
-                            imageUrl: channel!.imageUrl!,
-                            placeholder: (context, url) => const AppLoader(),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                            imageBuilder: (context, imageProvider) =>
-                                CircleAvatar(
-                              backgroundImage: imageProvider,
-                              backgroundColor: Colors.transparent,
-                              foregroundColor: Colors.black,
-                            ),
-                          )
-                        : const AppSvg(Assets.logo, color: AppColor.gray600),
-                  ),
-                  AppSpacerH(value: AppDimens.width(10)),
-                  SizedBox(
-                    width: AppDimens.size(100),
-                    child: AppText(
-                      content.author == "" ? channel!.nameKo : content.author,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context)
-                          .textTheme
-                          .textMD
-                          .copyWith(color: AppColor.gray50),
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => toggleBookmark(content),
-                    child: AppSvg(
-                      Assets.bookmark,
-                      size: AppDimens.size(23),
-                      color: isBookmarked
-                          ? AppColor.brand700
-                          : AppColor.graymodern600,
-                    ),
-                  ),
-                  const AppSpacerH(),
-                  GestureDetector(
-                    onTap: () => openMenu(content),
-                    child: AppSvg(
-                      Assets.dotsVertical,
-                      size: AppDimens.size(23),
-                      color: AppColor.graymodern600,
-                    ),
-                  ),
-                ],
-              )
-            ],
-          ),
+          infoHeader(),
           const AppSpacerV(),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                child: AppText(
-                  content.title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context)
-                      .textTheme
-                      .text2XL
-                      .copyWith(color: AppColor.gray50),
-                ),
-              ),
-            ],
-          ),
+          infoTitle(),
           const AppSpacerV(),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -194,6 +114,96 @@ class _ZippyCardState extends State<ZippyContentCard> {
         ],
       ),
     );
+  }
+
+  Widget infoHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: AppDimens.size(24),
+              width: AppDimens.size(24),
+              child: channel?.imageUrl != null
+                  ? CachedNetworkImage(
+                      imageUrl: channel!.imageUrl!,
+                      placeholder: (context, url) => const AppLoader(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                      imageBuilder: (context, imageProvider) => CircleAvatar(
+                        backgroundImage: imageProvider,
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: Colors.black,
+                      ),
+                    )
+                  : const AppSvg(Assets.logo, color: AppColor.gray600),
+            ),
+            AppSpacerH(value: AppDimens.width(10)),
+            SizedBox(
+              width: AppDimens.size(100),
+              child: AppText(
+                channel?.nameKo ?? "",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context)
+                    .textTheme
+                    .textMD
+                    .copyWith(color: AppColor.gray50),
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            GestureDetector(
+              onTap: () => toggleBookmark(content),
+              child: AppSvg(
+                Assets.bookmark,
+                size: AppDimens.size(23),
+                color:
+                    isBookmarked ? AppColor.brand700 : AppColor.graymodern600,
+              ),
+            ),
+            const AppSpacerH(),
+            GestureDetector(
+              onTap: () => openMenu(content),
+              child: AppSvg(
+                Assets.dotsVertical,
+                size: AppDimens.size(23),
+                color: AppColor.graymodern600,
+              ),
+            ),
+          ],
+        )
+      ],
+    );
+  }
+
+  Widget infoTitle() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Expanded(
+          child: AppText(
+            content.title,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context)
+                .textTheme
+                .text2XL
+                .copyWith(color: AppColor.gray50),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget infoComments() {
+    return const Row();
   }
 
   Widget imageWidget(ImageProvider provider) {
