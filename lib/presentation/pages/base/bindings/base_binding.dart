@@ -26,6 +26,7 @@ import 'package:zippy/domain/usecases/create_user_bookmark.dart';
 import 'package:zippy/domain/usecases/delete_user_bookmark.dart';
 import 'package:zippy/domain/usecases/get_categories.dart';
 import 'package:zippy/domain/usecases/get_channels.dart';
+import 'package:zippy/domain/usecases/get_contents.dart';
 import 'package:zippy/domain/usecases/get_user_bookmark.dart';
 import 'package:zippy/domain/usecases/get_user_category.dart';
 import 'package:zippy/domain/usecases/subscirbe_contents.dart';
@@ -65,6 +66,7 @@ class BaseBinding implements Bindings {
     Get.lazyPut<SubscribeContents>(() => SubscribeContents(Get.find()));
     Get.lazyPut<GetChannels>(() => GetChannels(Get.find()));
     Get.lazyPut<GetCategories>(() => GetCategories(Get.find()));
+    Get.lazyPut<GetContents>(() => GetContents(Get.find()));
     Get.lazyPut<GetUserBookmark>(() => GetUserBookmark(Get.find()));
     Get.lazyPut<CreateUserBookmark>(() => CreateUserBookmark(Get.find()));
     Get.lazyPut<DeleteUserBookmark>(() => DeleteUserBookmark(Get.find()));
@@ -76,6 +78,7 @@ class BaseBinding implements Bindings {
 
     Get.lazyPut<BoardController>(
       () => BoardController(
+          Get.find(),
           Get.find(),
           Get.find(),
           Get.find(),

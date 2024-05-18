@@ -9,6 +9,7 @@ import 'package:zippy/data/sources/interfaces/content_data_source.dart';
 import 'package:zippy/domain/model/content.dart';
 import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
+import 'package:zippy/domain/model/params/get_contents_params.dart';
 import 'package:zippy/domain/model/user_category.dart';
 
 String TABLE = 'content';
@@ -25,10 +26,18 @@ class ContentDatasourceImpl implements ContentDatasource {
   SupabaseProvider provider = Get.find();
 
   @override
-  Future<Either<Failure, List<Content>>> getContents() async {
+  Future<Either<Failure, List<Content>>> getContents(
+      GetContentsParams params) async {
     try {
-      List<Map<String, dynamic>> response =
-          await provider.client.from(TABLE).select('*');
+      // content_img_url이 있는것 > view_count가 높은것 > 시간순
+      List<Map<String, dynamic>> response = await provider.client
+          .from(TABLE)
+          .select('*')
+          .inFilter('category_id', params.getCategoryIds())
+          .limit(params.limit)
+          .order('view_count', ascending: false)
+          .order('created_at')
+          .order('content_img_url', nullsFirst: false);
 
       List<Content> result =
           response.map((r) => ContentEntity.fromJson(r).toModel()).toList();
@@ -64,6 +73,8 @@ class ContentDatasourceImpl implements ContentDatasource {
         .stream(primaryKey: ['id'])
         .inFilter('category_id', categoryIds)
         .order('created_at', ascending: false)
+        .order('content_img_url', ascending: false)
+        .limit(1000)
         .map((data) => data.map((item) {
               return ContentEntity.fromJson(item).toModel();
             }).toList());

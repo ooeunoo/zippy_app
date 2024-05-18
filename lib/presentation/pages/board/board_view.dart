@@ -75,7 +75,7 @@ class _BoardViewState extends State<BoardView> {
       body: Stack(
         children: [
           Obx(() {
-            if (controller.isLoadingItems.value ||
+            if (controller.isLoadingContents.value ||
                 controller.isLoadingUserCategory.value) {
               return const Center(
                 child: CupertinoActivityIndicator(
@@ -117,40 +117,6 @@ class _BoardViewState extends State<BoardView> {
                     )),
                   ]);
             } else {
-              if (controller.contents.isEmpty) {
-                return Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      AppText("아직 콘텐츠가 준비되지않았어요 🥲",
-                          align: TextAlign.center,
-                          style: Theme.of(context)
-                              .textTheme
-                              .displayXS
-                              .copyWith(color: AppColor.graymodern100)),
-                      AppSpacerV(value: AppDimens.height(60)),
-                      Center(
-                          child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: AppDimens.width(20)),
-                        child: AppButton(
-                          '다른 채널 구독하기',
-                          color: AppColor.brand600,
-                          titleStyle: Theme.of(context)
-                              .textTheme
-                              .textLG
-                              .copyWith(color: AppColor.graymodern100),
-                          onPressed: () {
-                            Get.toNamed(
-                              Routes.channel,
-                            );
-                          },
-                          width: double.infinity,
-                          height: AppDimens.height(50),
-                        ),
-                      )),
-                    ]);
-              }
               return RefreshIndicator(
                 color: AppColor.brand600,
                 backgroundColor: AppColor.graymodern950,

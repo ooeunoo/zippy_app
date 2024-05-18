@@ -9,17 +9,17 @@ import 'package:zippy/app/widgets/app_webview.dart';
 import 'package:zippy/data/entity/user_bookmark_entity.dart';
 import 'package:zippy/data/providers/supabase_provider.dart';
 import 'package:zippy/domain/model/ad_content.dart';
-import 'package:zippy/domain/model/bookmark.dart';
 import 'package:zippy/domain/model/category.dart';
 import 'package:zippy/domain/model/channel.dart';
 import 'package:zippy/domain/model/content.dart';
-import 'package:zippy/domain/model/item.dart';
+import 'package:zippy/domain/model/params/get_contents_params.dart';
 import 'package:zippy/domain/model/user_bookmark.dart';
 import 'package:zippy/domain/model/user_category.dart';
 import 'package:zippy/domain/usecases/create_user_bookmark.dart';
 import 'package:zippy/domain/usecases/delete_user_bookmark.dart';
 import 'package:zippy/domain/usecases/get_categories.dart';
 import 'package:zippy/domain/usecases/get_channels.dart';
+import 'package:zippy/domain/usecases/get_contents.dart';
 import 'package:zippy/domain/usecases/get_user_bookmark.dart';
 import 'package:zippy/domain/usecases/get_user_category.dart';
 import 'package:zippy/domain/usecases/subscirbe_contents.dart';
@@ -33,15 +33,14 @@ import 'package:zippy/domain/usecases/up_content_view_count.dart';
 import 'package:zippy/presentation/pages/board/widgets/bottom_extension_menu.dart';
 
 class BoardController extends GetxService {
-  final admobService = Get.find<AdmobService>();
-
-  SupabaseProvider provider = Get.find();
+  AdmobService admobService = Get.find<AdmobService>();
 
   final SubscribeContents subscribeContents;
   final SubscribeUserBookmark subscribeUserBookmark;
   final SubscribeUserCategory subscribeUserCategory;
   final GetChannels getChannels;
   final GetCategories getCategories;
+  final GetContents getContents;
   final CreateUserBookmark createUserBookmark;
   final DeleteUserBookmark deleteUserBookmark;
   final GetUserBookmark getUserBookmark;
@@ -55,6 +54,7 @@ class BoardController extends GetxService {
     this.subscribeUserCategory,
     this.getChannels,
     this.getCategories,
+    this.getContents,
     this.createUserBookmark,
     this.deleteUserBookmark,
     this.getUserBookmark,
@@ -67,7 +67,7 @@ class BoardController extends GetxService {
   PageController pageController = PageController(initialPage: 0);
   RxMap<int, Channel> channels = RxMap<int, Channel>({}).obs();
   RxMap<int, Category> categories = RxMap<int, Category>({}).obs();
-  RxBool isLoadingItems = RxBool(true).obs();
+  RxBool isLoadingContents = RxBool(true).obs();
   RxBool isLoadingUserCategory = RxBool(true).obs();
   RxList<Content> contents = RxList<Content>([]).obs();
   RxList<UserCategory> userCategories = RxList<UserCategory>([]).obs();
@@ -161,14 +161,14 @@ class BoardController extends GetxService {
   }
 
   refreshItem() {
-    isLoadingItems.value = true;
+    isLoadingContents.value = true;
     subscribeContents
         .execute(userCategories)
         .listen((List<Content> newContents) {
       contents.bindStream(Stream.value(shuffle(newContents)));
     });
 
-    isLoadingItems.value = false;
+    isLoadingContents.value = false;
   }
 
   //////////////////////////////////////////////////////////////////
