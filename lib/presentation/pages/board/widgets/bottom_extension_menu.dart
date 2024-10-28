@@ -4,22 +4,20 @@ import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
-import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/widgets/app_divider.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
-import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
-import 'package:zippy/domain/model/content.dart';
+import 'package:zippy/domain/model/article.model.dart';
 
 class BottomExtensionMenu extends StatelessWidget {
-  final Content content;
+  final Article article;
   final Function() share;
   final Function() report;
 
   const BottomExtensionMenu({
     super.key,
-    required this.content,
+    required this.article,
     required this.share,
     required this.report,
   });

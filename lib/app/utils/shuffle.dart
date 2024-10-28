@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'package:zippy/domain/model/content.dart';
+import 'package:zippy/domain/model/article.model.dart';
 
-List<Content> shuffle(List<Content> elements,
+List<Article> shuffle(List<Article> elements,
     [int start = 0, int? end, Random? random]) {
   random ??= Random();
   end ??= elements.length;

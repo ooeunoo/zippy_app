@@ -9,9 +9,8 @@ import 'package:zippy/app/widgets/app_divider.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
-import 'package:zippy/app/widgets/app_webview.dart';
-import 'package:zippy/domain/model/user_bookmark.dart';
-import 'package:zippy/presentation/controllers/bookmark/bookmark_controller.dart';
+import 'package:zippy/domain/model/user_bookmark.model.dart';
+import 'package:zippy/presentation/controllers/bookmark/bookmark.controller.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class BookmarkView extends StatefulWidget {
@@ -59,7 +58,6 @@ class BookmarkView extends StatefulWidget {
 //           )),
 //     );
 //   }
-
 
 class _BookmarkViewState extends State<BookmarkView> {
   @override
@@ -154,7 +152,7 @@ class _BookmarkViewState extends State<BookmarkView> {
             ),
             SlidableAction(
               onPressed: (BuildContext context) async {
-                await toShare(bookmark.url, bookmark.title);
+                await toShare(bookmark.link, bookmark.title);
               },
               backgroundColor: AppColor.brand600.withOpacity(0.9),
               foregroundColor: AppColor.white,
@@ -171,8 +169,8 @@ class _BookmarkViewState extends State<BookmarkView> {
               width: AppDimens.size(40),
               child: CircleAvatar(
                 radius: AppDimens.size(16),
-                backgroundImage: bookmark.contentImgUrl != null
-                    ? NetworkImage(bookmark.contentImgUrl!)
+                backgroundImage: bookmark.images != null
+                    ? NetworkImage(bookmark.images!)
                     : null,
               ),
             ),
@@ -185,7 +183,7 @@ class _BookmarkViewState extends State<BookmarkView> {
                   .copyWith(color: AppColor.graymodern100),
             ),
             onTap: () => controller.onClickBookmark(bookmark),
-            minLeadingWidth: bookmark.contentImgUrl != null ? 56 : 0,
+            minLeadingWidth: bookmark.images != null ? 56 : 0,
           ),
           AppSpacerV(value: AppDimens.size(5)),
           if (!isLastItem) const AppDivider(),

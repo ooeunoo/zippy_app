@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/utils/assets.dart';
-import 'package:zippy/data/providers/hive_provider.dart';
-import 'package:zippy/zippy_app.dart';
+import 'package:zippy/data/providers/hive.provider.dart';
+import 'package:zippy/zippy.app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';

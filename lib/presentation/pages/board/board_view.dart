@@ -10,16 +10,15 @@ import 'package:zippy/app/widgets/app_button.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
-import 'package:zippy/domain/model/ad_content.dart';
-import 'package:zippy/domain/model/category.dart';
-import 'package:zippy/domain/model/channel.dart';
-import 'package:zippy/domain/model/content.dart';
-import 'package:zippy/presentation/controllers/board/board_controller.dart';
+import 'package:zippy/domain/model/ad_content.model.dart';
+import 'package:zippy/domain/model/article.model.dart';
+import 'package:zippy/domain/model/platform.model.dart';
+import 'package:zippy/presentation/controllers/board/board.controller.dart';
 import 'package:zippy/presentation/pages/board/widgets/zippy_ad_content_card.dart';
-import 'package:zippy/presentation/pages/board/widgets/zippy_content_card.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:zippy/presentation/pages/board/widgets/zippy_article_card.dart';
 
 class BoardView extends StatefulWidget {
   const BoardView({
@@ -39,7 +38,7 @@ class _BoardViewState extends State<BoardView> {
   void initState() {
     super.initState();
 
-    admobService.loadBannerAd();
+    // admobService.loadBannerAd();
     // WidgetsBinding.instance.addPostFrameCallback((_) {
     //   showOverlayGuide(context);
     // });
@@ -77,13 +76,13 @@ class _BoardViewState extends State<BoardView> {
         children: [
           Obx(() {
             if (controller.isLoadingContents.value ||
-                controller.isLoadingUserCategory.value) {
+                controller.isLoadingUserSubscription.value) {
               return const Center(
                 child: CupertinoActivityIndicator(
                   color: AppColor.brand600,
                 ),
               );
-            } else if (controller.userCategories.isEmpty) {
+            } else if (controller.userSubscriptions.isEmpty) {
               return Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -109,7 +108,7 @@ class _BoardViewState extends State<BoardView> {
                             .copyWith(color: AppColor.graymodern100),
                         onPressed: () {
                           Get.toNamed(
-                            Routes.channel,
+                            Routes.platform,
                           );
                         },
                         width: double.infinity,
@@ -135,20 +134,20 @@ class _BoardViewState extends State<BoardView> {
                       controller.onChangedItem(pageIndex),
                   itemBuilder: (BuildContext context, int index) {
                     return Obx(() {
-                      Content content = controller.contents[index];
-                      if (content.isAd) {
-                        AdContent adContent = content as AdContent;
+                      Article article = controller.articles[index];
+                      if (article.isAd) {
+                        AdContent adContent = article as AdContent;
                         return ZippyAdContentCard(content: adContent);
                       } else {
-                        Channel? channel = controller
-                            .getChannelByCategoryId(content.categoryId);
+                        Platform? platform =
+                            controller.getPlatformBySourceId(article.sourceId);
                         bool isBookmarked =
-                            controller.isBookmarked(content.id!);
+                            controller.isBookmarked(article.id!);
                         return GestureDetector(
-                          onTap: () => controller.onClickItem(content),
-                          child: ZippyContentCard(
-                            content: content,
-                            channel: channel,
+                          onTap: () => controller.onClickItem(article),
+                          child: ZippyArticleCard(
+                            article: article,
+                            platform: platform,
                             isBookMarked: isBookmarked,
                             toggleBookmark: controller.toggleBookmark,
                             openMenu: controller.onOpenMenu,
@@ -157,7 +156,7 @@ class _BoardViewState extends State<BoardView> {
                       }
                     });
                   },
-                  itemCount: controller.contents.length,
+                  itemCount: controller.articles.length,
                 ),
               );
             }

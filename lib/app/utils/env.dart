@@ -19,25 +19,25 @@ abstract class ENV {
       ? dotenv.env['SUPABASE_ANON_KEY'] as String
       : dotenv.env['SUPABASE_ANON_KEY_DEV'] as String;
 
-  static String GOOGLE_ADMOB_PROD_BANNER_IOS = kReleaseMode
-      ? dotenv.env['GOOGLE_ADMOB_PROD_BANNER_IOS'] as String
-      : dotenv.env['GOOGLE_ADMOB_PROD_BANNER_IOS_DEV'] as String;
-  static String GOOGLE_ADMOB_PROD_BANNER_AOS = kReleaseMode
-      ? dotenv.env['GOOGLE_ADMOB_PROD_BANNER_AOS'] as String
-      : dotenv.env['GOOGLE_ADMOB_PROD_BANNER_AOS_DEV'] as String;
-  static String GOOGLE_ADMOB_PROD_INTERSTITIAL_IOS = kReleaseMode
-      ? dotenv.env['GOOGLE_ADMOB_PROD_INTERSTITIAL_IOS'] as String
-      : dotenv.env['GOOGLE_ADMOB_PROD_INTERSTITIAL_IOS_DEV'] as String;
+  // static String GOOGLE_ADMOB_PROD_BANNER_IOS = kReleaseMode
+  //     ? dotenv.env['GOOGLE_ADMOB_PROD_BANNER_IOS'] as String
+  //     : dotenv.env['GOOGLE_ADMOB_PROD_BANNER_IOS_DEV'] as String;
+  // static String GOOGLE_ADMOB_PROD_BANNER_AOS = kReleaseMode
+  //     ? dotenv.env['GOOGLE_ADMOB_PROD_BANNER_AOS'] as String
+  //     : dotenv.env['GOOGLE_ADMOB_PROD_BANNER_AOS_DEV'] as String;
+  // static String GOOGLE_ADMOB_PROD_INTERSTITIAL_IOS = kReleaseMode
+  //     ? dotenv.env['GOOGLE_ADMOB_PROD_INTERSTITIAL_IOS'] as String
+  //     : dotenv.env['GOOGLE_ADMOB_PROD_INTERSTITIAL_IOS_DEV'] as String;
 
-  static String GOOGLE_ADMOB_PROD_INTERSTITIAL_AOS = kReleaseMode
-      ? dotenv.env['GOOGLE_ADMOB_PROD_INTERSTITIAL_AOS'] as String
-      : dotenv.env['GOOGLE_ADMOB_PROD_INTERSTITIAL_AOS_DEV'] as String;
+  // static String GOOGLE_ADMOB_PROD_INTERSTITIAL_AOS = kReleaseMode
+  //     ? dotenv.env['GOOGLE_ADMOB_PROD_INTERSTITIAL_AOS'] as String
+  //     : dotenv.env['GOOGLE_ADMOB_PROD_INTERSTITIAL_AOS_DEV'] as String;
 
-  static String GOOGLE_ADMOB_PROD_NATIVE_IOS = kReleaseMode
-      ? dotenv.env['GOOGLE_ADMOB_PROD_NATIVE_IOS'] as String
-      : dotenv.env['GOOGLE_ADMOB_PROD_NATIVE_IOS_DEV'] as String;
+  // static String GOOGLE_ADMOB_PROD_NATIVE_IOS = kReleaseMode
+  //     ? dotenv.env['GOOGLE_ADMOB_PROD_NATIVE_IOS'] as String
+  //     : dotenv.env['GOOGLE_ADMOB_PROD_NATIVE_IOS_DEV'] as String;
 
-  static String GOOGLE_ADMOB_PROD_NATIVE_AOS = kReleaseMode
-      ? dotenv.env['GOOGLE_ADMOB_PROD_NATIVE_AOS'] as String
-      : dotenv.env['GOOGLE_ADMOB_PROD_NATIVE_AOS_DEV'] as String;
+  // static String GOOGLE_ADMOB_PROD_NATIVE_AOS = kReleaseMode
+  //     ? dotenv.env['GOOGLE_ADMOB_PROD_NATIVE_AOS'] as String
+  //     : dotenv.env['GOOGLE_ADMOB_PROD_NATIVE_AOS_DEV'] as String;
 }

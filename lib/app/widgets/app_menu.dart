@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
@@ -6,8 +5,7 @@ import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:zippy/domain/model/menu.dart';
+import 'package:zippy/domain/model/menu.model.dart';
 
 class AppMenu extends StatelessWidget {
   final List<MenuSection> menu;

@@ -1,6 +1,5 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:get/get.dart';
@@ -13,35 +12,35 @@ import 'package:zippy/app/utils/random.dart';
 int PRELOAD_AD_INDEX = 4;
 
 class AdmobService extends GetxService {
-  static String get bannerAdUnitId {
-    if (Platform.isAndroid) {
-      return ENV.GOOGLE_ADMOB_PROD_BANNER_AOS;
-    } else if (Platform.isIOS) {
-      return ENV.GOOGLE_ADMOB_PROD_BANNER_IOS;
-    } else {
-      throw UnsupportedError('Unsupported platform');
-    }
-  }
+  // static String get bannerAdUnitId {
+  //   if (Platform.isAndroid) {
+  //     return ENV.GOOGLE_ADMOB_PROD_BANNER_AOS;
+  //   } else if (Platform.isIOS) {
+  //     return ENV.GOOGLE_ADMOB_PROD_BANNER_IOS;
+  //   } else {
+  //     throw UnsupportedError('Unsupported platform');
+  //   }
+  // }
 
-  static String get interstitialAdUnitId {
-    if (Platform.isAndroid) {
-      return ENV.GOOGLE_ADMOB_PROD_INTERSTITIAL_AOS;
-    } else if (Platform.isIOS) {
-      return ENV.GOOGLE_ADMOB_PROD_INTERSTITIAL_IOS;
-    } else {
-      throw UnsupportedError("Unsupported platform");
-    }
-  }
+  // static String get interstitialAdUnitId {
+  //   if (Platform.isAndroid) {
+  //     return ENV.GOOGLE_ADMOB_PROD_INTERSTITIAL_AOS;
+  //   } else if (Platform.isIOS) {
+  //     return ENV.GOOGLE_ADMOB_PROD_INTERSTITIAL_IOS;
+  //   } else {
+  //     throw UnsupportedError("Unsupported platform");
+  //   }
+  // }
 
-  static String get nativeAdUnitId {
-    if (Platform.isAndroid) {
-      return ENV.GOOGLE_ADMOB_PROD_NATIVE_AOS;
-    } else if (Platform.isIOS) {
-      return ENV.GOOGLE_ADMOB_PROD_NATIVE_IOS;
-    } else {
-      throw UnsupportedError("Unsupported platform");
-    }
-  }
+  // static String get nativeAdUnitId {
+  //   if (Platform.isAndroid) {
+  //     return ENV.GOOGLE_ADMOB_PROD_NATIVE_AOS;
+  //   } else if (Platform.isIOS) {
+  //     return ENV.GOOGLE_ADMOB_PROD_NATIVE_IOS;
+  //   } else {
+  //     throw UnsupportedError("Unsupported platform");
+  //   }
+  // }
 
   Rx<int> intersitialAdCredits = Rx<int>(0).obs();
   Rx<int> adContentCredits = Rx<int>(0).obs();
@@ -52,20 +51,20 @@ class AdmobService extends GetxService {
   @override
   onInit() {
     super.onInit();
-    resetAdContent();
-    resetIntersitialAdCredits();
+    // resetAdContent();
+    // resetIntersitialAdCredits();
 
-    ever(intersitialAdCredits, (credits) {
-      if (credits == PRELOAD_AD_INDEX) {
-        _loadInterstitialAd();
-      }
-    });
+    // ever(intersitialAdCredits, (credits) {
+    //   if (credits == PRELOAD_AD_INDEX) {
+    //     _loadInterstitialAd();
+    //   }
+    // });
 
-    ever(adContentCredits, (credits) {
-      if (credits == PRELOAD_AD_INDEX) {
-        _loadNativeAd();
-      }
-    });
+    // ever(adContentCredits, (credits) {
+    //   if (credits == PRELOAD_AD_INDEX) {
+    //     _loadNativeAd();
+    //   }
+    // });
   }
 
   int useIntersitialAdCredits() {
@@ -94,75 +93,75 @@ class AdmobService extends GetxService {
     adContentCredits.value = randomInt(4, 7);
   }
 
-  void _loadInterstitialAd() {
-    InterstitialAd.load(
-      adUnitId: interstitialAdUnitId,
-      request: const AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
-        onAdLoaded: (ad) {
-          interstitialAd.value = ad;
-        },
-        onAdFailedToLoad: (err) {
-          interstitialAd.value = null;
-        },
-      ),
-    );
-  }
+  // void _loadInterstitialAd() {
+  //   InterstitialAd.load(
+  //     adUnitId: interstitialAdUnitId,
+  //     request: const AdRequest(),
+  //     adLoadCallback: InterstitialAdLoadCallback(
+  //       onAdLoaded: (ad) {
+  //         interstitialAd.value = ad;
+  //       },
+  //       onAdFailedToLoad: (err) {
+  //         interstitialAd.value = null;
+  //       },
+  //     ),
+  //   );
+  // }
 
-  void _loadNativeAd() {
-    NativeAd ad = _getNativeAdTemplate()..load();
-    nativeAd.value = ad;
-  }
+  // void _loadNativeAd() {
+  //   NativeAd ad = _getNativeAdTemplate()..load();
+  //   nativeAd.value = ad;
+  // }
 
-  void loadBannerAd() {
-    BannerAd ad = BannerAd(
-      adUnitId: bannerAdUnitId,
-      request: const AdRequest(),
-      size: AdSize.banner,
-      listener: BannerAdListener(
-        onAdLoaded: (ad) {},
-        onAdFailedToLoad: (ad, err) {
-          ad.dispose();
-        },
-      ),
-    )..load();
+  // void loadBannerAd() {
+  //   BannerAd ad = BannerAd(
+  //     adUnitId: bannerAdUnitId,
+  //     request: const AdRequest(),
+  //     size: AdSize.banner,
+  //     listener: BannerAdListener(
+  //       onAdLoaded: (ad) {},
+  //       onAdFailedToLoad: (ad, err) {
+  //         ad.dispose();
+  //       },
+  //     ),
+  //   )..load();
 
-    bannerAd.value = ad;
-  }
+  //   bannerAd.value = ad;
+  // }
 
-  NativeAd _getNativeAdTemplate() {
-    return NativeAd(
-        adUnitId: nativeAdUnitId,
-        listener: NativeAdListener(
-          onAdLoaded: (ad) {},
-          onAdFailedToLoad: (ad, error) {
-            ad.dispose();
-          },
-        ),
-        request: const AdRequest(),
-        nativeTemplateStyle: NativeTemplateStyle(
-            templateType: TemplateType.medium,
-            mainBackgroundColor: AppColor.white,
-            cornerRadius: AppDimens.size(12),
-            callToActionTextStyle: NativeTemplateTextStyle(
-                textColor: AppColor.gray100,
-                backgroundColor: AppColor.brand600,
-                style: NativeTemplateFontStyle.monospace,
-                size: 16.0),
-            primaryTextStyle: NativeTemplateTextStyle(
-                textColor: AppColor.graymodern600,
-                backgroundColor: AppColor.white,
-                style: NativeTemplateFontStyle.italic,
-                size: 16.0),
-            secondaryTextStyle: NativeTemplateTextStyle(
-                textColor: AppColor.graymodern600,
-                backgroundColor: AppColor.white,
-                style: NativeTemplateFontStyle.bold,
-                size: 16.0),
-            tertiaryTextStyle: NativeTemplateTextStyle(
-                textColor: AppColor.graymodern600,
-                backgroundColor: AppColor.white,
-                style: NativeTemplateFontStyle.normal,
-                size: 16.0)));
-  }
+  // NativeAd _getNativeAdTemplate() {
+  //   return NativeAd(
+  //       adUnitId: nativeAdUnitId,
+  //       listener: NativeAdListener(
+  //         onAdLoaded: (ad) {},
+  //         onAdFailedToLoad: (ad, error) {
+  //           ad.dispose();
+  //         },
+  //       ),
+  //       request: const AdRequest(),
+  //       nativeTemplateStyle: NativeTemplateStyle(
+  //           templateType: TemplateType.medium,
+  //           mainBackgroundColor: AppColor.white,
+  //           cornerRadius: AppDimens.size(12),
+  //           callToActionTextStyle: NativeTemplateTextStyle(
+  //               textColor: AppColor.gray100,
+  //               backgroundColor: AppColor.brand600,
+  //               style: NativeTemplateFontStyle.monospace,
+  //               size: 16.0),
+  //           primaryTextStyle: NativeTemplateTextStyle(
+  //               textColor: AppColor.graymodern600,
+  //               backgroundColor: AppColor.white,
+  //               style: NativeTemplateFontStyle.italic,
+  //               size: 16.0),
+  //           secondaryTextStyle: NativeTemplateTextStyle(
+  //               textColor: AppColor.graymodern600,
+  //               backgroundColor: AppColor.white,
+  //               style: NativeTemplateFontStyle.bold,
+  //               size: 16.0),
+  //           tertiaryTextStyle: NativeTemplateTextStyle(
+  //               textColor: AppColor.graymodern600,
+  //               backgroundColor: AppColor.white,
+  //               style: NativeTemplateFontStyle.normal,
+  //               size: 16.0)));
+  // }
 }

@@ -12,7 +12,7 @@ import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:zippy/app/widgets/app_webview.dart';
-import 'package:zippy/domain/model/menu.dart';
+import 'package:zippy/domain/model/menu.model.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -79,7 +79,7 @@ class ProfileView extends StatelessWidget {
               title: '구독 채널 관리',
               onTap: () {
                 Get.toNamed(
-                  Routes.channel,
+                  Routes.platform,
                 );
               }),
           MenuItem(

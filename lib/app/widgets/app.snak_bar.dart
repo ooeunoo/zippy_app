@@ -1,10 +1,6 @@
-import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
-import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
-import 'package:zippy/app/widgets/app_spacer_h.dart';
-import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

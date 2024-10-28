@@ -46,11 +46,11 @@ class AppButton extends StatelessWidget {
         },
         style: ButtonStyle(
             backgroundColor: color != null
-                ? MaterialStateProperty.all(color)
+                ? WidgetStateProperty.all(color)
                 : disable
-                    ? MaterialStateProperty.all(AppColor.gray100)
-                    : MaterialStateProperty.all(AppColor.brand600),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    ? WidgetStateProperty.all(AppColor.gray100)
+                    : WidgetStateProperty.all(AppColor.brand600),
+            shape: WidgetStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppDimens.size(8)),
                 side: BorderSide(color: borderSideColorWrap(), width: 1)))),
         child: FittedBox(
