@@ -6,8 +6,8 @@ import 'package:zippy/presentation/controllers/base/base.controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class Base extends GetView<BaseController> {
-  const Base({super.key});
+class BaseView extends GetView<BaseController> {
+  const BaseView({super.key});
 
   @override
   Widget build(BuildContext context) {

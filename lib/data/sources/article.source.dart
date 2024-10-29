@@ -6,7 +6,7 @@ import 'package:zippy/data/providers/supabase.provider.dart';
 import 'package:zippy/domain/model/article.model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
-import 'package:zippy/domain/model/params/get_aritlces_params.dart';
+import 'package:zippy/domain/model/params/get_aritlces.params.dart';
 import 'package:zippy/domain/model/user_subscription.model.dart';
 
 String TABLE = 'articles';
@@ -82,6 +82,7 @@ class ArticleDatasourceImpl implements ArticleDatasource {
         .order('created_at', ascending: false)
         .limit(1000)
         .map((data) => data.map((item) {
+              print(item);
               return ArticleEntity.fromJson(item).toModel();
             }).toList());
   }

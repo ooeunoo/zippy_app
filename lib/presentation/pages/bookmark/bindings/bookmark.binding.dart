@@ -9,7 +9,7 @@ import 'package:zippy/presentation/controllers/bookmark/bookmark.controller.dart
 class BookmarkBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<BookmarkDatasource>(() => BookmarkDatasourceIml());
+    Get.lazyPut<BookmarkDatasource>(() => BookmarkDatasourceImpl());
     Get.lazyPut<BookmarkRepository>(() => BookmarkRepositoryImpl(Get.find()));
 
     Get.lazyPut<GetUserBookmark>(() => GetUserBookmark(Get.find()));

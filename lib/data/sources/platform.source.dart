@@ -15,7 +15,7 @@ abstract class PlatformDatasource {
   Future<Either<Failure, Platform>> getPlatform(int id);
 }
 
-class PlatformDatasourceIml implements PlatformDatasource {
+class PlatformDatasourceImpl implements PlatformDatasource {
   SupabaseProvider provider = Get.find();
 
   @override
@@ -26,18 +26,16 @@ class PlatformDatasourceIml implements PlatformDatasource {
       Map<String, Object> condition = {'status': true};
 
       if (withSources) {
-        select += ', sources!platform_id(*)';
+        select += ', sources(id, platform_id, category, status, type)';
         condition['sources.status'] = true;
       }
 
       List<Map<String, dynamic>> response =
-          await provider.client.from(TABLE).select(select);
-      print(response);
+          await provider.client.from(TABLE).select(select).match(condition);
       List<Platform> result =
           response.map((r) => PlatformEntity.fromJson(r).toModel()).toList();
       return Right(result);
     } catch (e) {
-      print(e);
       return Left(ServerFailure());
     }
   }

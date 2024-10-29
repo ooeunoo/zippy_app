@@ -12,7 +12,7 @@ abstract class SourceDatasource {
   Future<Either<Failure, Source>> getSource(int id);
 }
 
-class SourceDatasourceIml implements SourceDatasource {
+class SourceDatasourceImpl implements SourceDatasource {
   SupabaseProvider provider = Get.find();
 
   @override

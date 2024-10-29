@@ -13,34 +13,34 @@ import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:zippy/app/widgets/app_webview.dart';
 import 'package:zippy/domain/model/menu.model.dart';
+import 'package:zippy/presentation/controllers/profile/profile.controller.dart';
 
-class ProfileView extends StatelessWidget {
+class ProfileView extends GetView<ProfileController> {
   const ProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // appBar: appBar(context),
-        body: SafeArea(
-      child: Container(
-        padding: EdgeInsets.symmetric(
-            horizontal: AppDimens.width(20), vertical: AppDimens.height(0)),
-        child: Stack(
-          children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                appLogo(context),
-                avatarInfo(context),
-                const AppSpacerV(),
-                menu(context)
-              ],
-            ),
-          ],
+      body: SafeArea(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: AppDimens.width(20)),
+          child: Stack(
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  appLogo(context),
+                  avatarInfo(context),
+                  const AppSpacerV(),
+                  menu(context)
+                ],
+              ),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 
   Widget appLogo(BuildContext context) {
@@ -78,9 +78,7 @@ class ProfileView extends StatelessWidget {
               icon: Assets.sliders04,
               title: '구독 채널 관리',
               onTap: () {
-                Get.toNamed(
-                  Routes.platform,
-                );
+                controller.onClickSubscriptionManagement();
               }),
           MenuItem(
               icon: Assets.bookmarkLine,

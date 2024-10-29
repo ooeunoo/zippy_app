@@ -33,8 +33,8 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: width,
-      height: height,
+      width: width ?? double.infinity,
+      height: height ?? AppDimens.size(48),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppDimens.size(8)),
       ),
@@ -60,11 +60,11 @@ class AppButton extends StatelessWidget {
             children: [
               if (leadingIcon != null)
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     leadingIcon!,
-                    AppSpacerH(value: AppDimens.width(40)),
+                    AppSpacerH(value: AppDimens.width(10)),
                   ],
                 ),
               AppText(title, style: titleStyleWrap(context))

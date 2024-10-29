@@ -1,7 +1,7 @@
 
 import 'package:zippy/app/utils/vibrates.dart';
-import 'package:zippy/presentation/pages/board/board_view.dart';
-import 'package:zippy/presentation/pages/profile/profile_view.dart';
+import 'package:zippy/presentation/pages/board/board.view.dart';
+import 'package:zippy/presentation/pages/profile/profile.view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

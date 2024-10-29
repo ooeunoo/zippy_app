@@ -36,8 +36,8 @@ class PlatformEntity extends Equatable {
       name: json['name'],
       status: json['status'],
       image_url: json['image_url'],
-      sources: json['source'] != null
-          ? List<SourceEntity>.from(json['source']
+      sources: json['sources'] != null
+          ? List<SourceEntity>.from(json['sources']
               .map((sourceJson) => SourceEntity.fromJson(sourceJson)))
           : null,
     );

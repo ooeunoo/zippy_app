@@ -7,7 +7,7 @@ class GetArticlesParams extends Equatable {
   final List<UserSubscription> subscriptions;
   final int limit;
 
-  GetArticlesParams({
+  const GetArticlesParams({
     required this.subscriptions,
     this.limit = 1000,
   });

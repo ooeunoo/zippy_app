@@ -31,40 +31,16 @@ class BoardView extends StatefulWidget {
 
 class _BoardViewState extends State<BoardView> {
   AdmobService admobService = Get.find();
-  // OverlayEntry? _overlayEntry;
-  // final bool _showOverlay = true; // Variable to control overlay visibility
 
   @override
   void initState() {
     super.initState();
-
-    // admobService.loadBannerAd();
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   showOverlayGuide(context);
-    // });
   }
 
   @override
   void dispose() {
     super.dispose();
   }
-
-  // void showOverlayGuide(BuildContext context) {
-  //   if (!_showOverlay) return;
-
-  //   _overlayEntry = OverlayEntry(
-  //     builder: (context) => FingerGestureOverlayGuide(
-  //       onSkipPressed: removeOverlayGuide,
-  //     ),
-  //   );
-
-  //   Overlay.of(context).insert(_overlayEntry!);
-  // }
-
-  // void removeOverlayGuide() {
-  //   _overlayEntry?.remove();
-  //   _overlayEntry = null;
-  // }
 
   @override
   Widget build(BuildContext context) {

@@ -4,6 +4,10 @@ class Assets {
   static String env = '.env';
   static String envDev = '.env.development';
 
+  // logo
+  static const String kakao = 'assets/icons/kakao.svg';
+  static const String google = 'assets/icons/google.svg';
+  static const String apple = 'assets/icons/apple.svg';
   // icons
   static const String logo = 'assets/icons/logo.svg';
   static const String home01 = 'assets/icons/home-01.svg';

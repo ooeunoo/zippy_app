@@ -9,7 +9,7 @@ import 'package:zippy/data/providers/supabase.provider.dart';
 import 'package:zippy/data/sources/platform.source.dart';
 
 void main() {
-  late PlatformDatasourceIml datasource;
+  late PlatformDatasourceImpl datasource;
 
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +24,7 @@ void main() {
     await SupabaseProvider.init();
     Get.put<SupabaseProvider>(SupabaseProvider());
 
-    datasource = PlatformDatasourceIml();
+    datasource = PlatformDatasourceImpl();
   });
 
   tearDownAll(() {

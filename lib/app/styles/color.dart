@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 abstract class AppColor {
   AppColor._();
 
+  static const Color transparent = Color(0x00000000);
   static const Color white = Color(0xffffffff);
   static const Color black = Color(0xff000000);
 
@@ -368,7 +369,7 @@ abstract class AppColor {
   static const Color yellow900 = Color(0xff713B12);
   static const Color yellow950 = Color(0xff542C0D);
 
-  static const Color kakaoBase = Color(0xffFEE500);
-  static const Color googleBase = Color(0xffffffff);
-  static const Color naverBase = Color(0xff03C75A);
+  static const Color kakaoBackground = Color(0xffFEE500);
+  static const Color googleBackground = Color(0xffffffff);
+  static const Color naverBackground = Color(0xff03C75A);
 }

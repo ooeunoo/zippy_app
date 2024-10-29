@@ -17,7 +17,7 @@ abstract class BookmarkDatasource {
   Stream<List<Bookmark>> subscribeUserBookmark(String userId);
 }
 
-class BookmarkDatasourceIml implements BookmarkDatasource {
+class BookmarkDatasourceImpl implements BookmarkDatasource {
   SupabaseProvider provider = Get.find();
 
   @override

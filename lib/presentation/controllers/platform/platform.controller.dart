@@ -117,6 +117,7 @@ class PlatformController extends GetxController {
 
   Future<void> _setupChannels() async {
     final result = await getPlatforms.execute(withSources: true);
+    print(result);
 
     result.fold((failure) {
       if (failure == ServerFailure()) {
@@ -124,12 +125,13 @@ class PlatformController extends GetxController {
       }
     }, (data) {
       for (var platform in data) {
-        if (platform.type == PlatformType.Community.name) {
+        if (platform.type == PlatformType.Community) {
           communities.add(platform);
-        } else if (platform.type == PlatformType.News.name) {
+        } else if (platform.type == PlatformType.News) {
           news.add(platform);
         }
       }
+      print(news.length);
     });
   }
 
@@ -150,7 +152,6 @@ class PlatformController extends GetxController {
 
   void _listenUserSubscriptions() {
     subscribeUserSubscriptions.execute().listen((List<UserSubscription> event) {
-      print(event);
       userSubscriptions.bindStream(Stream.value(event));
     });
   }
