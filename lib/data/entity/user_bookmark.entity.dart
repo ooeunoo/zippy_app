@@ -1,9 +1,10 @@
 import 'package:hive/hive.dart';
+import 'package:zippy/app/utils/constants.dart';
 import 'package:zippy/domain/model/user_bookmark.model.dart';
 
 part 'user_bookmark.entity.g.dart';
 
-@HiveType(typeId: 0)
+@HiveType(typeId: Constants.userBookmarkHiveId)
 class UserBookmarkEntity extends HiveObject {
   @HiveField(0)
   int id;
@@ -49,10 +50,6 @@ class UserBookmarkEntity extends HiveObject {
 
   UserBookmark toModel() {
     return UserBookmark(
-        id: id,
-        title: title,
-        link: link,
-        content: content,
-        images: images);
+        id: id, title: title, link: link, content: content, images: images);
   }
 }

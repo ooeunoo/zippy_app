@@ -55,8 +55,8 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
 
     if (automaticallyImplyLeading && Get.previousRoute.isNotEmpty) {
       return IconButton(
-        padding: EdgeInsets.all(AppDimens.size(20)),
-        icon: const Icon(Icons.arrow_back, color: AppColor.gray600),
+        padding: EdgeInsets.only(left: AppDimens.size(20)),
+        icon: const Icon(Icons.arrow_back, color: AppColor.gray50),
         onPressed: onLeadingPressed ?? () => Get.back(),
         splashRadius: 24,
         highlightColor: Colors.transparent,

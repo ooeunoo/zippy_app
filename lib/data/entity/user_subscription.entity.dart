@@ -1,9 +1,10 @@
 import 'package:hive/hive.dart';
+import 'package:zippy/app/utils/constants.dart';
 import 'package:zippy/domain/model/user_subscription.model.dart';
 
 part 'user_subscription.entity.g.dart';
 
-@HiveType(typeId: 1)
+@HiveType(typeId: Constants.userSubscriptionHiveId)
 class UserSubscriptionEntity extends HiveObject {
   @HiveField(0)
   int id;

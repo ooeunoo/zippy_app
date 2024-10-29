@@ -82,7 +82,6 @@ class ArticleDatasourceImpl implements ArticleDatasource {
         .order('created_at', ascending: false)
         .limit(1000)
         .map((data) => data.map((item) {
-              print(item);
               return ArticleEntity.fromJson(item).toModel();
             }).toList());
   }

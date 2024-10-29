@@ -6,10 +6,11 @@ import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/widgets/app_button.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
+import 'package:zippy/app/widgets/app_spacer_v.dart';
 
 showAppDialog(
-  String title,
-  String message, {
+  String title, {
+  String? message,
   String confirmText = '확인',
   String cancelText = '취소',
   Color confirmButtonColor = AppColor.brand600,
@@ -40,7 +41,7 @@ showAppDialog(
 
 class AppDialog extends StatelessWidget {
   final String title;
-  final String message;
+  final String? message;
   final String confirmText;
   final String cancelText;
   final VoidCallback onConfirm;
@@ -54,7 +55,7 @@ class AppDialog extends StatelessWidget {
   const AppDialog({
     super.key,
     required this.title,
-    required this.message,
+    this.message,
     required this.confirmText,
     required this.cancelText,
     required this.onConfirm,
@@ -75,7 +76,6 @@ class AppDialog extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppDimens.size(16)),
         ),
         elevation: 0,
-        backgroundColor: Colors.transparent,
         child: contentBox(context),
       ),
     );
@@ -86,7 +86,7 @@ class AppDialog extends StatelessWidget {
       padding: EdgeInsets.all(AppDimens.size(20)),
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
-        color: Colors.white,
+        color: AppColor.graymodern950,
         borderRadius: BorderRadius.circular(AppDimens.size(16)),
       ),
       child: Column(
@@ -95,23 +95,25 @@ class AppDialog extends StatelessWidget {
           Text(
             title,
             style: Theme.of(context).textTheme.textMD.copyWith(
-                  color: AppColor.gray900,
+                  color: AppColor.gray50,
                   fontWeight: AppFontWeight.semibold,
                 ),
           ),
-          SizedBox(height: AppDimens.height(15)),
-          Text(
-            message,
-            style: Theme.of(context).textTheme.textSM.copyWith(
-                  color: AppColor.gray700,
-                ),
-            textAlign: TextAlign.center,
-          ),
+          AppSpacerV(value: AppDimens.height(15)),
+          if (message != null) ...[
+            Text(
+              message!,
+              style: Theme.of(context).textTheme.textSM.copyWith(
+                    color: AppColor.gray50,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          ],
           if (child != null) ...[
-            SizedBox(height: AppDimens.height(15)),
+            AppSpacerV(value: AppDimens.height(15)),
             child!,
           ],
-          SizedBox(height: AppDimens.height(22)),
+          AppSpacerV(value: AppDimens.height(22)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -126,10 +128,10 @@ class AppDialog extends StatelessWidget {
                         onCancel!();
                       }
                     },
-                    color: AppColor.white,
-                    borderColor: AppColor.gray300,
+                    color: AppColor.transparent,
+                    borderColor: AppColor.transparent,
                     titleStyle: Theme.of(context).textTheme.textMD.copyWith(
-                          color: AppColor.gray700,
+                          color: AppColor.gray50,
                         ),
                   ),
                 ),
@@ -146,6 +148,7 @@ class AppDialog extends StatelessWidget {
                   color: confirmButtonColor,
                   titleStyle: Theme.of(context).textTheme.textMD.copyWith(
                         color: confirmTextColor,
+                        fontWeight: AppFontWeight.semibold,
                       ),
                 ),
               ),

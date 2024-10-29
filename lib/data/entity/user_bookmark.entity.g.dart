@@ -8,7 +8,7 @@ part of 'user_bookmark.entity.dart';
 
 class UserBookmarkEntityAdapter extends TypeAdapter<UserBookmarkEntity> {
   @override
-  final int typeId = 0;
+  final int typeId = 2;
 
   @override
   UserBookmarkEntity read(BinaryReader reader) {

@@ -1,5 +1,4 @@
 import 'package:zippy/app/failures/failure.dart';
-import 'package:zippy/data/entity/source.entity.dart';
 import 'package:zippy/data/entity/user.entity.dart';
 import 'package:zippy/data/providers/supabase.provider.dart';
 import 'package:dartz/dartz.dart';
