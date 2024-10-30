@@ -22,7 +22,7 @@ class Article extends Equatable {
   // final String keywordsEn;
   // final String topic;
   // final String terms;
-  final String published;
+  final DateTime published;
 
   //
   final bool isAd;

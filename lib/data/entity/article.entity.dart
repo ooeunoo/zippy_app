@@ -23,7 +23,7 @@ class ArticleEntity extends Equatable {
   // final String keywords_en;
   // final String topic;
   // final String terms;
-  final String published;
+  final DateTime published;
 
   const ArticleEntity({
     this.id,
@@ -93,7 +93,9 @@ class ArticleEntity extends Equatable {
       // keywords_en: json['keywords_en'],
       // topic: json['topic'],
       // terms: json['terms'],
-      published: json['published'],
+      published: json['published'] != null
+          ? DateTime.parse(json['published'])
+          : DateTime.now(), // 또는 다른 기본값
     );
   }
 

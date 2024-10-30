@@ -6,7 +6,7 @@ import 'package:zippy/domain/model/article.model.dart';
 class AdContent extends Article {
   final NativeAd nativeAd;
 
-  const AdContent({
+  AdContent({
     super.sourceId = 0,
     super.title = '',
     super.subtitle = '',
@@ -25,10 +25,10 @@ class AdContent extends Article {
     // super.keywordsEn = '',
     // super.topic = '',
     // super.terms = '',
-    super.published = '',
+    DateTime? published,
     required this.nativeAd,
     super.isAd = true,
-  });
+  }) : super(published: published ?? DateTime.now());
 
   @override
   List<Object> get props {
