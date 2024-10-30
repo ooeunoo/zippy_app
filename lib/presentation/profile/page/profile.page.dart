@@ -107,10 +107,10 @@ class ProfilePage extends GetView<ProfileController> {
             icon: Assets.file06,
             title: '의견 보내기',
             onTap: () {
-              Get.to(
-                  () => const AppWebview(
-                      title: '의견 보내기', uri: Constants.inquriyUrl),
-                  transition: Transition.rightToLeftWithFade);
+              //   Get.to(
+              //       () => const AppWebview(
+              //           title: '의견 보내기', uri: Constants.inquriyUrl),
+              //       transition: Transition.rightToLeftWithFade);
             }),
       ]),
     ];

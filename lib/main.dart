@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/data/providers/hive.provider.dart';
@@ -17,7 +16,7 @@ void main() async {
       WidgetsFlutterBinding.ensureInitialized();
 
       if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-        await InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
+        // await InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
       }
 
       await initHive();

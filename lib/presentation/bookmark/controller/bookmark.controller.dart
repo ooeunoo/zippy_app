@@ -30,8 +30,8 @@ class BookmarkController extends GetxController {
   }
 
   void onClickBookmark(UserBookmark bookmark) {
-    Get.to(() => AppWebview(title: bookmark.title, uri: bookmark.link),
-        transition: Transition.rightToLeftWithFade);
+    // Get.to(() => AppWebview(title: bookmark.title, uri: bookmark.link),
+    //     transition: Transition.rightToLeftWithFade);
   }
 
   //////////////////////////////////////////////////////////////////

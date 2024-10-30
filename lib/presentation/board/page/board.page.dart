@@ -32,15 +32,17 @@ class BoardPage extends StatefulWidget {
 class _BoardPageState extends State<BoardPage> {
   AdmobService admobService = Get.find();
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  //   admobService.loadBannerAd();
+  // }
+
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -223,17 +225,17 @@ class _BoardPageState extends State<BoardPage> {
               );
             }
           }),
-          if (admobService.bannerAd.value != null) ...{
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                color: AppColor.graymodern950,
-                width: admobService.bannerAd.value?.size.width.toDouble(),
-                height: admobService.bannerAd.value?.size.height.toDouble(),
-                child: AdWidget(ad: admobService.bannerAd.value!),
-              ),
-            )
-          }
+          // if (admobService.bannerAd.value != null) ...{
+          //   Align(
+          //     alignment: Alignment.bottomCenter,
+          //     child: Container(
+          //       color: AppColor.graymodern950,
+          //       width: admobService.bannerAd.value?.size.width.toDouble(),
+          //       height: admobService.bannerAd.value?.size.height.toDouble(),
+          //       child: AdWidget(ad: admobService.bannerAd.value!),
+          //     ),
+          //   )
+          // }
         ],
       ),
     );
