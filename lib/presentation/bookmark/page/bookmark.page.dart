@@ -137,7 +137,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
               bool isLastItem = index == controller.userBookmarks.length - 1;
               var deleteAction = controller.deleteBookmarkContent;
               return Padding(
-                padding: EdgeInsets.symmetric(horizontal: AppDimens.width(10)),
+                padding: EdgeInsets.symmetric(horizontal: AppDimens.width(5)),
                 child: bookmarkItems(
                     context, controller, bookmark, isLastItem, deleteAction),
               );
@@ -193,7 +193,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                   .copyWith(color: AppColor.graymodern100),
             ),
             onTap: () => controller.onClickBookmark(bookmark),
-            minLeadingWidth: bookmark.images != null ? 56 : 0,
+            minLeadingWidth: bookmark.images != null ? 30 : 0,
           ),
           AppSpacerV(value: AppDimens.size(5)),
           if (!isLastItem) const AppDivider(),

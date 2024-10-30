@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:zippy/app/extensions/num.dart';
 import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/styles/color.dart';
@@ -7,6 +9,7 @@ import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/widgets/app_button.dart';
+import 'package:zippy/app/widgets/app_loader.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
@@ -48,6 +51,92 @@ class _BoardPageState extends State<BoardPage> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      drawer: Drawer(
+        backgroundColor: AppColor.graymodern950,
+        child: SafeArea(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              // DrawerHeader(
+              //   decoration: const BoxDecoration(
+              //     color: AppColor.graymodern900,
+              //   ),
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       AppText(
+              //         "최신 콘텐츠",
+              //         style: Theme.of(context).textTheme.text2XL.copyWith(
+              //               color: AppColor.graymodern100,
+              //             ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              // 아티클 리스트
+              Obx(() => ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: controller.articles.length,
+                    itemBuilder: (context, index) {
+                      Article article = controller.articles[index];
+                      if (!article.isAd) {
+                        Platform? platform =
+                            controller.getPlatformBySourceId(article.sourceId);
+                        return Column(
+                          children: [
+                            ListTile(
+                              title: AppText(
+                                article.title,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style:
+                                    Theme.of(context).textTheme.textSM.copyWith(
+                                          color: AppColor.graymodern100,
+                                        ),
+                              ),
+                              subtitle: AppText(
+                                platform?.name ?? "",
+                                style:
+                                    Theme.of(context).textTheme.textXS.copyWith(
+                                          color: AppColor.graymodern400,
+                                        ),
+                              ),
+                              onTap: () {
+                                controller.jumpToArticle(index);
+                                Navigator.pop(context);
+                              },
+                            ),
+                            const Divider(
+                              // 각 ListTile 아래에 Divider 추가
+                              height: 1,
+                              thickness: 1,
+                              color: AppColor.graymodern900,
+                            ),
+                          ],
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  )),
+              const Divider(color: AppColor.graymodern800),
+              ListTile(
+                leading:
+                    const AppSvg(Assets.logo, color: AppColor.graymodern100),
+                title: AppText(
+                  "구독 채널 추가하기",
+                  style: Theme.of(context).textTheme.textMD.copyWith(
+                        color: AppColor.graymodern100,
+                      ),
+                ),
+                onTap: () {
+                  Get.toNamed(Routes.platform);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
       body: Stack(
         children: [
           Obx(() {
@@ -107,7 +196,7 @@ class _BoardPageState extends State<BoardPage> {
                   dragStartBehavior: DragStartBehavior.start,
                   controller: controller.pageController,
                   onPageChanged: (int pageIndex) =>
-                      controller.onChangedItem(pageIndex),
+                      controller.jumpToArticle(pageIndex),
                   itemBuilder: (BuildContext context, int index) {
                     return Obx(() {
                       Article article = controller.articles[index];

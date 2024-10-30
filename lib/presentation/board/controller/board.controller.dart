@@ -118,6 +118,10 @@ class BoardController extends GetxService {
         }));
   }
 
+  void jumpToArticle(int index) {
+    pageController.jumpToPage(index);
+  }
+
   Future<void> onClickReport(Article article) async {
     await upArticleReportCount.execute(article.id!);
   }
@@ -126,7 +130,7 @@ class BoardController extends GetxService {
     return userBookmarks.any((bookmark) => bookmark.id == itemId);
   }
 
-  onChangedItem(int curPageIndex) {
+  onChangedArticle(int curPageIndex) {
     if (curPageIndex < prevPageIndex.value) return;
     int credit = admobService.useAdContentCredits();
     NativeAd? nativeAd = admobService.nativeAd.value;
