@@ -1,7 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:zippy/app/extensions/num.dart';
 import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/styles/color.dart';
@@ -9,7 +7,6 @@ import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/widgets/app_button.dart';
-import 'package:zippy/app/widgets/app_loader.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
