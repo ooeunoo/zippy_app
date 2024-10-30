@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zippy/presentation/board/binding/board.binding.dart';
 import 'package:zippy/presentation/board/page/board.page.dart';
-import 'package:zippy/presentation/profile/bindings/profile.binding.dart';
+import 'package:zippy/presentation/profile/binding/profile.binding.dart';
 import 'package:zippy/presentation/profile/page/profile.page.dart';
 
 class BasePage extends GetView<BaseController> {

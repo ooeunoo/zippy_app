@@ -5,11 +5,11 @@ import 'package:zippy/presentation/board/page/board.page.dart';
 import 'package:zippy/presentation/bookmark/binding/bookmark.binding.dart';
 import 'package:zippy/presentation/bookmark/page/bookmark.page.dart';
 import 'package:get/route_manager.dart';
-import 'package:zippy/presentation/login/bindings/login.binding.dart';
+import 'package:zippy/presentation/login/binding/login.binding.dart';
 import 'package:zippy/presentation/login/page/login.page.dart';
-import 'package:zippy/presentation/platform/bindings/platform.binding.dart';
+import 'package:zippy/presentation/platform/binding/platform.binding.dart';
 import 'package:zippy/presentation/platform/page/platform.page.dart';
-import 'package:zippy/presentation/profile/bindings/profile.binding.dart';
+import 'package:zippy/presentation/profile/binding/profile.binding.dart';
 import 'package:zippy/presentation/profile/page/profile.page.dart';
 
 class AppPages {
