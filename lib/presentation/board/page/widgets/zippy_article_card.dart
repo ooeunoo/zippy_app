@@ -62,11 +62,11 @@ class _ZippyCardState extends State<ZippyArticleCard>
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
-            flex: 50,
+            flex: 55,
             child: imageSection(),
           ),
           Expanded(
-            flex: 50,
+            flex: 45,
             child: infoSection(),
           ),
         ],
@@ -118,11 +118,11 @@ class _ZippyCardState extends State<ZippyArticleCard>
       child: Column(
         children: [
           Expanded(
-            flex: 15, // 20에서 15로 줄임
+            flex: 15,
             child: infoHeader(),
           ),
           Expanded(
-            flex: 45, // 40에서 45로 늘림
+            flex: 85,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -132,15 +132,6 @@ class _ZippyCardState extends State<ZippyArticleCard>
               ],
             ),
           ),
-          if (comments.isNotEmpty) ...{
-            Expanded(
-              flex: 40,
-              child: CommentSection(
-                comments: comments,
-                onTap: () => showCommentBottomSheet(context, comments),
-              ),
-            ),
-          }
         ],
       ),
     );
@@ -191,16 +182,49 @@ class _ZippyCardState extends State<ZippyArticleCard>
             Row(
               children: [
                 GestureDetector(
-                  onTap: () => toggleBookmark(article),
-                  child: AppSvg(
-                    Assets.bookmark,
-                    size: AppDimens.size(23),
-                    color: isBookmarked
-                        ? AppColor.brand700
-                        : AppColor.graymodern600,
+                  onTap: () => showCommentBottomSheet(context, comments),
+                  child: Stack(
+                    clipBehavior: Clip.none, // 부모 영역을 벗어날 수 있도록 설정
+                    children: [
+                      AppSvg(
+                        Assets.message,
+                        size: AppDimens.size(25),
+                        color: AppColor.graymodern600,
+                      ),
+                      Positioned(
+                        top: -8, // 위치 조정
+                        right: -8, // 위치 조정
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 4, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: AppColor.brand700,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: AppText(
+                            "${comments.isNotEmpty ? comments.length > 99 ? "99+" : comments.length : ""}",
+                            style: Theme.of(context).textTheme.textXS.copyWith(
+                                  color: AppColor.graymodern100,
+                                  height: 1, // 줄간격 제거
+                                ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const AppSpacerH(),
+                // GestureDetector(
+                //   onTap: () => toggleBookmark(article),
+                //   child: AppSvg(
+                //     Assets.bookmark,
+                //     size: AppDimens.size(23),
+                //     color: isBookmarked
+                //         ? AppColor.brand700
+                //         : AppColor.graymodern600,
+                //   ),
+                // ),
+                // const AppSpacerH(),
                 GestureDetector(
                   onTap: () => openMenu(article),
                   child: AppSvg(
@@ -298,96 +322,6 @@ class _ZippyCardState extends State<ZippyArticleCard>
                   .copyWith(color: AppColor.graymodern100)),
         )
       ],
-    );
-  }
-}
-
-class CommentSection extends StatefulWidget {
-  final List<Map<String, String>> comments;
-  final Function() onTap;
-
-  const CommentSection({
-    Key? key,
-    required this.comments,
-    required this.onTap,
-  }) : super(key: key);
-
-  @override
-  State<CommentSection> createState() => _CommentSectionState();
-}
-
-class _CommentSectionState extends State<CommentSection>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _commentAnimationController;
-  int currentCommentIndex = 0;
-  bool isFirstDisplay = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _commentAnimationController = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    )..forward();
-
-    if (widget.comments.isNotEmpty) {
-      Timer.periodic(const Duration(seconds: 3), (timer) {
-        if (mounted) {
-          if (isFirstDisplay) {
-            isFirstDisplay = false;
-            return;
-          }
-          _commentAnimationController.forward(from: 0);
-          setState(() {
-            currentCommentIndex =
-                (currentCommentIndex + 1) % widget.comments.length;
-          });
-        }
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: widget.onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              AppText("댓글",
-                  style: Theme.of(context)
-                      .textTheme
-                      .textXL
-                      .copyWith(color: AppColor.graymodern100)),
-              AppText("더보기",
-                  style: Theme.of(context)
-                      .textTheme
-                      .textSM
-                      .copyWith(color: AppColor.graymodern400)),
-            ],
-          ),
-          AppSpacerV(value: AppDimens.height(20)),
-          if (isFirstDisplay) ...{
-            CommentPreviewItem(
-              userName: widget.comments[currentCommentIndex]["userName"]!,
-              content: widget.comments[currentCommentIndex]["content"]!,
-              time: widget.comments[currentCommentIndex]["time"]!,
-            ),
-          } else ...{
-            FadeTransition(
-              opacity: _commentAnimationController,
-              child: CommentPreviewItem(
-                userName: widget.comments[currentCommentIndex]["userName"]!,
-                content: widget.comments[currentCommentIndex]["content"]!,
-                time: widget.comments[currentCommentIndex]["time"]!,
-              ),
-            ),
-          }
-        ],
-      ),
     );
   }
 }

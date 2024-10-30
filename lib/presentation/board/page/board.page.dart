@@ -206,7 +206,7 @@ class _BoardPageState extends State<BoardPage> {
                         bool isBookmarked =
                             controller.isBookmarked(article.id!);
                         return GestureDetector(
-                          onTap: () => controller.onClickItem(article),
+                          onTap: () => controller.onClickArticle(article),
                           child: ZippyArticleCard(
                             article: article,
                             platform: platform,

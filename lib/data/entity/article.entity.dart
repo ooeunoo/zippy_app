@@ -14,12 +14,12 @@ class ArticleEntity extends Equatable {
   // final String formatted_content;
   final List<dynamic> images;
   // final String tags;
-  // final String summary;
+  final String? summary;
   // final String chat_conversation;
   // final String embedding;
   final List<dynamic> attachments;
-  // final String key_points;
-  // final String keywords;
+  final List<String>? keyPoints;
+  final List<String>? keywords;
   // final String keywords_en;
   // final String topic;
   // final String terms;
@@ -36,12 +36,12 @@ class ArticleEntity extends Equatable {
     // required this.formatted_content,
     required this.images,
     // required this.tags,
-    // required this.summary,
+    this.summary,
     // required this.chat_conversation,
     // required this.embedding,
     required this.attachments,
-    // required this.key_points,
-    // required this.keywords,
+    this.keyPoints,
+    this.keywords,
     // required this.keywords_en,
     // required this.topic,
     // required this.terms,
@@ -63,7 +63,7 @@ class ArticleEntity extends Equatable {
       // chat_conversation,
       // embedding,
       attachments,
-      // key_points,
+      // keyPoints,
       // keywords,
       // keywords_en,
       // topic,
@@ -84,12 +84,12 @@ class ArticleEntity extends Equatable {
       // formatted_content: json['formatted_content'],
       images: json['images'],
       // tags: json['tags'],
-      // summary: json['summary'],
+      summary: json['summary'],
       // chat_conversation: json['chat_conversation'],
       // embedding: json['embedding'],
       attachments: json['attachments'],
-      // key_points: json['key_points'],
-      // keywords: json['keywords'],
+      keyPoints: json['key_points'],
+      keywords: json['keywords'],
       // keywords_en: json['keywords_en'],
       // topic: json['topic'],
       // terms: json['terms'],
@@ -111,12 +111,12 @@ class ArticleEntity extends Equatable {
       // formattedContent: formatted_content,
       images: images,
       // tags: tags,
-      // summary: summary,
+      summary: summary,
       // chatConversation: chat_conversation,
       // embedding: embedding,
       attachments: attachments,
-      // keyPoints: key_points,
-      // keywords: keywords,
+      keyPoints: keyPoints,
+      keywords: keywords,
       // keywordsEn: keywords_en,
       // topic: topic,
       // terms: terms,

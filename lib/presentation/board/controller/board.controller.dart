@@ -29,6 +29,7 @@ import 'package:zippy/domain/usecases/subscirbe_user_subscriptions.usecase.dart'
 import 'package:zippy/domain/usecases/up_article_report_count.usecase.dart';
 import 'package:zippy/domain/usecases/up_article_view_count.usecase.dart';
 import 'package:zippy/presentation/board/page/widgets/bottom_extension_menu.dart';
+import 'package:zippy/presentation/board/page/widgets/zippy_article_view.dart';
 
 class BoardController extends GetxService {
   AdmobService admobService = Get.find<AdmobService>();
@@ -99,7 +100,7 @@ class BoardController extends GetxService {
     ).toCreateEntity();
     onHeavyVibration();
     if (isBookmarked(article.id!)) {
-      await deleteUserBookmark.execute(entity);
+      // await deleteUserBookmark.execute(entity);
     } else {
       await createUserBookmark.execute(entity);
     }
@@ -109,6 +110,10 @@ class BoardController extends GetxService {
     onHeavyVibration();
     Get.bottomSheet(BottomExtensionMenu(
         article: article,
+        bookmark: () async {
+          await toggleBookmark(article);
+          notifyBookmarked();
+        },
         share: () async {
           await toShare(article.title, article.link);
         },
@@ -147,8 +152,9 @@ class BoardController extends GetxService {
     prevPageIndex.value = curPageIndex;
   }
 
-  onClickItem(Article article) async {
+  onClickArticle(Article article) async {
     if (!article.isAd) {
+      // 인터스티셜 광고 처리
       int credit = admobService.useIntersitialAdCredits();
       InterstitialAd? interstitialAd = admobService.interstitialAd.value;
 
@@ -157,10 +163,10 @@ class BoardController extends GetxService {
         admobService.resetIntersitialAdCredits();
       }
 
-      Get.to(() => AppWebview(title: article.title, uri: article.link),
-          transition: Transition.rightToLeftWithFade);
-
-      await upArticleViewCount.execute(article.id!);
+      Get.to(() => ZippyArticleView(article: article));
+      // Get.to(() => AppWebview(title: article.title, uri: article.link),
+      //     transition: Transition.rightToLeftWithFade);
+      // await upArticleViewCount.execute(article.id!);
     }
   }
 

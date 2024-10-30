@@ -84,3 +84,24 @@ notifyReported() {
     ),
   );
 }
+
+notifyBookmarked() {
+  Get.showSnackbar(
+    GetSnackBar(
+      messageText: AppText("북마크되었습니다.",
+          align: TextAlign.center,
+          style: Theme.of(Get.context!)
+              .textTheme
+              .textMD
+              .copyWith(color: AppColor.graymodern100)),
+      duration: const Duration(seconds: 2),
+      backgroundColor: AppColor.brand600,
+      snackPosition: SnackPosition.TOP,
+      borderRadius: 10,
+      animationDuration: const Duration(seconds: 1),
+      margin: EdgeInsets.symmetric(horizontal: AppDimens.width(20)),
+      padding: EdgeInsets.symmetric(
+          horizontal: AppDimens.width(20), vertical: AppDimens.height(15)),
+    ),
+  );
+}
