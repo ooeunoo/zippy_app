@@ -35,6 +35,8 @@ dependencies:
   flutter_expandable_fab: ^2.0.0
   shared_preferences: ^2.3.2
   google_mobile_ads: ^5.2.0
+  highlightable_text:
+    path: ../highlightable_text
 
 dev_dependencies:
   flutter_test:

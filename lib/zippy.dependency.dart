@@ -23,6 +23,9 @@ import 'package:zippy/domain/repositories/user_category.repository.dart';
 import 'package:get/get.dart';
 import 'package:zippy/domain/repositories/user_interaction.repository.dart';
 import 'package:zippy/domain/usecases/get_app_metadata.usecase.dart';
+import 'package:zippy/domain/usecases/get_current_user.usecase.dart';
+import 'package:zippy/domain/usecases/logout.usecase.dart';
+import 'package:zippy/domain/usecases/subscribe_auth_status.usecase.dart';
 import 'package:zippy/domain/usecases/update_app_metdata.usecase.dart';
 
 class ZippyBindings implements Bindings {
@@ -80,5 +83,8 @@ class ZippyBindings implements Bindings {
   void _initUsecase() {
     Get.lazyPut<GetAppMetadata>(() => GetAppMetadata(Get.find()));
     Get.lazyPut<UpdateAppMetadata>(() => UpdateAppMetadata(Get.find()));
+    Get.lazyPut<GetCurrentUser>(() => GetCurrentUser(Get.find()));
+    Get.lazyPut<SubscribeAuthStatus>(() => SubscribeAuthStatus(Get.find()));
+    Get.lazyPut<Logout>(() => Logout(Get.find()));
   }
 }

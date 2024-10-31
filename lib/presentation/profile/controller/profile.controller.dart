@@ -12,8 +12,8 @@ class ProfileController extends GetxController {
   }
 
   onClickSubscriptionManagement() {
-    bool isLoggedIn = authService.currentUser.value != null;
-
+    bool isLoggedIn = authService.isLoggedIn.value;
+    print(isLoggedIn);
     if (isLoggedIn) {
       Get.toNamed(Routes.platform);
     } else {
@@ -26,5 +26,9 @@ class ProfileController extends GetxController {
         },
       );
     }
+  }
+
+  onClickLogout() async {
+    await authService.logout();
   }
 }

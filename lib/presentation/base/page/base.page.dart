@@ -18,9 +18,9 @@ class BasePage extends GetView<BaseController> {
 
   @override
   Widget build(BuildContext context) {
-    AdmobService admobService = Get.find();
+    // AdmobService admobService = Get.find();
 
-    admobService.loadBannerAd();
+    // admobService.loadBannerAd();
 
     return Scaffold(
       bottomNavigationBar: Obx(() => Container(

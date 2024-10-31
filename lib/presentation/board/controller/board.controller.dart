@@ -1,19 +1,25 @@
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/failures/failure.dart';
+import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/app/services/admob_service.dart';
+import 'package:zippy/app/services/auth.service.dart';
 import 'package:zippy/app/utils/share.dart';
 import 'package:zippy/app/utils/shuffle.dart';
 import 'package:zippy/app/utils/vibrates.dart';
 import 'package:zippy/app/widgets/app.snak_bar.dart';
-import 'package:zippy/app/widgets/app_webview.dart';
+import 'package:zippy/app/widgets/app_dialog.dart';
 import 'package:zippy/data/entity/user_bookmark.entity.dart';
+import 'package:zippy/domain/enum/interaction_type.enum.dart';
 import 'package:zippy/domain/model/ad_content.model.dart';
 import 'package:zippy/domain/model/article.model.dart';
+import 'package:zippy/domain/model/params/create_user_interaction.params.dart';
 import 'package:zippy/domain/model/source.model.dart';
 import 'package:zippy/domain/model/platform.model.dart';
+import 'package:zippy/domain/model/user.model.dart';
 import 'package:zippy/domain/model/user_bookmark.model.dart';
 import 'package:zippy/domain/model/user_subscription.model.dart';
 import 'package:zippy/domain/usecases/create_user_bookmark.usecase.dart';
+import 'package:zippy/domain/usecases/create_user_interaction.usecase.dart';
 import 'package:zippy/domain/usecases/delete_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/get_articles.usecase.dart';
 import 'package:zippy/domain/usecases/get_platforms.usecase.dart';
@@ -26,12 +32,12 @@ import 'package:zippy/domain/usecases/get_user_subscriptions.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_articles.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_subscriptions.usecase.dart';
-import 'package:zippy/domain/usecases/up_article_report_count.usecase.dart';
-import 'package:zippy/domain/usecases/up_article_view_count.usecase.dart';
+import 'package:zippy/domain/usecases/update_user_interaction.usecase.dart';
 import 'package:zippy/presentation/board/page/widgets/bottom_extension_menu.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_article_view.dart';
 
 class BoardController extends GetxService {
+  AuthService authService = Get.find<AuthService>();
   AdmobService admobService = Get.find<AdmobService>();
 
   final SubscribeArticles subscribeArticles;
@@ -44,8 +50,8 @@ class BoardController extends GetxService {
   final DeleteUserBookmark deleteUserBookmark;
   final GetUserBookmark getUserBookmark;
   final GetUserSubscriptions getUserSubscriptions;
-  final UpArticleViewCount upArticleViewCount;
-  final UpArticleReportCount upArticleReportCount;
+  final CreateUserInteraction createUserInteraction;
+  final UpdateUserInteraction updateUserInteraction;
 
   BoardController(
     this.subscribeArticles,
@@ -58,10 +64,11 @@ class BoardController extends GetxService {
     this.deleteUserBookmark,
     this.getUserBookmark,
     this.getUserSubscriptions,
-    this.upArticleViewCount,
-    this.upArticleReportCount,
+    this.createUserInteraction,
+    this.updateUserInteraction,
   );
 
+  User? user;
   Rx<int> prevPageIndex = Rx<int>(0);
   PageController pageController = PageController(initialPage: 0);
   RxMap<int, Platform> platforms = RxMap<int, Platform>({}).obs();
@@ -111,14 +118,30 @@ class BoardController extends GetxService {
     Get.bottomSheet(BottomExtensionMenu(
         article: article,
         bookmark: () async {
+          _preCheckLogin();
           await toggleBookmark(article);
+          await createUserInteraction.execute(CreateUserInteractionParams(
+            userId: user!.id,
+            articleId: article.id!,
+            interactionType: InteractionType.Bookmark,
+          ));
           notifyBookmarked();
         },
         share: () async {
           await toShare(article.title, article.link);
+          await createUserInteraction.execute(CreateUserInteractionParams(
+            userId: user!.id,
+            articleId: article.id!,
+            interactionType: InteractionType.Share,
+          ));
         },
         report: () async {
-          await onClickReport(article);
+          _preCheckLogin();
+          await createUserInteraction.execute(CreateUserInteractionParams(
+            userId: user!.id,
+            articleId: article.id!,
+            interactionType: InteractionType.Unlike,
+          ));
           notifyReported();
         }));
   }
@@ -127,9 +150,9 @@ class BoardController extends GetxService {
     pageController.jumpToPage(index);
   }
 
-  Future<void> onClickReport(Article article) async {
-    await upArticleReportCount.execute(article.id!);
-  }
+  // Future<void> onClickReport(Article article) async {
+  //   await upArticleReportCount.execute(article.id!);
+  // }
 
   bool isBookmarked(int itemId) {
     return userBookmarks.any((bookmark) => bookmark.id == itemId);
@@ -163,10 +186,12 @@ class BoardController extends GetxService {
         admobService.resetIntersitialAdCredits();
       }
 
+      await createUserInteraction.execute(CreateUserInteractionParams(
+        userId: user!.id,
+        articleId: article.id!,
+        interactionType: InteractionType.View,
+      ));
       Get.to(() => ZippyArticleView(article: article));
-      // Get.to(() => AppWebview(title: article.title, uri: article.link),
-      //     transition: Transition.rightToLeftWithFade);
-      // await upArticleViewCount.execute(article.id!);
     }
   }
 
@@ -194,6 +219,7 @@ class BoardController extends GetxService {
 
     _listenUserSubscriptions();
     _listenUserBookmark();
+    _listenUser();
 
     await refreshItem();
 
@@ -267,5 +293,26 @@ class BoardController extends GetxService {
     subscribeUserBookmark.execute().listen((List<UserBookmark> event) {
       userBookmarks.bindStream(Stream.value(event));
     });
+  }
+
+  void _listenUser() {
+    authService.currentUser.listen((user) {
+      if (user != null) {
+        this.user = user;
+      }
+    });
+  }
+
+  void _preCheckLogin() {
+    if (user == null) {
+      showAppDialog(
+        "로그인이 필요해요.",
+        confirmText: "로그인하러가기",
+        onlyConfirm: true,
+        onConfirm: () {
+          Get.toNamed(Routes.login);
+        },
+      );
+    }
   }
 }

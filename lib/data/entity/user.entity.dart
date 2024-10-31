@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:zippy/app/utils/log.dart';
 import 'package:zippy/domain/model/user.model.dart';
 
 @immutable
@@ -24,6 +25,7 @@ class UserEntity extends Equatable {
   }
 
   factory UserEntity.fromJson(Map<String, dynamic> json) {
+    longPrint('UserEntity.fromJson: $json');
     return UserEntity(
       id: json['id'],
       email: json['email'],

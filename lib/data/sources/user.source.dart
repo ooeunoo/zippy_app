@@ -8,24 +8,23 @@ import 'package:zippy/domain/model/user.model.dart';
 String TABLE = 'users';
 
 abstract class UserDatasource {
-  Future<Either<Failure, User>> getUser(String id);
+  Future<Either<Failure, User?>> getUser(String id);
 }
 
 class UserDatasourceImpl implements UserDatasource {
   SupabaseProvider provider = Get.find();
 
   @override
-  Future<Either<Failure, User>> getUser(String id) async {
+  Future<Either<Failure, User?>> getUser(String id) async {
     try {
-      Map<String, dynamic> response = await provider.client
+      Map<String, dynamic>? response = await provider.client
           .from(TABLE)
           .select('*')
           .eq('id', id)
-          .eq('status', true)
-          .single();
+          .maybeSingle();
 
-      User result = UserEntity.fromJson(response).toModel();
-
+      User? result =
+          response != null ? UserEntity.fromJson(response).toModel() : null;
       return Right(result);
     } catch (e) {
       return Left(ServerFailure());

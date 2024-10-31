@@ -18,7 +18,6 @@ class LoginPage extends GetView<LoginController> {
   @override
   Widget build(BuildContext context) {
     final hasPreviousRoute = Get.routing.route?.isFirst == false;
-    print(hasPreviousRoute);
 
     return Scaffold(
       appBar: AppHeader(
@@ -75,9 +74,7 @@ class LoginPage extends GetView<LoginController> {
                           color: AppColor.black,
                           fontWeight: AppFontWeight.semibold,
                         ),
-                    onPressed: () {
-                      // 카카오 로그인 구현
-                    },
+                    onPressed: () => controller.onClickLoginInWithKakao(),
                     leadingIcon: AppSvg(Assets.kakao, size: AppDimens.size(18)),
                     color: AppColor.kakaoBackground,
                   ),

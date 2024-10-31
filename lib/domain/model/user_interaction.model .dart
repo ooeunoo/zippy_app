@@ -3,31 +3,38 @@ import 'package:flutter/material.dart';
 import 'package:zippy/domain/enum/interaction_type.enum.dart';
 
 @immutable
-class CreateUserInteractionParams extends Equatable {
+class UserInteraction extends Equatable {
+  final int? id;
   final String userId;
   final int articleId;
-  final InteractionType interactionType;
-  final double? readPersent;
+  final InteractionType type;
+  final double? readTime;
   final double? readDuration;
 
-  const CreateUserInteractionParams({
-    required this.interactionType,
+  const UserInteraction({
+    this.id,
     required this.userId,
     required this.articleId,
-    this.readPersent = 0,
-    this.readDuration = 0,
+    required this.type,
+    this.readTime,
+    this.readDuration,
   });
 
   @override
   List<Object> get props {
-    return [interactionType, userId, articleId];
+    return [
+      userId,
+      articleId,
+      type,
+    ];
   }
 
-  Map<String, dynamic> toJson() => {
+  dynamic toJson() => {
+        'id': id,
         'user_id': userId,
         'article_id': articleId,
-        'interaction_type': interactionType,
-        'read_persent': readPersent,
+        'interaction_type': type,
+        'read_time': readTime,
         'read_duration': readDuration,
       };
 

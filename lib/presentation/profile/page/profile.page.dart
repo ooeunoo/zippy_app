@@ -2,15 +2,18 @@ import 'package:get/get.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:random_avatar/random_avatar.dart';
 import 'package:zippy/app/routes/app_pages.dart';
+import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/utils/constants.dart';
 import 'package:zippy/app/utils/random.dart';
+import 'package:zippy/app/widgets/app.snak_bar.dart';
 import 'package:zippy/app/widgets/app_menu.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:flutter/material.dart';
+import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/app/widgets/app_webview.dart';
 import 'package:zippy/domain/model/menu.model.dart';
 import 'package:zippy/presentation/profile/controller/profile.controller.dart';
@@ -35,6 +38,28 @@ class ProfilePage extends GetView<ProfileController> {
                   const AppSpacerV(),
                   menu(context)
                 ],
+              ),
+              // 로그아웃 버튼 추가
+              Positioned(
+                bottom: AppDimens.height(20),
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: TextButton(
+                    onPressed: () {
+                      // 로그아웃 로직 추가
+                      controller.onClickLogout();
+                    },
+                    child: AppText(
+                      '로그아웃',
+                      style: Theme.of(context).textTheme.textSM.copyWith(
+                            color: AppColor.gray600,
+                            decoration: TextDecoration.underline,
+                            decorationColor: AppColor.gray600,
+                          ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -107,10 +132,10 @@ class ProfilePage extends GetView<ProfileController> {
             icon: Assets.file06,
             title: '의견 보내기',
             onTap: () {
-              //   Get.to(
-              //       () => const AppWebview(
-              //           title: '의견 보내기', uri: Constants.inquriyUrl),
-              //       transition: Transition.rightToLeftWithFade);
+              // Get.to(
+              //     () => const AppWebview(
+              //         title: '의견 보내기', uri: Constants.inquriyUrl),
+              //     transition: Transition.rightToLeftWithFade);
             }),
       ]),
     ];

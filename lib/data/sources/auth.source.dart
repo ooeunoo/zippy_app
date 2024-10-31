@@ -9,10 +9,11 @@ import 'package:zippy/domain/model/user.model.dart';
 
 abstract class AuthDatasource {
   Future<Either<Failure, User?>> getCurrentUser();
-  Stream<User?> authStateChanges();
-  Future<void> signOut();
+  Stream<User?> subscribeAuthStatus();
+  Future<Either<Failure, bool>> logout();
   bool isAuthenticated();
   Future<Either<Failure, User>> loginInWithEmail(String email, String password);
+  Future<Either<Failure, bool>> loginInWithKakao();
 }
 
 class AuthDatasourceImpl implements AuthDatasource {
@@ -23,35 +24,44 @@ class AuthDatasourceImpl implements AuthDatasource {
   Future<Either<Failure, User?>> getCurrentUser() async {
     try {
       final currentUser = provider.client.auth.currentUser;
-      print(currentUser);
       if (currentUser == null) {
         return const Right(null);
       }
+      Either<Failure, User?> result =
+          await userDatasource.getUser(currentUser.id);
 
-      User user = UserEntity.fromJson(currentUser.toJson()).toModel();
-      return Right(user);
+      return result;
     } catch (e) {
       return Left(ServerFailure());
     }
   }
 
   @override
-  Stream<User?> authStateChanges() {
-    return provider.client.auth.onAuthStateChange.map((event) {
+  Stream<User?> subscribeAuthStatus() {
+    return provider.client.auth.onAuthStateChange.asyncMap((event) async {
+      print(event);
       final authUser = event.session?.user;
       if (authUser == null) {
         return null;
       }
-      return UserEntity.fromJson(authUser.toJson()).toModel();
+
+      final Either<Failure, User?> result =
+          await userDatasource.getUser(authUser.id);
+      print(result);
+      return result.fold(
+        (failure) => null,
+        (user) => user,
+      );
     });
   }
 
   @override
-  Future<void> signOut() async {
+  Future<Either<Failure, bool>> logout() async {
     try {
       await provider.client.auth.signOut();
+      return const Right(true);
     } catch (e) {
-      throw ServerFailure();
+      return Left(ServerFailure());
     }
   }
 
@@ -94,6 +104,20 @@ class AuthDatasourceImpl implements AuthDatasource {
 
       User user = UserEntity.fromJson(response.user!.toJson()).toModel();
       return Right(user);
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> loginInWithKakao() async {
+    try {
+      await provider.client.auth.signInWithOAuth(
+        supabase.OAuthProvider.kakao,
+        redirectTo: 'com.miro.zippy://oauth',
+        authScreenLaunchMode: supabase.LaunchMode.inAppWebView,
+      );
+      return const Right(true);
     } catch (e) {
       return Left(ServerFailure());
     }

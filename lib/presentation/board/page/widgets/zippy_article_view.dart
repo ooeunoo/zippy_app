@@ -1,9 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:highlightable_text/highlightable_text.dart';
 import 'package:zippy/app/extensions/datetime.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/widgets/app_header.dart';
+import 'package:zippy/app/widgets/app_highlight_menu.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/article.model.dart';
@@ -21,6 +25,7 @@ class ZippyArticleView extends StatefulWidget {
 
 class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
   DateTime? _startTime;
+  final List<Highlight> _highlights = [];
 
   @override
   void initState() {
@@ -51,6 +56,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
         appBar: AppHeader(
           title: AppText(
             widget.article.title,
+            maxLines: 1,
             style: Theme.of(context).textTheme.textLG.copyWith(
                   color: AppColor.gray100,
                 ),
@@ -193,9 +199,53 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
           "Content",
           style: Theme.of(context).textTheme.textLG,
         ),
-        AppText(
-          widget.article.content,
-          style: Theme.of(context).textTheme.textSM,
+        HighlightableText(
+          text: widget.article.content,
+          initialHighlights: _highlights,
+          highlightColor: Colors.yellow.withOpacity(0.3),
+          onHighlight: (content, startOffset, endOffset) {
+            print('highlight: $content, $startOffset, $endOffset');
+          },
+          onDeleteHighlight: (highlight) {
+            print('delete highlight: ${highlight.id}');
+          },
+          onSaveNote: (highlight, note) {
+            print('highlight: $highlight');
+            print('note: $note');
+            setState(() {
+              final index = _highlights.indexWhere(
+                (h) =>
+                    h.startOffset == highlight.startOffset &&
+                    h.endOffset == highlight.endOffset,
+              );
+              if (index != -1) {
+                _highlights[index] = highlight.copyWith(note: note);
+              }
+            });
+          },
+          menuBuilder: (context, highlight, onHighlight, onNote, onDelete) =>
+              AppHighlightMenu(
+            highlight: highlight,
+            onHighlight: onHighlight,
+            onNote: onNote,
+            onDelete: onDelete,
+          ),
+          noteIndicatorBuilder: (highlight) =>
+              highlight.note?.isNotEmpty == true
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 2, right: 5),
+                      child: Transform(
+                        alignment: Alignment.center,
+                        transform: Matrix4.rotationY(pi),
+                        child: Icon(
+                          Icons.mode_comment_rounded,
+                          size: 16,
+                          color: highlight.note?.isNotEmpty == true
+                              ? Colors.blue
+                              : Colors.grey[400],
+                        ),
+                      ))
+                  : const SizedBox.shrink(),
         ),
       ],
     );
