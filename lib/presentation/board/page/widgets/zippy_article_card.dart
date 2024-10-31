@@ -75,7 +75,6 @@ class _ZippyCardState extends State<ZippyArticleCard>
   }
 
   Widget imageSection() {
-    print("image url: ${article.images[0]}");
     final size = MediaQuery.of(context).size;
     final imageWidth = size.width;
     final imageHeight = imageWidth * 0.6;

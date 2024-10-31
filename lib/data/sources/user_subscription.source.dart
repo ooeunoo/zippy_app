@@ -64,7 +64,6 @@ class UserSubscriptionDatasourceImpl implements UserSubscriptionDatasource {
       await box.put(UserSubscriptionsKey.all.name, []);
       return const Right(true);
     } catch (e) {
-      print(e);
       return Left(ServerFailure());
     }
   }

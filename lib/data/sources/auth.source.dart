@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import 'package:zippy/app/failures/failure.dart';
@@ -39,7 +40,6 @@ class AuthDatasourceImpl implements AuthDatasource {
   @override
   Stream<User?> subscribeAuthStatus() {
     return provider.client.auth.onAuthStateChange.asyncMap((event) async {
-      print(event);
       final authUser = event.session?.user;
       if (authUser == null) {
         return null;
@@ -112,11 +112,15 @@ class AuthDatasourceImpl implements AuthDatasource {
   @override
   Future<Either<Failure, bool>> loginInWithKakao() async {
     try {
-      await provider.client.auth.signInWithOAuth(
-        supabase.OAuthProvider.kakao,
-        redirectTo: 'com.miro.zippy://oauth',
-        authScreenLaunchMode: supabase.LaunchMode.inAppWebView,
+      await provider.client.auth.getOAuthSignInUrl(
+        provider: supabase.OAuthProvider.kakao,
+        redirectTo: 'com.miro.zippy://login-callback',
       );
+      // await provider.client.auth.signInWithOAuth(
+      //   supabase.OAuthProvider.kakao,
+      //   redirectTo: 'com.miro.zippy://login-callback',
+      //   authScreenLaunchMode: supabase.LaunchMode.platformDefault,
+      // );
       return const Right(true);
     } catch (e) {
       return Left(ServerFailure());

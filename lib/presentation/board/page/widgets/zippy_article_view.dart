@@ -210,7 +210,6 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
             print('delete highlight: ${highlight.id}');
           },
           onSaveNote: (highlight, note) {
-            print('highlight: $highlight');
             print('note: $note');
             setState(() {
               final index = _highlights.indexWhere(

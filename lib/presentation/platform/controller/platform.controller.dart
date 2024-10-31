@@ -117,7 +117,6 @@ class PlatformController extends GetxController {
 
   Future<void> _setupChannels() async {
     final result = await getPlatforms.execute(withSources: true);
-    print(result);
 
     result.fold((failure) {
       if (failure == ServerFailure()) {
@@ -131,7 +130,6 @@ class PlatformController extends GetxController {
           news.add(platform);
         }
       }
-      print(news.length);
     });
   }
 

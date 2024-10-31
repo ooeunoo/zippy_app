@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zippy/domain/model/user.model.dart';
 import 'package:zippy/domain/usecases/get_app_metadata.usecase.dart';

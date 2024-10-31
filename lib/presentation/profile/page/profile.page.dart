@@ -6,15 +6,12 @@ import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
-import 'package:zippy/app/utils/constants.dart';
 import 'package:zippy/app/utils/random.dart';
-import 'package:zippy/app/widgets/app.snak_bar.dart';
 import 'package:zippy/app/widgets/app_menu.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:zippy/app/widgets/app_text.dart';
-import 'package:zippy/app/widgets/app_webview.dart';
 import 'package:zippy/domain/model/menu.model.dart';
 import 'package:zippy/presentation/profile/controller/profile.controller.dart';
 
@@ -120,9 +117,7 @@ class ProfilePage extends GetView<ProfileController> {
             icon: Assets.message,
             title: '리뷰 남기기',
             onTap: () async {
-              print('in');
               final InAppReview inAppReview = InAppReview.instance;
-              print(await inAppReview.isAvailable());
 
               if (await inAppReview.isAvailable()) {
                 inAppReview.requestReview();

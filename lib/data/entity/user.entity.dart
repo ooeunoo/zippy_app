@@ -25,7 +25,6 @@ class UserEntity extends Equatable {
   }
 
   factory UserEntity.fromJson(Map<String, dynamic> json) {
-    longPrint('UserEntity.fromJson: $json');
     return UserEntity(
       id: json['id'],
       email: json['email'],

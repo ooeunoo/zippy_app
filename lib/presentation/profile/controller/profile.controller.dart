@@ -13,7 +13,6 @@ class ProfileController extends GetxController {
 
   onClickSubscriptionManagement() {
     bool isLoggedIn = authService.isLoggedIn.value;
-    print(isLoggedIn);
     if (isLoggedIn) {
       Get.toNamed(Routes.platform);
     } else {

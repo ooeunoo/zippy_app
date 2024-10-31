@@ -1,6 +1,4 @@
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/routes/app_pages.dart';
-import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
