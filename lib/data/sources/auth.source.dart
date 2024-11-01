@@ -1,10 +1,13 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao;
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zippy/app/failures/failure.dart';
+import 'package:zippy/app/utils/log.dart';
 import 'package:zippy/app/widgets/app_oauth_webview.dart';
 import 'package:zippy/data/entity/user.entity.dart';
 import 'package:zippy/data/providers/supabase.provider.dart';
@@ -116,26 +119,39 @@ class AuthDatasourceImpl implements AuthDatasource {
   @override
   Future<Either<Failure, bool>> loginInWithKakao() async {
     try {
-      // OAuth URL 가져오기
-      final response = await provider.client.auth.getOAuthSignInUrl(
+      kakao.OAuthToken? token;
+      if (await kakao.isKakaoTalkInstalled()) {
+        try {
+          token = await kakao.UserApi.instance.loginWithKakaoTalk();
+        } catch (error) {
+          // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
+          // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
+          if (error is PlatformException && error.code == 'CANCELED') {
+            return const Right(false);
+          }
+          // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인
+          try {
+            token = await kakao.UserApi.instance.loginWithKakaoAccount();
+          } catch (error) {
+            return const Right(false);
+          }
+        }
+      } else {
+        try {
+          token = await kakao.UserApi.instance.loginWithKakaoAccount();
+        } catch (error) {
+          return const Right(false);
+        }
+      }
+      await provider.client.auth.signInWithIdToken(
         provider: supabase.OAuthProvider.kakao,
-        redirectTo: 'com.miro.zippy://login-callback',
+        idToken: token.idToken!,
+        accessToken: token.accessToken,
       );
 
-      // 웹뷰로 OAuth 페이지 열기
-      final result = await Get.to<bool>(() => AppOAuthWebView(
-            url: response.url.toString(),
-            redirectUrl: 'com.miro.zippy://login-callback',
-          ));
-
-      print('result: $result');
-      // 웹뷰가 정상적으로 닫혔고 리다이렉트가 성공했을 경우
-      if (result == true) {
-        return const Right(true);
-      }
-
-      return Left(ServerFailure());
+      return const Right(true);
     } catch (e) {
+      debugPrint('Login error: $e');
       return Left(ServerFailure());
     }
   }

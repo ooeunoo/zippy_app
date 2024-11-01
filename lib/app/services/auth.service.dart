@@ -37,14 +37,9 @@ class AuthService extends GetxService {
       final user = change.value2;
       currentUser.value = user;
 
-      if (event == supabase.AuthChangeEvent.signedIn && user != null) {
-        // 딜레이를 주어 이전 위젯트리가 정리될 시간을 줍니다
-        Future.delayed(const Duration(milliseconds: 100), () {
-          if (Get.currentRoute != Routes.base) {
-            Get.offAllNamed(Routes.base);
-          }
-        });
-      }
+      // if (event == supabase.AuthChangeEvent.signedIn) {
+      //   Get.offAllNamed(Routes.base);
+      // }
     });
   }
 

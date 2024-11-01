@@ -11,6 +11,14 @@ abstract class ENV {
 
   static String ZIPPY_ENV = kReleaseMode ? production : development;
 
+  static String KAKAO_NATIVE_APP_KEY = kReleaseMode
+      ? dotenv.env['KAKAO_NATIVE_APP_KEY'] as String
+      : dotenv.env['KAKAO_NATIVE_APP_KEY_DEV'] as String;
+
+  static String KAKAO_JAVASCRIPT_KEY = kReleaseMode
+      ? dotenv.env['KAKAO_JAVASCRIPT_KEY'] as String
+      : dotenv.env['KAKAO_JAVASCRIPT_KEY_DEV'] as String;
+
   static String SUPABASE_URL = kReleaseMode
       ? dotenv.env['SUPABASE_URL'] as String
       : dotenv.env['SUPABASE_URL_DEV'] as String;

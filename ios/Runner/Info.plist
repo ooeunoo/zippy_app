@@ -54,6 +54,7 @@
 		<string>This app requires access to the photo library.</string>
 		<key>NSUserTrackingUsageDescription</key>
 		<string>This identifier will be used to deliver personalized ads to you.</string>
+		
 		<key>SKAdNetworkItems</key>
 		<array>
 			<dict>
@@ -276,5 +277,16 @@
 		</array>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>LSApplicationQueriesSchemes</key>
+  <array>
+      <!-- common -->
+      <string>kakao3cdec7fb8a31c80a2caf92178fcbad33</string>
+
+      <!-- KakaoTalk login -->
+      <string>kakaokompassauth</string>
+
+      <!-- KakaoLink -->
+      <string>kakaolink</string>         
+  </array>
 	</dict>
 </plist>

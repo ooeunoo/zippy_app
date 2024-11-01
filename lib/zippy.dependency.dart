@@ -1,5 +1,6 @@
 import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/services/auth.service.dart';
+import 'package:zippy/data/providers/kakao.provider.dart';
 import 'package:zippy/data/providers/supabase.provider.dart';
 import 'package:zippy/data/sources/app_metadata.source.dart';
 import 'package:zippy/data/sources/article.source.dart';
@@ -41,6 +42,8 @@ class ZippyBindings implements Bindings {
   _initProvider() {
     SupabaseProvider.init();
     Get.put<SupabaseProvider>(SupabaseProvider(), permanent: true);
+    KakaoProvider.init();
+    Get.put<KakaoProvider>(KakaoProvider(), permanent: true);
   }
 
   _initService() {

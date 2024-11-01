@@ -8,11 +8,13 @@ class UserEntity extends Equatable {
   final String id;
   final String email;
   final String name;
+  final int? avatar_index;
 
   const UserEntity({
     required this.id,
     required this.email,
     required this.name,
+    this.avatar_index,
   });
 
   @override
@@ -29,6 +31,7 @@ class UserEntity extends Equatable {
       id: json['id'],
       email: json['email'],
       name: json['name'],
+      avatar_index: json['avatar_index'],
     );
   }
 
@@ -37,6 +40,7 @@ class UserEntity extends Equatable {
       id: id,
       email: email,
       name: name,
+      avatarIndex: avatar_index,
     );
   }
 }

@@ -12,11 +12,9 @@ class LoginController extends GetxController {
   onClickLoginInWithKakao() async {
     Either<Failure, bool> result = await loginInWithKakao.execute();
     if (result.isRight()) {
-      // check navigator get back
       if (Navigator.canPop(Get.context!)) {
         Navigator.pop(Get.context!);
       }
-      print('login success');
     }
   }
 }

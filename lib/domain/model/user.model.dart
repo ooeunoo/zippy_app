@@ -6,15 +6,17 @@ class User extends Equatable {
   final String id;
   final String email;
   final String name;
+  final int? avatarIndex;
 
   User({
     required this.id,
     required this.email,
     required this.name,
+    this.avatarIndex,
   });
 
   @override
-  List<Object> get props {
+  List<Object?> get props {
     return [email, name];
   }
 
@@ -22,6 +24,7 @@ class User extends Equatable {
         'id': id,
         'email': email,
         'name': name,
+        'avatar_index': avatarIndex,
       };
 
   @override

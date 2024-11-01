@@ -81,8 +81,9 @@ class ProfilePage extends GetView<ProfileController> {
             SizedBox(
               height: AppDimens.size(80),
               width: AppDimens.size(80),
-              child:
-                  RandomAvatar(randomInt(0, 10).toString(), trBackground: true),
+              child: RandomAvatar(
+                  controller.user?.avatarIndex?.toString() ?? '0',
+                  trBackground: true),
             )
           ],
         ),
