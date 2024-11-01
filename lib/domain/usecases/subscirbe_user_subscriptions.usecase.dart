@@ -6,7 +6,7 @@ class SubscribeUserSubscriptions {
 
   SubscribeUserSubscriptions(this.repo);
 
-  Stream<List<UserSubscription>> execute() {
-    return repo.subscribeUserSubscriptions();
+  Stream<List<UserSubscription>> execute(String userId) {
+    return repo.subscribeUserSubscriptions(userId);
   }
 }

@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:random_avatar/random_avatar.dart';
 import 'package:zippy/app/routes/app_pages.dart';
+import 'package:zippy/app/services/auth.service.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/styles/color.dart';
@@ -82,7 +83,12 @@ class ProfilePage extends GetView<ProfileController> {
               height: AppDimens.size(80),
               width: AppDimens.size(80),
               child: RandomAvatar(
-                  controller.user?.avatarIndex?.toString() ?? '0',
+                  Get.find<AuthService>()
+                          .currentUser
+                          .value
+                          ?.avatarIndex
+                          ?.toString() ??
+                      '0',
                   trBackground: true),
             )
           ],

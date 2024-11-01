@@ -95,6 +95,7 @@ flutter:
     - assets/icons/
     - assets/app/
     - assets/animation/
+    - assets/subscription/
 
   fonts:
     - family: PretendardVariable

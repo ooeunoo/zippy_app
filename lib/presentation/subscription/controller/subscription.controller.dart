@@ -1,156 +1,179 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 import 'package:zippy/app/failures/failure.dart';
-import 'package:zippy/data/entity/user_subscription.entity.dart';
-import 'package:zippy/domain/enum/platform_type.enum.dart';
-import 'package:zippy/domain/model/platform.model.dart';
-import 'package:zippy/domain/model/source.model.dart';
+import 'package:zippy/app/services/auth.service.dart';
+import 'package:zippy/domain/model/content_type.model.dart';
+import 'package:zippy/domain/model/params/create_user_subscription.params.dart';
+import 'package:zippy/domain/model/user.model.dart';
 import 'package:zippy/domain/model/user_subscription.model.dart';
-import 'package:zippy/domain/usecases/create_user_source.usecase.dart';
-import 'package:zippy/domain/usecases/delete_user_category.usecase.dart';
-import 'package:zippy/domain/usecases/get_platforms.usecase.dart';
-import 'package:zippy/domain/usecases/get_sources.usecase.dart';
+import 'package:zippy/domain/usecases/create_user_subscription.usecase.dart';
+import 'package:zippy/domain/usecases/delete_user_subscription.usecase.dart';
+import 'package:zippy/domain/usecases/get_content_types.usecase.dart';
 import 'package:zippy/domain/usecases/get_user_subscriptions.usecase.dart';
-import 'package:zippy/domain/usecases/reset_user_subscription.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_subscriptions.usecase.dart';
 
-class PlatformController extends GetxController {
-  final GetPlatforms getPlatforms;
-  final GetSources getSources;
+class SubscriptionController extends GetxController {
+  final AuthService authService = Get.find<AuthService>();
+
+  final GetContentTypes getContentTypes;
   final CreateUserSubscription createUserSubscription;
   final DeleteUserSubscription deleteUserSubscription;
-  final ResetUserSubscription resetUserSubscription;
   final GetUserSubscriptions getUserSubscriptions;
   final SubscribeUserSubscriptions subscribeUserSubscriptions;
 
-  PlatformController(
+  SubscriptionController(
+    this.getContentTypes,
     this.createUserSubscription,
     this.deleteUserSubscription,
-    this.resetUserSubscription,
     this.getUserSubscriptions,
-    this.getPlatforms,
-    this.getSources,
     this.subscribeUserSubscriptions,
   );
 
-  RxList<Source> sources = RxList<Source>([]).obs();
-  RxList<Platform> communities = RxList<Platform>([]).obs();
-  RxList<Platform> news = RxList<Platform>([]).obs();
-  RxList<UserSubscription> userSubscriptions =
-      RxList<UserSubscription>([]).obs();
+  RxList<ContentType> contentTypes = RxList<ContentType>([]);
+  RxList<UserSubscription> userSubscriptions = RxList<UserSubscription>([]);
   Rxn<String> error = Rxn<String>();
 
   @override
-  onInit() async {
+  void onInit() {
     super.onInit();
-    await _initialize();
+    _initialize();
   }
 
-  Future<void> togglePlatform(int platformId) async {
-    List<Source> platformSources =
-        sources.where((source) => source.platformId == platformId).toList();
+  //////////////////////////////////////////////////////////////////
+  /// public methods
+  //////////////////////////////////////////////////////////////////
 
-    List<UserSubscriptionEntity> userSubscriptions = [];
+  Future<void> toggleSubscription(ContentType contentType) async {
+    if (!authService.isLoggedIn.value) return;
 
-    for (Source source in platformSources) {
-      UserSubscriptionEntity entity = UserSubscription(
-        id: source.id!,
-        platformId: source.platformId,
-      ).toCreateEntity();
-      userSubscriptions.add(entity);
-    }
+    final userId = authService.currentUser.value!.id;
+    final isSubscribed = isAlreadySubscription(contentType.id);
 
-    if (isAlreadySubscribePlatform(platformId)) {
-      await deleteUserSubscription.execute(userSubscriptions);
-    } else {
-      await createUserSubscription.execute(userSubscriptions);
+    // 낙관적 업데이트를 위한 현재 상태 백업
+    final previousSubscriptions =
+        List<UserSubscription>.from(userSubscriptions);
+
+    try {
+      if (isSubscribed) {
+        // 낙관적으로 구독 제거
+        userSubscriptions.removeWhere(
+          (subscription) => subscription.contentTypeId == contentType.id,
+        );
+
+        // API 호출
+        final result = await deleteUserSubscription.execute(contentType.id);
+        result.fold(
+          (failure) {
+            // 실패시 롤백
+            userSubscriptions.assignAll(previousSubscriptions);
+            error.value = 'Failed to unsubscribe';
+          },
+          (_) => null, // 성공시 이미 UI가 업데이트된 상태
+        );
+      } else {
+        // 낙관적으로 구독 추가
+        final newSubscription = UserSubscription(
+          id: DateTime.now().millisecondsSinceEpoch, // 임시 ID
+          userId: userId,
+          contentTypeId: contentType.id,
+        );
+        userSubscriptions.add(newSubscription);
+
+        // API 호출
+        final result = await createUserSubscription.execute(
+          CreateUserSubscriptionParams(
+            userId: userId,
+            contentTypeId: contentType.id,
+          ),
+        );
+        result.fold(
+          (failure) {
+            // 실패시 롤백
+            userSubscriptions.assignAll(previousSubscriptions);
+            error.value = 'Failed to subscribe';
+          },
+          (_) => null, // 성공시 이미 UI가 업데이트된 상태
+        );
+      }
+    } catch (e) {
+      // 예외 발생시 롤백
+      userSubscriptions.assignAll(previousSubscriptions);
+      error.value = 'Failed to update subscription';
     }
   }
 
-  bool isAlreadySubscribePlatform(int platformId) {
+  bool isAlreadySubscription(int contentTypeId) {
     return userSubscriptions
-        .any((subscription) => subscription.platformId == platformId);
+        .any((subscription) => subscription.contentTypeId == contentTypeId);
   }
 
-  // void onClickChannel(Channel channel) {
-  //   Get.to(
-  //       () => ChannelCategory(
-  //             channel: channel,
-  //             toggleCategory: toggleCategory,
-  //           ),
-  //       transition: Transition.rightToLeftWithFade);
-  // }
+  //////////////////////////////////////////////////////////////////
+  /// initialize
+  //////////////////////////////////////////////////////////////////
 
-  // bool isAlreadySubscribeCategory(int channelId, int categoryId) {
-  //   if (userSubscribeCategories.value.containsKey(channelId)) {
-  //     List<UserCategory> categories = userSubscribeCategories.value[channelId];
-  //     return categories.any((category) => category.id == categoryId);
-  //   }
-  //   return false;
-  // }
-
-  // void resetAllSubscribeCategory() async {
-  //   await resetUserCategory.execute();
-  // }
-
-  //////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////
-  /// 초기화
-  //////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////
   Future<void> _initialize() async {
+    await _setupContentTypes();
+
+    // AuthService의 currentUser 변경 감지
+    ever(authService.currentUser, _handleUserChange);
+
+    // 초기 상태 처리
+    _handleUserChange(authService.currentUser.value);
+  }
+
+  void _handleUserChange(User? newUser) async {
+    if (newUser != null) {
+      await _initializeUserDependentData();
+    } else {
+      _clearUserDependentData();
+    }
+  }
+
+  Future<void> _initializeUserDependentData() async {
     await _setupUserSubscriptions();
-    await _setupChannels();
-    await _setupSources();
-    _listenUserSubscriptions();
+    // _startUserSubscriptionsStream();
+  }
+
+  void _clearUserDependentData() {
+    userSubscriptions.clear();
+  }
+
+  //////////////////////////////////////////////////////////////////
+  /// setup
+  //////////////////////////////////////////////////////////////////
+
+  Future<void> _setupContentTypes() async {
+    try {
+      final result = await getContentTypes.execute();
+      result.fold(
+        (failure) {
+          if (failure == ServerFailure()) {
+            error.value = 'Error Fetching content types!';
+          }
+        },
+        (data) => contentTypes.assignAll(data),
+      );
+    } catch (e) {
+      error.value = 'Failed to load content types';
+    }
   }
 
   Future<void> _setupUserSubscriptions() async {
-    final subscriptions = await getUserSubscriptions.execute();
-    subscriptions.fold((failure) {
-      if (failure == ServerFailure()) {
-        error.value = 'Error Fetching subscription!';
-      }
-    }, (data) {
-      userSubscriptions.assignAll(data);
-    });
-  }
+    if (!authService.isLoggedIn.value) return;
 
-  Future<void> _setupChannels() async {
-    final result = await getPlatforms.execute(withSources: true);
-
-    result.fold((failure) {
-      if (failure == ServerFailure()) {
-        error.value = 'Error Fetching channel!';
-      }
-    }, (data) {
-      for (var platform in data) {
-        if (platform.type == PlatformType.Community) {
-          communities.add(platform);
-        } else if (platform.type == PlatformType.News) {
-          news.add(platform);
-        }
-      }
-    });
-  }
-
-  Future<void> _setupSources() async {
-    final result = await getSources.execute();
-    result.fold((failure) {
-      if (failure == ServerFailure()) {
-        error.value = 'Error Fetching category!';
-      }
-    }, (data) {
-      List<Source> list = [];
-      for (var source in data) {
-        list.add(source);
-      }
-      sources.assignAll(list);
-    });
-  }
-
-  void _listenUserSubscriptions() {
-    subscribeUserSubscriptions.execute().listen((List<UserSubscription> event) {
-      userSubscriptions.bindStream(Stream.value(event));
-    });
+    try {
+      final subscriptions = await getUserSubscriptions.execute();
+      subscriptions.fold(
+        (failure) {
+          if (failure == ServerFailure()) {
+            error.value = 'Error Fetching subscriptions!';
+          }
+        },
+        (data) => userSubscriptions.assignAll(data),
+      );
+    } catch (e) {
+      error.value = 'Failed to load user subscriptions';
+    }
   }
 }

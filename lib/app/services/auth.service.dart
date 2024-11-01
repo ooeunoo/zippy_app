@@ -37,9 +37,9 @@ class AuthService extends GetxService {
       final user = change.value2;
       currentUser.value = user;
 
-      // if (event == supabase.AuthChangeEvent.signedIn) {
-      //   Get.offAllNamed(Routes.base);
-      // }
+      if (event == supabase.AuthChangeEvent.signedIn) {
+        Get.offAllNamed(Routes.base);
+      }
     });
   }
 

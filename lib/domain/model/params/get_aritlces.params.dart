@@ -25,7 +25,9 @@ class GetArticlesParams extends Equatable {
     return toJson().toString();
   }
 
-  getSubscriptionIds() {
-    return subscriptions.map((subscription) => subscription.id).toList();
+  getSubscriptionContentTypes() {
+    return subscriptions
+        .map((subscription) => subscription.contentTypeId)
+        .toList();
   }
 }

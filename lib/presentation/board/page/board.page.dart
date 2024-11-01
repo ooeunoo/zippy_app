@@ -119,19 +119,19 @@ class _BoardPageState extends State<BoardPage> {
                     },
                   )),
               const Divider(color: AppColor.graymodern800),
-              ListTile(
-                leading:
-                    const AppSvg(Assets.logo, color: AppColor.graymodern100),
-                title: AppText(
-                  "구독 채널 추가하기",
-                  style: Theme.of(context).textTheme.textMD.copyWith(
-                        color: AppColor.graymodern100,
-                      ),
-                ),
-                onTap: () {
-                  Get.toNamed(Routes.platform);
-                },
-              ),
+              // ListTile(
+              //   leading:
+              //       const AppSvg(Assets.logo, color: AppColor.graymodern100),
+              //   title: AppText(
+              //     "구독 채널 추가하기",
+              //     style: Theme.of(context).textTheme.textMD.copyWith(
+              //           color: AppColor.graymodern100,
+              //         ),
+              //   ),
+              //   onTap: () {
+              //     Get.toNamed(Routes.subscription);
+              //   },
+              // ),
             ],
           ),
         ),
@@ -156,7 +156,7 @@ class _BoardPageState extends State<BoardPage> {
                         align: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme
-                            .displayXS
+                            .text2XL
                             .copyWith(color: AppColor.graymodern100)),
                     AppSpacerV(value: AppDimens.height(60)),
                     Center(
@@ -171,9 +171,7 @@ class _BoardPageState extends State<BoardPage> {
                             .textLG
                             .copyWith(color: AppColor.graymodern100),
                         onPressed: () {
-                          Get.toNamed(
-                            Routes.platform,
-                          );
+                          Get.toNamed(Routes.subscription);
                         },
                         width: double.infinity,
                         height: AppDimens.height(50),

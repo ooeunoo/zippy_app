@@ -1,17 +1,15 @@
 import 'package:zippy/app/failures/failure.dart';
-import 'package:zippy/data/entity/user_subscription.entity.dart';
 import 'package:zippy/data/sources/user_subscription.source.dart';
+import 'package:zippy/domain/model/params/create_user_subscription.params.dart';
 import 'package:zippy/domain/model/user_subscription.model.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class UserSubscriptionRepository {
   Future<Either<Failure, List<UserSubscription>>> getUserSubscriptions();
-  Future<Either<Failure, List<UserSubscription>>> createUserSubscriptions(
-      List<UserSubscriptionEntity> subscriptions);
-  Future<Either<Failure, List<UserSubscription>>> deleteUserSubscriptions(
-      List<UserSubscriptionEntity> subscriptions);
-  Future<Either<Failure, bool>> resetAllUserSubscriptions();
-  Stream<List<UserSubscription>> subscribeUserSubscriptions();
+  Future<Either<Failure, bool>> createUserSubscriptions(
+      CreateUserSubscriptionParams subscriptions);
+  Future<Either<Failure, bool>> deleteUserSubscriptions(int subscriptionId);
+  Stream<List<UserSubscription>> subscribeUserSubscriptions(String userId);
 }
 
 class UserSubscriptionRepositoryImpl implements UserSubscriptionRepository {
@@ -20,20 +18,14 @@ class UserSubscriptionRepositoryImpl implements UserSubscriptionRepository {
   UserSubscriptionRepositoryImpl(this.datasource);
 
   @override
-  Future<Either<Failure, List<UserSubscription>>> createUserSubscriptions(
-      List<UserSubscriptionEntity> subscriptions) {
+  Future<Either<Failure, bool>> createUserSubscriptions(
+      CreateUserSubscriptionParams subscriptions) {
     return datasource.createUserSubscriptions(subscriptions);
   }
 
   @override
-  Future<Either<Failure, List<UserSubscription>>> deleteUserSubscriptions(
-      List<UserSubscriptionEntity> subscriptions) {
-    return datasource.deleteUserSubscriptions(subscriptions);
-  }
-
-  @override
-  Future<Either<Failure, bool>> resetAllUserSubscriptions() {
-    return datasource.resetAllUserSubscriptions();
+  Future<Either<Failure, bool>> deleteUserSubscriptions(int subscriptionId) {
+    return datasource.deleteUserSubscriptions(subscriptionId);
   }
 
   @override
@@ -42,7 +34,7 @@ class UserSubscriptionRepositoryImpl implements UserSubscriptionRepository {
   }
 
   @override
-  Stream<List<UserSubscription>> subscribeUserSubscriptions() {
-    return datasource.subscribeUserSubscriptions();
+  Stream<List<UserSubscription>> subscribeUserSubscriptions(String userId) {
+    return datasource.subscribeUserSubscriptions(userId);
   }
 }

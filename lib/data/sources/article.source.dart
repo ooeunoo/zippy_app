@@ -38,7 +38,7 @@ class ArticleDatasourceImpl implements ArticleDatasource {
       List<Map<String, dynamic>> response = await provider.client
               .from(TABLE)
               .select('*')
-              .inFilter('source_id', params.getSubscriptionIds())
+              // .inFilter('source_id', params.subscriptionTypes)
               .limit(params.limit)
               .order('view_count', ascending: false)
               .order('created_at')
@@ -73,7 +73,7 @@ class ArticleDatasourceImpl implements ArticleDatasource {
       List<UserSubscription> subscriptions) {
     List<int> sourceIds = [];
     for (UserSubscription subscription in subscriptions) {
-      sourceIds.add(subscription.id);
+      // sourceIds.add(subscription.type);
     }
     return provider.client
         .from(TABLE)

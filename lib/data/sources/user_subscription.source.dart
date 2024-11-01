@@ -1,69 +1,44 @@
 import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/data/entity/user_subscription.entity.dart';
-import 'package:zippy/data/providers/hive.provider.dart';
 import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
+import 'package:zippy/data/providers/supabase.provider.dart';
+import 'package:zippy/domain/model/params/create_user_subscription.params.dart';
 import 'package:zippy/domain/model/user_subscription.model.dart';
 
-enum UserSubscriptionsKey {
-  all('전체보기'),
-  ;
-
-  const UserSubscriptionsKey(this.name);
-  final String name;
-}
+String TABLE = 'user_subscriptions';
 
 abstract class UserSubscriptionDatasource {
-  Future<Either<Failure, List<UserSubscription>>> createUserSubscriptions(
-      List<UserSubscriptionEntity> subscriptions);
-  Future<Either<Failure, List<UserSubscription>>> deleteUserSubscriptions(
-      List<UserSubscriptionEntity> subscriptions);
-  Future<Either<Failure, bool>> resetAllUserSubscriptions();
+  Future<Either<Failure, bool>> createUserSubscriptions(
+      CreateUserSubscriptionParams params);
+  Future<Either<Failure, bool>> deleteUserSubscriptions(int subscriptionId);
   Future<Either<Failure, List<UserSubscription>>> getUserSubscriptions();
-  Stream<List<UserSubscription>> subscribeUserSubscriptions();
+  Stream<List<UserSubscription>> subscribeUserSubscriptions(String userId);
 }
 
 class UserSubscriptionDatasourceImpl implements UserSubscriptionDatasource {
-  final box = Get.find<HiveProvider>().userSubscriptions!;
+  SupabaseProvider provider = Get.find();
 
   @override
-  Future<Either<Failure, List<UserSubscription>>> createUserSubscriptions(
-      List<UserSubscriptionEntity> newSubscriptions) async {
+  Future<Either<Failure, bool>> createUserSubscriptions(
+      CreateUserSubscriptionParams params) async {
     try {
-      List<dynamic> subscriptions = _getUserSubscriptions();
-
-      subscriptions.addAll(newSubscriptions);
-
-      await box.put(UserSubscriptionsKey.all.name, subscriptions);
-
-      return Right(toUserSubscriptionsModelAll());
-    } catch (e) {
-      return Left(ServerFailure());
-    }
-  }
-
-  @override
-  Future<Either<Failure, List<UserSubscription>>> deleteUserSubscriptions(
-      List<UserSubscriptionEntity> removeSubscriptions) async {
-    try {
-      List<dynamic> subscriptions = _getUserSubscriptions();
-      subscriptions.removeWhere((subscription) =>
-          removeSubscriptions.any((rc) => rc.id == subscription.id));
-
-      await box.put(UserSubscriptionsKey.all.name, subscriptions);
-
-      return Right(toUserSubscriptionsModelAll());
-    } catch (e) {
-      return Left(ServerFailure());
-    }
-  }
-
-  @override
-  Future<Either<Failure, bool>> resetAllUserSubscriptions() async {
-    try {
-      await box.put(UserSubscriptionsKey.all.name, []);
+      await provider.client.from(TABLE).insert(params.toJson());
       return const Right(true);
     } catch (e) {
+      print(e);
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> deleteUserSubscriptions(
+      int subscriptionId) async {
+    try {
+      await provider.client.from(TABLE).delete().eq('id', subscriptionId);
+      return const Right(true);
+    } catch (e) {
+      print(e);
       return Left(ServerFailure());
     }
   }
@@ -71,29 +46,26 @@ class UserSubscriptionDatasourceImpl implements UserSubscriptionDatasource {
   @override
   Future<Either<Failure, List<UserSubscription>>> getUserSubscriptions() async {
     try {
-      return Right(toUserSubscriptionsModelAll());
+      List<Map<String, dynamic>> response =
+          await provider.client.from(TABLE).select('*');
+
+      return Right(response
+          .map((r) => UserSubscriptionEntity.fromJson(r).toModel())
+          .toList());
     } catch (e) {
+      print(e);
       return Left(ServerFailure());
     }
   }
 
   @override
-  Stream<List<UserSubscription>> subscribeUserSubscriptions() {
-    return box.watch().map((event) {
-      return toUserSubscriptionsModelAll();
-    });
-  }
-
-  List<dynamic> _getUserSubscriptions() {
-    return box.get(UserSubscriptionsKey.all.name, defaultValue: []);
-  }
-
-  List<UserSubscription> toUserSubscriptionsModelAll() {
-    return _getUserSubscriptions()
-        .map((subscription) => UserSubscription(
-              id: subscription.id,
-              platformId: subscription.platformId,
-            ))
-        .toList();
+  Stream<List<UserSubscription>> subscribeUserSubscriptions(String userId) {
+    return provider.client
+        .from(TABLE)
+        .stream(primaryKey: ['id'])
+        .eq('user_id', userId)
+        .map((event) => event
+            .map((r) => UserSubscriptionEntity.fromJson(r).toModel())
+            .toList());
   }
 }

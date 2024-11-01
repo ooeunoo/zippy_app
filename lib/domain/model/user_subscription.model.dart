@@ -5,21 +5,24 @@ import 'package:zippy/data/entity/user_subscription.entity.dart';
 @immutable
 class UserSubscription extends Equatable {
   final int id;
-  final int platformId;
+  final String userId;
+  final int contentTypeId;
 
   const UserSubscription({
     required this.id,
-    required this.platformId,
+    required this.userId,
+    required this.contentTypeId,
   });
 
   @override
-  List<Object> get props {
-    return [id, platformId];
+  List<Object?> get props {
+    return [id, userId, contentTypeId];
   }
 
   dynamic toJson() => {
         'id': id,
-        'platformId': platformId,
+        'user_id': userId,
+        'content_type_id': contentTypeId,
       };
 
   @override
@@ -30,7 +33,8 @@ class UserSubscription extends Equatable {
   UserSubscriptionEntity toCreateEntity() {
     return UserSubscriptionEntity(
       id: id,
-      platformId: platformId,
+      userId: userId,
+      contentTypeId: contentTypeId,
     );
   }
 }

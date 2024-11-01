@@ -1,43 +1,42 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:zippy/domain/enum/source_type.enum.dart';
 
 @immutable
 class Source extends Equatable {
   final int? id;
   final int platformId;
+  final int contentTypeId;
   final String category;
   final bool status;
-  final SourceType? type;
 
-  Source({
+  const Source({
     this.id,
     required this.platformId,
+    required this.contentTypeId,
     required this.category,
     required this.status,
-    this.type,
   });
 
   @override
   List<Object> get props {
-    return [platformId, category, status];
+    return [platformId, contentTypeId, category, status];
   }
 
   dynamic toJson() => {
         'id': id,
         'platformId': platformId,
+        'contentTypeId': contentTypeId,
         'category': category,
         'status': status,
-        'type': type,
       };
 
   Map<int, Source> toIdAssign(Map<int, Source> map) {
     if (id != null) {
       map[id!] = Source(
         platformId: platformId,
+        contentTypeId: contentTypeId,
         category: category,
         status: status,
-        type: type,
       );
     }
     return map;

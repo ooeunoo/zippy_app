@@ -49,10 +49,10 @@ class AppPages {
         page: () => const LoginPage(),
         binding: LoginBinding()),
     GetPage(
-        name: _Paths.platform,
-        page: () => const PlatformPage(),
+        name: _Paths.subscription,
+        page: () => const SubscriptionPage(),
         transition: Transition.rightToLeft,
-        binding: PlatformBinding()),
+        binding: SubscriptionBinding()),
     GetPage(
         name: _Paths.bookmark,
         page: () => const BookmarkPage(),
@@ -68,7 +68,7 @@ abstract class Routes {
   static const board = _Paths.board;
   static const search = _Paths.search;
   static const profile = _Paths.profile;
-  static const platform = _Paths.platform;
+  static const subscription = _Paths.subscription;
   static const bookmark = _Paths.bookmark;
 }
 
@@ -79,6 +79,6 @@ abstract class _Paths {
   static const board = '/board';
   static const search = '/search';
   static const profile = '/profile';
-  static const platform = '/subscribe';
+  static const subscription = '/subscription';
   static const bookmark = '/bookmark';
 }

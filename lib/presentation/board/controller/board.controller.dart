@@ -284,9 +284,13 @@ class BoardController extends GetxService {
   }
 
   void _listenUserSubscriptions() {
-    subscribeUserSubscriptions.execute().listen((List<UserSubscription> event) {
-      userSubscriptions.bindStream(Stream.value(event));
-    });
+    if (user != null) {
+      subscribeUserSubscriptions
+          .execute(user!.id)
+          .listen((List<UserSubscription> event) {
+        userSubscriptions.bindStream(Stream.value(event));
+      });
+    }
   }
 
   void _listenUserBookmark() {
@@ -299,6 +303,7 @@ class BoardController extends GetxService {
     authService.currentUser.listen((user) {
       if (user != null) {
         this.user = user;
+        _listenUserSubscriptions();
       }
     });
   }
