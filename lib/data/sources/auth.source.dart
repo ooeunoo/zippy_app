@@ -1,8 +1,11 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
+import 'package:url_launcher/url_launcher.dart';
 import 'package:zippy/app/failures/failure.dart';
+import 'package:zippy/app/widgets/app_oauth_webview.dart';
 import 'package:zippy/data/entity/user.entity.dart';
 import 'package:zippy/data/providers/supabase.provider.dart';
 import 'package:zippy/data/sources/user.source.dart';
@@ -10,7 +13,7 @@ import 'package:zippy/domain/model/user.model.dart';
 
 abstract class AuthDatasource {
   Future<Either<Failure, User?>> getCurrentUser();
-  Stream<User?> subscribeAuthStatus();
+  Stream<Tuple2<supabase.AuthChangeEvent, User?>> subscribeAuthStatus();
   Future<Either<Failure, bool>> logout();
   bool isAuthenticated();
   Future<Either<Failure, User>> loginInWithEmail(String email, String password);
@@ -38,19 +41,20 @@ class AuthDatasourceImpl implements AuthDatasource {
   }
 
   @override
-  Stream<User?> subscribeAuthStatus() {
-    return provider.client.auth.onAuthStateChange.asyncMap((event) async {
-      final authUser = event.session?.user;
+  Stream<Tuple2<supabase.AuthChangeEvent, User?>> subscribeAuthStatus() {
+    return provider.client.auth.onAuthStateChange.asyncMap((change) async {
+      final event = change.event;
+      final authUser = change.session?.user;
+
       if (authUser == null) {
-        return null;
+        return Tuple2(event, null);
       }
 
       final Either<Failure, User?> result =
           await userDatasource.getUser(authUser.id);
-      print(result);
       return result.fold(
-        (failure) => null,
-        (user) => user,
+        (failure) => Tuple2(event, null),
+        (user) => Tuple2(event, user),
       );
     });
   }
@@ -112,16 +116,25 @@ class AuthDatasourceImpl implements AuthDatasource {
   @override
   Future<Either<Failure, bool>> loginInWithKakao() async {
     try {
-      await provider.client.auth.getOAuthSignInUrl(
+      // OAuth URL 가져오기
+      final response = await provider.client.auth.getOAuthSignInUrl(
         provider: supabase.OAuthProvider.kakao,
         redirectTo: 'com.miro.zippy://login-callback',
       );
-      // await provider.client.auth.signInWithOAuth(
-      //   supabase.OAuthProvider.kakao,
-      //   redirectTo: 'com.miro.zippy://login-callback',
-      //   authScreenLaunchMode: supabase.LaunchMode.platformDefault,
-      // );
-      return const Right(true);
+
+      // 웹뷰로 OAuth 페이지 열기
+      final result = await Get.to<bool>(() => AppOAuthWebView(
+            url: response.url.toString(),
+            redirectUrl: 'com.miro.zippy://login-callback',
+          ));
+
+      print('result: $result');
+      // 웹뷰가 정상적으로 닫혔고 리다이렉트가 성공했을 경우
+      if (result == true) {
+        return const Right(true);
+      }
+
+      return Left(ServerFailure());
     } catch (e) {
       return Left(ServerFailure());
     }

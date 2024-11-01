@@ -20,16 +20,19 @@ class AppPages {
       name: Routes.base,
       page: () => const BasePage(),
       binding: BaseBinding(),
+      transition: Transition.noTransition,
       children: [
         GetPage(
           name: Routes.board,
           page: () => const BoardPage(),
           binding: BoardBinding(),
+          transition: Transition.noTransition,
         ),
         GetPage(
           name: Routes.profile,
           page: () => const ProfilePage(),
           binding: ProfileBinding(),
+          transition: Transition.noTransition,
         ),
       ],
     ),

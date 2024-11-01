@@ -9,9 +9,10 @@ class SupabaseProvider {
     await Supabase.initialize(
       url: ENV.SUPABASE_URL,
       anonKey: ENV.SUPABASE_ANON_KEY,
-      authOptions: const FlutterAuthClientOptions(
-        authFlowType: AuthFlowType.implicit,
-      ),
+      debug: true,
+      // authOptions: const FlutterAuthClientOptions(
+      //   authFlowType: AuthFlowType.implicit,
+      // ),
     );
   }
 }

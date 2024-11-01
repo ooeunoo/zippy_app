@@ -1,11 +1,12 @@
 import 'package:dartz/dartz.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/data/sources/auth.source.dart';
 import 'package:zippy/domain/model/user.model.dart';
 
 abstract class AuthRepository {
   Future<Either<Failure, User?>> getCurrentUser();
-  Stream<User?> subscribeAuthStatus();
+  Stream<Tuple2<supabase.AuthChangeEvent, User?>> subscribeAuthStatus();
   Future<Either<Failure, bool>> logout();
   Future<Either<Failure, bool>> loginWithKakao();
   // Future<Either<Failure, bool>> loginWithGoogle();
@@ -23,7 +24,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Stream<User?> subscribeAuthStatus() {
+  Stream<Tuple2<supabase.AuthChangeEvent, User?>> subscribeAuthStatus() {
     return datasource.subscribeAuthStatus();
   }
 

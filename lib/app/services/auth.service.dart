@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
+import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/domain/model/user.model.dart';
 import 'package:zippy/domain/usecases/get_app_metadata.usecase.dart';
 import 'package:zippy/domain/usecases/get_current_user.usecase.dart';
@@ -14,7 +16,7 @@ class AuthService extends GetxService {
   final GetAppMetadata _getAppMetadata = Get.find();
   final UpdateAppMetadata _updateAppMetadata = Get.find();
   final Logout _logout = Get.find();
-  // 상태 관리용 변수들
+
   final Rx<User?> currentUser = Rx<User?>(null);
   final RxBool isLoading = false.obs;
   RxBool get isLoggedIn => RxBool(currentUser.value != null);
@@ -28,9 +30,21 @@ class AuthService extends GetxService {
     _loadCurrentUser();
 
     // 인증 상태 변화 구독
-    _subscribeAuthStatus.execute().listen((user) {
-      print('authStateChanges: $user');
+    _subscribeAuthStatus
+        .execute()
+        .listen((Tuple2<supabase.AuthChangeEvent, User?> change) {
+      final event = change.value1;
+      final user = change.value2;
       currentUser.value = user;
+
+      if (event == supabase.AuthChangeEvent.signedIn && user != null) {
+        // 딜레이를 주어 이전 위젯트리가 정리될 시간을 줍니다
+        Future.delayed(const Duration(milliseconds: 100), () {
+          if (Get.currentRoute != Routes.base) {
+            Get.offAllNamed(Routes.base);
+          }
+        });
+      }
     });
   }
 

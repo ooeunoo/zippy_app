@@ -51,18 +51,21 @@ class BasePage extends GetView<BaseController> {
                 routeName: Routes.board,
                 page: () => const BoardPage(),
                 binding: BoardBinding(),
+                transition: Transition.noTransition,
               );
             case Routes.profile:
               return GetPageRoute(
                 routeName: Routes.profile,
                 page: () => const ProfilePage(),
                 binding: ProfileBinding(),
+                transition: Transition.noTransition,
               );
             default:
               return GetPageRoute(
                 routeName: Routes.board,
                 page: () => const BoardPage(),
                 binding: BoardBinding(),
+                transition: Transition.noTransition,
               );
           }
         },
