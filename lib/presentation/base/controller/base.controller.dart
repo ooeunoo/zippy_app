@@ -21,6 +21,13 @@ class BaseController extends GetxController {
         break;
       case 1:
         Get.toNamed(
+          Routes.search,
+          id: 1,
+          preventDuplicates: false,
+        );
+        break;
+      case 2:
+        Get.toNamed(
           Routes.profile,
           id: 1,
           preventDuplicates: false,

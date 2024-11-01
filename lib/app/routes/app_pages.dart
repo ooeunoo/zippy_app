@@ -7,10 +7,12 @@ import 'package:zippy/presentation/bookmark/page/bookmark.page.dart';
 import 'package:get/route_manager.dart';
 import 'package:zippy/presentation/login/binding/login.binding.dart';
 import 'package:zippy/presentation/login/page/login.page.dart';
-import 'package:zippy/presentation/platform/binding/platform.binding.dart';
-import 'package:zippy/presentation/platform/page/platform.page.dart';
+import 'package:zippy/presentation/subscription/binding/subscription.binding.dart';
+import 'package:zippy/presentation/subscription/page/subscription.page.dart';
 import 'package:zippy/presentation/profile/binding/profile.binding.dart';
 import 'package:zippy/presentation/profile/page/profile.page.dart';
+import 'package:zippy/presentation/search/binding/search.binding.dart';
+import 'package:zippy/presentation/search/page/search.page.dart';
 
 class AppPages {
   static const initial = _Paths.base;
@@ -26,6 +28,12 @@ class AppPages {
           name: Routes.board,
           page: () => const BoardPage(),
           binding: BoardBinding(),
+          transition: Transition.noTransition,
+        ),
+        GetPage(
+          name: Routes.search,
+          page: () => const SearchPage(),
+          binding: SearchBinding(),
           transition: Transition.noTransition,
         ),
         GetPage(
@@ -58,6 +66,7 @@ abstract class Routes {
   static const login = _Paths.login;
   static const base = _Paths.base;
   static const board = _Paths.board;
+  static const search = _Paths.search;
   static const profile = _Paths.profile;
   static const platform = _Paths.platform;
   static const bookmark = _Paths.bookmark;
@@ -65,10 +74,11 @@ abstract class Routes {
 
 abstract class _Paths {
   _Paths._();
+  static const login = '/login';
   static const base = '/';
   static const board = '/board';
+  static const search = '/search';
   static const profile = '/profile';
-  static const login = '/login';
   static const platform = '/subscribe';
   static const bookmark = '/bookmark';
 }

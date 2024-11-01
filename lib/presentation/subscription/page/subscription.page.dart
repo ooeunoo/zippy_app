@@ -12,7 +12,7 @@ import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/platform.model.dart';
-import 'package:zippy/presentation/platform/controller/platform.controller.dart';
+import 'package:zippy/presentation/subscription/controller/subscription.controller.dart';
 
 class PlatformPage extends StatefulWidget {
   const PlatformPage({super.key});

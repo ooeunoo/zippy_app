@@ -1,0 +1,22 @@
+import 'package:get/get.dart';
+import 'package:zippy/app/services/auth.service.dart';
+import 'package:zippy/domain/model/user.model.dart';
+
+class SearchController extends GetxController {
+  final AuthService authService = Get.find();
+
+  User? user;
+
+  @override
+  onInit() async {
+    super.onInit();
+    await _initialize();
+  }
+
+  //////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////
+  /// 초기화
+  //////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////
+  Future<void> _initialize() async {}
+}

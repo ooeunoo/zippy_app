@@ -10,6 +10,8 @@ import 'package:zippy/presentation/board/binding/board.binding.dart';
 import 'package:zippy/presentation/board/page/board.page.dart';
 import 'package:zippy/presentation/profile/binding/profile.binding.dart';
 import 'package:zippy/presentation/profile/page/profile.page.dart';
+import 'package:zippy/presentation/search/binding/search.binding.dart';
+import 'package:zippy/presentation/search/page/search.page.dart';
 
 class BasePage extends GetView<BaseController> {
   const BasePage({super.key});
@@ -38,7 +40,8 @@ class BasePage extends GetView<BaseController> {
               onTap: controller.changeTab,
               items: [
                 tabItem(Assets.home01, '', 0),
-                tabItem(Assets.user01, '', 1),
+                tabItem(Assets.search, '', 1),
+                tabItem(Assets.user01, '', 2),
               ],
             ),
           ))),
@@ -51,6 +54,13 @@ class BasePage extends GetView<BaseController> {
                 routeName: Routes.board,
                 page: () => const BoardPage(),
                 binding: BoardBinding(),
+                transition: Transition.noTransition,
+              );
+            case Routes.search:
+              return GetPageRoute(
+                routeName: Routes.search,
+                page: () => const SearchPage(),
+                binding: SearchBinding(),
                 transition: Transition.noTransition,
               );
             case Routes.profile:

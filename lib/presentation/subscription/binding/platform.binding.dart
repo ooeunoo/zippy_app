@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:zippy/domain/usecases/get_platforms.usecase.dart';
 import 'package:zippy/domain/usecases/reset_user_subscription.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_subscriptions.usecase.dart';
-import 'package:zippy/presentation/platform/controller/platform.controller.dart';
+import 'package:zippy/presentation/subscription/controller/subscription.controller.dart';
 
 class PlatformBinding implements Bindings {
   @override
