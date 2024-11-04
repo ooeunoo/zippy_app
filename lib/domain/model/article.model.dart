@@ -7,6 +7,7 @@ class Article extends Equatable {
   final int sourceId;
   final String title;
   final String? subtitle;
+  final String? subtitleEn;
   final String link;
   final String author;
   final String content;
@@ -14,12 +15,14 @@ class Article extends Equatable {
   final List<dynamic> images;
   // final String tags;
   final String? summary;
+  final String? summaryEn;
   // final String chatConversation;
   // final String embedding;
   final List<dynamic> attachments;
   final List<String>? keyPoints;
+  final List<String>? keyPointsEn;
   final List<String>? keywords;
-  // final String keywordsEn;
+  final List<String>? keywordsEn;
   // final String topic;
   // final String terms;
   final DateTime published;
@@ -32,6 +35,7 @@ class Article extends Equatable {
     required this.sourceId,
     required this.title,
     this.subtitle,
+    this.subtitleEn,
     required this.link,
     required this.author,
     required this.content,
@@ -39,12 +43,14 @@ class Article extends Equatable {
     required this.images,
     // required this.tags,
     this.summary,
+    this.summaryEn,
     // required this.chatConversation,
     // required this.embedding,
     required this.attachments,
     this.keyPoints,
+    this.keyPointsEn,
     this.keywords,
-    // required this.keywordsEn,
+    this.keywordsEn,
     // required this.topic,
     // required this.terms,
     required this.published,
@@ -68,18 +74,21 @@ class Article extends Equatable {
         'link': link,
         'title': title,
         "subtitle": subtitle,
+        "subtitleEn": subtitleEn,
         "author": author,
         "content": content,
         // "formattedContent": formattedContent,
         "images": images,
         // "tags": tags,
         "summary": summary,
+        "summaryEn": summaryEn,
         // "chatConversation": chatConversation,
         // "embedding": embedding,
         "attachments": attachments,
         "keyPoints": keyPoints,
+        "keyPointsEn": keyPointsEn,
         "keywords": keywords,
-        // "keywordsEn": keywordsEn,
+        "keywordsEn": keywordsEn,
         // "topic": topic,
         // "terms": terms,
         "published": published,

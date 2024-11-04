@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/font.dart';
@@ -7,6 +8,20 @@ import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/widgets/app_button.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
+
+/**
+ * 로그인이 필요한 경우 사용하는 다이얼로그
+ */
+showLoginDialog() {
+  showAppDialog(
+    "로그인이 필요해요.",
+    confirmText: "로그인하러가기",
+    onlyConfirm: true,
+    onConfirm: () {
+      Get.toNamed(Routes.login);
+    },
+  );
+}
 
 showAppDialog(
   String title, {

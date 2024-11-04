@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:zippy/domain/enum/interaction_type.enum.dart';
 import 'package:zippy/domain/model/user_article_highlight.model.dart';
-import 'package:zippy/domain/model/user_interaction.model%20.dart';
+import 'package:zippy/domain/model/user_interaction.model.dart';
 
 @immutable
 class UserInteractionEntity extends Equatable {

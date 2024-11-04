@@ -7,17 +7,16 @@ class CreateUserInteractionParams extends Equatable {
   final String userId;
   final int articleId;
   final InteractionType interactionType;
-  final double? readPersent;
-  final double? readDuration;
+  final int? readPercent;
+  final int? readDuration;
 
   const CreateUserInteractionParams({
     required this.interactionType,
     required this.userId,
     required this.articleId,
-    this.readPersent = 0,
+    this.readPercent = 0,
     this.readDuration = 0,
   });
-
   @override
   List<Object> get props {
     return [interactionType, userId, articleId];
@@ -26,8 +25,8 @@ class CreateUserInteractionParams extends Equatable {
   Map<String, dynamic> toJson() => {
         'user_id': userId,
         'article_id': articleId,
-        'interaction_type': interactionType,
-        'read_persent': readPersent,
+        'interaction_type': interactionType.name,
+        'read_percent': readPercent,
         'read_duration': readDuration,
       };
 

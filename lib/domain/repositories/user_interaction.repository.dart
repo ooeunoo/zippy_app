@@ -3,10 +3,9 @@ import 'package:zippy/data/sources/user_interaction.source.dart';
 import 'package:zippy/domain/model/params/create_user_interaction.params.dart';
 import 'package:zippy/domain/model/params/update_user_interaction.params.dart';
 import 'package:dartz/dartz.dart';
-import 'package:zippy/domain/model/user_interaction.model%20.dart';
 
 abstract class UserInteractionRepository {
-  Future<Either<Failure, UserInteraction>> createUserInteraction(
+  Future<Either<Failure, bool>> createUserInteraction(
       CreateUserInteractionParams params);
   Future<Either<Failure, bool>> updateUserInteraction(
       UpdateUserInteractionParams params);
@@ -18,7 +17,7 @@ class UserInteractionRepositoryImpl implements UserInteractionRepository {
   UserInteractionRepositoryImpl(this.datasource);
 
   @override
-  Future<Either<Failure, UserInteraction>> createUserInteraction(
+  Future<Either<Failure, bool>> createUserInteraction(
       CreateUserInteractionParams params) async {
     return await datasource.createUserInteraction(params);
   }

@@ -34,16 +34,11 @@ class ArticleDatasourceImpl implements ArticleDatasource {
   Future<Either<Failure, List<Article>>> getArticles(
       GetArticlesParams params) async {
     try {
-      // content_img_url이 있는것 > view_count가 높은것 > 시간순
       List<Map<String, dynamic>> response = await provider.client
-              .from(TABLE)
-              .select('*')
-              // .inFilter('source_id', params.subscriptionTypes)
-              .limit(params.limit)
-              .order('view_count', ascending: false)
-              .order('created_at')
-          // .order('images', nullsFirst: false)
-          ;
+          .from(TABLE)
+          .select('*')
+          .limit(params.limit)
+          .order('created_at');
 
       List<Article> result =
           response.map((r) => ArticleEntity.fromJson(r).toModel()).toList();
@@ -78,7 +73,6 @@ class ArticleDatasourceImpl implements ArticleDatasource {
     return provider.client
         .from(TABLE)
         .stream(primaryKey: ['id'])
-        .inFilter('source_id', sourceIds)
         .order('created_at', ascending: false)
         .limit(1000)
         .map((data) => data.map((item) {

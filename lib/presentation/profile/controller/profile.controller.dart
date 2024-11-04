@@ -6,11 +6,6 @@ import 'package:zippy/app/widgets/app_dialog.dart';
 class ProfileController extends GetxController {
   final AuthService authService = Get.find();
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
   //////////////////////////////////////////////////////////////////
   /// public methods
   //////////////////////////////////////////////////////////////////
@@ -19,7 +14,7 @@ class ProfileController extends GetxController {
     if (authService.isLoggedIn.value) {
       Get.toNamed(Routes.subscription);
     } else {
-      _showLoginDialog();
+      showLoginDialog();
     }
   }
 
@@ -30,15 +25,4 @@ class ProfileController extends GetxController {
   //////////////////////////////////////////////////////////////////
   /// private methods
   //////////////////////////////////////////////////////////////////
-
-  void _showLoginDialog() {
-    showAppDialog(
-      "로그인이 필요해요.",
-      confirmText: "로그인하러가기",
-      onlyConfirm: true,
-      onConfirm: () {
-        Get.toNamed(Routes.login);
-      },
-    );
-  }
 }

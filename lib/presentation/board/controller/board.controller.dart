@@ -3,6 +3,7 @@ import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/services/auth.service.dart';
+import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/utils/share.dart';
 import 'package:zippy/app/utils/shuffle.dart';
 import 'package:zippy/app/utils/vibrates.dart';
@@ -68,7 +69,6 @@ class BoardController extends GetxService {
     this.updateUserInteraction,
   );
 
-  User? user;
   Rx<int> prevPageIndex = Rx<int>(0);
   PageController pageController = PageController(initialPage: 0);
   RxMap<int, Platform> platforms = RxMap<int, Platform>({}).obs();
@@ -116,43 +116,45 @@ class BoardController extends GetxService {
   Future<void> onOpenMenu(Article article) async {
     onHeavyVibration();
     Get.bottomSheet(BottomExtensionMenu(
-        article: article,
-        bookmark: () async {
-          _preCheckLogin();
-          await toggleBookmark(article);
-          await createUserInteraction.execute(CreateUserInteractionParams(
-            userId: user!.id,
-            articleId: article.id!,
-            interactionType: InteractionType.Bookmark,
-          ));
-          notifyBookmarked();
+      article: article,
+      bookmark: () => _handleUserAction(
+        isLoggedIn: authService.isLoggedIn.value,
+        action: () async {
+          if (isBookmarked(article.id!)) {
+            await _createInteraction(
+              article.id!,
+              InteractionType.Bookmark,
+            );
+            notifyBookmarked();
+          }
         },
-        share: () async {
+      ),
+      share: () => _handleUserAction(
+        isLoggedIn: authService.isLoggedIn.value,
+        action: () async {
           await toShare(article.title, article.link);
-          await createUserInteraction.execute(CreateUserInteractionParams(
-            userId: user!.id,
-            articleId: article.id!,
-            interactionType: InteractionType.Share,
-          ));
+          await _createInteraction(
+            article.id!,
+            InteractionType.Share,
+          );
         },
-        report: () async {
-          _preCheckLogin();
-          await createUserInteraction.execute(CreateUserInteractionParams(
-            userId: user!.id,
-            articleId: article.id!,
-            interactionType: InteractionType.Unlike,
-          ));
+      ),
+      report: () => _handleUserAction(
+        isLoggedIn: authService.isLoggedIn.value,
+        action: () async {
+          await _createInteraction(
+            article.id!,
+            InteractionType.Report,
+          );
           notifyReported();
-        }));
+        },
+      ),
+    ));
   }
 
   void jumpToArticle(int index) {
     pageController.jumpToPage(index);
   }
-
-  // Future<void> onClickReport(Article article) async {
-  //   await upArticleReportCount.execute(article.id!);
-  // }
 
   bool isBookmarked(int itemId) {
     return userBookmarks.any((bookmark) => bookmark.id == itemId);
@@ -187,7 +189,7 @@ class BoardController extends GetxService {
       }
 
       await createUserInteraction.execute(CreateUserInteractionParams(
-        userId: user!.id,
+        userId: authService.currentUser.value!.id,
         articleId: article.id!,
         interactionType: InteractionType.View,
       ));
@@ -208,6 +210,34 @@ class BoardController extends GetxService {
 
   //////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////
+  /// PRIVATE METHODS
+  //////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////
+  Future<void> _handleUserAction({
+    required bool isLoggedIn,
+    required Future<void> Function() action,
+  }) async {
+    if (!isLoggedIn) {
+      Get.back(); // bottomSheet 닫기
+      // 약간의 딜레이를 주어 bottomSheet가 완전히 닫힌 후 다이얼로그 표시
+      Future.delayed(const Duration(milliseconds: 100), () {
+        showLoginDialog();
+      });
+      return;
+    }
+    await action();
+  }
+
+  Future<void> _createInteraction(int articleId, InteractionType type) async {
+    await createUserInteraction.execute(CreateUserInteractionParams(
+      userId: authService.currentUser.value!.id,
+      articleId: articleId,
+      interactionType: type,
+    ));
+  }
+
+  //////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////
   /// 초기화
   //////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////
@@ -217,9 +247,9 @@ class BoardController extends GetxService {
     await _setupUserSubscriptions();
     await _setupUserBookmark();
 
-    _listenUserSubscriptions();
     _listenUserBookmark();
-    _listenUser();
+    // _listenUserSubscriptions();
+    // _listenUser();
 
     await refreshItem();
 
@@ -283,15 +313,15 @@ class BoardController extends GetxService {
     });
   }
 
-  void _listenUserSubscriptions() {
-    if (user != null) {
-      subscribeUserSubscriptions
-          .execute(user!.id)
-          .listen((List<UserSubscription> event) {
-        userSubscriptions.bindStream(Stream.value(event));
-      });
-    }
-  }
+  // void _listenUserSubscriptions() {
+  //   if (user != null) {
+  //     subscribeUserSubscriptions
+  //         .execute(user!.id)
+  //         .listen((List<UserSubscription> event) {
+  //       userSubscriptions.bindStream(Stream.value(event));
+  //     });
+  //   }
+  // }
 
   void _listenUserBookmark() {
     subscribeUserBookmark.execute().listen((List<UserBookmark> event) {
@@ -299,25 +329,12 @@ class BoardController extends GetxService {
     });
   }
 
-  void _listenUser() {
-    authService.currentUser.listen((user) {
-      if (user != null) {
-        this.user = user;
-        _listenUserSubscriptions();
-      }
-    });
-  }
-
-  void _preCheckLogin() {
-    if (user == null) {
-      showAppDialog(
-        "로그인이 필요해요.",
-        confirmText: "로그인하러가기",
-        onlyConfirm: true,
-        onConfirm: () {
-          Get.toNamed(Routes.login);
-        },
-      );
-    }
-  }
+  // void _listenUser() {
+  //   authService.currentUser.listen((user) {
+  //     if (user != null) {
+  //       this.user = user;
+  //       _listenUserSubscriptions();
+  //     }
+  //   });
+  // }
 }
