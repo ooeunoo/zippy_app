@@ -14,9 +14,12 @@ import 'package:zippy/domain/model/article.model.dart';
 
 class ZippyArticleView extends StatefulWidget {
   final Article article;
+  final Function(int, int)? handleUpdateUserInteraction;
+
   const ZippyArticleView({
     super.key,
     required this.article,
+    this.handleUpdateUserInteraction,
   });
 
   @override
@@ -37,6 +40,9 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
   void dispose() {
     final duration = DateTime.now().difference(_startTime!);
     print('페이지 체류 시간: ${_formatDuration(duration)}초');
+    if (widget.handleUpdateUserInteraction != null) {
+      widget.handleUpdateUserInteraction!(0, duration.inSeconds.toInt());
+    }
     super.dispose();
   }
 

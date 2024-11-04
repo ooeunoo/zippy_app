@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 @immutable
 class UpdateUserInteractionParams extends Equatable {
   final int id;
-  final double? readPersent;
-  final double? readDuration;
+  final int? readPercent;
+  final int? readDuration;
 
   const UpdateUserInteractionParams({
     required this.id,
-    this.readPersent = 0,
+    this.readPercent = 0,
     this.readDuration = 0,
   });
 
@@ -19,7 +19,7 @@ class UpdateUserInteractionParams extends Equatable {
   }
 
   Map<String, dynamic> toJson() => {
-        'read_persent': readPersent,
+        'read_percent': readPercent,
         'read_duration': readDuration,
       };
 

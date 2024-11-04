@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:zippy/domain/enum/interaction_type.enum.dart';
-import 'package:zippy/domain/model/user_article_highlight.model.dart';
 import 'package:zippy/domain/model/user_interaction.model.dart';
 
 @immutable
@@ -10,15 +9,15 @@ class UserInteractionEntity extends Equatable {
   final String user_id;
   final int article_id;
   final InteractionType type;
-  final double? read_time;
-  final double? read_duration;
+  final int? read_percent;
+  final int? read_duration;
 
   const UserInteractionEntity({
     this.id,
     required this.user_id,
     required this.article_id,
     required this.type,
-    this.read_time,
+    this.read_percent,
     this.read_duration,
   });
 
@@ -33,7 +32,7 @@ class UserInteractionEntity extends Equatable {
       user_id: json['user_id'],
       article_id: json['article_id'],
       type: InteractionType.values.byName(json['interaction_type']),
-      read_time: json['read_time'],
+      read_percent: json['read_percent'],
       read_duration: json['read_duration'],
     );
   }
@@ -44,7 +43,7 @@ class UserInteractionEntity extends Equatable {
       userId: user_id,
       articleId: article_id,
       type: type,
-      readTime: read_time,
+      readPercent: read_percent,
       readDuration: read_duration,
     );
   }

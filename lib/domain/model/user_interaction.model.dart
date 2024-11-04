@@ -8,15 +8,15 @@ class UserInteraction extends Equatable {
   final String userId;
   final int articleId;
   final InteractionType type;
-  final double? readTime;
-  final double? readDuration;
+  final int? readPercent;
+  final int? readDuration;
 
   const UserInteraction({
     this.id,
     required this.userId,
     required this.articleId,
     required this.type,
-    this.readTime,
+    this.readPercent,
     this.readDuration,
   });
 
@@ -34,7 +34,7 @@ class UserInteraction extends Equatable {
         'user_id': userId,
         'article_id': articleId,
         'interaction_type': type,
-        'read_time': readTime,
+        'read_percent': readPercent,
         'read_duration': readDuration,
       };
 

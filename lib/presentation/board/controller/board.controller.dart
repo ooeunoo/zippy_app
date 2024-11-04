@@ -1,3 +1,4 @@
+import 'package:dartz/dartz.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/app/routes/app_pages.dart';
@@ -14,10 +15,12 @@ import 'package:zippy/domain/enum/interaction_type.enum.dart';
 import 'package:zippy/domain/model/ad_content.model.dart';
 import 'package:zippy/domain/model/article.model.dart';
 import 'package:zippy/domain/model/params/create_user_interaction.params.dart';
+import 'package:zippy/domain/model/params/update_user_interaction.params.dart';
 import 'package:zippy/domain/model/source.model.dart';
 import 'package:zippy/domain/model/platform.model.dart';
 import 'package:zippy/domain/model/user.model.dart';
 import 'package:zippy/domain/model/user_bookmark.model.dart';
+import 'package:zippy/domain/model/user_interaction.model.dart';
 import 'package:zippy/domain/model/user_subscription.model.dart';
 import 'package:zippy/domain/usecases/create_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/create_user_interaction.usecase.dart';
@@ -118,7 +121,7 @@ class BoardController extends GetxService {
     Get.bottomSheet(BottomExtensionMenu(
       article: article,
       bookmark: () => _handleUserAction(
-        isLoggedIn: authService.isLoggedIn.value,
+        requiredLoggedIn: true,
         action: () async {
           if (isBookmarked(article.id!)) {
             await _createInteraction(
@@ -130,7 +133,7 @@ class BoardController extends GetxService {
         },
       ),
       share: () => _handleUserAction(
-        isLoggedIn: authService.isLoggedIn.value,
+        requiredLoggedIn: false,
         action: () async {
           await toShare(article.title, article.link);
           await _createInteraction(
@@ -140,7 +143,7 @@ class BoardController extends GetxService {
         },
       ),
       report: () => _handleUserAction(
-        isLoggedIn: authService.isLoggedIn.value,
+        requiredLoggedIn: true,
         action: () async {
           await _createInteraction(
             article.id!,
@@ -177,24 +180,17 @@ class BoardController extends GetxService {
     prevPageIndex.value = curPageIndex;
   }
 
-  onClickArticle(Article article) async {
-    if (!article.isAd) {
-      // 인터스티셜 광고 처리
-      int credit = admobService.useIntersitialAdCredits();
-      InterstitialAd? interstitialAd = admobService.interstitialAd.value;
+  Future<void> onClickArticle(Article article) async {
+    if (article.isAd) return;
 
-      if (credit == 0 && interstitialAd != null) {
-        admobService.interstitialAd.value!.show();
-        admobService.resetIntersitialAdCredits();
-      }
+    await _handleInterstitialAd();
 
-      await createUserInteraction.execute(CreateUserInteractionParams(
-        userId: authService.currentUser.value!.id,
-        articleId: article.id!,
-        interactionType: InteractionType.View,
-      ));
-      Get.to(() => ZippyArticleView(article: article));
-    }
+    final handleUpdateInteraction = await _createViewInteraction(article.id!);
+
+    Get.to(() => ZippyArticleView(
+          article: article,
+          handleUpdateUserInteraction: handleUpdateInteraction,
+        ));
   }
 
   refreshItem() {
@@ -213,11 +209,47 @@ class BoardController extends GetxService {
   /// PRIVATE METHODS
   //////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////
+  ///
+  Future<void> _handleInterstitialAd() async {
+    final credit = admobService.useIntersitialAdCredits();
+    final interstitialAd = admobService.interstitialAd.value;
+
+    if (credit == 0 && interstitialAd != null) {
+      interstitialAd.show();
+      admobService.resetIntersitialAdCredits();
+    }
+  }
+
+  Future<Function(int, int)?> _createViewInteraction(int articleId) async {
+    if (!authService.isLoggedIn.value) return null;
+
+    final result = await createUserInteraction.execute(
+      CreateUserInteractionParams(
+        userId: authService.currentUser.value!.id,
+        articleId: articleId,
+        interactionType: InteractionType.View,
+      ),
+    );
+
+    return result.fold(
+      (failure) => null,
+      (interaction) => (int readPercent, int readDuration) async {
+        await _handleUpdateUserInteraction(
+          interaction.id!,
+          readPercent,
+          readDuration,
+        );
+      },
+    );
+  }
+
   Future<void> _handleUserAction({
-    required bool isLoggedIn,
+    required bool requiredLoggedIn,
     required Future<void> Function() action,
   }) async {
-    if (!isLoggedIn) {
+    bool isLoggedIn = authService.isLoggedIn.value;
+    // requiredLoggedIn가 true이고 로그인이 되어있지 않으면 로그인 다이얼로그 표시
+    if (!requiredLoggedIn && !isLoggedIn) {
       Get.back(); // bottomSheet 닫기
       // 약간의 딜레이를 주어 bottomSheet가 완전히 닫힌 후 다이얼로그 표시
       Future.delayed(const Duration(milliseconds: 100), () {
@@ -233,6 +265,15 @@ class BoardController extends GetxService {
       userId: authService.currentUser.value!.id,
       articleId: articleId,
       interactionType: type,
+    ));
+  }
+
+  Future<void> _handleUpdateUserInteraction(
+      int id, int readPercent, int readDuration) async {
+    await updateUserInteraction.execute(UpdateUserInteractionParams(
+      id: id,
+      readPercent: readPercent,
+      readDuration: readDuration,
     ));
   }
 
