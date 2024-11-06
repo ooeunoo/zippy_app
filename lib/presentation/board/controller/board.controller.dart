@@ -1,16 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/services/auth.service.dart';
 import 'package:zippy/app/styles/color.dart';
-import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/utils/share.dart';
 import 'package:zippy/app/utils/shuffle.dart';
 import 'package:zippy/app/utils/vibrates.dart';
 import 'package:zippy/app/widgets/app.snak_bar.dart';
 import 'package:zippy/app/widgets/app_dialog.dart';
 import 'package:zippy/data/entity/user_bookmark.entity.dart';
+import 'package:zippy/domain/enum/article_view_type.enum.dart';
 import 'package:zippy/domain/enum/interaction_type.enum.dart';
 import 'package:zippy/domain/model/ad_content.model.dart';
 import 'package:zippy/domain/model/article.model.dart';
@@ -28,7 +27,6 @@ import 'package:zippy/domain/usecases/get_platforms.usecase.dart';
 import 'package:zippy/domain/usecases/get_sources.usecase.dart';
 import 'package:zippy/domain/usecases/get_user_bookmark.usecase.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:zippy/domain/usecases/get_user_subscriptions.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_articles.usecase.dart';
@@ -71,6 +69,7 @@ class BoardController extends GetxService {
       RxList<UserSubscription>([]).obs();
   RxList<UserBookmark> userBookmarks = RxList<UserBookmark>([]).obs();
   Rxn<String> error = Rxn<String>();
+  Rx<ArticleViewType> currentViewType = ArticleViewType.Keypoint.obs;
 
   @override
   onInit() async {
@@ -152,6 +151,10 @@ class BoardController extends GetxService {
     return userBookmarks.any((bookmark) => bookmark.id == itemId);
   }
 
+  void changeViewType(ArticleViewType type) {
+    currentViewType.value = type;
+  }
+
   onChangedArticle(int curPageIndex) {
     if (curPageIndex < prevPageIndex.value) return;
     int credit = admobService.useAdContentCredits();
@@ -182,7 +185,6 @@ class BoardController extends GetxService {
       backgroundColor: Colors.transparent,
       useSafeArea: true,
       elevation: 0,
-      enableDrag: true,
       builder: (context) => DraggableScrollableSheet(
         initialChildSize: 0.95,
         maxChildSize: 0.95,
@@ -193,16 +195,19 @@ class BoardController extends GetxService {
             // 추가
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
             child: Container(
-              decoration: const BoxDecoration(
-                color: AppColor.graymodern950,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              ),
-              child: ZippyArticleView(
-                article: article,
-                handleUpdateUserInteraction: handleUpdateInteraction,
-                scrollController: scrollController,
-              ),
-            ),
+                decoration: const BoxDecoration(
+                  color: AppColor.transparent,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                child: Obx(
+                  () => ZippyArticleView(
+                    scrollController: scrollController,
+                    article: article,
+                    handleUpdateUserInteraction: handleUpdateInteraction,
+                    viewType: currentViewType.value, // 현재 뷰 타입 전달
+                    onViewTypeChanged: changeViewType, // 상태 변경 콜백 전달
+                  ),
+                )),
           );
         },
       ),

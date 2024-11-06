@@ -14,24 +14,26 @@ import 'package:zippy/domain/enum/article_view_type.enum.dart';
 import 'package:zippy/domain/model/article.model.dart';
 
 class ZippyArticleView extends StatefulWidget {
+  final ScrollController? scrollController;
   final Article article;
   final Function(int, int)? handleUpdateUserInteraction;
-  final ScrollController? scrollController; // 추가
+  final ArticleViewType viewType; // 추가
+  final Function(ArticleViewType) onViewTypeChanged; // 추가
 
   const ZippyArticleView({
     super.key,
+    this.scrollController,
     required this.article,
     this.handleUpdateUserInteraction,
-    this.scrollController, // 추가
+    required this.viewType, // 추가
+    required this.onViewTypeChanged, // 추가
   });
-
   @override
   State<ZippyArticleView> createState() => _ZippyArticleViewState();
 }
 
 class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
   DateTime? _startTime;
-  late ArticleViewType _viewType;
   late WebViewController _webViewController;
   bool _isWebViewLoading = true;
 
@@ -40,7 +42,6 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
     super.initState();
     print(widget.article.link);
     _startTime = DateTime.now();
-    _viewType = ArticleViewType.Keypoint;
     _initWebViewController();
   }
 
@@ -55,7 +56,6 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
     widget.handleUpdateUserInteraction?.call(0, duration.inSeconds);
   }
 
-// WebViewController 초기화 부분도 수정
   void _initWebViewController() {
     _webViewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -73,6 +73,8 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
             document.querySelector('meta[name="viewport"]')?.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0');
             document.body.style.overflow = 'scroll';
             document.documentElement.style.overflow = 'scroll';
+            document.body.style.pointerEvents = 'none';
+            document.documentElement.style.pointerEvents = 'none';
             true;
           ''');
             setState(() {
@@ -100,47 +102,9 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
   }
 
   Widget _buildBody() {
-    if (_viewType == ArticleViewType.Original) {
-      return SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            // WebView
-            Expanded(
-              child: SizedBox(
-                width: double.infinity,
-                child: Stack(
-                  children: [
-                    WebViewWidget(
-                      controller: _webViewController,
-                      gestureRecognizers: {
-                        Factory<VerticalDragGestureRecognizer>(
-                          () => VerticalDragGestureRecognizer(),
-                        ),
-                      },
-                    ),
-                    if (_isWebViewLoading)
-                      Container(
-                        color: AppColor.gray900,
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                            color: AppColor.brand600,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-            // FAB을 위한 여백
-            SizedBox(height: AppDimens.height(80)),
-          ],
-        ),
-      );
-    }
-
     return Column(
       children: [
+        // 드래그 핸들 - 항상 표시
         Container(
           margin: EdgeInsets.symmetric(vertical: AppDimens.height(12)),
           width: AppDimens.width(40),
@@ -150,23 +114,64 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
             borderRadius: BorderRadius.circular(2),
           ),
         ),
+        // 컨텐츠
         Expanded(
-          child: ListView(
-            controller: widget.scrollController,
-            children: [
-              _buildEngagementSection(),
-              AppSpacerV(value: AppDimens.height(15)),
-              const AppDivider(color: AppColor.gray600, height: 2),
-              AppSpacerV(value: AppDimens.height(15)),
-              switch (_viewType) {
-                ArticleViewType.Keypoint => _buildKeyPoints(),
-                ArticleViewType.Summary => _buildSummary(),
-                _ => const SizedBox.shrink(),
-              },
-              AppSpacerV(value: AppDimens.height(80)),
-            ],
+          child: widget.viewType == ArticleViewType.Original
+              ? _buildWebView()
+              : _buildContent(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWebView() {
+    return Column(
+      children: [
+        Expanded(
+          child: SizedBox(
+            width: double.infinity,
+            child: Stack(
+              children: [
+                WebViewWidget(
+                  controller: _webViewController,
+                  gestureRecognizers: {
+                    Factory<VerticalDragGestureRecognizer>(
+                      () => VerticalDragGestureRecognizer(),
+                    ),
+                  },
+                ),
+                if (_isWebViewLoading)
+                  Container(
+                    color: AppColor.gray900,
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColor.brand600,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
+        SizedBox(height: AppDimens.height(80)),
+      ],
+    );
+  }
+
+  Widget _buildContent() {
+    return ListView(
+      controller: widget.scrollController,
+      children: [
+        _buildEngagementSection(),
+        AppSpacerV(value: AppDimens.height(15)),
+        const AppDivider(color: AppColor.gray600, height: 2),
+        AppSpacerV(value: AppDimens.height(15)),
+        switch (widget.viewType) {
+          ArticleViewType.Keypoint => _buildKeyPoints(),
+          ArticleViewType.Summary => _buildSummary(),
+          _ => const SizedBox.shrink(),
+        },
+        AppSpacerV(value: AppDimens.height(80)),
       ],
     );
   }
@@ -356,34 +361,10 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
     );
   }
 
-  Widget _buildOriginal() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: AppDimens.width(16)),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: Stack(
-          children: [
-            WebViewWidget(
-              controller: _webViewController,
-            ),
-            if (_isWebViewLoading)
-              Container(
-                color: AppColor.gray900,
-                child: const Center(
-                  child: CircularProgressIndicator(
-                    color: AppColor.brand600,
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildFloatingButtons() {
-    final availableTypes =
-        ArticleViewType.values.where((type) => type != _viewType).toList();
+    final availableTypes = ArticleViewType.values
+        .where((type) => type != widget.viewType)
+        .toList();
 
     final buttons = List.generate(availableTypes.length, (index) {
       final type = availableTypes[index];
@@ -406,7 +387,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
           child: FloatingActionButton.extended(
             heroTag: type.name,
             backgroundColor: config.$3,
-            onPressed: () => setState(() => _viewType = type),
+            onPressed: () => widget.onViewTypeChanged(type),
             label: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
