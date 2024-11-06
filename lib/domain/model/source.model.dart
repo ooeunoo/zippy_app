@@ -1,25 +1,29 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:zippy/domain/model/content_type.model.dart';
 
 @immutable
 class Source extends Equatable {
   final int? id;
   final int platformId;
-  final int contentTypeId;
+  final int? contentTypeId;
   final String category;
   final bool status;
+
+  final ContentType? contentType;
 
   const Source({
     this.id,
     required this.platformId,
-    required this.contentTypeId,
+    this.contentTypeId,
     required this.category,
     required this.status,
+    this.contentType,
   });
 
   @override
   List<Object> get props {
-    return [platformId, contentTypeId, category, status];
+    return [platformId, category, status];
   }
 
   dynamic toJson() => {
@@ -28,6 +32,7 @@ class Source extends Equatable {
         'contentTypeId': contentTypeId,
         'category': category,
         'status': status,
+        'contentType': contentType?.toJson(),
       };
 
   Map<int, Source> toIdAssign(Map<int, Source> map) {
@@ -37,6 +42,7 @@ class Source extends Equatable {
         contentTypeId: contentTypeId,
         category: category,
         status: status,
+        contentType: contentType,
       );
     }
     return map;

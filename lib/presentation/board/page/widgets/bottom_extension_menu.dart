@@ -12,14 +12,12 @@ import 'package:zippy/domain/model/article.model.dart';
 
 class BottomExtensionMenu extends StatelessWidget {
   final Article article;
-  final Function() bookmark;
   final Function() share;
   final Function() report;
 
   const BottomExtensionMenu({
     super.key,
     required this.article,
-    required this.bookmark,
     required this.share,
     required this.report,
   });
@@ -38,8 +36,6 @@ class BottomExtensionMenu extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildMenuItem(context, "북마크", Icons.comment, bookmark),
-          const AppDivider(),
           _buildMenuItem(context, "공유하기", Icons.share, share),
           const AppDivider(),
           _buildMenuItem(context, "신고하기", Icons.report, report),

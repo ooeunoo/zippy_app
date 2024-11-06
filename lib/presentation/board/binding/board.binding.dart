@@ -20,7 +20,7 @@ class BoardBinding implements Bindings {
   void dependencies() {
     Get.lazyPut<SubscribeArticles>(() => SubscribeArticles(Get.find()));
     Get.lazyPut<GetPlatforms>(() => GetPlatforms(Get.find()));
-    Get.lazyPut<GetSources>(() => GetSources(Get.find()));
+    Get.lazyPut<GetSources>(() => GetSources());
     Get.lazyPut<GetArticles>(() => GetArticles(Get.find()));
     Get.lazyPut<GetUserBookmark>(() => GetUserBookmark(Get.find()));
     Get.lazyPut<CreateUserBookmark>(() => CreateUserBookmark(Get.find()));
@@ -33,20 +33,6 @@ class BoardBinding implements Bindings {
     Get.lazyPut<UpArticleReportCount>(() => UpArticleReportCount(Get.find()));
     Get.lazyPut<CreateUserInteraction>(() => CreateUserInteraction(Get.find()));
     Get.lazyPut<UpdateUserInteraction>(() => UpdateUserInteraction(Get.find()));
-    Get.lazyPut<BoardController>(
-      () => BoardController(
-          Get.find(),
-          Get.find(),
-          Get.find(),
-          Get.find(),
-          Get.find(),
-          Get.find(),
-          Get.find(),
-          Get.find(),
-          Get.find(),
-          Get.find(),
-          Get.find(),
-          Get.find()),
-    );
+    Get.lazyPut<BoardController>(() => BoardController());
   }
 }

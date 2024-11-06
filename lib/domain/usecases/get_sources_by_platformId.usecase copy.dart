@@ -4,10 +4,10 @@ import 'package:zippy/domain/model/source.model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:zippy/domain/repositories/source.repository.dart';
 
-class GetSources {
+class GetSourcesByPlatformId {
   final SourceRepository repo = Get.find();
 
-  Future<Either<Failure, List<Source>>> execute({bool withJoin = false}) {
-    return repo.getSources(withJoin: withJoin);
+  Future<Either<Failure, List<Source>>> execute({String? platformId}) {
+    return repo.getSourcesByPlatformId(platformId: platformId);
   }
 }

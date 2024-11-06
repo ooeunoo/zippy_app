@@ -48,7 +48,6 @@ class AuthService extends GetxService {
     isLoading.value = true;
     try {
       final result = await _getCurrentUser.execute();
-      print(result);
       result.fold((failure) => null, (user) => currentUser.value = user);
     } finally {
       isLoading.value = false;

@@ -11,7 +11,7 @@ import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/ad_content.model.dart';
 import 'package:zippy/domain/model/article.model.dart';
-import 'package:zippy/domain/model/platform.model.dart';
+import 'package:zippy/domain/model/source.model.dart';
 import 'package:zippy/presentation/board/controller/board.controller.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_ad_content_card.dart';
 import 'package:flutter/gestures.dart';
@@ -79,8 +79,8 @@ class _BoardPageState extends State<BoardPage> {
                     itemBuilder: (context, index) {
                       Article article = controller.articles[index];
                       if (!article.isAd) {
-                        Platform? platform =
-                            controller.getPlatformBySourceId(article.sourceId);
+                        // Platform? platform =
+                        //     controller.getPlatformBySourceId(article.sourceId);
                         return Column(
                           children: [
                             ListTile(
@@ -94,7 +94,7 @@ class _BoardPageState extends State<BoardPage> {
                                         ),
                               ),
                               subtitle: AppText(
-                                platform?.name ?? "",
+                                "",
                                 style:
                                     Theme.of(context).textTheme.textXS.copyWith(
                                           color: AppColor.graymodern400,
@@ -200,18 +200,22 @@ class _BoardPageState extends State<BoardPage> {
                         AdContent adContent = article as AdContent;
                         return ZippyAdContentCard(content: adContent);
                       } else {
-                        Platform? platform =
-                            controller.getPlatformBySourceId(article.sourceId);
+                        Source? source =
+                            controller.getSourceById(article.sourceId);
+                        print(source?.contentType?.name);
                         bool isBookmarked =
                             controller.isBookmarked(article.id!);
                         return GestureDetector(
                           onTap: () => controller.onClickArticle(article),
                           child: ZippyArticleCard(
                             article: article,
-                            platform: platform,
+                            source: source,
                             isBookMarked: isBookmarked,
-                            toggleBookmark: controller.toggleBookmark,
-                            openMenu: controller.onOpenMenu,
+                            bookmarkArticle: controller.bookmarkArticle,
+                            shareArticle: controller.shareArticle,
+                            commentArticle: controller.commentArticle,
+                            reportArticle: controller.reportArticle,
+                            openMenu: () => controller.onOpenMenu(article),
                           ),
                         );
                       }

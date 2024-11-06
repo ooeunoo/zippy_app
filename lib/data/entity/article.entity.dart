@@ -83,7 +83,6 @@ class ArticleEntity extends Equatable {
   }
 
   factory ArticleEntity.fromJson(Map<String, dynamic> json) {
-    print(json['keywords']);
     return ArticleEntity(
       id: json['id'],
       source_id: json['source_id'],

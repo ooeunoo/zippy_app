@@ -1,10 +1,7 @@
-import 'package:dartz/dartz.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/failures/failure.dart';
-import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/services/auth.service.dart';
-import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/utils/share.dart';
 import 'package:zippy/app/utils/shuffle.dart';
 import 'package:zippy/app/utils/vibrates.dart';
@@ -18,9 +15,7 @@ import 'package:zippy/domain/model/params/create_user_interaction.params.dart';
 import 'package:zippy/domain/model/params/update_user_interaction.params.dart';
 import 'package:zippy/domain/model/source.model.dart';
 import 'package:zippy/domain/model/platform.model.dart';
-import 'package:zippy/domain/model/user.model.dart';
 import 'package:zippy/domain/model/user_bookmark.model.dart';
-import 'package:zippy/domain/model/user_interaction.model.dart';
 import 'package:zippy/domain/model/user_subscription.model.dart';
 import 'package:zippy/domain/usecases/create_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/create_user_interaction.usecase.dart';
@@ -44,33 +39,18 @@ class BoardController extends GetxService {
   AuthService authService = Get.find<AuthService>();
   AdmobService admobService = Get.find<AdmobService>();
 
-  final SubscribeArticles subscribeArticles;
-  final SubscribeUserBookmark subscribeUserBookmark;
-  final SubscribeUserSubscriptions subscribeUserSubscriptions;
-  final GetPlatforms getPlatforms;
-  final GetSources getSources;
-  final GetArticles getArticles;
-  final CreateUserBookmark createUserBookmark;
-  final DeleteUserBookmark deleteUserBookmark;
-  final GetUserBookmark getUserBookmark;
-  final GetUserSubscriptions getUserSubscriptions;
-  final CreateUserInteraction createUserInteraction;
-  final UpdateUserInteraction updateUserInteraction;
-
-  BoardController(
-    this.subscribeArticles,
-    this.subscribeUserBookmark,
-    this.subscribeUserSubscriptions,
-    this.getPlatforms,
-    this.getSources,
-    this.getArticles,
-    this.createUserBookmark,
-    this.deleteUserBookmark,
-    this.getUserBookmark,
-    this.getUserSubscriptions,
-    this.createUserInteraction,
-    this.updateUserInteraction,
-  );
+  final SubscribeArticles subscribeArticles = Get.find();
+  final SubscribeUserBookmark subscribeUserBookmark = Get.find();
+  final SubscribeUserSubscriptions subscribeUserSubscriptions = Get.find();
+  final GetPlatforms getPlatforms = Get.find();
+  final GetSources getSources = Get.find();
+  final GetArticles getArticles = Get.find();
+  final CreateUserBookmark createUserBookmark = Get.find();
+  final DeleteUserBookmark deleteUserBookmark = Get.find();
+  final GetUserBookmark getUserBookmark = Get.find();
+  final GetUserSubscriptions getUserSubscriptions = Get.find();
+  final CreateUserInteraction createUserInteraction = Get.find();
+  final UpdateUserInteraction updateUserInteraction = Get.find();
 
   Rx<int> prevPageIndex = Rx<int>(0);
   PageController pageController = PageController(initialPage: 0);
@@ -90,17 +70,17 @@ class BoardController extends GetxService {
     super.onInit();
   }
 
-  Platform? getPlatformBySourceId(int sourceId) {
+  Source? getSourceById(int sourceId) {
     Source? source = sources[sourceId];
 
     if (source != null) {
-      return platforms[source.platformId]!;
+      return source;
     } else {
       return null;
     }
   }
 
-  Future<void> toggleBookmark(Article article) async {
+  Future<void> bookmarkArticle(Article article) async {
     UserBookmarkEntity entity = UserBookmark(
       id: article.id!,
       title: article.title,
@@ -110,28 +90,25 @@ class BoardController extends GetxService {
     ).toCreateEntity();
     onHeavyVibration();
     if (isBookmarked(article.id!)) {
-      // await deleteUserBookmark.execute(entity);
+      await deleteUserBookmark.execute(entity);
     } else {
       await createUserBookmark.execute(entity);
     }
   }
 
+  Future<void> shareArticle(Article article) async {
+    await toShare(article.title, article.link);
+    await _createInteraction(article.id!, InteractionType.Share);
+  }
+
+  Future<void> commentArticle(Article article) async {}
+
+  Future<void> reportArticle(Article article) async {}
+
   Future<void> onOpenMenu(Article article) async {
     onHeavyVibration();
     Get.bottomSheet(BottomExtensionMenu(
       article: article,
-      bookmark: () => _handleUserAction(
-        requiredLoggedIn: true,
-        action: () async {
-          if (isBookmarked(article.id!)) {
-            await _createInteraction(
-              article.id!,
-              InteractionType.Bookmark,
-            );
-            notifyBookmarked();
-          }
-        },
-      ),
       share: () => _handleUserAction(
         requiredLoggedIn: false,
         action: () async {
@@ -315,7 +292,7 @@ class BoardController extends GetxService {
   }
 
   Future<void> _setupSources() async {
-    final result = await getSources.execute();
+    final result = await getSources.execute(withJoin: true);
 
     result.fold((failure) {
       if (failure == ServerFailure()) {
@@ -327,6 +304,7 @@ class BoardController extends GetxService {
         map = source.toIdAssign(map);
       }
       sources.assignAll(map);
+      // print(sources);
     });
   }
 
