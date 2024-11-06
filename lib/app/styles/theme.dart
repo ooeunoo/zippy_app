@@ -5,7 +5,7 @@ import 'package:zippy/app/styles/dimens.dart';
 
 /// Light theme
 ThemeData themeLight(BuildContext context) => ThemeData(
-      fontFamily: 'PretendardVariable',
+      fontFamily: 'Pretendard',
       useMaterial3: true,
       highlightColor: Colors.transparent,
       splashColor: const Color.fromRGBO(0, 0, 0, 0),

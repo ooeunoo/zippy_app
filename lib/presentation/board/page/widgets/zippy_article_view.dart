@@ -27,6 +27,8 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
   DateTime? _startTime;
   final List<Highlight> _highlights = [];
 
+  int _currentImageIndex = 0; // 추가
+
   @override
   void initState() {
     super.initState();
@@ -62,22 +64,17 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
   Widget _buildBody() {
     return CustomScrollView(
       slivers: [
-        _buildSliverAppBar(),
         SliverToBoxAdapter(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (widget.article.images.isNotEmpty) ...[
-                _buildImage(),
-                AppSpacerV(value: AppDimens.height(10)),
-              ],
+              _buildImageWithBackButton(),
+              AppSpacerV(value: AppDimens.height(10)),
               _buildEngagementSection(),
               AppSpacerV(value: AppDimens.height(15)),
-              const AppDivider(color: AppColor.gray600, height: 5),
+              const AppDivider(color: AppColor.gray600, height: 2),
               AppSpacerV(value: AppDimens.height(15)),
               _buildKeyPoints(),
-              // _buildTLDR(),
-              // _buildContent(),
               AppSpacerV(value: AppDimens.height(150)),
             ],
           ),
@@ -86,33 +83,113 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
     );
   }
 
-  Widget _buildSliverAppBar() {
-    return SliverAppBar(
-      pinned: true,
-      leading: const BackButton(color: AppColor.gray50),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.bookmark_border, color: AppColor.gray50),
-          onPressed: () {},
+  Widget _buildImageWithBackButton() {
+    return Stack(
+      children: [
+        // Images PageView
+        SizedBox(
+          height: 350,
+          child: PageView.builder(
+            itemCount: widget.article.images.length,
+            itemBuilder: (context, index) {
+              return Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(widget.article.images[index]!),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              );
+            },
+            onPageChanged: (index) {
+              setState(() {
+                _currentImageIndex = index;
+              });
+            },
+          ),
         ),
-        IconButton(
-          icon: const Icon(Icons.share, color: AppColor.gray50),
-          onPressed: () {},
-        ),
-      ],
-    );
-  }
 
-  Widget _buildImage() {
-    return Container(
-      height: 200,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: NetworkImage(widget.article.images[0]!),
-          fit: BoxFit.cover,
+        // Gradient overlay
+        Container(
+          height: 200,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.center,
+              colors: [
+                Colors.black.withOpacity(0.5),
+                Colors.transparent,
+              ],
+            ),
+          ),
         ),
-      ),
+
+        // Back button
+        Positioned(
+          top: AppDimens.height(40),
+          left: AppDimens.width(16),
+          child: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              _handleUserInteraction();
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
+
+        // Action buttons
+        Positioned(
+          top: AppDimens.height(40),
+          right: AppDimens.width(16),
+          child: Row(
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.bookmark_border,
+                  color: Colors.white,
+                ),
+                onPressed: () {},
+              ),
+              AppSpacerH(value: AppDimens.width(8)),
+              IconButton(
+                icon: const Icon(
+                  Icons.share,
+                  color: Colors.white,
+                ),
+                onPressed: () {},
+              ),
+            ],
+          ),
+        ),
+
+        // Page indicator
+        if (widget.article.images.length > 1)
+          Positioned(
+            bottom: AppDimens.height(16),
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                widget.article.images.length,
+                (index) => Container(
+                  width: 8,
+                  height: 8,
+                  margin: EdgeInsets.symmetric(horizontal: AppDimens.width(4)),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: index == _currentImageIndex
+                        ? AppColor.brand600
+                        : AppColor.gray50.withOpacity(0.5),
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 
@@ -132,12 +209,13 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
           ),
           AppSpacerV(value: AppDimens.height(12)),
           Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               const Icon(Icons.remove_red_eye,
                   size: 16, color: AppColor.gray400),
               AppSpacerH(value: AppDimens.width(4)),
               AppText(
-                '2.4k reads',
+                '2.4k',
                 style: Theme.of(context).textTheme.textSM.copyWith(
                       color: AppColor.gray400,
                     ),
@@ -147,7 +225,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
                   size: 16, color: AppColor.gray400),
               AppSpacerH(value: AppDimens.width(4)),
               AppText(
-                '42 comments',
+                '42',
                 style: Theme.of(context).textTheme.textSM.copyWith(
                       color: AppColor.gray400,
                     ),
@@ -221,6 +299,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
                   style: Theme.of(context).textTheme.textMD.copyWith(
                         color: AppColor.gray200,
                         height: 1.5,
+                        fontFamily: 'ChosunSm',
                       ),
                 ),
               ),
@@ -243,37 +322,6 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
               margin: EdgeInsets.only(right: AppDimens.width(8)),
               height: AppDimens.height(48),
               child: FloatingActionButton.extended(
-                heroTag: 'summary',
-                backgroundColor: AppColor.brand600,
-                onPressed: () {
-                  // 요약보기 처리
-                },
-                label: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.summarize_rounded,
-                      color: AppColor.gray50,
-                      size: 20,
-                    ),
-                    AppSpacerH(value: AppDimens.width(8)),
-                    AppText(
-                      '요약보기',
-                      style: Theme.of(context).textTheme.textMD.copyWith(
-                            color: AppColor.gray50,
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.only(left: AppDimens.width(8)),
-              height: AppDimens.height(48),
-              child: FloatingActionButton.extended(
                 heroTag: 'original',
                 backgroundColor: AppColor.gray700,
                 onPressed: () {
@@ -290,6 +338,37 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
                     AppSpacerH(value: AppDimens.width(8)),
                     AppText(
                       '원문보기',
+                      style: Theme.of(context).textTheme.textMD.copyWith(
+                            color: AppColor.gray50,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(left: AppDimens.width(8)),
+              height: AppDimens.height(48),
+              child: FloatingActionButton.extended(
+                heroTag: 'summary',
+                backgroundColor: AppColor.brand600,
+                onPressed: () {
+                  // 요약보기 처리
+                },
+                label: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.summarize_rounded,
+                      color: AppColor.gray50,
+                      size: 20,
+                    ),
+                    AppSpacerH(value: AppDimens.width(8)),
+                    AppText(
+                      '요약보기',
                       style: Theme.of(context).textTheme.textMD.copyWith(
                             color: AppColor.gray50,
                             fontWeight: FontWeight.bold,
