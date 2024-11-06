@@ -6,8 +6,6 @@ import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
-import 'package:zippy/app/widgets/app_divider.dart';
-import 'package:zippy/app/widgets/app_icon_button.dart';
 import 'package:zippy/app/widgets/app_shadow_overlay.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
@@ -111,31 +109,60 @@ class ZippyArticleCard extends GetView<BoardController> {
                     children: [
                       IconButton(
                         padding: EdgeInsets.zero,
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         onPressed: () => bookmarkArticle(article),
                         icon: Icon(
                           Icons.bookmark,
-                          color: isBookMarked ? AppColor.rose500 : null,
+                          color: isBookMarked ? AppColor.brand600 : null,
                         ),
                       ),
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () => showCommentBottomSheet(context, [
-                          {
-                            "userName": "사용자1",
-                            "content":
-                                "정말 좋은 내용이네요!,정말 좋은 내용이네요!정말 좋은 내용이네요!정말 좋은 내용이네요!정말 좋은 내용이네요! 내용이네요!정말 좋은 내용이네요!정말 좋은 내용이네요 내용이네요!정말 좋은 내용이네요!정말 좋은 내용이네요 내용이네요!정말 좋은 내용이네요!정말 좋은 내용이네요 내용이네요!정말 좋은 내용이네요!정말 좋은 내용이네요",
-                            "time": "10분 전"
-                          },
-                          {
-                            "userName": "사용자2",
-                            "content": "저도 같은 생각이에요.",
-                            "time": "5분 전"
-                          }
-                        ]),
-                        icon: const Icon(Icons.chat_bubble_outline),
+                      Stack(
+                        children: [
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            onPressed: () => showCommentBottomSheet(context, [
+                              {
+                                "userName": "사용자1",
+                                "content":
+                                    "정말 좋은 내용이네요!,정말 좋은 내용이네요!정말 좋은 내용이네요!정말 좋은 내용이네요!정말 좋은 내용이네요! 내용이네요!정말 좋은 내용이네요!정말 좋은 내용이네요 내용이네요!정말 좋은 내용이네요!정말 좋은 내용이네요 내용이네요!정말 좋은 내용이네요!정말 좋은 내용이네요 내용이네요!정말 좋은 내용이네요!정말 좋은 내용이네요",
+                                "time": "10분 전"
+                              },
+                              {
+                                "userName": "사용자2",
+                                "content": "저도 같은 생각이에요.",
+                                "time": "5분 전"
+                              }
+                            ]),
+                            icon: const Icon(Icons.chat_bubble_outline),
+                          ),
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: AppColor.brand600,
+                                borderRadius: BorderRadius.circular(18),
+                              ),
+                              child: AppText(
+                                '2',
+                                style:
+                                    Theme.of(context).textTheme.textXS.copyWith(
+                                          color: AppColor.white,
+                                        ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       IconButton(
                         padding: EdgeInsets.zero,
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         onPressed: openMenu,
                         icon: const Icon(Icons.more_vert),
                       ),
@@ -157,51 +184,53 @@ class ZippyArticleCard extends GetView<BoardController> {
                 overflow: TextOverflow.ellipsis,
               ),
 
-              AppSpacerV(value: AppDimens.height(5)),
+              AppSpacerV(value: AppDimens.height(20)),
 
               // 요약
               AppText(
                 article.summary ?? '',
                 style: Theme.of(context).textTheme.textSM.copyWith(
-                      color: AppColor.graymodern200,
-                      // fontWeight: FontWeight.w600,
+                      color: AppColor.graymodern400,
                     ),
                 maxLines: 5,
                 overflow: TextOverflow.ellipsis,
               ),
 
               AppSpacerV(value: AppDimens.height(20)),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: article.keywords?.map((tag) {
-                        return Padding(
-                          padding: EdgeInsets.only(right: AppDimens.width(4)),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: AppDimens.width(12),
-                              vertical: AppDimens.height(4),
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColor.graymodern500,
-                              borderRadius:
-                                  BorderRadius.circular(AppDimens.size(16)),
-                            ),
-                            child: AppText(
-                              '# $tag',
-                              style:
-                                  Theme.of(context).textTheme.textXS.copyWith(
-                                        color: AppColor.graymodern200,
-                                      ),
-                            ),
-                          ),
-                        );
-                      }).toList() ??
-                      [],
-                ),
-              ),
+              // SizedBox(
+              //   height: AppDimens.height(28), // 태그의 높이에 맞게 조정
+              //   child: ListView.builder(
+              //     scrollDirection: Axis.horizontal,
+              //     itemCount: article.keywords?.length ?? 0,
+              //     itemBuilder: (context, index) {
+              //       final tag = article.keywords![index];
+              //       return Padding(
+              //         padding: EdgeInsets.only(right: AppDimens.width(4)),
+              //         child: Container(
+              //           padding: EdgeInsets.symmetric(
+              //             horizontal: AppDimens.width(12),
+              //             vertical: AppDimens.height(2),
+              //           ),
+              //           decoration: BoxDecoration(
+              //             color: AppColor.graymodern300,
+              //             borderRadius:
+              //                 BorderRadius.circular(AppDimens.size(16)),
+              //           ),
+              //           child: Center(
+              //             child: AppText(
+              //               '#$tag',
+              //               style: Theme.of(context).textTheme.textXS.copyWith(
+              //                     color: AppColor.graymodern600,
+              //                   ),
+              //             ),
+              //           ),
+              //         ),
+              //       );
+              //     },
+              //   ),
+              // ),
 
-              AppSpacerV(value: AppDimens.height(10)),
+              // AppSpacerV(value: AppDimens.height(10)),
 
               // 해시태그
             ],

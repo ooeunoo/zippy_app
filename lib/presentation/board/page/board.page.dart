@@ -188,11 +188,20 @@ class _BoardPageState extends State<BoardPage> {
                 },
                 child: PageView.builder(
                   scrollDirection: Axis.vertical,
-                  pageSnapping: true,
+                  pageSnapping: true, // 페이지 스냅 효과 유지
                   dragStartBehavior: DragStartBehavior.start,
                   controller: controller.pageController,
-                  onPageChanged: (int pageIndex) =>
-                      controller.jumpToArticle(pageIndex),
+                  onPageChanged: (int pageIndex) => controller.onChangedArticle(
+                      pageIndex), // jumpToArticle 대신 onChangedArticle 사용
+                  physics: const BouncingScrollPhysics(
+                    // 스크롤 물리 효과 추가
+                    parent: AlwaysScrollableScrollPhysics(),
+                  ),
+                  scrollBehavior: const ScrollBehavior().copyWith(
+                    // 스크롤 동작 개선
+                    overscroll: false,
+                    physics: const BouncingScrollPhysics(),
+                  ),
                   itemBuilder: (BuildContext context, int index) {
                     return Obx(() {
                       Article article = controller.articles[index];
@@ -202,7 +211,6 @@ class _BoardPageState extends State<BoardPage> {
                       } else {
                         Source? source =
                             controller.getSourceById(article.sourceId);
-                        print(source?.contentType?.name);
                         bool isBookmarked =
                             controller.isBookmarked(article.id!);
                         return GestureDetector(

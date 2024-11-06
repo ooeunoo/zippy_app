@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/app/services/admob_service.dart';
@@ -53,7 +54,12 @@ class BoardController extends GetxService {
   final UpdateUserInteraction updateUserInteraction = Get.find();
 
   Rx<int> prevPageIndex = Rx<int>(0);
-  PageController pageController = PageController(initialPage: 0);
+  PageController pageController = PageController(
+    initialPage: 0,
+    viewportFraction: 1.0, // 전체 화면 표시
+    keepPage: true, // 페이지 상태 유지
+  );
+
   RxMap<int, Platform> platforms = RxMap<int, Platform>({}).obs();
   RxMap<int, Source> sources = RxMap<int, Source>({}).obs();
   RxBool isLoadingContents = RxBool(true).obs();
@@ -133,7 +139,11 @@ class BoardController extends GetxService {
   }
 
   void jumpToArticle(int index) {
-    pageController.jumpToPage(index);
+    pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300), // 애니메이션 시간
+      curve: Curves.easeInOut, // 부드러운 애니메이션 커브
+    );
   }
 
   bool isBookmarked(int itemId) {
@@ -164,10 +174,14 @@ class BoardController extends GetxService {
 
     final handleUpdateInteraction = await _createViewInteraction(article.id!);
 
-    Get.to(() => ZippyArticleView(
+    Navigator.of(Get.context!).push(
+      CupertinoPageRoute(
+        builder: (context) => ZippyArticleView(
           article: article,
           handleUpdateUserInteraction: handleUpdateInteraction,
-        ));
+        ),
+      ),
+    );
   }
 
   refreshItem() {
@@ -186,7 +200,6 @@ class BoardController extends GetxService {
   /// PRIVATE METHODS
   //////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////
-  ///
   Future<void> _handleInterstitialAd() async {
     final credit = admobService.useIntersitialAdCredits();
     final interstitialAd = admobService.interstitialAd.value;

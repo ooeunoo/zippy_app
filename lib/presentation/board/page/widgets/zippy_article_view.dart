@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:highlightable_text/highlightable_text.dart';
 import 'package:zippy/app/extensions/datetime.dart';
 import 'package:zippy/app/styles/color.dart';
-import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/widgets/app_header.dart';
 import 'package:zippy/app/widgets/app_highlight_menu.dart';
@@ -44,16 +43,14 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
 
   void _handleUserInteraction() {
     final duration = DateTime.now().difference(_startTime!);
+    print('duration: ${duration.inSeconds}');
     widget.handleUpdateUserInteraction?.call(0, duration.inSeconds);
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        _handleUserInteraction();
-        return true;
-      },
+    return PopScope(
+      canPop: true,
       child: Scaffold(
         backgroundColor: AppColor.gray900,
         appBar: _buildAppBar(),
@@ -274,7 +271,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
+          const Icon(
             Icons.arrow_right,
             color: AppColor.brand600,
             size: 20,
