@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -65,7 +67,14 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
               _isWebViewLoading = true;
             });
           },
-          onPageFinished: (String url) {
+          onPageFinished: (String url) async {
+            // 웹뷰 스타일 및 스크롤 설정
+            await _webViewController.runJavaScript('''
+            document.querySelector('meta[name="viewport"]')?.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0');
+            document.body.style.overflow = 'scroll';
+            document.documentElement.style.overflow = 'scroll';
+            true;
+          ''');
             setState(() {
               _isWebViewLoading = false;
             });
@@ -92,30 +101,41 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
 
   Widget _buildBody() {
     if (_viewType == ArticleViewType.Original) {
-      return Column(
-        children: [
-          // WebView를 제외한 모든 것을 제거하고 전체 화면으로 표시
-          Expanded(
-            child: Stack(
-              children: [
-                WebViewWidget(
-                  controller: _webViewController,
-                ),
-                if (_isWebViewLoading)
-                  Container(
-                    color: AppColor.gray900,
-                    child: const Center(
-                      child: CircularProgressIndicator(
-                        color: AppColor.brand600,
-                      ),
+      return SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            // WebView
+            Expanded(
+              child: SizedBox(
+                width: double.infinity,
+                child: Stack(
+                  children: [
+                    WebViewWidget(
+                      controller: _webViewController,
+                      gestureRecognizers: {
+                        Factory<VerticalDragGestureRecognizer>(
+                          () => VerticalDragGestureRecognizer(),
+                        ),
+                      },
                     ),
-                  ),
-              ],
+                    if (_isWebViewLoading)
+                      Container(
+                        color: AppColor.gray900,
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColor.brand600,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
             ),
-          ),
-          // FAB을 위한 여백만 남김
-          AppSpacerV(value: AppDimens.height(80)),
-        ],
+            // FAB을 위한 여백
+            SizedBox(height: AppDimens.height(80)),
+          ],
+        ),
       );
     }
 
@@ -362,92 +382,59 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
   }
 
   Widget _buildFloatingButtons() {
-    final bool isOriginalView = _viewType == ArticleViewType.Original;
+    final availableTypes =
+        ArticleViewType.values.where((type) => type != _viewType).toList();
+
+    final buttons = List.generate(availableTypes.length, (index) {
+      final type = availableTypes[index];
+      final config = type.buttonConfig;
+
+      // 위치에 따라 마진 설정
+      EdgeInsets margin;
+      if (index == 0) {
+        margin = EdgeInsets.only(right: AppDimens.width(8));
+      } else if (index == availableTypes.length - 1) {
+        margin = EdgeInsets.only(left: AppDimens.width(8));
+      } else {
+        margin = EdgeInsets.symmetric(horizontal: AppDimens.width(8));
+      }
+
+      return Expanded(
+        child: Container(
+          margin: margin,
+          height: AppDimens.height(48),
+          child: FloatingActionButton.extended(
+            heroTag: type.name,
+            backgroundColor: config.$3,
+            onPressed: () => setState(() => _viewType = type),
+            label: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  config.$1,
+                  color: AppColor.gray50,
+                  size: 20,
+                ),
+                AppSpacerH(value: AppDimens.width(8)),
+                AppText(
+                  config.$2,
+                  style: Theme.of(context).textTheme.textMD.copyWith(
+                        color: AppColor.gray50,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    });
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppDimens.width(16)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.only(right: AppDimens.width(8)),
-              height: AppDimens.height(48),
-              child: FloatingActionButton.extended(
-                heroTag: 'original',
-                backgroundColor:
-                    isOriginalView ? AppColor.brand600 : AppColor.gray700,
-                onPressed: () {
-                  setState(() {
-                    _viewType = isOriginalView
-                        ? ArticleViewType.Keypoint
-                        : ArticleViewType.Original;
-                  });
-                },
-                label: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      isOriginalView
-                          ? Icons.format_list_bulleted_rounded
-                          : Icons.article_rounded,
-                      color: AppColor.gray50,
-                      size: 20,
-                    ),
-                    AppSpacerH(value: AppDimens.width(8)),
-                    AppText(
-                      isOriginalView ? '키포인트' : '원문보기',
-                      style: Theme.of(context).textTheme.textMD.copyWith(
-                            color: AppColor.gray50,
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          if (!isOriginalView) // 원문 보기 상태가 아닐 때만 표시
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.only(left: AppDimens.width(8)),
-                height: AppDimens.height(48),
-                child: FloatingActionButton.extended(
-                  heroTag: 'summary',
-                  backgroundColor: _viewType == ArticleViewType.Summary
-                      ? AppColor.gray700
-                      : AppColor.brand600,
-                  onPressed: () {
-                    setState(() {
-                      _viewType = _viewType == ArticleViewType.Summary
-                          ? ArticleViewType.Keypoint
-                          : ArticleViewType.Summary;
-                    });
-                  },
-                  label: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        _viewType == ArticleViewType.Summary
-                            ? Icons.format_list_bulleted_rounded
-                            : Icons.summarize_rounded,
-                        color: AppColor.gray50,
-                        size: 20,
-                      ),
-                      AppSpacerH(value: AppDimens.width(8)),
-                      AppText(
-                        _viewType == ArticleViewType.Summary ? '키포인트' : '요약보기',
-                        style: Theme.of(context).textTheme.textMD.copyWith(
-                              color: AppColor.gray50,
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-        ],
+        children: buttons,
       ),
     );
   }

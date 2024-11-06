@@ -182,30 +182,26 @@ class BoardController extends GetxService {
       backgroundColor: Colors.transparent,
       useSafeArea: true,
       elevation: 0,
+      enableDrag: true,
       builder: (context) => DraggableScrollableSheet(
         initialChildSize: 0.95,
         maxChildSize: 0.95,
         snap: true,
         snapSizes: const [0.95],
         builder: (context, scrollController) {
-          return Container(
-            decoration: const BoxDecoration(
-              color: AppColor.graymodern950,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            child: Column(
-              children: [
-                // 드래그 핸들
-
-                // 기사 내용
-                Expanded(
-                  child: ZippyArticleView(
-                    article: article,
-                    handleUpdateUserInteraction: handleUpdateInteraction,
-                    scrollController: scrollController, // 스크롤 컨트롤러 전달
-                  ),
-                ),
-              ],
+          return ClipRRect(
+            // 추가
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            child: Container(
+              decoration: const BoxDecoration(
+                color: AppColor.graymodern950,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              child: ZippyArticleView(
+                article: article,
+                handleUpdateUserInteraction: handleUpdateInteraction,
+                scrollController: scrollController,
+              ),
             ),
           );
         },
