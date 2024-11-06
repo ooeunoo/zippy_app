@@ -1,27 +1,10 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:highlightable_text/highlightable_text.dart';
-import 'package:zippy/app/extensions/datetime.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/widgets/app_divider.dart';
-import 'package:zippy/app/widgets/app_header.dart';
-import 'package:zippy/app/widgets/app_highlight_menu.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
-import 'package:zippy/app/widgets/app_spacer_v.dart';
-import 'package:zippy/app/widgets/app_text.dart';
-import 'package:zippy/domain/model/article.model.dart';
-import 'dart:math';
-import 'package:flutter/material.dart';
-import 'package:highlightable_text/highlightable_text.dart';
-import 'package:zippy/app/extensions/datetime.dart';
-import 'package:zippy/app/styles/color.dart';
-import 'package:zippy/app/styles/dimens.dart';
-import 'package:zippy/app/styles/theme.dart';
-import 'package:zippy/app/widgets/app_header.dart';
-import 'package:zippy/app/widgets/app_highlight_menu.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/article.model.dart';
@@ -70,6 +53,8 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
       },
       child: Scaffold(
         body: _buildBody(),
+        floatingActionButton: _buildFloatingButtons(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }
@@ -93,7 +78,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
               _buildKeyPoints(),
               // _buildTLDR(),
               // _buildContent(),
-              // AppSpacerV(value: AppDimens.height(20)),
+              AppSpacerV(value: AppDimens.height(150)),
             ],
           ),
         ),
@@ -115,48 +100,6 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
           onPressed: () {},
         ),
       ],
-    );
-  }
-
-  Widget _buildTLDR() {
-    if (widget.article.summary == null) return const SizedBox.shrink();
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 2,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColor.brand600.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: AppText(
-                  '요약',
-                  style: Theme.of(context).textTheme.textXS.copyWith(
-                        color: AppColor.brand600,
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-              ),
-            ],
-          ),
-          const AppSpacerV(value: 12),
-          AppText(
-            widget.article.summary!,
-            style: Theme.of(context).textTheme.textMD.copyWith(
-                  color: AppColor.gray200,
-                  height: 1.5,
-                ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -237,7 +180,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
               ),
               SizedBox(width: AppDimens.width(8)),
               AppText(
-                '이것만 읽으면 돼!',
+                '이것만 알면 끝!',
                 style: Theme.of(context).textTheme.textLG.copyWith(
                       color: AppColor.gray50,
                       fontWeight: FontWeight.bold,
@@ -257,127 +200,107 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
       padding: EdgeInsets.symmetric(
         vertical: AppDimens.height(5),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start, // center로 변경
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: AppDimens.height(5)), // 미세 조정
-            child: const Icon(
-              Icons.check_circle_outline_rounded,
-              size: 16,
-              color: AppColor.brand600,
-            ),
-          ),
-          AppSpacerH(value: AppDimens.width(4)),
-          Expanded(
-            child: AppText(
-              point,
-              maxLines: 2,
-              style: Theme.of(context).textTheme.textMD.copyWith(
-                    color: AppColor.gray200,
-                    height: 1.5,
-                  ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildContent() {
-    return Container(
-      margin: const EdgeInsets.only(top: 2),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColor.gray800,
-        borderRadius: BorderRadius.circular(20),
-      ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppText(
-            'Full Article',
-            style: Theme.of(context).textTheme.textLG.copyWith(
-                  color: AppColor.gray50,
-                  fontWeight: FontWeight.bold,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start, // center로 변경
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: AppDimens.height(5)), // 미세 조정
+                child: const Icon(
+                  Icons.check_circle_outline_rounded,
+                  size: 16,
+                  color: AppColor.brand600,
                 ),
+              ),
+              AppSpacerH(value: AppDimens.width(4)),
+              Expanded(
+                child: AppText(
+                  point,
+                  maxLines: 2,
+                  style: Theme.of(context).textTheme.textMD.copyWith(
+                        color: AppColor.gray200,
+                        height: 1.5,
+                      ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
-          _buildHighlightableContent(),
+          AppSpacerV(value: AppDimens.height(5)),
         ],
       ),
     );
   }
 
-  Widget _buildHighlightableContent() {
-    return HighlightableText(
-      text: widget.article.formattedContent,
-      initialHighlights: _highlights,
-      textStyle: Theme.of(context).textTheme.textMD.copyWith(
-            color: AppColor.gray200,
-            height: 1.6,
-          ),
-      highlightColor: AppColor.brand600.withOpacity(0.2),
-      onHighlight: _handleHighlight,
-      onDeleteHighlight: _handleDeleteHighlight,
-      onSaveNote: _handleSaveNote,
-      menuBuilder: _buildHighlightMenu,
-      noteIndicatorBuilder: _buildNoteIndicator,
-    );
-  }
-
-  void _handleHighlight(String content, int startOffset, int endOffset) {
-    print('highlight: $content, $startOffset, $endOffset');
-  }
-
-  void _handleDeleteHighlight(Highlight highlight) {
-    print('delete highlight: ${highlight.id}');
-  }
-
-  void _handleSaveNote(Highlight highlight, String note) {
-    print('note: $note');
-    setState(() {
-      final index = _highlights.indexWhere(
-        (h) =>
-            h.startOffset == highlight.startOffset &&
-            h.endOffset == highlight.endOffset,
-      );
-      if (index != -1) {
-        _highlights[index] = highlight.copyWith(note: note);
-      }
-    });
-  }
-
-  Widget _buildHighlightMenu(
-    BuildContext context,
-    Highlight? highlight,
-    VoidCallback onHighlight,
-    VoidCallback onNote,
-    VoidCallback onDelete,
-  ) {
-    return AppHighlightMenu(
-      highlight: highlight,
-      onHighlight: onHighlight,
-      onNote: onNote,
-      onDelete: onDelete,
-    );
-  }
-
-  Widget _buildNoteIndicator(Highlight highlight) {
-    if (highlight.note?.isEmpty ?? true) return const SizedBox.shrink();
-
+  Widget _buildFloatingButtons() {
     return Padding(
-      padding: const EdgeInsets.only(left: 2, right: 5),
-      child: Transform(
-        alignment: Alignment.center,
-        transform: Matrix4.rotationY(pi),
-        child: Icon(
-          Icons.mode_comment_rounded,
-          size: 16,
-          color: highlight.note?.isNotEmpty == true
-              ? AppColor.brand600
-              : AppColor.gray400,
-        ),
+      padding: EdgeInsets.symmetric(horizontal: AppDimens.width(16)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(right: AppDimens.width(8)),
+              height: AppDimens.height(48),
+              child: FloatingActionButton.extended(
+                heroTag: 'summary',
+                backgroundColor: AppColor.brand600,
+                onPressed: () {
+                  // 요약보기 처리
+                },
+                label: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.summarize_rounded,
+                      color: AppColor.gray50,
+                      size: 20,
+                    ),
+                    AppSpacerH(value: AppDimens.width(8)),
+                    AppText(
+                      '요약보기',
+                      style: Theme.of(context).textTheme.textMD.copyWith(
+                            color: AppColor.gray50,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(left: AppDimens.width(8)),
+              height: AppDimens.height(48),
+              child: FloatingActionButton.extended(
+                heroTag: 'original',
+                backgroundColor: AppColor.gray700,
+                onPressed: () {
+                  // 원문보기 처리
+                },
+                label: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.article_rounded,
+                      color: AppColor.gray50,
+                      size: 20,
+                    ),
+                    AppSpacerH(value: AppDimens.width(8)),
+                    AppText(
+                      '원문보기',
+                      style: Theme.of(context).textTheme.textMD.copyWith(
+                            color: AppColor.gray50,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
