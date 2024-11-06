@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:zippy/domain/model/source.model.dart';
 
 @immutable
 class Article extends Equatable {

@@ -1,6 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
-
-import 'package:zippy/domain/enum/content_type.enum.dart';
 import 'package:zippy/domain/model/source.model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +10,7 @@ class SourceEntity extends Equatable {
   final String category;
   final bool status;
 
-  SourceEntity({
+  const SourceEntity({
     this.id,
     required this.platform_id,
     required this.contentTypeId,
