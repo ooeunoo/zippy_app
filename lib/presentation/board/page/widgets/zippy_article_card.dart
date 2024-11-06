@@ -191,8 +191,10 @@ class ZippyArticleCard extends GetView<BoardController> {
                 article.summary ?? '',
                 style: Theme.of(context).textTheme.textSM.copyWith(
                       color: AppColor.graymodern400,
+                      height: 1.6,
+                      letterSpacing: 0.5,
                     ),
-                maxLines: 5,
+                maxLines: 6,
                 overflow: TextOverflow.ellipsis,
               ),
 
