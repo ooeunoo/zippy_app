@@ -423,7 +423,7 @@ packages:
     source: hosted
     version: "3.0.2"
   flutter_markdown:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: flutter_markdown
       sha256: f0e599ba89c9946c8e051780f0ec99aba4ba15895e0380a7ab68f420046fc44e
@@ -1469,7 +1469,7 @@ packages:
     source: hosted
     version: "1.2.1"
   webview_flutter:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: webview_flutter
       sha256: "6869c8786d179f929144b4a1f86e09ac0eddfe475984951ea6c634774c16b522"

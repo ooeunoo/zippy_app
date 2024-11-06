@@ -55,22 +55,6 @@ class _BoardPageState extends State<BoardPage> {
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              // DrawerHeader(
-              //   decoration: const BoxDecoration(
-              //     color: AppColor.graymodern900,
-              //   ),
-              //   child: Column(
-              //     crossAxisAlignment: CrossAxisAlignment.start,
-              //     children: [
-              //       AppText(
-              //         "최신 콘텐츠",
-              //         style: Theme.of(context).textTheme.text2XL.copyWith(
-              //               color: AppColor.graymodern100,
-              //             ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
               // 아티클 리스트
               Obx(() => ListView.builder(
                     shrinkWrap: true,
@@ -79,8 +63,6 @@ class _BoardPageState extends State<BoardPage> {
                     itemBuilder: (context, index) {
                       Article article = controller.articles[index];
                       if (!article.isAd) {
-                        // Platform? platform =
-                        //     controller.getPlatformBySourceId(article.sourceId);
                         return Column(
                           children: [
                             ListTile(

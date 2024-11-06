@@ -34,7 +34,7 @@ ThemeData themeLight(BuildContext context) => ThemeData(
 
 /// Light theme
 ThemeData themeDark(BuildContext context) => ThemeData(
-      fontFamily: 'PretendardVariable',
+      fontFamily: 'Pretendard',
       useMaterial3: true,
       highlightColor: Colors.transparent,
       splashColor: Colors.transparent,

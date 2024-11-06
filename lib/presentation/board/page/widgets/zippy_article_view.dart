@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:highlightable_text/highlightable_text.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
@@ -7,16 +8,19 @@ import 'package:zippy/app/widgets/app_divider.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
+import 'package:zippy/domain/enum/article_view_type.enum.dart';
 import 'package:zippy/domain/model/article.model.dart';
 
 class ZippyArticleView extends StatefulWidget {
   final Article article;
   final Function(int, int)? handleUpdateUserInteraction;
+  final ScrollController? scrollController; // 추가
 
   const ZippyArticleView({
     super.key,
     required this.article,
     this.handleUpdateUserInteraction,
+    this.scrollController, // 추가
   });
 
   @override
@@ -25,14 +29,17 @@ class ZippyArticleView extends StatefulWidget {
 
 class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
   DateTime? _startTime;
-  final List<Highlight> _highlights = [];
-
-  int _currentImageIndex = 0; // 추가
+  late ArticleViewType _viewType;
+  late WebViewController _webViewController;
+  bool _isWebViewLoading = true;
 
   @override
   void initState() {
     super.initState();
+    print(widget.article.link);
     _startTime = DateTime.now();
+    _viewType = ArticleViewType.Keypoint;
+    _initWebViewController();
   }
 
   @override
@@ -44,6 +51,28 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
   void _handleUserInteraction() {
     final duration = DateTime.now().difference(_startTime!);
     widget.handleUpdateUserInteraction?.call(0, duration.inSeconds);
+  }
+
+// WebViewController 초기화 부분도 수정
+  void _initWebViewController() {
+    _webViewController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..enableZoom(false)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageStarted: (String url) {
+            setState(() {
+              _isWebViewLoading = true;
+            });
+          },
+          onPageFinished: (String url) {
+            setState(() {
+              _isWebViewLoading = false;
+            });
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(widget.article.link));
   }
 
   @override
@@ -62,133 +91,62 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
   }
 
   Widget _buildBody() {
-    return CustomScrollView(
-      slivers: [
-        SliverToBoxAdapter(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    if (_viewType == ArticleViewType.Original) {
+      return Column(
+        children: [
+          // WebView를 제외한 모든 것을 제거하고 전체 화면으로 표시
+          Expanded(
+            child: Stack(
+              children: [
+                WebViewWidget(
+                  controller: _webViewController,
+                ),
+                if (_isWebViewLoading)
+                  Container(
+                    color: AppColor.gray900,
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColor.brand600,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          // FAB을 위한 여백만 남김
+          AppSpacerV(value: AppDimens.height(80)),
+        ],
+      );
+    }
+
+    return Column(
+      children: [
+        Container(
+          margin: EdgeInsets.symmetric(vertical: AppDimens.height(12)),
+          width: AppDimens.width(40),
+          height: AppDimens.height(4),
+          decoration: BoxDecoration(
+            color: AppColor.graymodern600,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        Expanded(
+          child: ListView(
+            controller: widget.scrollController,
             children: [
-              _buildImageWithBackButton(),
-              AppSpacerV(value: AppDimens.height(10)),
               _buildEngagementSection(),
               AppSpacerV(value: AppDimens.height(15)),
               const AppDivider(color: AppColor.gray600, height: 2),
               AppSpacerV(value: AppDimens.height(15)),
-              _buildKeyPoints(),
-              AppSpacerV(value: AppDimens.height(150)),
+              switch (_viewType) {
+                ArticleViewType.Keypoint => _buildKeyPoints(),
+                ArticleViewType.Summary => _buildSummary(),
+                _ => const SizedBox.shrink(),
+              },
+              AppSpacerV(value: AppDimens.height(80)),
             ],
           ),
         ),
-      ],
-    );
-  }
-
-  Widget _buildImageWithBackButton() {
-    return Stack(
-      children: [
-        // Images PageView
-        SizedBox(
-          height: 350,
-          child: PageView.builder(
-            itemCount: widget.article.images.length,
-            itemBuilder: (context, index) {
-              return Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(widget.article.images[index]!),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              );
-            },
-            onPageChanged: (index) {
-              setState(() {
-                _currentImageIndex = index;
-              });
-            },
-          ),
-        ),
-
-        // Gradient overlay
-        Container(
-          height: 200,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.center,
-              colors: [
-                Colors.black.withOpacity(0.5),
-                Colors.transparent,
-              ],
-            ),
-          ),
-        ),
-
-        // Back button
-        Positioned(
-          top: AppDimens.height(40),
-          left: AppDimens.width(16),
-          child: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              _handleUserInteraction();
-              Navigator.of(context).pop();
-            },
-          ),
-        ),
-
-        // Action buttons
-        Positioned(
-          top: AppDimens.height(40),
-          right: AppDimens.width(16),
-          child: Row(
-            children: [
-              IconButton(
-                icon: const Icon(
-                  Icons.bookmark_border,
-                  color: Colors.white,
-                ),
-                onPressed: () {},
-              ),
-              AppSpacerH(value: AppDimens.width(8)),
-              IconButton(
-                icon: const Icon(
-                  Icons.share,
-                  color: Colors.white,
-                ),
-                onPressed: () {},
-              ),
-            ],
-          ),
-        ),
-
-        // Page indicator
-        if (widget.article.images.length > 1)
-          Positioned(
-            bottom: AppDimens.height(16),
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                widget.article.images.length,
-                (index) => Container(
-                  width: 8,
-                  height: 8,
-                  margin: EdgeInsets.symmetric(horizontal: AppDimens.width(4)),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: index == _currentImageIndex
-                        ? AppColor.brand600
-                        : AppColor.gray50.withOpacity(0.5),
-                  ),
-                ),
-              ),
-            ),
-          ),
       ],
     );
   }
@@ -299,7 +257,6 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
                   style: Theme.of(context).textTheme.textMD.copyWith(
                         color: AppColor.gray200,
                         height: 1.5,
-                        fontFamily: 'ChosunSm',
                       ),
                 ),
               ),
@@ -311,7 +268,102 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
     );
   }
 
+  Widget _buildSummary() {
+    return Container(
+      margin: const EdgeInsets.only(top: 2),
+      padding: EdgeInsets.symmetric(horizontal: AppDimens.width(16)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          MarkdownBody(
+            data: widget.article.formattedContent,
+            selectable: true,
+            styleSheet: MarkdownStyleSheet(
+              p: Theme.of(context).textTheme.textMD.copyWith(
+                    color: AppColor.gray200,
+                    height: 1.6,
+                  ),
+              h1: Theme.of(context).textTheme.textXL.copyWith(
+                    color: AppColor.gray50,
+                    fontWeight: FontWeight.bold,
+                    height: 1.5,
+                  ),
+              h2: Theme.of(context).textTheme.textLG.copyWith(
+                    color: AppColor.gray50,
+                    fontWeight: FontWeight.bold,
+                    height: 1.5,
+                  ),
+              h3: Theme.of(context).textTheme.textLG.copyWith(
+                    color: AppColor.gray50,
+                    fontWeight: FontWeight.bold,
+                    height: 1.5,
+                  ),
+              strong: Theme.of(context).textTheme.textMD.copyWith(
+                    color: AppColor.gray50,
+                    fontWeight: FontWeight.bold,
+                  ),
+              em: Theme.of(context).textTheme.textMD.copyWith(
+                    color: AppColor.gray200,
+                    fontStyle: FontStyle.italic,
+                  ),
+              blockquote: Theme.of(context).textTheme.textMD.copyWith(
+                    color: AppColor.gray400,
+                    height: 1.6,
+                  ),
+              blockquoteDecoration: const BoxDecoration(
+                border: Border(
+                  left: BorderSide(
+                    color: AppColor.brand600,
+                    width: 4,
+                  ),
+                ),
+              ),
+              code: Theme.of(context).textTheme.textMD.copyWith(
+                    color: AppColor.brand600,
+                    fontFamily: 'monospace',
+                  ),
+              codeblockDecoration: BoxDecoration(
+                color: AppColor.gray800,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              listBullet: Theme.of(context).textTheme.textMD.copyWith(
+                    color: AppColor.gray200,
+                  ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOriginal() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: AppDimens.width(16)),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Stack(
+          children: [
+            WebViewWidget(
+              controller: _webViewController,
+            ),
+            if (_isWebViewLoading)
+              Container(
+                color: AppColor.gray900,
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    color: AppColor.brand600,
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildFloatingButtons() {
+    final bool isOriginalView = _viewType == ArticleViewType.Original;
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppDimens.width(16)),
       child: Row(
@@ -323,21 +375,28 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
               height: AppDimens.height(48),
               child: FloatingActionButton.extended(
                 heroTag: 'original',
-                backgroundColor: AppColor.gray700,
+                backgroundColor:
+                    isOriginalView ? AppColor.brand600 : AppColor.gray700,
                 onPressed: () {
-                  // 원문보기 처리
+                  setState(() {
+                    _viewType = isOriginalView
+                        ? ArticleViewType.Keypoint
+                        : ArticleViewType.Original;
+                  });
                 },
                 label: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
-                      Icons.article_rounded,
+                    Icon(
+                      isOriginalView
+                          ? Icons.format_list_bulleted_rounded
+                          : Icons.article_rounded,
                       color: AppColor.gray50,
                       size: 20,
                     ),
                     AppSpacerH(value: AppDimens.width(8)),
                     AppText(
-                      '원문보기',
+                      isOriginalView ? '키포인트' : '원문보기',
                       style: Theme.of(context).textTheme.textMD.copyWith(
                             color: AppColor.gray50,
                             fontWeight: FontWeight.bold,
@@ -348,37 +407,46 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
               ),
             ),
           ),
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.only(left: AppDimens.width(8)),
-              height: AppDimens.height(48),
-              child: FloatingActionButton.extended(
-                heroTag: 'summary',
-                backgroundColor: AppColor.brand600,
-                onPressed: () {
-                  // 요약보기 처리
-                },
-                label: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.summarize_rounded,
-                      color: AppColor.gray50,
-                      size: 20,
-                    ),
-                    AppSpacerH(value: AppDimens.width(8)),
-                    AppText(
-                      '요약보기',
-                      style: Theme.of(context).textTheme.textMD.copyWith(
-                            color: AppColor.gray50,
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                  ],
+          if (!isOriginalView) // 원문 보기 상태가 아닐 때만 표시
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.only(left: AppDimens.width(8)),
+                height: AppDimens.height(48),
+                child: FloatingActionButton.extended(
+                  heroTag: 'summary',
+                  backgroundColor: _viewType == ArticleViewType.Summary
+                      ? AppColor.gray700
+                      : AppColor.brand600,
+                  onPressed: () {
+                    setState(() {
+                      _viewType = _viewType == ArticleViewType.Summary
+                          ? ArticleViewType.Keypoint
+                          : ArticleViewType.Summary;
+                    });
+                  },
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        _viewType == ArticleViewType.Summary
+                            ? Icons.format_list_bulleted_rounded
+                            : Icons.summarize_rounded,
+                        color: AppColor.gray50,
+                        size: 20,
+                      ),
+                      AppSpacerH(value: AppDimens.width(8)),
+                      AppText(
+                        _viewType == ArticleViewType.Summary ? '키포인트' : '요약보기',
+                        style: Theme.of(context).textTheme.textMD.copyWith(
+                              color: AppColor.gray50,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );

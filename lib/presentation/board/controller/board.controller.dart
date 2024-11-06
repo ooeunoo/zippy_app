@@ -3,6 +3,8 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/services/auth.service.dart';
+import 'package:zippy/app/styles/color.dart';
+import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/utils/share.dart';
 import 'package:zippy/app/utils/shuffle.dart';
 import 'package:zippy/app/utils/vibrates.dart';
@@ -174,12 +176,39 @@ class BoardController extends GetxService {
 
     final handleUpdateInteraction = await _createViewInteraction(article.id!);
 
-    Navigator.of(Get.context!).push(
-      CupertinoPageRoute(
-        builder: (context) => ZippyArticleView(
-          article: article,
-          handleUpdateUserInteraction: handleUpdateInteraction,
-        ),
+    await showModalBottomSheet(
+      context: Get.context!,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      useSafeArea: true,
+      elevation: 0,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.95,
+        maxChildSize: 0.95,
+        snap: true,
+        snapSizes: const [0.95],
+        builder: (context, scrollController) {
+          return Container(
+            decoration: const BoxDecoration(
+              color: AppColor.graymodern950,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            child: Column(
+              children: [
+                // 드래그 핸들
+
+                // 기사 내용
+                Expanded(
+                  child: ZippyArticleView(
+                    article: article,
+                    handleUpdateUserInteraction: handleUpdateInteraction,
+                    scrollController: scrollController, // 스크롤 컨트롤러 전달
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
