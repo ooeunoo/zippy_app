@@ -144,7 +144,7 @@ class ZippyArticleCard extends GetView<BoardController> {
                 ],
               ),
 
-              AppSpacerV(value: AppDimens.height(20)),
+              AppSpacerV(value: AppDimens.height(10)),
 
               // 제목
               AppText(

@@ -13,7 +13,7 @@ class AdContent extends Article {
     super.link = '',
     super.author = '',
     super.content = '',
-    // super.formattedContent = '',
+    super.formattedContent = '',
     super.images = const [],
     // super.tags = '',
     super.summary = '',

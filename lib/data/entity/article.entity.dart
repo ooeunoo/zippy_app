@@ -13,7 +13,7 @@ class ArticleEntity extends Equatable {
   final String link;
   final String author;
   final String content;
-  // final String formatted_content;
+  final String formatted_content;
   // final String formatted_content_en;
   final List<dynamic> images;
   // final String tags;
@@ -39,7 +39,7 @@ class ArticleEntity extends Equatable {
     required this.link,
     required this.author,
     required this.content,
-    // required this.formatted_content,
+    required this.formatted_content,
     // required this.formatted_content_en,
     required this.images,
     // required this.tags,
@@ -92,7 +92,7 @@ class ArticleEntity extends Equatable {
       link: json['link'],
       author: json['author'],
       content: json['content'],
-      // formatted_content: json['formatted_content'],
+      formatted_content: json['formatted_content'],
       // formatted_content_en: json['formatted_content_en'],
       images: json['images'],
       // tags: json['tags'],
@@ -123,7 +123,7 @@ class ArticleEntity extends Equatable {
       subtitleEn: subtitle_en,
       author: author,
       content: content,
-      // formattedContent: formatted_content,
+      formattedContent: formatted_content,
       // formattedContentEn: formatted_content_en,
       images: images,
       // tags: tags,
