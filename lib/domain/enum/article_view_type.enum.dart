@@ -7,7 +7,7 @@ extension ArticleViewTypeExt on ArticleViewType {
   (IconData icon, String label, Color color) get buttonConfig {
     switch (this) {
       case ArticleViewType.Keypoint:
-        return (Icons.format_list_bulleted_rounded, '키포인트', AppColor.gray700);
+        return (Icons.format_list_bulleted_rounded, '키포인트', AppColor.brand600);
       case ArticleViewType.Summary:
         return (Icons.summarize_rounded, '요약보기', AppColor.brand600);
       case ArticleViewType.Original:

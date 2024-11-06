@@ -386,7 +386,8 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
           height: AppDimens.height(48),
           child: FloatingActionButton.extended(
             heroTag: type.name,
-            backgroundColor: config.$3,
+            // 좌측은 gray700, 우측은 brand600
+            backgroundColor: index == 0 ? AppColor.gray700 : AppColor.brand600,
             onPressed: () => widget.onViewTypeChanged(type),
             label: Row(
               mainAxisSize: MainAxisSize.min,
