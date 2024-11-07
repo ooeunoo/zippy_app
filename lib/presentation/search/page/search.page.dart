@@ -9,6 +9,18 @@ import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 
+enum SearchCategory {
+  all('전체'),
+  news('뉴스'),
+  entertainment('엔터'),
+  sports('스포츠'),
+  economy('경제'),
+  life('생활');
+
+  final String label;
+  const SearchCategory(this.label);
+}
+
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
 
@@ -16,9 +28,28 @@ class SearchPage extends StatefulWidget {
   State<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class _SearchPageState extends State<SearchPage>
+    with SingleTickerProviderStateMixin {
   bool _showSearchBar = false;
   final TextEditingController _searchController = TextEditingController();
+  SearchCategory _selectedCategory = SearchCategory.all;
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+      length: SearchCategory.values.length,
+      vsync: this,
+    );
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) {
+        setState(() {
+          _selectedCategory = SearchCategory.values[_tabController.index];
+        });
+      }
+    });
+  }
 
   // Mock data for search results
   final List<Map<String, String>> _searchResults = [
@@ -50,9 +81,70 @@ class _SearchPageState extends State<SearchPage> {
     },
   ];
 
+  // Mock data for each category
+  final Map<SearchCategory, List<Map<String, String>>> _categoryRankItems = {
+    SearchCategory.all: [
+      {'title': '인공지능 챗봇', 'description': '새로운 AI 서비스 출시로 화제', 'delta': '▲ 3'},
+      {
+        'title': '메타버스 콘서트',
+        'description': '유명 아이돌 그룹 가상 공연 예정',
+        'delta': '▼ 1'
+      },
+      {
+        'title': '친환경 에너지',
+        'description': '새로운 정부 정책 발표로 관심 증가',
+        'delta': '▲ 5'
+      },
+      {
+        'title': '우주 탐사 미션',
+        'description': '민간 기업의 화성 탐사 계획 공개',
+        'delta': '▲ 2'
+      },
+      {
+        'title': '글로벌 경제 전망',
+        'description': '주요 기관의 2024년 경제 예측 발표',
+        'delta': '▼ 2'
+      },
+    ],
+    SearchCategory.news: [
+      {'title': '국제 정상회담', 'description': '주요국 정상들 기후변화 대책 논의', 'delta': '▲ 4'},
+      {
+        'title': '코로나19 신규 변이',
+        'description': '전문가들 경계태세 강화 촉구',
+        'delta': '▲ 2'
+      },
+      {'title': '반도체 산업 전망', 'description': '글로벌 공급망 재편 움직임', 'delta': '▼ 1'},
+    ],
+    SearchCategory.entertainment: [
+      {'title': '신예 걸그룹 데뷔', 'description': '화려한 퍼포먼스로 주목받아', 'delta': '▲ 7'},
+      {'title': '인기 드라마 시즌2', 'description': '내년 초 제작 확정', 'delta': '▲ 3'},
+      {'title': '유명 배우 결혼', 'description': '5년 열애 끝 결실', 'delta': '▼ 2'},
+    ],
+    SearchCategory.sports: [
+      {'title': '월드컵 예선', 'description': '한국 대표팀 중요한 승리', 'delta': '▲ 5'},
+      {'title': 'NBA 스타 이적설', 'description': '새로운 팀과 협상 중', 'delta': '▲ 1'},
+      {'title': '올림픽 메달 전망', 'description': '기대종목 분석', 'delta': '▼ 3'},
+    ],
+    SearchCategory.economy: [
+      {'title': '금리 인상 전망', 'description': '중앙은행 정책 변화 예고', 'delta': '▲ 6'},
+      {'title': '주식시장 신기록', 'description': '코스피 사상 최고치 경신', 'delta': '▲ 2'},
+      {'title': '부동산 시장 동향', 'description': '규제 완화 효과 분석', 'delta': '▼ 1'},
+    ],
+    SearchCategory.life: [
+      {
+        'title': '겨울 건강관리법',
+        'description': '전문의가 추천하는 면역력 강화 팁',
+        'delta': '▲ 4'
+      },
+      {'title': '실내 운동 트렌드', 'description': '홈트레이닝 인기 지속', 'delta': '▲ 2'},
+      {'title': '식품 물가 동향', 'description': '장바구니 물가 비교', 'delta': '▼ 3'},
+    ],
+  };
+
   @override
   void dispose() {
     _searchController.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -175,14 +267,9 @@ class _SearchPageState extends State<SearchPage> {
 
     Widget titleWidget;
     if (searchText.isNotEmpty && titleLower.contains(searchText)) {
-      // 검색어가 있는 경우 검색어 앞부분 텍스트
       final beforeText = title.substring(0, titleLower.indexOf(searchText));
-
-      // 검색어와 일치하는 부분 텍스트
       final matchText = title.substring(titleLower.indexOf(searchText),
           titleLower.indexOf(searchText) + searchText.length);
-
-      // 검색어 뒷부분 텍스트
       final afterText =
           title.substring(titleLower.indexOf(searchText) + searchText.length);
 
@@ -271,58 +358,74 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildCategoryTabList() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppDimens.width(20)),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            _buildCategoryTab('전체', isActive: true),
-            AppSpacerH(value: AppDimens.width(10)),
-            _buildCategoryTab('뉴스'),
-            AppSpacerH(value: AppDimens.width(10)),
-            _buildCategoryTab('엔터'),
-            AppSpacerH(value: AppDimens.width(10)),
-            _buildCategoryTab('스포츠'),
-            AppSpacerH(value: AppDimens.width(10)),
-            _buildCategoryTab('경제'),
-            AppSpacerH(value: AppDimens.width(10)),
-            _buildCategoryTab('생활'),
-          ],
-        ),
+    return TabBar(
+      padding: EdgeInsets.zero,
+      controller: _tabController,
+      isScrollable: true,
+      indicatorColor: Colors.transparent,
+      dividerColor: Colors.transparent,
+      labelPadding: EdgeInsets.only(
+        right: AppDimens.width(10),
       ),
+      tabs: SearchCategory.values.map((category) {
+        return Tab(
+          iconMargin: EdgeInsets.zero,
+          child: _buildCategoryTab(
+            category.label,
+            isActive: _selectedCategory == category,
+            onTap: () {
+              setState(() => _selectedCategory = category);
+              _tabController.animateTo(SearchCategory.values.indexOf(category));
+            },
+          ),
+        );
+      }).toList(),
     );
   }
 
   Widget _buildRankList() {
     return Expanded(
-      child: ListView(
-        children: [
-          _buildRankItem(1, '인공지능 챗봇', '새로운 AI 서비스 출시로 화제', '▲ 3'),
-          _buildRankItem(2, '메타버스 콘서트', '유명 아이돌 그룹 가상 공연 예정', '▼ 1'),
-          _buildRankItem(3, '친환경 에너지', '새로운 정부 정책 발표로 관심 증가', '▲ 5'),
-          _buildRankItem(4, '우주 탐사 미션', '민간 기업의 화성 탐사 계획 공개', '▲ 2'),
-          _buildRankItem(5, '글로벌 경제 전망', '주요 기관의 2024년 경제 예측 발표', '▼ 2'),
-        ],
+      child: TabBarView(
+        controller: _tabController,
+        children: SearchCategory.values.map((category) {
+          final items = _categoryRankItems[category] ?? [];
+          return ListView.builder(
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final item = items[index];
+              return _buildRankItem(
+                index + 1,
+                item['title'] ?? '',
+                item['description'] ?? '',
+                item['delta'] ?? '',
+              );
+            },
+          );
+        }).toList(),
       ),
     );
   }
 
-  Widget _buildCategoryTab(String text, {bool isActive = false}) {
-    return Container(
-      decoration: BoxDecoration(
-        color: isActive ? AppColor.blue400 : AppColor.graymodern800,
-        borderRadius: BorderRadius.circular(AppDimens.radius(16)),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: AppDimens.width(12), vertical: AppDimens.height(4)),
+  Widget _buildCategoryTab(String text,
+      {bool isActive = false, VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: AppDimens.height(32),
+        decoration: BoxDecoration(
+          color: isActive ? AppColor.blue400 : AppColor.graymodern800,
+          borderRadius: BorderRadius.circular(AppDimens.radius(16)),
+        ),
         child: Center(
-          child: AppText(
-            text,
-            style: Theme.of(context).textTheme.textXS.copyWith(
-                  color: Colors.white,
-                ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: AppDimens.width(12), vertical: AppDimens.height(4)),
+            child: AppText(
+              text,
+              style: Theme.of(context).textTheme.textXS.copyWith(
+                    color: Colors.white,
+                  ),
+            ),
           ),
         ),
       ),
