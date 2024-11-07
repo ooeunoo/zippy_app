@@ -110,6 +110,7 @@ class _SearchPageState extends State<SearchPage> {
               });
             } else {
               _searchController.clear();
+              setState(() {}); // Trigger rebuild when cleared
             }
           },
         ),
@@ -169,6 +170,67 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildSearchItem(String image, String title, String published) {
+    final searchText = _searchController.text.toLowerCase();
+    final titleLower = title.toLowerCase();
+
+    Widget titleWidget;
+    if (searchText.isNotEmpty && titleLower.contains(searchText)) {
+      // 검색어가 있는 경우 검색어 앞부분 텍스트
+      final beforeText = title.substring(0, titleLower.indexOf(searchText));
+
+      // 검색어와 일치하는 부분 텍스트
+      final matchText = title.substring(titleLower.indexOf(searchText),
+          titleLower.indexOf(searchText) + searchText.length);
+
+      // 검색어 뒷부분 텍스트
+      final afterText =
+          title.substring(titleLower.indexOf(searchText) + searchText.length);
+
+      titleWidget = Row(
+        children: [
+          Expanded(
+            child: Wrap(
+              children: [
+                AppText(
+                  beforeText,
+                  maxLines: 2,
+                  style: Theme.of(context).textTheme.textSM.copyWith(
+                        color: Colors.white,
+                        fontWeight: AppFontWeight.medium,
+                      ),
+                ),
+                AppText(
+                  matchText,
+                  maxLines: 2,
+                  style: Theme.of(context).textTheme.textSM.copyWith(
+                        color: AppColor.blue400,
+                        fontWeight: AppFontWeight.medium,
+                      ),
+                ),
+                AppText(
+                  afterText,
+                  maxLines: 2,
+                  style: Theme.of(context).textTheme.textSM.copyWith(
+                        color: Colors.white,
+                        fontWeight: AppFontWeight.medium,
+                      ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    } else {
+      titleWidget = AppText(
+        title,
+        maxLines: 2,
+        style: Theme.of(context).textTheme.textSM.copyWith(
+              color: Colors.white,
+              fontWeight: AppFontWeight.medium,
+            ),
+      );
+    }
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -181,14 +243,7 @@ class _SearchPageState extends State<SearchPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AppText(
-                title,
-                maxLines: 2,
-                style: Theme.of(context).textTheme.textSM.copyWith(
-                      color: Colors.white,
-                      fontWeight: AppFontWeight.medium,
-                    ),
-              ),
+              titleWidget,
               AppSpacerV(value: AppDimens.height(8)),
               AppText(
                 published,
