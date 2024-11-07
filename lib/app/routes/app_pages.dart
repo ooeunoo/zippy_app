@@ -32,7 +32,7 @@ class AppPages {
         ),
         GetPage(
           name: Routes.search,
-          page: () => const SearchPage(),
+          page: () => SearchPage(),
           binding: SearchBinding(),
           transition: Transition.noTransition,
         ),

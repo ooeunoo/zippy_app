@@ -26,7 +26,6 @@ class SourceDatasourceImpl implements SourceDatasource {
       List<Map<String, dynamic>> response =
           await provider.client.from(TABLE).select(select).eq('status', true);
 
-      print('response: $response');
       List<Source> result =
           response.map((r) => SourceEntity.fromJson(r).toModel()).toList();
 
