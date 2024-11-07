@@ -3,6 +3,7 @@ import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
+import 'package:zippy/app/widgets/app_circle_image.dart';
 import 'package:zippy/app/widgets/app_header.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
@@ -18,6 +19,36 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   bool _showSearchBar = false;
   final TextEditingController _searchController = TextEditingController();
+
+  // Mock data for search results
+  final List<Map<String, String>> _searchResults = [
+    {
+      'image': "https://img.sbs.co.kr/newimg/news/20240822/201976009_1280.jpg",
+      'title':
+          '새로운 AI 기술 발전, 일상생활 변화 예고로운 AI 기술 발전, 일상생활 변화 예고로운 AI 기술 발전, 일상생활 변화 예고',
+      'published': '2024.01.15 14:30',
+    },
+    {
+      'image': "https://img.sbs.co.kr/newimg/news/20240822/201976009_1280.jpg",
+      'title': '글로벌 기업들의 메타버스 투자 확대',
+      'published': '2024.01.15 13:45',
+    },
+    {
+      'image': "https://img.sbs.co.kr/newimg/news/20240822/201976009_1280.jpg",
+      'title': '친환경 에너지 정책 새로운 전환점 맞이해',
+      'published': '2024.01.15 12:20',
+    },
+    {
+      'image': "https://img.sbs.co.kr/newimg/news/20240822/201976009_1280.jpg",
+      'title': '우주 탐사 새로운 발견, 과학계 흥분',
+      'published': '2024.01.15 11:15',
+    },
+    {
+      'image': "https://img.sbs.co.kr/newimg/news/20240822/201976009_1280.jpg",
+      'title': '2024년 경제 전망, 전문가들의 분석',
+      'published': '2024.01.15 10:30',
+    },
+  ];
 
   @override
   void dispose() {
@@ -35,25 +66,8 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _buildSearchContent() {
-    return Container(); // 검색 결과를 표시할 위젯 구현 예정
-  }
-
-  Widget _buildRankContent() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildLastUpdateText(),
-        AppSpacerV(value: AppDimens.height(20)),
-        _buildCategoryTabList(),
-        AppSpacerV(value: AppDimens.height(20)),
-        _buildSearchRankList(),
-      ],
-    );
-  }
-
   PreferredSizeWidget _buildAppBar() {
-    return _showSearchBar ? _buildSearchAppBar() : _buildDefaultAppBar();
+    return _showSearchBar ? _buildSearchAppBar() : _buildRankAppBar();
   }
 
   AppBar _buildSearchAppBar() {
@@ -82,6 +96,9 @@ class _SearchPageState extends State<SearchPage> {
           border: InputBorder.none,
         ),
         autofocus: true,
+        onChanged: (value) {
+          setState(() {}); // Trigger rebuild when search text changes
+        },
       ),
       actions: [
         IconButton(
@@ -100,7 +117,7 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  AppHeader _buildDefaultAppBar() {
+  AppHeader _buildRankAppBar() {
     return AppHeader(
       title: AppText(
         '실시간 검색 순위',
@@ -117,6 +134,70 @@ class _SearchPageState extends State<SearchPage> {
             });
           },
           icon: const Icon(Icons.search, color: AppColor.gray100),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSearchContent() {
+    return ListView.separated(
+      padding: EdgeInsets.all(AppDimens.width(20)),
+      itemCount: _searchResults.length,
+      separatorBuilder: (context, index) =>
+          AppSpacerV(value: AppDimens.height(20)),
+      itemBuilder: (context, index) {
+        return _buildSearchItem(
+          _searchResults[index]['image'] ?? '',
+          _searchResults[index]['title'] ?? '',
+          _searchResults[index]['published'] ?? '',
+        );
+      },
+    );
+  }
+
+  Widget _buildRankContent() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildLastUpdateText(),
+        AppSpacerV(value: AppDimens.height(20)),
+        _buildCategoryTabList(),
+        AppSpacerV(value: AppDimens.height(20)),
+        _buildRankList(),
+      ],
+    );
+  }
+
+  Widget _buildSearchItem(String image, String title, String published) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: AppDimens.height(2)),
+          child: AppCircleImage(image),
+        ),
+        AppSpacerH(value: AppDimens.width(10)),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AppText(
+                title,
+                maxLines: 2,
+                style: Theme.of(context).textTheme.textSM.copyWith(
+                      color: Colors.white,
+                      fontWeight: AppFontWeight.medium,
+                    ),
+              ),
+              AppSpacerV(value: AppDimens.height(8)),
+              AppText(
+                published,
+                style: Theme.of(context).textTheme.textXS.copyWith(
+                      color: AppColor.gray400,
+                    ),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -158,15 +239,15 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _buildSearchRankList() {
+  Widget _buildRankList() {
     return Expanded(
       child: ListView(
         children: [
-          _buildSearchRankItem(1, '인공지능 챗봇', '새로운 AI 서비스 출시로 화제', '▲ 3'),
-          _buildSearchRankItem(2, '메타버스 콘서트', '유명 아이돌 그룹 가상 공연 예정', '▼ 1'),
-          _buildSearchRankItem(3, '친환경 에너지', '새로운 정부 정책 발표로 관심 증가', '▲ 5'),
-          _buildSearchRankItem(4, '우주 탐사 미션', '민간 기업의 화성 탐사 계획 공개', '▲ 2'),
-          _buildSearchRankItem(5, '글로벌 경제 전망', '주요 기관의 2024년 경제 예측 발표', '▼ 2'),
+          _buildRankItem(1, '인공지능 챗봇', '새로운 AI 서비스 출시로 화제', '▲ 3'),
+          _buildRankItem(2, '메타버스 콘서트', '유명 아이돌 그룹 가상 공연 예정', '▼ 1'),
+          _buildRankItem(3, '친환경 에너지', '새로운 정부 정책 발표로 관심 증가', '▲ 5'),
+          _buildRankItem(4, '우주 탐사 미션', '민간 기업의 화성 탐사 계획 공개', '▲ 2'),
+          _buildRankItem(5, '글로벌 경제 전망', '주요 기관의 2024년 경제 예측 발표', '▼ 2'),
         ],
       ),
     );
@@ -193,7 +274,7 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _buildSearchRankItem(
+  Widget _buildRankItem(
       int rank, String title, String description, String delta) {
     return Container(
       margin: EdgeInsets.symmetric(
@@ -206,8 +287,8 @@ class _SearchPageState extends State<SearchPage> {
       child: Row(
         children: [
           _buildRankNumber(rank),
-          AppSpacerH(value: AppDimens.width(10)),
-          _buildSearchItemContent(title, description),
+          AppSpacerH(value: AppDimens.width(20)),
+          _buildRankItemContent(title, description),
           _buildDeltaIndicator(delta),
         ],
       ),
@@ -227,11 +308,10 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _buildSearchItemContent(String title, String description) {
+  Widget _buildRankItemContent(String title, String description) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           AppText(
             title,
@@ -255,7 +335,6 @@ class _SearchPageState extends State<SearchPage> {
     return AppText(
       delta,
       style: Theme.of(context).textTheme.textXS.copyWith(
-            fontFamily: 'Arial',
             fontSize: 14,
             color: delta.startsWith('▲') ? AppColor.blue400 : AppColor.rose400,
           ),
