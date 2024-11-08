@@ -1,8 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:zippy/data/entity/bookmark.entity.dart';
 import 'package:zippy/data/entity/cotent_type.entity.dart';
-import 'package:zippy/domain/model/article.model.dart';
 
 @immutable
 class ContentType extends Equatable {

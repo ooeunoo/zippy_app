@@ -18,7 +18,7 @@ class Article extends Equatable {
   final String? summaryEn;
   // final String chatConversation;
   // final String embedding;
-  final List<dynamic> attachments;
+  final List<dynamic>? attachments;
   final List<String>? keyPoints;
   final List<String>? keyPointsEn;
   final List<String>? keywords;
@@ -46,7 +46,7 @@ class Article extends Equatable {
     this.summaryEn,
     // required this.chatConversation,
     // required this.embedding,
-    required this.attachments,
+    this.attachments,
     this.keyPoints,
     this.keyPointsEn,
     this.keywords,

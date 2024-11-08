@@ -21,7 +21,7 @@ class ArticleEntity extends Equatable {
   final String? summary_en;
   // final String chat_conversation;
   // final String embedding;
-  final List<dynamic> attachments;
+  final List<dynamic>? attachments;
   final List<String>? keyPoints;
   final List<String>? keyPoints_en;
   final List<String>? keywords;
@@ -47,7 +47,7 @@ class ArticleEntity extends Equatable {
     this.summary_en,
     // required this.chat_conversation,
     // required this.embedding,
-    required this.attachments,
+    this.attachments,
     this.keyPoints,
     this.keyPoints_en,
     this.keywords,
@@ -72,7 +72,6 @@ class ArticleEntity extends Equatable {
       // summary,
       // chat_conversation,
       // embedding,
-      attachments,
       // keyPoints,
       // keywords,
       // keywords_en,

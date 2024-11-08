@@ -208,16 +208,11 @@ class _ZippyArticleCommentState extends State<ZippyArticleComment> {
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: AppColor.graymodern800),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                AppText(
-                  "🔒 로그인 후 댓글을 작성할 수 있습니다",
-                  style: Theme.of(context).textTheme.textMD.copyWith(
-                        color: AppColor.graymodern400,
-                      ),
-                ),
-              ],
+            child: AppText(
+              "🔒 로그인 후 댓글을 작성할 수 있습니다",
+              style: Theme.of(context).textTheme.textMD.copyWith(
+                    color: AppColor.graymodern400,
+                  ),
             ),
           ),
         ),

@@ -93,7 +93,7 @@ class BoardController extends GetxService {
     }
   }
 
-  Future<void> bookmarkArticle(Article article) async {
+  Future<void> onHandleBookmarkArticle(Article article) async {
     UserBookmarkEntity entity = UserBookmark(
       id: article.id!,
       title: article.title,
@@ -109,16 +109,12 @@ class BoardController extends GetxService {
     }
   }
 
-  Future<void> shareArticle(Article article) async {
+  Future<void> onHandleShareArticle(Article article) async {
     await toShare(article.title, article.link);
     await _createInteraction(article.id!, InteractionType.Share);
   }
 
-  Future<void> commentArticle(Article article) async {}
-
-  Future<void> reportArticle(Article article) async {}
-
-  Future<void> onOpenMenu(Article article) async {
+  Future<void> onHandleOpenMenu(Article article) async {
     onHeavyVibration();
     Get.bottomSheet(BottomExtensionMenu(
       article: article,
@@ -145,7 +141,7 @@ class BoardController extends GetxService {
     ));
   }
 
-  void jumpToArticle(int index) {
+  void onHandleJumpToArticle(int index) {
     pageController.animateToPage(
       index,
       duration: const Duration(milliseconds: 300), // 애니메이션 시간
@@ -157,7 +153,7 @@ class BoardController extends GetxService {
     return userBookmarks.any((bookmark) => bookmark.id == itemId);
   }
 
-  void changeViewType(ArticleViewType type) {
+  void onHandleChangeViewType(ArticleViewType type) {
     currentViewType.value = type;
   }
 
@@ -175,10 +171,10 @@ class BoardController extends GetxService {
 
   Future<void> onHandleCreateArticleComment(
       CreateArticleCommentParams params) async {
-    final result = await createArticleComment.execute(params);
+    await createArticleComment.execute(params);
   }
 
-  onChangedArticle(int curPageIndex) {
+  onHandleChangedArticle(int curPageIndex) {
     if (curPageIndex < prevPageIndex.value) return;
     int credit = admobService.useAdContentCredits();
     NativeAd? nativeAd = admobService.nativeAd.value;
@@ -195,7 +191,7 @@ class BoardController extends GetxService {
     prevPageIndex.value = curPageIndex;
   }
 
-  Future<void> onClickArticle(Article article) async {
+  Future<void> onHandleClickArticle(Article article) async {
     if (article.isAd) return;
 
     await _handleInterstitialAd();
@@ -228,7 +224,7 @@ class BoardController extends GetxService {
                     article: article,
                     handleUpdateUserInteraction: handleUpdateInteraction,
                     viewType: currentViewType.value, // 현재 뷰 타입 전달
-                    onViewTypeChanged: changeViewType, // 상태 변경 콜백 전달
+                    onViewTypeChanged: onHandleChangeViewType, // 상태 변경 콜백 전달
                   ),
                 )),
           );
@@ -237,7 +233,7 @@ class BoardController extends GetxService {
     );
   }
 
-  refreshItem() {
+  onHandlerefreshArticle() {
     isLoadingContents.value = true;
     subscribeArticles
         .execute(userSubscriptions)
@@ -335,10 +331,10 @@ class BoardController extends GetxService {
     // _listenUserSubscriptions();
     // _listenUser();
 
-    await refreshItem();
+    await onHandlerefreshArticle();
 
     ever(userSubscriptions, (v) {
-      refreshItem();
+      onHandlerefreshArticle();
     });
   }
 

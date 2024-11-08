@@ -83,7 +83,7 @@ class _BoardPageState extends State<BoardPage> {
                                         ),
                               ),
                               onTap: () {
-                                controller.jumpToArticle(index);
+                                controller.onHandleJumpToArticle(index);
                                 Navigator.pop(context);
                               },
                             ),
@@ -166,15 +166,16 @@ class _BoardPageState extends State<BoardPage> {
                 displacement: 50,
                 strokeWidth: 3,
                 onRefresh: () async {
-                  await controller.refreshItem();
+                  await controller.onHandlerefreshArticle();
                 },
                 child: PageView.builder(
                   scrollDirection: Axis.vertical,
                   pageSnapping: true, // 페이지 스냅 효과 유지
                   dragStartBehavior: DragStartBehavior.start,
                   controller: controller.pageController,
-                  onPageChanged: (int pageIndex) => controller.onChangedArticle(
-                      pageIndex), // jumpToArticle 대신 onChangedArticle 사용
+                  onPageChanged: (int pageIndex) =>
+                      controller.onHandleChangedArticle(
+                          pageIndex), // onHandleJumpToArticle 대신 onHandleChangedArticle 사용
                   physics: const BouncingScrollPhysics(
                     // 스크롤 물리 효과 추가
                     parent: AlwaysScrollableScrollPhysics(),
@@ -196,16 +197,17 @@ class _BoardPageState extends State<BoardPage> {
                         bool isBookmarked =
                             controller.isBookmarked(article.id!);
                         return GestureDetector(
-                          onTap: () => controller.onClickArticle(article),
+                          onTap: () => controller.onHandleClickArticle(article),
                           child: ZippyArticleCard(
                             article: article,
                             source: source,
                             isBookMarked: isBookmarked,
-                            bookmarkArticle: controller.bookmarkArticle,
-                            shareArticle: controller.shareArticle,
-                            commentArticle: controller.commentArticle,
-                            reportArticle: controller.reportArticle,
-                            openMenu: () => controller.onOpenMenu(article),
+                            onHandleBookmarkArticle:
+                                controller.onHandleBookmarkArticle,
+                            onHandleShareArticle:
+                                controller.onHandleShareArticle,
+                            openMenu: () =>
+                                controller.onHandleOpenMenu(article),
                           ),
                         );
                       }

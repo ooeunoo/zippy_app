@@ -1,5 +1,6 @@
 import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/services/auth.service.dart';
+import 'package:zippy/app/services/content_type.service.dart';
 import 'package:zippy/data/providers/kakao.provider.dart';
 import 'package:zippy/data/providers/supabase.provider.dart';
 import 'package:zippy/data/sources/app_metadata.source.dart';
@@ -8,6 +9,7 @@ import 'package:zippy/data/sources/article_comment.source.dart';
 import 'package:zippy/data/sources/auth.source.dart';
 import 'package:zippy/data/sources/bookmark.source.dart';
 import 'package:zippy/data/sources/content_type.source.dart';
+import 'package:zippy/data/sources/keyword_rank_snapshot.source.dart';
 import 'package:zippy/data/sources/source.source.dart';
 import 'package:zippy/data/sources/platform.source.dart';
 import 'package:zippy/data/sources/user.source.dart';
@@ -20,6 +22,7 @@ import 'package:zippy/domain/repositories/article_comment.repository.dart';
 import 'package:zippy/domain/repositories/auth.repository.dart';
 import 'package:zippy/domain/repositories/bookmark.repository.dart';
 import 'package:zippy/domain/repositories/content_type.repository.dart';
+import 'package:zippy/domain/repositories/keyword_rank_snapshot.repository.dart';
 import 'package:zippy/domain/repositories/source.repository.dart';
 import 'package:zippy/domain/repositories/platform.repository.dart';
 import 'package:zippy/domain/repositories/user.repository.dart';
@@ -28,6 +31,7 @@ import 'package:zippy/domain/repositories/user_category.repository.dart';
 import 'package:get/get.dart';
 import 'package:zippy/domain/repositories/user_interaction.repository.dart';
 import 'package:zippy/domain/usecases/get_app_metadata.usecase.dart';
+import 'package:zippy/domain/usecases/get_content_types.usecase.dart';
 import 'package:zippy/domain/usecases/get_current_user.usecase.dart';
 import 'package:zippy/domain/usecases/logout.usecase.dart';
 import 'package:zippy/domain/usecases/subscribe_auth_status.usecase.dart';
@@ -50,11 +54,6 @@ class ZippyBindings implements Bindings {
     Get.put<KakaoProvider>(KakaoProvider(), permanent: true);
   }
 
-  _initService() {
-    Get.put<AdmobService>(AdmobService(), permanent: true);
-    Get.put<AuthService>(AuthService(), permanent: true);
-  }
-
   void _initDatasource() {
     Get.lazyPut<AppMetadataDatasource>(() => AppMetadataDatasourceImpl());
     Get.lazyPut<ArticleDatasource>(() => ArticleDatasourceImpl());
@@ -70,6 +69,8 @@ class ZippyBindings implements Bindings {
     Get.lazyPut<UserDatasource>(() => UserDatasourceImpl());
     Get.lazyPut<ContentTypeDatasource>(() => ContentTypeDatasourceImpl());
     Get.lazyPut<ArticleCommentDatasource>(() => ArticleCommentDatasourceImpl());
+    Get.lazyPut<KeywordRankSnapshotDatasource>(
+        () => KeywordRankSnapshotDatasourceImpl());
   }
 
   void _initRepository() {
@@ -91,6 +92,8 @@ class ZippyBindings implements Bindings {
         () => ContentTypeRepositoryImpl(Get.find()));
     Get.lazyPut<ArticleCommentRepository>(
         () => ArticleCommentRepositoryImpl(Get.find()));
+    Get.lazyPut<KeywordRankSnapshotRepository>(
+        () => KeywordRankSnapshotRepositoryImpl(Get.find()));
   }
 
   void _initUsecase() {
@@ -98,6 +101,13 @@ class ZippyBindings implements Bindings {
     Get.lazyPut<UpdateAppMetadata>(() => UpdateAppMetadata(Get.find()));
     Get.lazyPut<GetCurrentUser>(() => GetCurrentUser(Get.find()));
     Get.lazyPut<SubscribeAuthStatus>(() => SubscribeAuthStatus(Get.find()));
+    Get.lazyPut<GetContentTypes>(() => GetContentTypes());
     Get.lazyPut<Logout>(() => Logout(Get.find()));
+  }
+
+  _initService() {
+    Get.put<AdmobService>(AdmobService(), permanent: true);
+    Get.put<AuthService>(AuthService(), permanent: true);
+    Get.put<ContentTypeService>(ContentTypeService(), permanent: true);
   }
 }

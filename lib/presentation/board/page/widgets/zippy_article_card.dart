@@ -19,10 +19,8 @@ class ZippyArticleCard extends GetView<BoardController> {
   final Article article;
   final Source? source;
   final bool isBookMarked;
-  final Function(Article article) bookmarkArticle;
-  final Function(Article article) shareArticle;
-  final Function(Article article) commentArticle;
-  final Function(Article article) reportArticle;
+  final Function(Article article) onHandleBookmarkArticle;
+  final Function(Article article) onHandleShareArticle;
   final VoidCallback openMenu;
 
   const ZippyArticleCard({
@@ -30,10 +28,8 @@ class ZippyArticleCard extends GetView<BoardController> {
     required this.source,
     required this.article,
     required this.isBookMarked,
-    required this.bookmarkArticle,
-    required this.shareArticle,
-    required this.commentArticle,
-    required this.reportArticle,
+    required this.onHandleBookmarkArticle,
+    required this.onHandleShareArticle,
     required this.openMenu,
   });
 
@@ -111,7 +107,7 @@ class ZippyArticleCard extends GetView<BoardController> {
                         padding: EdgeInsets.zero,
                         splashColor: Colors.transparent,
                         highlightColor: Colors.transparent,
-                        onPressed: () => bookmarkArticle(article),
+                        onPressed: () => onHandleBookmarkArticle(article),
                         icon: Icon(
                           Icons.bookmark,
                           color: isBookMarked ? AppColor.brand600 : null,

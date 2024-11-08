@@ -8,7 +8,7 @@ import 'package:zippy/presentation/subscription/controller/subscription.controll
 class SubscriptionBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<GetContentTypes>(() => GetContentTypes(Get.find()));
+    Get.lazyPut<GetContentTypes>(() => GetContentTypes());
     Get.lazyPut<CreateUserSubscription>(
         () => CreateUserSubscription(Get.find()));
     Get.lazyPut<DeleteUserSubscription>(
