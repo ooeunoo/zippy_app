@@ -42,6 +42,9 @@ class AuthService extends GetxService {
         Get.offAllNamed(Routes.base);
       }
     });
+    ever(currentUser, (user) {
+      print(user);
+    });
   }
 
   Future<void> _loadCurrentUser() async {

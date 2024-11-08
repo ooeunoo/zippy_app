@@ -13,15 +13,19 @@ import 'package:zippy/domain/enum/article_view_type.enum.dart';
 import 'package:zippy/domain/enum/interaction_type.enum.dart';
 import 'package:zippy/domain/model/ad_content.model.dart';
 import 'package:zippy/domain/model/article.model.dart';
+import 'package:zippy/domain/model/article_comment.model.dart';
+import 'package:zippy/domain/model/params/create_article_comment.params.dart';
 import 'package:zippy/domain/model/params/create_user_interaction.params.dart';
 import 'package:zippy/domain/model/params/update_user_interaction.params.dart';
 import 'package:zippy/domain/model/source.model.dart';
 import 'package:zippy/domain/model/platform.model.dart';
 import 'package:zippy/domain/model/user_bookmark.model.dart';
 import 'package:zippy/domain/model/user_subscription.model.dart';
+import 'package:zippy/domain/usecases/create_article_comment.usecase.dart';
 import 'package:zippy/domain/usecases/create_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/create_user_interaction.usecase.dart';
 import 'package:zippy/domain/usecases/delete_user_bookmark.usecase.dart';
+import 'package:zippy/domain/usecases/get_article_comments.usecase.dart';
 import 'package:zippy/domain/usecases/get_articles.usecase.dart';
 import 'package:zippy/domain/usecases/get_platforms.usecase.dart';
 import 'package:zippy/domain/usecases/get_sources.usecase.dart';
@@ -52,6 +56,8 @@ class BoardController extends GetxService {
   final GetUserSubscriptions getUserSubscriptions = Get.find();
   final CreateUserInteraction createUserInteraction = Get.find();
   final UpdateUserInteraction updateUserInteraction = Get.find();
+  final GetArticleComments getArticleComments = Get.find();
+  final CreateArticleComment createArticleComment = Get.find();
 
   Rx<int> prevPageIndex = Rx<int>(0);
   PageController pageController = PageController(
@@ -153,6 +159,23 @@ class BoardController extends GetxService {
 
   void changeViewType(ArticleViewType type) {
     currentViewType.value = type;
+  }
+
+  Future<List<ArticleComment>> onHandleGetArticleComments(int articleId) async {
+    final result = await getArticleComments.execute(articleId);
+    return result.fold((failure) {
+      if (failure == ServerFailure()) {
+        error.value = "Error Fetching Comments!";
+      }
+      return [];
+    }, (data) {
+      return data;
+    });
+  }
+
+  Future<void> onHandleCreateArticleComment(
+      CreateArticleCommentParams params) async {
+    final result = await createArticleComment.execute(params);
   }
 
   onChangedArticle(int curPageIndex) {

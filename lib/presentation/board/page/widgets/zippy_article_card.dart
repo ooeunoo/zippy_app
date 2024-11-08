@@ -123,19 +123,11 @@ class ZippyArticleCard extends GetView<BoardController> {
                             padding: EdgeInsets.zero,
                             splashColor: Colors.transparent,
                             highlightColor: Colors.transparent,
-                            onPressed: () => showCommentBottomSheet(context, [
-                              {
-                                "userName": "사용자1",
-                                "content":
-                                    "정말 좋은 내용이네요!,정말 좋은 내용이네요!정말 좋은 내용이네요!정말 좋은 내용이네요!정말 좋은 내용이네요! 내용이네요!정말 좋은 내용이네요!정말 좋은 내용이네요 내용이네요!정말 좋은 내용이네요!정말 좋은 내용이네요 내용이네요!정말 좋은 내용이네요!정말 좋은 내용이네요 내용이네요!정말 좋은 내용이네요!정말 좋은 내용이네요",
-                                "time": "10분 전"
-                              },
-                              {
-                                "userName": "사용자2",
-                                "content": "저도 같은 생각이에요.",
-                                "time": "5분 전"
-                              }
-                            ]),
+                            onPressed: () => showCommentBottomSheet(
+                                context,
+                                article.id!,
+                                controller.onHandleGetArticleComments,
+                                controller.onHandleCreateArticleComment),
                             icon: const Icon(Icons.chat_bubble_outline),
                           ),
                           Positioned(

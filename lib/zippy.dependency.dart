@@ -4,6 +4,7 @@ import 'package:zippy/data/providers/kakao.provider.dart';
 import 'package:zippy/data/providers/supabase.provider.dart';
 import 'package:zippy/data/sources/app_metadata.source.dart';
 import 'package:zippy/data/sources/article.source.dart';
+import 'package:zippy/data/sources/article_comment.source.dart';
 import 'package:zippy/data/sources/auth.source.dart';
 import 'package:zippy/data/sources/bookmark.source.dart';
 import 'package:zippy/data/sources/content_type.source.dart';
@@ -15,6 +16,7 @@ import 'package:zippy/data/sources/user_interaction.source.dart';
 import 'package:zippy/data/sources/user_subscription.source.dart';
 import 'package:zippy/domain/repositories/app_metadata.repository.dart';
 import 'package:zippy/domain/repositories/article.repository.dart';
+import 'package:zippy/domain/repositories/article_comment.repository.dart';
 import 'package:zippy/domain/repositories/auth.repository.dart';
 import 'package:zippy/domain/repositories/bookmark.repository.dart';
 import 'package:zippy/domain/repositories/content_type.repository.dart';
@@ -67,6 +69,7 @@ class ZippyBindings implements Bindings {
         () => UserSubscriptionDatasourceImpl());
     Get.lazyPut<UserDatasource>(() => UserDatasourceImpl());
     Get.lazyPut<ContentTypeDatasource>(() => ContentTypeDatasourceImpl());
+    Get.lazyPut<ArticleCommentDatasource>(() => ArticleCommentDatasourceImpl());
   }
 
   void _initRepository() {
@@ -86,6 +89,8 @@ class ZippyBindings implements Bindings {
     Get.lazyPut<UserRepository>(() => UserRepositoryImpl(Get.find()));
     Get.lazyPut<ContentTypeRepository>(
         () => ContentTypeRepositoryImpl(Get.find()));
+    Get.lazyPut<ArticleCommentRepository>(
+        () => ArticleCommentRepositoryImpl(Get.find()));
   }
 
   void _initUsecase() {
