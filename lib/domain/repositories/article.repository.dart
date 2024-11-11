@@ -11,8 +11,6 @@ abstract class ArticleRepository {
   Future<Either<Failure, List<Article>>> getArticlesByKeyword(
       GetArticlesByKeywordParams params);
   Future<Either<Failure, Article>> getArticle(int id);
-  Future<void> upArticleViewCount(int id);
-  Future<void> upArticleReportCount(int id);
 }
 
 class ArticleRepositoryImpl implements ArticleRepository {
@@ -34,15 +32,5 @@ class ArticleRepositoryImpl implements ArticleRepository {
   @override
   Future<Either<Failure, Article>> getArticle(int id) {
     return datasource.getArticle(id);
-  }
-
-  @override
-  Future<void> upArticleViewCount(int id) {
-    return datasource.upArticleViewCount(id);
-  }
-
-  @override
-  Future<void> upArticleReportCount(int id) {
-    return datasource.upArticleReportCount(id);
   }
 }

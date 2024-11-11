@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/services/auth.service.dart';
 import 'package:zippy/domain/model/article.model.dart';
 import 'package:zippy/domain/model/keyword_rank_snaoshot.model.dart';
@@ -11,6 +12,7 @@ import 'package:zippy/domain/usecases/get_trending_keywords.usecase.dart';
 
 class AppSearchController extends GetxController {
   final AuthService authService = Get.find();
+  final ArticleService articleService = Get.find();
 
   final GetArticles getArticles = Get.find();
   final GetTrendingKeywords getTrendingKeywords = Get.find();
@@ -59,5 +61,9 @@ class AppSearchController extends GetxController {
       searchResults.assignAll(articles);
       return articles;
     });
+  }
+
+  Future<void> onHandleClickArticle(Article article) async {
+    articleService.showArticleViewModal(article);
   }
 }

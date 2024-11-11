@@ -11,8 +11,6 @@ import 'package:zippy/domain/usecases/get_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/get_user_subscriptions.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_subscriptions.usecase.dart';
-import 'package:zippy/domain/usecases/up_article_report_count.usecase.dart';
-import 'package:zippy/domain/usecases/up_article_view_count.usecase.dart';
 import 'package:zippy/domain/usecases/update_user_interaction.usecase.dart';
 import 'package:zippy/presentation/board/controller/board.controller.dart';
 
@@ -29,8 +27,6 @@ class BoardBinding implements Bindings {
     Get.lazyPut<SubscribeUserSubscriptions>(
         () => SubscribeUserSubscriptions(Get.find()));
     Get.lazyPut<GetUserSubscriptions>(() => GetUserSubscriptions(Get.find()));
-    Get.lazyPut<UpArticleViewCount>(() => UpArticleViewCount(Get.find()));
-    Get.lazyPut<UpArticleReportCount>(() => UpArticleReportCount(Get.find()));
     Get.lazyPut<CreateUserInteraction>(() => CreateUserInteraction(Get.find()));
     Get.lazyPut<UpdateUserInteraction>(() => UpdateUserInteraction(Get.find()));
     Get.lazyPut<GetArticleComments>(() => GetArticleComments());

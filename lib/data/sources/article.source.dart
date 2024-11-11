@@ -16,16 +16,6 @@ abstract class ArticleDatasource {
   Future<Either<Failure, Article>> getArticle(int id);
   Future<Either<Failure, List<Article>>> getArticlesByKeyword(
       GetArticlesByKeywordParams params);
-  Future<void> upArticleViewCount(int id);
-  Future<void> upArticleReportCount(int id);
-}
-
-enum RPC {
-  increaseViewCount('increase_view_count_of_content'),
-  increaseReportCount('increase_report_count_of_content');
-
-  const RPC(this.function);
-  final String function;
 }
 
 class ArticleDatasourceImpl implements ArticleDatasource {
@@ -48,8 +38,6 @@ class ArticleDatasourceImpl implements ArticleDatasource {
       List<Article> result =
           response.map((r) => ArticleEntity.fromJson(r).toModel()).toList();
 
-      print(params.search);
-      print(result.length);
       return Right(result);
     } catch (e) {
       print(e);
@@ -92,17 +80,5 @@ class ArticleDatasourceImpl implements ArticleDatasource {
     } catch (e) {
       return Left(ServerFailure());
     }
-  }
-
-  @override
-  Future<void> upArticleViewCount(int id) {
-    return provider.client
-        .rpc(RPC.increaseViewCount.function, params: {'content_id': id});
-  }
-
-  @override
-  Future<void> upArticleReportCount(int id) {
-    return provider.client
-        .rpc(RPC.increaseReportCount.function, params: {'content_id': id});
   }
 }

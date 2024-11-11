@@ -45,40 +45,47 @@ class BasePage extends GetView<BaseController> {
               ],
             ),
           ))),
-      body: Navigator(
-        key: Get.nestedKey(1), // 중첩 네비게이션을 위한 키
-        onGenerateRoute: (settings) {
-          switch (settings.name) {
-            case Routes.board:
-              return GetPageRoute(
-                routeName: Routes.board,
-                page: () => const BoardPage(),
-                binding: BoardBinding(),
-                transition: Transition.noTransition,
-              );
-            case Routes.search:
-              return GetPageRoute(
-                routeName: Routes.search,
-                page: () => const SearchPage(),
-                binding: SearchBinding(),
-                transition: Transition.noTransition,
-              );
-            case Routes.profile:
-              return GetPageRoute(
-                routeName: Routes.profile,
-                page: () => const ProfilePage(),
-                binding: ProfileBinding(),
-                transition: Transition.noTransition,
-              );
-            default:
-              return GetPageRoute(
-                routeName: Routes.board,
-                page: () => const BoardPage(),
-                binding: BoardBinding(),
-                transition: Transition.noTransition,
-              );
-          }
-        },
+      body: WillPopScope(
+        onWillPop: () async => false,
+        child: Navigator(
+          key: Get.nestedKey(1), // 중첩 네비게이션을 위한 키
+          onGenerateRoute: (settings) {
+            switch (settings.name) {
+              case Routes.board:
+                return GetPageRoute(
+                  routeName: Routes.board,
+                  page: () => const BoardPage(),
+                  binding: BoardBinding(),
+                  transition: Transition.noTransition,
+                  gestureWidth: (context) => 0, // Disable swipe
+                );
+              case Routes.search:
+                return GetPageRoute(
+                  routeName: Routes.search,
+                  page: () => const SearchPage(),
+                  binding: SearchBinding(),
+                  transition: Transition.noTransition,
+                  gestureWidth: (context) => 0, // Disable swipe
+                );
+              case Routes.profile:
+                return GetPageRoute(
+                  routeName: Routes.profile,
+                  page: () => const ProfilePage(),
+                  binding: ProfileBinding(),
+                  transition: Transition.noTransition,
+                  gestureWidth: (context) => 0, // Disable swipe
+                );
+              default:
+                return GetPageRoute(
+                  routeName: Routes.board,
+                  page: () => const BoardPage(),
+                  binding: BoardBinding(),
+                  transition: Transition.noTransition,
+                  gestureWidth: (context) => 0, // Disable swipe
+                );
+            }
+          },
+        ),
       ),
     );
   }

@@ -13,11 +13,13 @@ import 'package:zippy/domain/model/article.model.dart';
 class SearchContent extends StatelessWidget {
   final List<Article> searchResults;
   final TextEditingController searchController;
+  final Function(Article) onHandleClickArticle;
 
   const SearchContent({
     super.key,
     required this.searchResults,
     required this.searchController,
+    required this.onHandleClickArticle,
   });
 
   @override
@@ -28,45 +30,43 @@ class SearchContent extends StatelessWidget {
       separatorBuilder: (context, index) =>
           AppSpacerV(value: AppDimens.height(20)),
       itemBuilder: (context, index) {
-        return _buildSearchItem(
-          context,
-          searchResults[index].images[0],
-          searchResults[index].title,
-          searchResults[index].published.timeAgo(),
-        );
+        return _buildSearchItem(context, searchResults[index]);
       },
     );
   }
 
-  Widget _buildSearchItem(
-      BuildContext context, String image, String title, String published) {
+  Widget _buildSearchItem(BuildContext context, Article article) {
     final searchText = searchController.text.toLowerCase();
-    final titleLower = title.toLowerCase();
+    final titleLower = article.title.toLowerCase();
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(top: AppDimens.height(2)),
-          child: AppCircleImage(image),
-        ),
-        AppSpacerH(value: AppDimens.width(10)),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHighlightedTitle(context, title, searchText, titleLower),
-              AppSpacerV(value: AppDimens.height(8)),
-              AppText(
-                published,
-                style: Theme.of(context).textTheme.textXS.copyWith(
-                      color: AppColor.gray400,
-                    ),
-              ),
-            ],
+    return GestureDetector(
+      onTap: () => onHandleClickArticle(article),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: AppDimens.height(2)),
+            child: AppCircleImage(article.images[0]),
           ),
-        ),
-      ],
+          AppSpacerH(value: AppDimens.width(10)),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHighlightedTitle(context, article.title, searchText,
+                    article.title.toLowerCase()),
+                AppSpacerV(value: AppDimens.height(8)),
+                AppText(
+                  article.published.timeAgo(),
+                  style: Theme.of(context).textTheme.textXS.copyWith(
+                        color: AppColor.gray400,
+                      ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

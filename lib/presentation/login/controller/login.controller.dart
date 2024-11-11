@@ -2,10 +2,10 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/failures/failure.dart';
-import 'package:zippy/domain/usecases/loginin_with_kakao.usecase.dart';
+import 'package:zippy/domain/usecases/login_with_kakao.usecase.dart';
 
 class LoginController extends GetxController {
-  final LoginInWithKakao loginInWithKakao;
+  final LoginWithKakao loginInWithKakao;
 
   LoginController(this.loginInWithKakao);
 

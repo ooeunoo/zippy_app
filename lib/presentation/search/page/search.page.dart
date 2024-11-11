@@ -64,6 +64,7 @@ class _SearchPageState extends State<SearchPage> {
             ? Obx(() => SearchContent(
                   searchResults: controller.searchResults.value,
                   searchController: _searchController,
+                  onHandleClickArticle: controller.onHandleClickArticle,
                 ))
             : Obx(
                 () => RankContent(
