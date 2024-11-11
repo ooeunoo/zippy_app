@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zippy/app/extensions/datetime.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/font.dart';
@@ -7,17 +8,16 @@ import 'package:zippy/app/widgets/app_circle_image.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
+import 'package:zippy/domain/model/article.model.dart';
 
 class SearchContent extends StatelessWidget {
-  final List<Map<String, String>> searchResults;
+  final List<Article> searchResults;
   final TextEditingController searchController;
-  final BuildContext parentContext;
 
   const SearchContent({
     super.key,
     required this.searchResults,
     required this.searchController,
-    required this.parentContext,
   });
 
   @override
@@ -29,70 +29,19 @@ class SearchContent extends StatelessWidget {
           AppSpacerV(value: AppDimens.height(20)),
       itemBuilder: (context, index) {
         return _buildSearchItem(
-          searchResults[index]['image'] ?? '',
-          searchResults[index]['title'] ?? '',
-          searchResults[index]['published'] ?? '',
+          context,
+          searchResults[index].images[0],
+          searchResults[index].title,
+          searchResults[index].published.timeAgo(),
         );
       },
     );
   }
 
-  Widget _buildSearchItem(String image, String title, String published) {
+  Widget _buildSearchItem(
+      BuildContext context, String image, String title, String published) {
     final searchText = searchController.text.toLowerCase();
     final titleLower = title.toLowerCase();
-
-    Widget titleWidget;
-    if (searchText.isNotEmpty && titleLower.contains(searchText)) {
-      final beforeText = title.substring(0, titleLower.indexOf(searchText));
-      final matchText = title.substring(titleLower.indexOf(searchText),
-          titleLower.indexOf(searchText) + searchText.length);
-      final afterText =
-          title.substring(titleLower.indexOf(searchText) + searchText.length);
-
-      titleWidget = Row(
-        children: [
-          Expanded(
-            child: Wrap(
-              children: [
-                AppText(
-                  beforeText,
-                  maxLines: 2,
-                  style: Theme.of(parentContext).textTheme.textSM.copyWith(
-                        color: Colors.white,
-                        fontWeight: AppFontWeight.medium,
-                      ),
-                ),
-                AppText(
-                  matchText,
-                  maxLines: 2,
-                  style: Theme.of(parentContext).textTheme.textSM.copyWith(
-                        color: AppColor.blue400,
-                        fontWeight: AppFontWeight.medium,
-                      ),
-                ),
-                AppText(
-                  afterText,
-                  maxLines: 2,
-                  style: Theme.of(parentContext).textTheme.textSM.copyWith(
-                        color: Colors.white,
-                        fontWeight: AppFontWeight.medium,
-                      ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      );
-    } else {
-      titleWidget = AppText(
-        title,
-        maxLines: 2,
-        style: Theme.of(parentContext).textTheme.textSM.copyWith(
-              color: Colors.white,
-              fontWeight: AppFontWeight.medium,
-            ),
-      );
-    }
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,11 +55,11 @@ class SearchContent extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              titleWidget,
+              _buildHighlightedTitle(context, title, searchText, titleLower),
               AppSpacerV(value: AppDimens.height(8)),
               AppText(
                 published,
-                style: Theme.of(parentContext).textTheme.textXS.copyWith(
+                style: Theme.of(context).textTheme.textXS.copyWith(
                       color: AppColor.gray400,
                     ),
               ),
@@ -118,6 +67,47 @@ class SearchContent extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildHighlightedTitle(BuildContext context, String title,
+      String searchText, String titleLower) {
+    if (searchText.isEmpty || !titleLower.contains(searchText)) {
+      return AppText(
+        title,
+        maxLines: 2,
+        style: Theme.of(context).textTheme.textSM.copyWith(
+              color: Colors.white,
+              fontWeight: AppFontWeight.medium,
+            ),
+      );
+    }
+
+    final beforeText = title.substring(0, titleLower.indexOf(searchText));
+    final matchText = title.substring(titleLower.indexOf(searchText),
+        titleLower.indexOf(searchText) + searchText.length);
+    final afterText =
+        title.substring(titleLower.indexOf(searchText) + searchText.length);
+
+    return RichText(
+      maxLines: 2,
+      text: TextSpan(
+        style: Theme.of(context).textTheme.textSM.copyWith(
+              color: Colors.white,
+              fontWeight: AppFontWeight.medium,
+            ),
+        children: [
+          TextSpan(text: beforeText),
+          TextSpan(
+            text: matchText,
+            style: Theme.of(context).textTheme.textSM.copyWith(
+                  color: AppColor.blue400,
+                  fontWeight: AppFontWeight.medium,
+                ),
+          ),
+          TextSpan(text: afterText),
+        ],
+      ),
     );
   }
 }

@@ -16,6 +16,7 @@ import 'package:zippy/domain/model/article.model.dart';
 import 'package:zippy/domain/model/article_comment.model.dart';
 import 'package:zippy/domain/model/params/create_article_comment.params.dart';
 import 'package:zippy/domain/model/params/create_user_interaction.params.dart';
+import 'package:zippy/domain/model/params/get_aritlces.params.dart';
 import 'package:zippy/domain/model/params/update_user_interaction.params.dart';
 import 'package:zippy/domain/model/source.model.dart';
 import 'package:zippy/domain/model/platform.model.dart';
@@ -33,7 +34,6 @@ import 'package:zippy/domain/usecases/get_user_bookmark.usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zippy/domain/usecases/get_user_subscriptions.usecase.dart';
-import 'package:zippy/domain/usecases/subscirbe_articles.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_subscriptions.usecase.dart';
 import 'package:zippy/domain/usecases/update_user_interaction.usecase.dart';
@@ -44,7 +44,6 @@ class BoardController extends GetxService {
   AuthService authService = Get.find<AuthService>();
   AdmobService admobService = Get.find<AdmobService>();
 
-  final SubscribeArticles subscribeArticles = Get.find();
   final SubscribeUserBookmark subscribeUserBookmark = Get.find();
   final SubscribeUserSubscriptions subscribeUserSubscriptions = Get.find();
   final GetPlatforms getPlatforms = Get.find();
@@ -233,13 +232,20 @@ class BoardController extends GetxService {
     );
   }
 
-  onHandlerefreshArticle() {
+  Future<void> onHandlerefreshArticle() async {
     isLoadingContents.value = true;
-    subscribeArticles
-        .execute(userSubscriptions)
-        .listen((List<Article> newArticles) {
-      articles.bindStream(Stream.value(shuffle(newArticles)));
-    });
+    final result = await getArticles.execute(const GetArticlesParams(
+      limit: 10,
+    ));
+    result.fold(
+      (failure) {
+        return [];
+      },
+      (data) {
+        articles.assignAll(data);
+        articles.refresh();
+      },
+    );
 
     isLoadingContents.value = false;
   }

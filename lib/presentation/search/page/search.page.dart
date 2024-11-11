@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:zippy/app/services/content_type.service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
@@ -17,69 +16,23 @@ class SearchPage extends StatefulWidget {
   State<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage>
-    with SingleTickerProviderStateMixin {
+class _SearchPageState extends State<SearchPage> {
   final AppSearchController controller = Get.find();
-  final ContentTypeService contentTypeService = Get.find();
-  bool _showSearchBar = false;
   final TextEditingController _searchController = TextEditingController();
-  late TabController _tabController;
-  RxInt selectedContentTypeId = 0.obs; // 0은 전체를 의미
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(
-      length: contentTypeService.contentTypes.length + 1,
-      vsync: this,
-    );
-    _tabController.addListener(() {
-      if (!_tabController.indexIsChanging) {
-        // index가 0이면 전체(null), 그 외에는 해당 contentType
-        final selectedContentType = _tabController.index == 0
-            ? null
-            : contentTypeService.contentTypes[_tabController.index - 1];
-        controller.onHandleTrendingKeywords(selectedContentType);
-        selectedContentTypeId.value = selectedContentType?.id ?? 0;
-      }
-    });
-  }
-
-  // Mock data for search results
-  final List<Map<String, String>> _searchResults = [
-    {
-      'image': "https://img.sbs.co.kr/newimg/news/20240822/201976009_1280.jpg",
-      'title':
-          '새로운 AI 기술 발전, 일상생활 변화 예고로운 AI 기술 발전, 일상생활 변화 예고로운 AI 기술 발전, 일상생활 변화 예고',
-      'published': '2024.01.15 14:30',
-    },
-    {
-      'image': "https://img.sbs.co.kr/newimg/news/20240822/201976009_1280.jpg",
-      'title': '글로벌 기업들의 메타버스 투자 확대',
-      'published': '2024.01.15 13:45',
-    },
-    {
-      'image': "https://img.sbs.co.kr/newimg/news/20240822/201976009_1280.jpg",
-      'title': '친환경 에너지 정책 새로운 전환점 맞이해',
-      'published': '2024.01.15 12:20',
-    },
-    {
-      'image': "https://img.sbs.co.kr/newimg/news/20240822/201976009_1280.jpg",
-      'title': '우주 탐사 새로운 발견, 과학계 흥분',
-      'published': '2024.01.15 11:15',
-    },
-    {
-      'image': "https://img.sbs.co.kr/newimg/news/20240822/201976009_1280.jpg",
-      'title': '2024년 경제 전망, 전문가들의 분석',
-      'published': '2024.01.15 10:30',
-    },
-  ];
+  bool _showSearchBar = false;
 
   @override
   void dispose() {
     _searchController.dispose();
-    _tabController.dispose();
     super.dispose();
+  }
+
+  void _handleSearch(String keyword) {
+    setState(() {
+      _showSearchBar = true;
+      _searchController.text = keyword;
+    });
+    controller.onHandleFetchArticlesByKeyword(keyword);
   }
 
   @override
@@ -88,18 +41,16 @@ class _SearchPageState extends State<SearchPage>
       appBar: _buildAppBar(),
       body: SafeArea(
         child: _showSearchBar
-            ? SearchContent(
-                searchResults: _searchResults,
-                searchController: _searchController,
-                parentContext: context,
-              )
-            : Obx(() => RankContent(
-                  tabController: _tabController,
-                  selectedContentTypeId: selectedContentTypeId.value,
-                  contentTypes: contentTypeService.contentTypes,
-                  trendingKeywords: controller.trendingKeywordsByContentType,
-                  parentContext: context,
-                )),
+            ? Obx(() => SearchContent(
+                  searchResults: controller.searchResults.value,
+                  searchController: _searchController,
+                ))
+            : Obx(
+                () => RankContent(
+                  trendingKeywords: controller.trendingKeywords.value,
+                  onKeywordTap: _handleSearch,
+                ),
+              ),
       ),
     );
   }

@@ -9,7 +9,6 @@ import 'package:zippy/domain/usecases/get_sources.usecase.dart';
 import 'package:zippy/domain/usecases/get_platforms.usecase.dart';
 import 'package:zippy/domain/usecases/get_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/get_user_subscriptions.usecase.dart';
-import 'package:zippy/domain/usecases/subscirbe_articles.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_subscriptions.usecase.dart';
 import 'package:zippy/domain/usecases/up_article_report_count.usecase.dart';
@@ -20,7 +19,6 @@ import 'package:zippy/presentation/board/controller/board.controller.dart';
 class BoardBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<SubscribeArticles>(() => SubscribeArticles(Get.find()));
     Get.lazyPut<GetPlatforms>(() => GetPlatforms(Get.find()));
     Get.lazyPut<GetSources>(() => GetSources());
     Get.lazyPut<GetArticles>(() => GetArticles(Get.find()));

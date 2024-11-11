@@ -2,13 +2,15 @@ import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/data/sources/article.source.dart';
 import 'package:zippy/domain/model/article.model.dart';
 import 'package:zippy/domain/model/params/get_aritlces.params.dart';
+import 'package:zippy/domain/model/params/get_articles_by_keyword.params.dart';
 import 'package:zippy/domain/model/user_subscription.model.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class ArticleRepository {
   Future<Either<Failure, List<Article>>> getArticles(GetArticlesParams params);
+  Future<Either<Failure, List<Article>>> getArticlesByKeyword(
+      GetArticlesByKeywordParams params);
   Future<Either<Failure, Article>> getArticle(int id);
-  Stream<List<Article>> subscribeArticles(List<UserSubscription> subscriptions);
   Future<void> upArticleViewCount(int id);
   Future<void> upArticleReportCount(int id);
 }
@@ -24,14 +26,14 @@ class ArticleRepositoryImpl implements ArticleRepository {
   }
 
   @override
-  Future<Either<Failure, Article>> getArticle(int id) {
-    return datasource.getArticle(id);
+  Future<Either<Failure, List<Article>>> getArticlesByKeyword(
+      GetArticlesByKeywordParams params) {
+    return datasource.getArticlesByKeyword(params);
   }
 
   @override
-  Stream<List<Article>> subscribeArticles(
-      List<UserSubscription> subscriptions) {
-    return datasource.subscribeArticles(subscriptions);
+  Future<Either<Failure, Article>> getArticle(int id) {
+    return datasource.getArticle(id);
   }
 
   @override

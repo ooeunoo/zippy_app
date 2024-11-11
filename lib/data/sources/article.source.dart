@@ -7,14 +7,15 @@ import 'package:zippy/domain/model/article.model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
 import 'package:zippy/domain/model/params/get_aritlces.params.dart';
-import 'package:zippy/domain/model/user_subscription.model.dart';
+import 'package:zippy/domain/model/params/get_articles_by_keyword.params.dart';
 
 String TABLE = 'articles';
 
 abstract class ArticleDatasource {
   Future<Either<Failure, List<Article>>> getArticles(GetArticlesParams params);
   Future<Either<Failure, Article>> getArticle(int id);
-  Stream<List<Article>> subscribeArticles(List<UserSubscription> subscriptions);
+  Future<Either<Failure, List<Article>>> getArticlesByKeyword(
+      GetArticlesByKeywordParams params);
   Future<void> upArticleViewCount(int id);
   Future<void> upArticleReportCount(int id);
 }
@@ -36,9 +37,31 @@ class ArticleDatasourceImpl implements ArticleDatasource {
     try {
       List<Map<String, dynamic>> response = await provider.client
           .from(TABLE)
-          .select('*')
+          .select('*, sources(*)')
           .limit(params.limit)
           .order('created_at');
+
+      List<Article> result =
+          response.map((r) => ArticleEntity.fromJson(r).toModel()).toList();
+
+      print(result.length);
+      return Right(result);
+    } catch (e) {
+      print(e);
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Article>>> getArticlesByKeyword(
+      GetArticlesByKeywordParams params) async {
+    try {
+      List<Map<String, dynamic>> response = await provider.client
+          .from(TABLE)
+          .select('*, sources(*)')
+          .contains('keywords', [params.keyword])
+          .limit(params.limit)
+          .order('published', ascending: false); // 최신순
 
       List<Article> result =
           response.map((r) => ArticleEntity.fromJson(r).toModel()).toList();
@@ -52,8 +75,11 @@ class ArticleDatasourceImpl implements ArticleDatasource {
   @override
   Future<Either<Failure, Article>> getArticle(int id) async {
     try {
-      Map<String, dynamic> response =
-          await provider.client.from(TABLE).select('*').eq('id', id).single();
+      Map<String, dynamic> response = await provider.client
+          .from(TABLE)
+          .select('*, sources(*)')
+          .eq('id', id)
+          .single();
 
       Article result = ArticleEntity.fromJson(response).toModel();
 
@@ -61,23 +87,6 @@ class ArticleDatasourceImpl implements ArticleDatasource {
     } catch (e) {
       return Left(ServerFailure());
     }
-  }
-
-  @override
-  Stream<List<Article>> subscribeArticles(
-      List<UserSubscription> subscriptions) {
-    List<int> sourceIds = [];
-    for (UserSubscription subscription in subscriptions) {
-      // sourceIds.add(subscription.type);
-    }
-    return provider.client
-        .from(TABLE)
-        .stream(primaryKey: ['id'])
-        .order('created_at', ascending: false)
-        .limit(1000)
-        .map((data) => data.map((item) {
-              return ArticleEntity.fromJson(item).toModel();
-            }).toList());
   }
 
   @override

@@ -18,6 +18,5 @@ class ContentTypeService extends GetxService {
     result.fold((l) => null, (r) {
       contentTypes.value = r;
     });
-    print(contentTypes.toList());
   }
 }

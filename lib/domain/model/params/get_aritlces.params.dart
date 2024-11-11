@@ -4,17 +4,17 @@ import 'package:zippy/domain/model/user_subscription.model.dart';
 
 @immutable
 class GetArticlesParams extends Equatable {
-  final List<UserSubscription> subscriptions;
+  final List<UserSubscription>? subscriptions;
   final int limit;
 
   const GetArticlesParams({
-    required this.subscriptions,
+    this.subscriptions,
     this.limit = 1000,
   });
 
   @override
   List<Object> get props {
-    return [subscriptions];
+    return [];
   }
 
   Map<String, dynamic> toJson() =>
@@ -23,11 +23,5 @@ class GetArticlesParams extends Equatable {
   @override
   String toString() {
     return toJson().toString();
-  }
-
-  getSubscriptionContentTypes() {
-    return subscriptions
-        .map((subscription) => subscription.contentTypeId)
-        .toList();
   }
 }

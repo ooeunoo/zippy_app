@@ -2,26 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
+import 'package:zippy/app/widgets/app_marquee_text.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
-import 'package:zippy/domain/model/content_type.model.dart';
 import 'package:zippy/domain/model/keyword_rank_snaoshot.model.dart';
 
 class RankContent extends StatelessWidget {
-  final TabController tabController;
-  final int selectedContentTypeId;
-  final List<ContentType> contentTypes;
-  final Map<int, List<KeywordRankSnapshot>> trendingKeywords;
-  final BuildContext parentContext;
+  final List<KeywordRankSnapshot> trendingKeywords;
+  final Function(String) onKeywordTap; // 추가
 
   const RankContent({
     super.key,
-    required this.tabController,
-    required this.selectedContentTypeId,
-    required this.contentTypes,
     required this.trendingKeywords,
-    required this.parentContext,
+    required this.onKeywordTap,
   });
 
   @override
@@ -29,146 +23,74 @@ class RankContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildLastUpdateText(),
-        AppSpacerV(value: AppDimens.height(20)),
-        _buildCategoryTabList(),
-        AppSpacerV(value: AppDimens.height(20)),
-        _buildRankList(),
+        // _buildLastUpdateText(context),
+        // AppSpacerV(value: AppDimens.height(10)),
+        _buildRankList(context),
       ],
     );
   }
 
-  Widget _buildLastUpdateText() {
+  Widget _buildLastUpdateText(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppDimens.width(20)),
       child: AppText(
         '5분 전 업데이트',
-        style: Theme.of(parentContext).textTheme.textXS.copyWith(
+        style: Theme.of(context).textTheme.textXS.copyWith(
               color: AppColor.gray400,
             ),
       ),
     );
   }
 
-  Widget _buildCategoryTabList() {
-    return TabBar(
-        padding: EdgeInsets.zero,
-        controller: tabController,
-        isScrollable: true,
-        indicatorColor: Colors.transparent,
-        dividerColor: Colors.transparent,
-        labelPadding: EdgeInsets.only(
-          right: AppDimens.width(10),
-        ),
-        tabs: [
-          Tab(
-            iconMargin: EdgeInsets.zero,
-            child: _buildCategoryTab(
-              '전체',
-              isActive: selectedContentTypeId == 0,
-              onTap: () {
-                tabController.animateTo(0);
-              },
-            ),
-          ),
-          ...contentTypes.map((ContentType contentType) {
-            return Tab(
-              iconMargin: EdgeInsets.zero,
-              child: _buildCategoryTab(
-                contentType.name,
-                isActive: selectedContentTypeId == contentType.id,
-                onTap: () {
-                  tabController.animateTo(contentType.id);
-                },
-              ),
-            );
-          }).toList(),
-        ]);
-  }
-
-  Widget _buildRankList() {
+  Widget _buildRankList(BuildContext context) {
     return Expanded(
-      child: TabBarView(
-        controller: tabController,
-        children: [
-          // 전체 탭의 내용
-          _buildRankListContent(trendingKeywords[0] ?? []),
-          // 콘텐츠 타입별 내용
-          ...contentTypes.map((ContentType contentType) {
-            return _buildRankListContent(
-                trendingKeywords[contentType.id] ?? []);
-          }).toList(),
-        ],
+      child: ListView.builder(
+        itemCount: trendingKeywords.length,
+        itemBuilder: (context, index) {
+          final item = trendingKeywords[index];
+          return _buildRankItem(
+            context,
+            index + 1,
+            item.keyword,
+            item.descriptions ?? [],
+            item.rankChange,
+          );
+        },
       ),
     );
   }
 
-  Widget _buildRankListContent(List<KeywordRankSnapshot> keywords) {
-    return ListView.builder(
-      itemCount: keywords.length,
-      itemBuilder: (context, index) {
-        final item = keywords[index];
-        return _buildRankItem(
-          index + 1,
-          item.keyword,
-          item.descriptions ?? [],
-          '${item.rankChange > 0 ? "▲" : "▼"} ${item.rankChange.abs()}',
-        );
-      },
-    );
-  }
-
-  Widget _buildCategoryTab(String text,
-      {bool isActive = false, VoidCallback? onTap}) {
+  Widget _buildRankItem(BuildContext context, int rank, String title,
+      List<String> descriptions, int rankChange) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () => onKeywordTap(title),
+      behavior: HitTestBehavior.opaque,
       child: Container(
-        height: AppDimens.height(32),
+        margin: EdgeInsets.symmetric(
+            horizontal: AppDimens.width(20), vertical: AppDimens.height(8)),
+        padding: EdgeInsets.all(AppDimens.width(10)),
         decoration: BoxDecoration(
-          color: isActive ? AppColor.blue400 : AppColor.graymodern800,
-          borderRadius: BorderRadius.circular(AppDimens.radius(16)),
+          color: AppColor.graymodern900,
+          borderRadius: BorderRadius.circular(AppDimens.radius(10)),
         ),
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: AppDimens.width(12), vertical: AppDimens.height(4)),
-            child: AppText(
-              text,
-              style: Theme.of(parentContext).textTheme.textXS.copyWith(
-                    color: Colors.white,
-                  ),
-            ),
-          ),
+        child: Row(
+          children: [
+            AppSpacerH(value: AppDimens.width(10)),
+            _buildRankNumber(context, rank),
+            AppSpacerH(value: AppDimens.width(20)),
+            _buildRankItemContent(context, title, descriptions),
+            _buildDeltaIndicator(context, rankChange),
+            AppSpacerH(value: AppDimens.width(20)),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildRankItem(
-      int rank, String title, List<String> descriptions, String delta) {
-    return Container(
-      margin: EdgeInsets.symmetric(
-          horizontal: AppDimens.width(20), vertical: AppDimens.height(8)),
-      padding: EdgeInsets.all(AppDimens.width(10)),
-      decoration: BoxDecoration(
-        color: AppColor.graymodern900,
-        borderRadius: BorderRadius.circular(AppDimens.radius(10)),
-      ),
-      child: Row(
-        children: [
-          _buildRankNumber(rank),
-          AppSpacerH(value: AppDimens.width(20)),
-          _buildRankItemContent(title, descriptions),
-          _buildDeltaIndicator(delta),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRankNumber(int rank) {
+  Widget _buildRankNumber(BuildContext context, int rank) {
     return AppText(
       '$rank',
-      style: Theme.of(parentContext).textTheme.textXL.copyWith(
+      style: Theme.of(context).textTheme.textXL.copyWith(
             color: rank == 1
                 ? AppColor.orange400
                 : rank == 2
@@ -178,14 +100,15 @@ class RankContent extends StatelessWidget {
     );
   }
 
-  Widget _buildRankItemContent(String title, List<String> descriptions) {
+  Widget _buildRankItemContent(
+      BuildContext context, String title, List<String> descriptions) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppText(
             title,
-            style: Theme.of(parentContext).textTheme.textSM.copyWith(
+            style: Theme.of(context).textTheme.textMD.copyWith(
                   color: Colors.white,
                 ),
           ),
@@ -194,37 +117,34 @@ class RankContent extends StatelessWidget {
             height: AppDimens.height(20),
             child: descriptions.isEmpty
                 ? const SizedBox.shrink()
-                : _buildDescriptionMarquee(descriptions),
+                : AppMarqueeText(
+                    text: descriptions.join(', '),
+                    width: AppDimens.width(200),
+                    style: Theme.of(context).textTheme.textXS.copyWith(
+                          color: AppColor.gray400,
+                        ),
+                  ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildDescriptionMarquee(List<String> descriptions) {
-    return TweenAnimationBuilder<int>(
-      tween: IntTween(begin: 0, end: descriptions.length - 1),
-      duration: const Duration(seconds: 3),
-      builder: (context, value, child) {
-        return AppText(
-          descriptions[value],
-          style: Theme.of(parentContext).textTheme.textXS.copyWith(
-                color: AppColor.gray400,
-              ),
-        );
-      },
-      onEnd: () {
-        // Animation completed, restart with next description
-      },
-    );
-  }
-
-  Widget _buildDeltaIndicator(String delta) {
+  Widget _buildDeltaIndicator(BuildContext context, int rankChange) {
+    if (rankChange == 0) {
+      return AppText(
+        '－',
+        style: Theme.of(context).textTheme.textMD.copyWith(
+              fontSize: 14,
+              color: AppColor.gray200,
+            ),
+      );
+    }
     return AppText(
-      delta,
-      style: Theme.of(parentContext).textTheme.textXS.copyWith(
+      '${rankChange > 0 ? "▲" : "▼"} ${rankChange.abs()}',
+      style: Theme.of(context).textTheme.textMD.copyWith(
             fontSize: 14,
-            color: delta.startsWith('▲') ? AppColor.blue400 : AppColor.rose400,
+            color: rankChange > 0 ? AppColor.rose400 : AppColor.blue400,
           ),
     );
   }

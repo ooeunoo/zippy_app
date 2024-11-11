@@ -190,101 +190,118 @@ class _ZippyArticleCommentState extends State<ZippyArticleComment> {
   Widget _buildCommentInput(BuildContext context) {
     // 로그인하지 않은 경우
     if (!authService.isLoggedIn.value) {
-      return Container(
-        padding: EdgeInsets.all(AppDimens.width(20)),
-        decoration: const BoxDecoration(
-          border:
-              Border(top: BorderSide(color: AppColor.graymodern800, width: 1)),
-          color: AppColor.graymodern950,
-        ),
-        child: InkWell(
-          onTap: () => Get.to(() => const LoginPage()),
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              vertical: AppDimens.height(12),
+      return Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(AppDimens.width(20)),
+            decoration: const BoxDecoration(
+              border: Border(
+                  top: BorderSide(color: AppColor.graymodern800, width: 1)),
+              color: AppColor.graymodern950,
             ),
-            decoration: BoxDecoration(
-              color: AppColor.graymodern900,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColor.graymodern800),
-            ),
-            child: AppText(
-              "🔒 로그인 후 댓글을 작성할 수 있습니다",
-              style: Theme.of(context).textTheme.textMD.copyWith(
-                    color: AppColor.graymodern400,
+            child: InkWell(
+              onTap: () => Get.to(() => const LoginPage()),
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  vertical: AppDimens.height(12),
+                ),
+                decoration: BoxDecoration(
+                  color: AppColor.graymodern900,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: AppColor.graymodern800),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppDimens.width(16),
                   ),
+                  child: AppText(
+                    "🔒 로그인 후 댓글을 작성할 수 있습니다",
+                    style: Theme.of(context).textTheme.textMD.copyWith(
+                          color: AppColor.graymodern400,
+                        ),
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
+          AppSpacerV(value: AppDimens.height(15)),
+        ],
       );
     }
 
     // 로그인한 경우 기존 댓글 입력 UI
-    return Container(
-      padding: EdgeInsets.all(AppDimens.width(20)),
-      decoration: const BoxDecoration(
-        border:
-            Border(top: BorderSide(color: AppColor.graymodern800, width: 1)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (replyingTo != null)
-            Padding(
-              padding: EdgeInsets.only(bottom: AppDimens.height(8)),
-              child: Row(
-                children: [
-                  AppText(
-                    '${replyingTo!.author?.name ?? "익명"}님에게 답글 작성 중',
-                    style: Theme.of(context).textTheme.textSM.copyWith(
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.all(AppDimens.width(20)),
+          decoration: const BoxDecoration(
+            border: Border(
+                top: BorderSide(color: AppColor.graymodern800, width: 1)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (replyingTo != null)
+                Padding(
+                  padding: EdgeInsets.only(bottom: AppDimens.height(8)),
+                  child: Row(
+                    children: [
+                      AppText(
+                        '${replyingTo!.author?.name ?? "익명"}님에게 답글 작성 중',
+                        style: Theme.of(context).textTheme.textSM.copyWith(
+                              color: AppColor.graymodern400,
+                            ),
+                      ),
+                      AppSpacerH(value: AppDimens.width(8)),
+                      GestureDetector(
+                        onTap: () => setState(() => replyingTo = null),
+                        child: const Icon(
+                          Icons.close,
+                          size: 16,
                           color: AppColor.graymodern400,
                         ),
+                      ),
+                    ],
                   ),
-                  AppSpacerH(value: AppDimens.width(8)),
-                  GestureDetector(
-                    onTap: () => setState(() => replyingTo = null),
-                    child: const Icon(
-                      Icons.close,
-                      size: 16,
-                      color: AppColor.graymodern400,
+                ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _commentController,
+                      style: Theme.of(context).textTheme.textMD.copyWith(
+                            color: AppColor.graymodern100,
+                          ),
+                      decoration: InputDecoration(
+                        hintText:
+                            replyingTo == null ? "댓글을 입력하세요" : "답글을 입력하세요",
+                        hintStyle: Theme.of(context).textTheme.textMD.copyWith(
+                              color: AppColor.graymodern400,
+                            ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide:
+                              const BorderSide(color: AppColor.graymodern800),
+                        ),
+                        filled: true,
+                        fillColor: AppColor.graymodern900,
+                      ),
                     ),
+                  ),
+                  AppSpacerH(value: AppDimens.width(10)),
+                  IconButton(
+                    onPressed: _handleSubmitComment,
+                    icon:
+                        const AppSvg(Assets.message, color: AppColor.brand600),
                   ),
                 ],
               ),
-            ),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _commentController,
-                  style: Theme.of(context).textTheme.textMD.copyWith(
-                        color: AppColor.graymodern100,
-                      ),
-                  decoration: InputDecoration(
-                    hintText: replyingTo == null ? "댓글을 입력하세요" : "답글을 입력하세요",
-                    hintStyle: Theme.of(context).textTheme.textMD.copyWith(
-                          color: AppColor.graymodern400,
-                        ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      borderSide:
-                          const BorderSide(color: AppColor.graymodern800),
-                    ),
-                    filled: true,
-                    fillColor: AppColor.graymodern900,
-                  ),
-                ),
-              ),
-              AppSpacerH(value: AppDimens.width(10)),
-              IconButton(
-                onPressed: _handleSubmitComment,
-                icon: const AppSvg(Assets.message, color: AppColor.brand600),
-              ),
             ],
           ),
-        ],
-      ),
+        ),
+        AppSpacerV(value: AppDimens.height(15)),
+      ],
     );
   }
 }
