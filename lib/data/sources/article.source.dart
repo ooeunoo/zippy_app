@@ -35,15 +35,20 @@ class ArticleDatasourceImpl implements ArticleDatasource {
   Future<Either<Failure, List<Article>>> getArticles(
       GetArticlesParams params) async {
     try {
-      List<Map<String, dynamic>> response = await provider.client
-          .from(TABLE)
-          .select('*, sources(*)')
-          .limit(params.limit)
-          .order('created_at');
+      var query = provider.client.from(TABLE).select('*, sources(*)');
+
+      // search 파라미터가 있을 경우에만 textSearch 조건 추가
+      if (params.search != null && params.search!.isNotEmpty) {
+        query = query.textSearch('title', params.search!);
+      }
+
+      final response =
+          await query.limit(params.limit).order('published', ascending: false);
 
       List<Article> result =
           response.map((r) => ArticleEntity.fromJson(r).toModel()).toList();
 
+      print(params.search);
       print(result.length);
       return Right(result);
     } catch (e) {

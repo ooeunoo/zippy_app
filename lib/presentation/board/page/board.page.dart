@@ -166,7 +166,7 @@ class _BoardPageState extends State<BoardPage> {
                 displacement: 50,
                 strokeWidth: 3,
                 onRefresh: () async {
-                  await controller.onHandlerefreshArticle();
+                  await controller.onHandleRefreshArticle();
                 },
                 child: PageView.builder(
                   scrollDirection: Axis.vertical,

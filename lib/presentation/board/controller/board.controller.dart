@@ -2,14 +2,11 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/services/auth.service.dart';
-import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/utils/share.dart';
-import 'package:zippy/app/utils/shuffle.dart';
 import 'package:zippy/app/utils/vibrates.dart';
 import 'package:zippy/app/widgets/app.snak_bar.dart';
 import 'package:zippy/app/widgets/app_dialog.dart';
 import 'package:zippy/data/entity/user_bookmark.entity.dart';
-import 'package:zippy/domain/enum/article_view_type.enum.dart';
 import 'package:zippy/domain/enum/interaction_type.enum.dart';
 import 'package:zippy/domain/model/ad_content.model.dart';
 import 'package:zippy/domain/model/article.model.dart';
@@ -17,7 +14,6 @@ import 'package:zippy/domain/model/article_comment.model.dart';
 import 'package:zippy/domain/model/params/create_article_comment.params.dart';
 import 'package:zippy/domain/model/params/create_user_interaction.params.dart';
 import 'package:zippy/domain/model/params/get_aritlces.params.dart';
-import 'package:zippy/domain/model/params/update_user_interaction.params.dart';
 import 'package:zippy/domain/model/source.model.dart';
 import 'package:zippy/domain/model/platform.model.dart';
 import 'package:zippy/domain/model/user_bookmark.model.dart';
@@ -38,11 +34,12 @@ import 'package:zippy/domain/usecases/subscirbe_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_subscriptions.usecase.dart';
 import 'package:zippy/domain/usecases/update_user_interaction.usecase.dart';
 import 'package:zippy/presentation/board/page/widgets/bottom_extension_menu.dart';
-import 'package:zippy/presentation/board/page/widgets/zippy_article_view.dart';
+import 'package:zippy/app/services/article.service.dart';
 
 class BoardController extends GetxService {
   AuthService authService = Get.find<AuthService>();
   AdmobService admobService = Get.find<AdmobService>();
+  ArticleService articleService = Get.find<ArticleService>();
 
   final SubscribeUserBookmark subscribeUserBookmark = Get.find();
   final SubscribeUserSubscriptions subscribeUserSubscriptions = Get.find();
@@ -74,7 +71,6 @@ class BoardController extends GetxService {
       RxList<UserSubscription>([]).obs();
   RxList<UserBookmark> userBookmarks = RxList<UserBookmark>([]).obs();
   Rxn<String> error = Rxn<String>();
-  Rx<ArticleViewType> currentViewType = ArticleViewType.Keypoint.obs;
 
   @override
   onInit() async {
@@ -152,10 +148,6 @@ class BoardController extends GetxService {
     return userBookmarks.any((bookmark) => bookmark.id == itemId);
   }
 
-  void onHandleChangeViewType(ArticleViewType type) {
-    currentViewType.value = type;
-  }
-
   Future<List<ArticleComment>> onHandleGetArticleComments(int articleId) async {
     final result = await getArticleComments.execute(articleId);
     return result.fold((failure) {
@@ -194,45 +186,10 @@ class BoardController extends GetxService {
     if (article.isAd) return;
 
     await _handleInterstitialAd();
-
-    final handleUpdateInteraction = await _createViewInteraction(article.id!);
-
-    await showModalBottomSheet(
-      context: Get.context!,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      useSafeArea: true,
-      elevation: 0,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.95,
-        maxChildSize: 0.95,
-        snap: true,
-        snapSizes: const [0.95],
-        builder: (context, scrollController) {
-          return ClipRRect(
-            // 추가
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-            child: Container(
-                decoration: const BoxDecoration(
-                  color: AppColor.transparent,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                ),
-                child: Obx(
-                  () => ZippyArticleView(
-                    scrollController: scrollController,
-                    article: article,
-                    handleUpdateUserInteraction: handleUpdateInteraction,
-                    viewType: currentViewType.value, // 현재 뷰 타입 전달
-                    onViewTypeChanged: onHandleChangeViewType, // 상태 변경 콜백 전달
-                  ),
-                )),
-          );
-        },
-      ),
-    );
+    articleService.showArticleViewModal(article);
   }
 
-  Future<void> onHandlerefreshArticle() async {
+  Future<void> onHandleRefreshArticle() async {
     isLoadingContents.value = true;
     final result = await getArticles.execute(const GetArticlesParams(
       limit: 10,
@@ -265,29 +222,6 @@ class BoardController extends GetxService {
     }
   }
 
-  Future<Function(int, int)?> _createViewInteraction(int articleId) async {
-    if (!authService.isLoggedIn.value) return null;
-
-    final result = await createUserInteraction.execute(
-      CreateUserInteractionParams(
-        userId: authService.currentUser.value!.id,
-        articleId: articleId,
-        interactionType: InteractionType.View,
-      ),
-    );
-
-    return result.fold(
-      (failure) => null,
-      (interaction) => (int readPercent, int readDuration) async {
-        await _handleUpdateUserInteraction(
-          interaction.id!,
-          readPercent,
-          readDuration,
-        );
-      },
-    );
-  }
-
   Future<void> _handleUserAction({
     required bool requiredLoggedIn,
     required Future<void> Function() action,
@@ -313,15 +247,6 @@ class BoardController extends GetxService {
     ));
   }
 
-  Future<void> _handleUpdateUserInteraction(
-      int id, int readPercent, int readDuration) async {
-    await updateUserInteraction.execute(UpdateUserInteractionParams(
-      id: id,
-      readPercent: readPercent,
-      readDuration: readDuration,
-    ));
-  }
-
   //////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////
   /// 초기화
@@ -337,10 +262,10 @@ class BoardController extends GetxService {
     // _listenUserSubscriptions();
     // _listenUser();
 
-    await onHandlerefreshArticle();
+    await onHandleRefreshArticle();
 
     ever(userSubscriptions, (v) {
-      onHandlerefreshArticle();
+      onHandleRefreshArticle();
     });
   }
 

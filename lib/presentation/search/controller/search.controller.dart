@@ -2,13 +2,17 @@ import 'package:get/get.dart';
 import 'package:zippy/app/services/auth.service.dart';
 import 'package:zippy/domain/model/article.model.dart';
 import 'package:zippy/domain/model/keyword_rank_snaoshot.model.dart';
+import 'package:zippy/domain/model/params/get_aritlces.params.dart';
 import 'package:zippy/domain/model/params/get_articles_by_keyword.params.dart';
 import 'package:zippy/domain/model/params/get_tranding_keywords.params.dart';
+import 'package:zippy/domain/usecases/get_articles.usecase.dart';
 import 'package:zippy/domain/usecases/get_articles_by_keyword.usecase.dart';
 import 'package:zippy/domain/usecases/get_trending_keywords.usecase.dart';
 
 class AppSearchController extends GetxController {
   final AuthService authService = Get.find();
+
+  final GetArticles getArticles = Get.find();
   final GetTrendingKeywords getTrendingKeywords = Get.find();
   final GetArticlesByKeyword getArticlesByKeyword = Get.find();
 
@@ -39,6 +43,18 @@ class AppSearchController extends GetxController {
   Future<List<Article>> onHandleFetchArticlesByKeyword(String keyword) async {
     final params = GetArticlesByKeywordParams(keyword: keyword);
     final result = await getArticlesByKeyword.execute(params);
+    return result.fold((l) => [], (articles) {
+      searchResults.assignAll(articles);
+      return articles;
+    });
+  }
+
+  /**
+   * 검색어로 기사 조회
+   */
+  Future<void> onHandleFetchArticlesBySearch(String keyword) async {
+    final params = GetArticlesParams(search: keyword);
+    final result = await getArticles.execute(params);
     return result.fold((l) => [], (articles) {
       searchResults.assignAll(articles);
       return articles;

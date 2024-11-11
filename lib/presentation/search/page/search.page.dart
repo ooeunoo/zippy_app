@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/styles/color.dart';
@@ -20,10 +22,12 @@ class _SearchPageState extends State<SearchPage> {
   final AppSearchController controller = Get.find();
   final TextEditingController _searchController = TextEditingController();
   bool _showSearchBar = false;
+  Timer? _debounce; // 추가
 
   @override
   void dispose() {
     _searchController.dispose();
+    _debounce?.cancel(); // 추가
     super.dispose();
   }
 
@@ -33,6 +37,22 @@ class _SearchPageState extends State<SearchPage> {
       _searchController.text = keyword;
     });
     controller.onHandleFetchArticlesByKeyword(keyword);
+  }
+
+  // 검색 디바운스 처리
+  void _onSearchChanged(String value) {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+
+    if (value.isEmpty) {
+      controller.searchResults.clear();
+      return;
+    }
+
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (value.isNotEmpty) {
+        controller.onHandleFetchArticlesBySearch(value);
+      }
+    });
   }
 
   @override
@@ -67,6 +87,7 @@ class _SearchPageState extends State<SearchPage> {
         onPressed: () {
           setState(() {
             _showSearchBar = false;
+            controller.searchResults.clear(); // 검색 결과 초기화 추가
           });
         },
       ),
@@ -85,9 +106,7 @@ class _SearchPageState extends State<SearchPage> {
           border: InputBorder.none,
         ),
         autofocus: true,
-        onChanged: (value) {
-          setState(() {}); // Trigger rebuild when search text changes
-        },
+        onChanged: _onSearchChanged, // 변경
       ),
       actions: [
         IconButton(
@@ -99,7 +118,7 @@ class _SearchPageState extends State<SearchPage> {
               });
             } else {
               _searchController.clear();
-              setState(() {}); // Trigger rebuild when cleared
+              controller.searchResults.clear(); // 검색 결과 초기화 추가
             }
           },
         ),

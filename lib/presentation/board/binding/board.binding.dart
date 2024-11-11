@@ -21,7 +21,7 @@ class BoardBinding implements Bindings {
   void dependencies() {
     Get.lazyPut<GetPlatforms>(() => GetPlatforms(Get.find()));
     Get.lazyPut<GetSources>(() => GetSources());
-    Get.lazyPut<GetArticles>(() => GetArticles(Get.find()));
+    Get.lazyPut<GetArticles>(() => GetArticles());
     Get.lazyPut<GetUserBookmark>(() => GetUserBookmark(Get.find()));
     Get.lazyPut<CreateUserBookmark>(() => CreateUserBookmark(Get.find()));
     Get.lazyPut<DeleteUserBookmark>(() => DeleteUserBookmark(Get.find()));

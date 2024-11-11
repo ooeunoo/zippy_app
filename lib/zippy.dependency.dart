@@ -1,4 +1,5 @@
 import 'package:zippy/app/services/admob_service.dart';
+import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/services/auth.service.dart';
 import 'package:zippy/app/services/content_type.service.dart';
 import 'package:zippy/data/providers/kakao.provider.dart';
@@ -30,12 +31,14 @@ import 'package:zippy/domain/repositories/user_bookmark.repository.dart';
 import 'package:zippy/domain/repositories/user_category.repository.dart';
 import 'package:get/get.dart';
 import 'package:zippy/domain/repositories/user_interaction.repository.dart';
+import 'package:zippy/domain/usecases/create_user_interaction.usecase.dart';
 import 'package:zippy/domain/usecases/get_app_metadata.usecase.dart';
 import 'package:zippy/domain/usecases/get_content_types.usecase.dart';
 import 'package:zippy/domain/usecases/get_current_user.usecase.dart';
 import 'package:zippy/domain/usecases/logout.usecase.dart';
 import 'package:zippy/domain/usecases/subscribe_auth_status.usecase.dart';
 import 'package:zippy/domain/usecases/update_app_metdata.usecase.dart';
+import 'package:zippy/domain/usecases/update_user_interaction.usecase.dart';
 
 class ZippyBindings implements Bindings {
   @override
@@ -103,11 +106,14 @@ class ZippyBindings implements Bindings {
     Get.lazyPut<SubscribeAuthStatus>(() => SubscribeAuthStatus(Get.find()));
     Get.lazyPut<GetContentTypes>(() => GetContentTypes());
     Get.lazyPut<Logout>(() => Logout(Get.find()));
+    Get.lazyPut<CreateUserInteraction>(() => CreateUserInteraction(Get.find()));
+    Get.lazyPut<UpdateUserInteraction>(() => UpdateUserInteraction(Get.find()));
   }
 
   _initService() {
     Get.put<AdmobService>(AdmobService(), permanent: true);
     Get.put<AuthService>(AuthService(), permanent: true);
     Get.put<ContentTypeService>(ContentTypeService(), permanent: true);
+    Get.put<ArticleService>(ArticleService(), permanent: true);
   }
 }
