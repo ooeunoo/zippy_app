@@ -17,10 +17,8 @@ import 'package:zippy/presentation/login/page/login.page.dart';
 void showCommentBottomSheet(
     BuildContext context,
     int articleId,
-    Future<List<ArticleComment>> Function(int articleId)
-        onHandleGetArticleComments,
-    Future<void> Function(CreateArticleCommentParams)
-        onHandleCreateArticleComment) {
+    Function(int articleId) onHandleGetArticleComments,
+    Function(CreateArticleCommentParams) onHandleCreateArticleComment) {
   Get.bottomSheet(
     ZippyArticleComment(
         articleId: articleId,
@@ -33,10 +31,8 @@ void showCommentBottomSheet(
 
 class ZippyArticleComment extends StatefulWidget {
   final int articleId;
-  final Future<List<ArticleComment>> Function(int articleId)
-      onHandleGetArticleComments;
-  final Future<void> Function(CreateArticleCommentParams)
-      onHandleCreateArticleComment;
+  final Function(int articleId) onHandleGetArticleComments;
+  final Function(CreateArticleCommentParams) onHandleCreateArticleComment;
 
   const ZippyArticleComment(
       {super.key,

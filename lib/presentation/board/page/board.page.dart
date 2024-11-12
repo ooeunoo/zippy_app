@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/app/services/admob_service.dart';
+import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
@@ -30,6 +31,7 @@ class BoardPage extends StatefulWidget {
 
 class _BoardPageState extends State<BoardPage> {
   AdmobService admobService = Get.find();
+  ArticleService articleService = Get.find();
 
   // @override
   // void initState() {
@@ -127,46 +129,48 @@ class _BoardPageState extends State<BoardPage> {
                   color: AppColor.brand600,
                 ),
               );
-            } else if (controller.userSubscriptions.isEmpty) {
-              return Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    AppSvg(Assets.logo, size: AppDimens.size(200)),
-                    AppText("채널을 구독하시면 \n다양한 콘텐츠를 만나보실 수 있어요!",
-                        align: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .text2XL
-                            .copyWith(color: AppColor.graymodern100)),
-                    AppSpacerV(value: AppDimens.height(60)),
-                    Center(
-                        child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: AppDimens.width(20)),
-                      child: AppButton(
-                        '채널 구독하기',
-                        color: AppColor.brand600,
-                        titleStyle: Theme.of(context)
-                            .textTheme
-                            .textLG
-                            .copyWith(color: AppColor.graymodern100),
-                        onPressed: () {
-                          Get.toNamed(Routes.subscription);
-                        },
-                        width: double.infinity,
-                        height: AppDimens.height(50),
-                      ),
-                    )),
-                  ]);
-            } else {
+            }
+            // else if (controller.userSubscriptions.isEmpty) {
+            //   return Column(
+            //       crossAxisAlignment: CrossAxisAlignment.center,
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       children: [
+            //         AppSvg(Assets.logo, size: AppDimens.size(200)),
+            //         AppText("채널을 구독하시면 \n다양한 콘텐츠를 만나보실 수 있어요!",
+            //             align: TextAlign.center,
+            //             style: Theme.of(context)
+            //                 .textTheme
+            //                 .text2XL
+            //                 .copyWith(color: AppColor.graymodern100)),
+            //         AppSpacerV(value: AppDimens.height(60)),
+            //         Center(
+            //             child: Padding(
+            //           padding:
+            //               EdgeInsets.symmetric(horizontal: AppDimens.width(20)),
+            //           child: AppButton(
+            //             '채널 구독하기',
+            //             color: AppColor.brand600,
+            //             titleStyle: Theme.of(context)
+            //                 .textTheme
+            //                 .textLG
+            //                 .copyWith(color: AppColor.graymodern100),
+            //             onPressed: () {
+            //               Get.toNamed(Routes.subscription);
+            //             },
+            //             width: double.infinity,
+            //             height: AppDimens.height(50),
+            //           ),
+            //         )),
+            //       ]);
+            // }
+            else {
               return RefreshIndicator(
                 color: AppColor.brand600,
                 backgroundColor: AppColor.graymodern950,
                 displacement: 50,
                 strokeWidth: 3,
                 onRefresh: () async {
-                  await controller.onHandleRefreshArticle();
+                  await articleService.onHandleFetchArticle();
                 },
                 child: PageView.builder(
                   scrollDirection: Axis.vertical,
@@ -193,9 +197,9 @@ class _BoardPageState extends State<BoardPage> {
                         return ZippyAdContentCard(content: adContent);
                       } else {
                         Source? source =
-                            controller.getSourceById(article.sourceId);
+                            articleService.getSourceById(article.sourceId);
                         bool isBookmarked =
-                            controller.isBookmarked(article.id!);
+                            articleService.isBookmarked(article.id!);
                         return GestureDetector(
                           onTap: () => controller.onHandleClickArticle(article),
                           child: ZippyArticleCard(
@@ -203,11 +207,15 @@ class _BoardPageState extends State<BoardPage> {
                             source: source,
                             isBookMarked: isBookmarked,
                             onHandleBookmarkArticle:
-                                controller.onHandleBookmarkArticle,
+                                articleService.onHandleBookmarkArticle,
                             onHandleShareArticle:
-                                controller.onHandleShareArticle,
+                                articleService.onHandleShareArticle,
                             openMenu: () =>
                                 controller.onHandleOpenMenu(article),
+                            onHandleGetArticleComments:
+                                articleService.onHandleGetArticleComments,
+                            onHandleCreateArticleComment:
+                                articleService.onHandleCreateArticleComment,
                           ),
                         );
                       }

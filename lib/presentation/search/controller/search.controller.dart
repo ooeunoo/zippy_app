@@ -18,7 +18,7 @@ class AppSearchController extends GetxController {
   final GetTrendingKeywords getTrendingKeywords = Get.find();
   final GetArticlesByKeyword getArticlesByKeyword = Get.find();
 
-  RxList<Article> searchResults = RxList<Article>([]);
+  RxList<Article> searchArticles = RxList<Article>([]);
   RxList<KeywordRankSnapshot> trendingKeywords =
       RxList<KeywordRankSnapshot>([]);
 
@@ -28,6 +28,9 @@ class AppSearchController extends GetxController {
     await _initialize();
   }
 
+  ///*********************************
+  /// Initialization Methods
+  ///*********************************
   Future<void> _initialize() async {
     await _fetchTrendingKeywords();
   }
@@ -39,26 +42,23 @@ class AppSearchController extends GetxController {
         (l) => null, (keywords) => trendingKeywords.assignAll(keywords));
   }
 
-  /**
-   * 키워드로 검색한 기사 조회
-   */
+  ///*********************************
+  /// Public Methods
+  ///*********************************
   Future<List<Article>> onHandleFetchArticlesByKeyword(String keyword) async {
     final params = GetArticlesByKeywordParams(keyword: keyword);
     final result = await getArticlesByKeyword.execute(params);
     return result.fold((l) => [], (articles) {
-      searchResults.assignAll(articles);
+      searchArticles.assignAll(articles);
       return articles;
     });
   }
 
-  /**
-   * 검색어로 기사 조회
-   */
-  Future<void> onHandleFetchArticlesBySearch(String keyword) async {
+  Future<List<Article>> onHandleFetchArticlesBySearch(String keyword) async {
     final params = GetArticlesParams(search: keyword);
     final result = await getArticles.execute(params);
     return result.fold((l) => [], (articles) {
-      searchResults.assignAll(articles);
+      searchArticles.assignAll(articles);
       return articles;
     });
   }

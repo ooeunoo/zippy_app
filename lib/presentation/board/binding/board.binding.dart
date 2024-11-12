@@ -17,20 +17,6 @@ import 'package:zippy/presentation/board/controller/board.controller.dart';
 class BoardBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<GetPlatforms>(() => GetPlatforms(Get.find()));
-    Get.lazyPut<GetSources>(() => GetSources());
-    Get.lazyPut<GetArticles>(() => GetArticles());
-    Get.lazyPut<GetUserBookmark>(() => GetUserBookmark(Get.find()));
-    Get.lazyPut<CreateUserBookmark>(() => CreateUserBookmark(Get.find()));
-    Get.lazyPut<DeleteUserBookmark>(() => DeleteUserBookmark(Get.find()));
-    Get.lazyPut<SubscribeUserBookmark>(() => SubscribeUserBookmark(Get.find()));
-    Get.lazyPut<SubscribeUserSubscriptions>(
-        () => SubscribeUserSubscriptions(Get.find()));
-    Get.lazyPut<GetUserSubscriptions>(() => GetUserSubscriptions(Get.find()));
-    Get.lazyPut<CreateUserInteraction>(() => CreateUserInteraction(Get.find()));
-    Get.lazyPut<UpdateUserInteraction>(() => UpdateUserInteraction(Get.find()));
-    Get.lazyPut<GetArticleComments>(() => GetArticleComments());
-    Get.lazyPut<CreateArticleComment>(() => CreateArticleComment());
     Get.lazyPut<BoardController>(() => BoardController());
   }
 }

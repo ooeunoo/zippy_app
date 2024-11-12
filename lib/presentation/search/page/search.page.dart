@@ -44,7 +44,7 @@ class _SearchPageState extends State<SearchPage> {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
 
     if (value.isEmpty) {
-      controller.searchResults.clear();
+      controller.searchArticles.clear();
       return;
     }
 
@@ -62,7 +62,7 @@ class _SearchPageState extends State<SearchPage> {
       body: SafeArea(
         child: _showSearchBar
             ? Obx(() => SearchContent(
-                  searchResults: controller.searchResults.value,
+                  searchArticles: controller.searchArticles.value,
                   searchController: _searchController,
                   onHandleClickArticle: controller.onHandleClickArticle,
                 ))
@@ -88,7 +88,7 @@ class _SearchPageState extends State<SearchPage> {
         onPressed: () {
           setState(() {
             _showSearchBar = false;
-            controller.searchResults.clear(); // 검색 결과 초기화 추가
+            controller.searchArticles.clear(); // 검색 결과 초기화 추가
           });
         },
       ),
@@ -119,7 +119,7 @@ class _SearchPageState extends State<SearchPage> {
               });
             } else {
               _searchController.clear();
-              controller.searchResults.clear(); // 검색 결과 초기화 추가
+              controller.searchArticles.clear(); // 검색 결과 초기화 추가
             }
           },
         ),

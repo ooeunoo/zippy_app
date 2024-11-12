@@ -31,11 +31,22 @@ import 'package:zippy/domain/repositories/user_bookmark.repository.dart';
 import 'package:zippy/domain/repositories/user_category.repository.dart';
 import 'package:get/get.dart';
 import 'package:zippy/domain/repositories/user_interaction.repository.dart';
+import 'package:zippy/domain/usecases/create_article_comment.usecase.dart';
+import 'package:zippy/domain/usecases/create_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/create_user_interaction.usecase.dart';
+import 'package:zippy/domain/usecases/delete_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/get_app_metadata.usecase.dart';
+import 'package:zippy/domain/usecases/get_article_comments.usecase.dart';
+import 'package:zippy/domain/usecases/get_articles.usecase.dart';
 import 'package:zippy/domain/usecases/get_content_types.usecase.dart';
 import 'package:zippy/domain/usecases/get_current_user.usecase.dart';
+import 'package:zippy/domain/usecases/get_platforms.usecase.dart';
+import 'package:zippy/domain/usecases/get_sources.usecase.dart';
+import 'package:zippy/domain/usecases/get_user_bookmark.usecase.dart';
+import 'package:zippy/domain/usecases/get_user_subscriptions.usecase.dart';
 import 'package:zippy/domain/usecases/logout.usecase.dart';
+import 'package:zippy/domain/usecases/subscirbe_user_bookmark.usecase.dart';
+import 'package:zippy/domain/usecases/subscirbe_user_subscriptions.usecase.dart';
 import 'package:zippy/domain/usecases/subscribe_auth_status.usecase.dart';
 import 'package:zippy/domain/usecases/update_app_metdata.usecase.dart';
 import 'package:zippy/domain/usecases/update_user_interaction.usecase.dart';
@@ -106,8 +117,20 @@ class ZippyBindings implements Bindings {
     Get.lazyPut<SubscribeAuthStatus>(() => SubscribeAuthStatus(Get.find()));
     Get.lazyPut<GetContentTypes>(() => GetContentTypes());
     Get.lazyPut<Logout>(() => Logout(Get.find()));
+    Get.lazyPut<GetPlatforms>(() => GetPlatforms(Get.find()));
+    Get.lazyPut<GetSources>(() => GetSources());
+    Get.lazyPut<GetArticles>(() => GetArticles());
+    Get.lazyPut<GetUserBookmark>(() => GetUserBookmark(Get.find()));
+    Get.lazyPut<CreateUserBookmark>(() => CreateUserBookmark(Get.find()));
+    Get.lazyPut<DeleteUserBookmark>(() => DeleteUserBookmark(Get.find()));
+    Get.lazyPut<SubscribeUserBookmark>(() => SubscribeUserBookmark(Get.find()));
+    Get.lazyPut<SubscribeUserSubscriptions>(
+        () => SubscribeUserSubscriptions(Get.find()));
+    Get.lazyPut<GetUserSubscriptions>(() => GetUserSubscriptions(Get.find()));
     Get.lazyPut<CreateUserInteraction>(() => CreateUserInteraction(Get.find()));
     Get.lazyPut<UpdateUserInteraction>(() => UpdateUserInteraction(Get.find()));
+    Get.lazyPut<GetArticleComments>(() => GetArticleComments());
+    Get.lazyPut<CreateArticleComment>(() => CreateArticleComment());
   }
 
   _initService() {

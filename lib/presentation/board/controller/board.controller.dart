@@ -1,38 +1,15 @@
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/services/auth.service.dart';
 import 'package:zippy/app/utils/share.dart';
 import 'package:zippy/app/utils/vibrates.dart';
 import 'package:zippy/app/widgets/app.snak_bar.dart';
 import 'package:zippy/app/widgets/app_dialog.dart';
-import 'package:zippy/data/entity/user_bookmark.entity.dart';
 import 'package:zippy/domain/enum/interaction_type.enum.dart';
 import 'package:zippy/domain/model/ad_content.model.dart';
 import 'package:zippy/domain/model/article.model.dart';
-import 'package:zippy/domain/model/article_comment.model.dart';
-import 'package:zippy/domain/model/params/create_article_comment.params.dart';
-import 'package:zippy/domain/model/params/create_user_interaction.params.dart';
-import 'package:zippy/domain/model/params/get_aritlces.params.dart';
-import 'package:zippy/domain/model/source.model.dart';
-import 'package:zippy/domain/model/platform.model.dart';
-import 'package:zippy/domain/model/user_bookmark.model.dart';
-import 'package:zippy/domain/model/user_subscription.model.dart';
-import 'package:zippy/domain/usecases/create_article_comment.usecase.dart';
-import 'package:zippy/domain/usecases/create_user_bookmark.usecase.dart';
-import 'package:zippy/domain/usecases/create_user_interaction.usecase.dart';
-import 'package:zippy/domain/usecases/delete_user_bookmark.usecase.dart';
-import 'package:zippy/domain/usecases/get_article_comments.usecase.dart';
-import 'package:zippy/domain/usecases/get_articles.usecase.dart';
-import 'package:zippy/domain/usecases/get_platforms.usecase.dart';
-import 'package:zippy/domain/usecases/get_sources.usecase.dart';
-import 'package:zippy/domain/usecases/get_user_bookmark.usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:zippy/domain/usecases/get_user_subscriptions.usecase.dart';
-import 'package:zippy/domain/usecases/subscirbe_user_bookmark.usecase.dart';
-import 'package:zippy/domain/usecases/subscirbe_user_subscriptions.usecase.dart';
-import 'package:zippy/domain/usecases/update_user_interaction.usecase.dart';
 import 'package:zippy/presentation/board/page/widgets/bottom_extension_menu.dart';
 import 'package:zippy/app/services/article.service.dart';
 
@@ -41,20 +18,6 @@ class BoardController extends GetxService {
   AdmobService admobService = Get.find<AdmobService>();
   ArticleService articleService = Get.find<ArticleService>();
 
-  final SubscribeUserBookmark subscribeUserBookmark = Get.find();
-  final SubscribeUserSubscriptions subscribeUserSubscriptions = Get.find();
-  final GetPlatforms getPlatforms = Get.find();
-  final GetSources getSources = Get.find();
-  final GetArticles getArticles = Get.find();
-  final CreateUserBookmark createUserBookmark = Get.find();
-  final DeleteUserBookmark deleteUserBookmark = Get.find();
-  final GetUserBookmark getUserBookmark = Get.find();
-  final GetUserSubscriptions getUserSubscriptions = Get.find();
-  final CreateUserInteraction createUserInteraction = Get.find();
-  final UpdateUserInteraction updateUserInteraction = Get.find();
-  final GetArticleComments getArticleComments = Get.find();
-  final CreateArticleComment createArticleComment = Get.find();
-
   Rx<int> prevPageIndex = Rx<int>(0);
   PageController pageController = PageController(
     initialPage: 0,
@@ -62,51 +25,21 @@ class BoardController extends GetxService {
     keepPage: true, // 페이지 상태 유지
   );
 
-  RxMap<int, Platform> platforms = RxMap<int, Platform>({}).obs();
-  RxMap<int, Source> sources = RxMap<int, Source>({}).obs();
+  RxList<Article> articles = RxList<Article>([]).obs();
   RxBool isLoadingContents = RxBool(true).obs();
   RxBool isLoadingUserSubscription = RxBool(true).obs();
-  RxList<Article> articles = RxList<Article>([]).obs();
-  RxList<UserSubscription> userSubscriptions =
-      RxList<UserSubscription>([]).obs();
-  RxList<UserBookmark> userBookmarks = RxList<UserBookmark>([]).obs();
   Rxn<String> error = Rxn<String>();
 
   @override
-  onInit() async {
-    await _initialize();
+  void onInit() {
     super.onInit();
+    listenArticles();
   }
 
-  Source? getSourceById(int sourceId) {
-    Source? source = sources[sourceId];
-
-    if (source != null) {
-      return source;
-    } else {
-      return null;
-    }
-  }
-
-  Future<void> onHandleBookmarkArticle(Article article) async {
-    UserBookmarkEntity entity = UserBookmark(
-      id: article.id!,
-      title: article.title,
-      link: article.link,
-      content: article.content,
-      images: article.images[0],
-    ).toCreateEntity();
-    onHeavyVibration();
-    if (isBookmarked(article.id!)) {
-      await deleteUserBookmark.execute(entity);
-    } else {
-      await createUserBookmark.execute(entity);
-    }
-  }
-
-  Future<void> onHandleShareArticle(Article article) async {
-    await toShare(article.title, article.link);
-    await _createInteraction(article.id!, InteractionType.Share);
+  void listenArticles() {
+    articleService.articles.listen((articles) {
+      this.articles.assignAll(articles);
+    });
   }
 
   Future<void> onHandleOpenMenu(Article article) async {
@@ -117,7 +50,7 @@ class BoardController extends GetxService {
         requiredLoggedIn: false,
         action: () async {
           await toShare(article.title, article.link);
-          await _createInteraction(
+          await articleService.onHandleCreateUserInteraction(
             article.id!,
             InteractionType.Share,
           );
@@ -126,7 +59,7 @@ class BoardController extends GetxService {
       report: () => _handleUserAction(
         requiredLoggedIn: true,
         action: () async {
-          await _createInteraction(
+          await articleService.onHandleCreateUserInteraction(
             article.id!,
             InteractionType.Report,
           );
@@ -136,36 +69,15 @@ class BoardController extends GetxService {
     ));
   }
 
-  void onHandleJumpToArticle(int index) {
-    pageController.animateToPage(
+  Future<void> onHandleJumpToArticle(int index) async {
+    await pageController.animateToPage(
       index,
       duration: const Duration(milliseconds: 300), // 애니메이션 시간
       curve: Curves.easeInOut, // 부드러운 애니메이션 커브
     );
   }
 
-  bool isBookmarked(int itemId) {
-    return userBookmarks.any((bookmark) => bookmark.id == itemId);
-  }
-
-  Future<List<ArticleComment>> onHandleGetArticleComments(int articleId) async {
-    final result = await getArticleComments.execute(articleId);
-    return result.fold((failure) {
-      if (failure == ServerFailure()) {
-        error.value = "Error Fetching Comments!";
-      }
-      return [];
-    }, (data) {
-      return data;
-    });
-  }
-
-  Future<void> onHandleCreateArticleComment(
-      CreateArticleCommentParams params) async {
-    await createArticleComment.execute(params);
-  }
-
-  onHandleChangedArticle(int curPageIndex) {
+  Future<void> onHandleChangedArticle(int curPageIndex) async {
     if (curPageIndex < prevPageIndex.value) return;
     int credit = admobService.useAdContentCredits();
     NativeAd? nativeAd = admobService.nativeAd.value;
@@ -184,27 +96,8 @@ class BoardController extends GetxService {
 
   Future<void> onHandleClickArticle(Article article) async {
     if (article.isAd) return;
-
     await _handleInterstitialAd();
     articleService.showArticleViewModal(article);
-  }
-
-  Future<void> onHandleRefreshArticle() async {
-    isLoadingContents.value = true;
-    final result = await getArticles.execute(const GetArticlesParams(
-      limit: 10,
-    ));
-    result.fold(
-      (failure) {
-        return [];
-      },
-      (data) {
-        articles.assignAll(data);
-        articles.refresh();
-      },
-    );
-
-    isLoadingContents.value = false;
   }
 
   //////////////////////////////////////////////////////////////////
@@ -239,114 +132,7 @@ class BoardController extends GetxService {
     await action();
   }
 
-  Future<void> _createInteraction(int articleId, InteractionType type) async {
-    await createUserInteraction.execute(CreateUserInteractionParams(
-      userId: authService.currentUser.value!.id,
-      articleId: articleId,
-      interactionType: type,
-    ));
-  }
-
   //////////////////////////////////////////////////////////////////
+  /// Initialization Methods
   //////////////////////////////////////////////////////////////////
-  /// 초기화
-  //////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////
-  Future<void> _initialize() async {
-    await _setupPlatform();
-    await _setupSources();
-    await _setupUserSubscriptions();
-    await _setupUserBookmark();
-
-    _listenUserBookmark();
-    // _listenUserSubscriptions();
-    // _listenUser();
-
-    await onHandleRefreshArticle();
-
-    ever(userSubscriptions, (v) {
-      onHandleRefreshArticle();
-    });
-  }
-
-  Future<void> _setupPlatform() async {
-    final result = await getPlatforms.execute();
-    result.fold((failure) {
-      if (failure == ServerFailure()) {
-        error.value = "Error Fetching Channel!";
-      }
-    }, (data) {
-      Map<int, Platform> map = {};
-      for (var platform in data) {
-        map = platform.toIdAssign(map);
-      }
-      platforms.assignAll(map);
-    });
-  }
-
-  Future<void> _setupSources() async {
-    final result = await getSources.execute(withJoin: true);
-
-    result.fold((failure) {
-      if (failure == ServerFailure()) {
-        error.value = "Error Fetching Subscription!";
-      }
-    }, (data) {
-      Map<int, Source> map = {};
-      for (var source in data) {
-        map = source.toIdAssign(map);
-      }
-      sources.assignAll(map);
-      // print(sources);
-    });
-  }
-
-  Future<void> _setupUserSubscriptions() async {
-    isLoadingUserSubscription.value = true;
-    final subscriptions = await getUserSubscriptions.execute();
-    subscriptions.fold((failure) {
-      if (failure == ServerFailure()) {
-        error.value = 'Error Fetching channel!';
-      }
-    }, (data) {
-      userSubscriptions.assignAll(data);
-    });
-    isLoadingUserSubscription.value = false;
-  }
-
-  Future<void> _setupUserBookmark() async {
-    final bookmarks = await getUserBookmark.execute();
-    bookmarks.fold((failure) {
-      if (failure == ServerFailure()) {
-        error.value = 'Error Fetching channel!';
-      }
-    }, (data) {
-      userBookmarks.assignAll(data);
-    });
-  }
-
-  // void _listenUserSubscriptions() {
-  //   if (user != null) {
-  //     subscribeUserSubscriptions
-  //         .execute(user!.id)
-  //         .listen((List<UserSubscription> event) {
-  //       userSubscriptions.bindStream(Stream.value(event));
-  //     });
-  //   }
-  // }
-
-  void _listenUserBookmark() {
-    subscribeUserBookmark.execute().listen((List<UserBookmark> event) {
-      userBookmarks.bindStream(Stream.value(event));
-    });
-  }
-
-  // void _listenUser() {
-  //   authService.currentUser.listen((user) {
-  //     if (user != null) {
-  //       this.user = user;
-  //       _listenUserSubscriptions();
-  //     }
-  //   });
-  // }
 }

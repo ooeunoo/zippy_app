@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:zippy/app/extensions/datetime.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
@@ -11,16 +10,21 @@ import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/article.model.dart';
+import 'package:zippy/domain/model/article_comment.model.dart';
+import 'package:zippy/domain/model/params/create_article_comment.params.dart';
 import 'package:zippy/domain/model/source.model.dart';
-import 'package:zippy/presentation/board/controller/board.controller.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_article_comment.dart';
 
-class ZippyArticleCard extends GetView<BoardController> {
+class ZippyArticleCard extends StatelessWidget {
   final Article article;
   final Source? source;
   final bool isBookMarked;
   final Function(Article article) onHandleBookmarkArticle;
   final Function(Article article) onHandleShareArticle;
+  final Future<List<ArticleComment>> Function(int articleId)
+      onHandleGetArticleComments;
+  final Future<void> Function(CreateArticleCommentParams)
+      onHandleCreateArticleComment;
   final VoidCallback openMenu;
 
   const ZippyArticleCard({
@@ -30,6 +34,8 @@ class ZippyArticleCard extends GetView<BoardController> {
     required this.isBookMarked,
     required this.onHandleBookmarkArticle,
     required this.onHandleShareArticle,
+    required this.onHandleGetArticleComments,
+    required this.onHandleCreateArticleComment,
     required this.openMenu,
   });
 
@@ -122,8 +128,8 @@ class ZippyArticleCard extends GetView<BoardController> {
                             onPressed: () => showCommentBottomSheet(
                                 context,
                                 article.id!,
-                                controller.onHandleGetArticleComments,
-                                controller.onHandleCreateArticleComment),
+                                onHandleGetArticleComments,
+                                onHandleCreateArticleComment),
                             icon: const Icon(Icons.chat_bubble_outline),
                           ),
                           Positioned(

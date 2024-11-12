@@ -11,13 +11,13 @@ import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/article.model.dart';
 
 class SearchContent extends StatelessWidget {
-  final List<Article> searchResults;
+  final List<Article> searchArticles;
   final TextEditingController searchController;
   final Function(Article) onHandleClickArticle;
 
   const SearchContent({
     super.key,
-    required this.searchResults,
+    required this.searchArticles,
     required this.searchController,
     required this.onHandleClickArticle,
   });
@@ -26,11 +26,11 @@ class SearchContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.separated(
       padding: EdgeInsets.all(AppDimens.width(20)),
-      itemCount: searchResults.length,
+      itemCount: searchArticles.length,
       separatorBuilder: (context, index) =>
           AppSpacerV(value: AppDimens.height(20)),
       itemBuilder: (context, index) {
-        return _buildSearchItem(context, searchResults[index]);
+        return _buildSearchItem(context, searchArticles[index]);
       },
     );
   }
