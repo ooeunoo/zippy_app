@@ -115,9 +115,6 @@ class _BoardPageState extends State<BoardPage> {
       body: GetX<BoardController>(
         // GetX를 사용하여 컨트롤러 상태 관찰
         builder: (controller) {
-          print(
-              "Building main view with ${controller.articles.length} articles");
-
           if (controller.isLoadingContents.value) {
             return const Center(
               child: CupertinoActivityIndicator(
@@ -126,54 +123,62 @@ class _BoardPageState extends State<BoardPage> {
             );
           }
 
-          return RefreshIndicator(
-            color: AppColor.brand600,
-            backgroundColor: AppColor.graymodern950,
-            displacement: 50,
-            strokeWidth: 3,
-            onRefresh: () async {
-              await controller.onHandleFetchRecommendedArticles();
-            },
-            child: PageView.builder(
-              scrollDirection: Axis.vertical,
-              pageSnapping: true,
-              dragStartBehavior: DragStartBehavior.start,
-              controller: controller.pageController,
-              onPageChanged: controller.onHandleChangedArticle,
-              physics: const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics(),
-              ),
-              itemCount: controller.articles.length,
-              itemBuilder: (context, index) {
-                print("Building item at index $index");
-                final article = controller.articles[index];
+          return Obx(() => RefreshIndicator(
+                color: AppColor.brand600,
+                backgroundColor: AppColor.graymodern950,
+                displacement: 50,
+                strokeWidth: 3,
+                onRefresh: () async {
+                  await controller.onHandleFetchRecommendedArticles();
+                },
+                child: PageView.builder(
+                    scrollDirection: Axis.vertical,
+                    pageSnapping: true,
+                    dragStartBehavior: DragStartBehavior.start,
+                    controller: controller.pageController,
+                    onPageChanged: controller.onHandleChangedArticle,
+                    physics: const BouncingScrollPhysics(
+                      parent: AlwaysScrollableScrollPhysics(),
+                    ),
+                    itemCount: controller.articles.length,
+                    itemBuilder: (context, index) {
+                      return Obx(
+                        () {
+                          final article = controller.articles[index];
 
-                if (article.isAd) {
-                  return ZippyAdContentCard(content: article as AdContent);
-                }
+                          if (article.isAd) {
+                            return ZippyAdContentCard(
+                                content: article as AdContent);
+                          }
 
-                final source = articleService.getSourceById(article.sourceId);
-                final isBookmarked = articleService.isBookmarked(article.id!);
+                          final source =
+                              articleService.getSourceById(article.sourceId);
+                          final isBookmarked =
+                              articleService.isBookmarked(article.id!);
 
-                return GestureDetector(
-                  onTap: () => controller.onHandleClickArticle(article),
-                  child: ZippyArticleCard(
-                    article: article,
-                    source: source,
-                    isBookMarked: isBookmarked,
-                    onHandleBookmarkArticle:
-                        articleService.onHandleBookmarkArticle,
-                    onHandleShareArticle: articleService.onHandleShareArticle,
-                    openMenu: () => controller.onHandleOpenMenu(article),
-                    onHandleGetArticleComments:
-                        articleService.onHandleGetArticleComments,
-                    onHandleCreateArticleComment:
-                        articleService.onHandleCreateArticleComment,
-                  ),
-                );
-              },
-            ),
-          );
+                          return GestureDetector(
+                            onTap: () =>
+                                controller.onHandleClickArticle(article),
+                            child: ZippyArticleCard(
+                              article: article,
+                              source: source,
+                              isBookMarked: isBookmarked,
+                              onHandleBookmarkArticle:
+                                  articleService.onHandleBookmarkArticle,
+                              onHandleShareArticle:
+                                  articleService.onHandleShareArticle,
+                              openMenu: () =>
+                                  controller.onHandleOpenMenu(article),
+                              onHandleGetArticleComments:
+                                  articleService.onHandleGetArticleComments,
+                              onHandleCreateArticleComment:
+                                  articleService.onHandleCreateArticleComment,
+                            ),
+                          );
+                        },
+                      );
+                    }),
+              ));
         },
       ),
     );

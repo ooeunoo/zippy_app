@@ -137,6 +137,11 @@ class ArticleService extends GetxService {
   Future<void> onHandleCreateArticleComment(
       CreateArticleCommentParams params) async {
     await createArticleComment.execute(params);
+    await createUserInteraction.execute(CreateUserInteractionParams(
+      userId: authService.currentUser.value!.id,
+      articleId: params.articleId,
+      interactionType: InteractionType.Comment,
+    ));
   }
 
   Future<void> onHandleShareArticle(Article article) async {
@@ -231,6 +236,7 @@ class ArticleService extends GetxService {
     await _setupSources();
     await _setupUserBookmark();
     await _setupUserSubscriptions();
+    _listenUserBookmark();
   }
 
   Future<void> _setupSources() async {
@@ -244,7 +250,6 @@ class ArticleService extends GetxService {
         map = source.toIdAssign(map);
       }
       sources.assignAll(map);
-      // print(sources);
     });
   }
 

@@ -1,4 +1,5 @@
 import 'package:zippy/data/entity/cotent_type.entity.dart';
+import 'package:zippy/data/entity/platform.entity.dart';
 import 'package:zippy/domain/model/source.model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ class SourceEntity extends Equatable {
   final bool status;
 
   final ContentTypeEntity? contentType;
+  final PlatformEntity? platform;
 
   const SourceEntity({
     this.id,
@@ -20,6 +22,7 @@ class SourceEntity extends Equatable {
     required this.category,
     required this.status,
     this.contentType,
+    this.platform,
   });
 
   @override
@@ -37,6 +40,9 @@ class SourceEntity extends Equatable {
       contentType: json['content_types'] != null
           ? ContentTypeEntity.fromJson(json['content_types'])
           : null,
+      platform: json['platforms'] != null
+          ? PlatformEntity.fromJson(json['platforms'])
+          : null,
     );
   }
 
@@ -48,6 +54,7 @@ class SourceEntity extends Equatable {
       category: category,
       status: status,
       contentType: contentType?.toModel(),
+      platform: platform?.toModel(),
     );
   }
 }

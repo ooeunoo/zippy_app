@@ -151,7 +151,7 @@ class AuthDatasourceImpl implements AuthDatasource {
 
       return const Right(true);
     } catch (e) {
-      debugPrint('Login error: $e');
+      print(e);
       return Left(ServerFailure());
     }
   }

@@ -41,7 +41,6 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
   @override
   void initState() {
     super.initState();
-    print(widget.article.link);
     _startTime = DateTime.now();
     _initWebViewController();
   }

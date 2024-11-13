@@ -48,7 +48,6 @@ class ArticleDatasourceImpl implements ArticleDatasource {
       var response = await provider.client
           .rpc(RPC.getRecommendedArticles.function, params: params.toJson());
 
-      print(response);
       List<Article> result = (response as List)
           .map((r) => ArticleEntity.fromJson(r).toModel())
           .toList();

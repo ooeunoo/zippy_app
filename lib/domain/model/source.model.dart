@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:zippy/domain/model/content_type.model.dart';
+import 'package:zippy/domain/model/platform.model.dart';
 
 @immutable
 class Source extends Equatable {
@@ -12,6 +13,8 @@ class Source extends Equatable {
 
   final ContentType? contentType;
 
+  final Platform? platform;
+
   const Source({
     this.id,
     required this.platformId,
@@ -19,6 +22,7 @@ class Source extends Equatable {
     required this.category,
     required this.status,
     this.contentType,
+    this.platform,
   });
 
   @override
@@ -33,6 +37,7 @@ class Source extends Equatable {
         'category': category,
         'status': status,
         'contentType': contentType?.toJson(),
+        'platform': platform?.toJson(),
       };
 
   Map<int, Source> toIdAssign(Map<int, Source> map) {
@@ -43,6 +48,7 @@ class Source extends Equatable {
         category: category,
         status: status,
         contentType: contentType,
+        platform: platform,
       );
     }
     return map;

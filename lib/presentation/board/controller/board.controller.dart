@@ -46,11 +46,8 @@ class BoardController extends GetxService {
           userId: authService.currentUser.value?.id,
         ),
       );
-      print("Fetched articles: ${fetchedArticles.length}");
 
-      // articles를 업데이트
       articles.assignAll(fetchedArticles);
-      print("Updated articles in controller: ${articles.length}");
     } finally {
       isLoadingContents.value = false;
     }

@@ -31,7 +31,7 @@ class UserInteractionDatasourceImpl implements UserInteractionDatasource {
 
       return Right(UserInteractionEntity.fromJson(result).toModel());
     } catch (e) {
-      print('e: $e');
+      print(e);
       return Left(ServerFailure());
     }
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/extensions/datetime.dart';
+import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/app/services/auth.service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
@@ -196,7 +197,7 @@ class _ZippyArticleCommentState extends State<ZippyArticleComment> {
               color: AppColor.graymodern950,
             ),
             child: InkWell(
-              onTap: () => Get.to(() => const LoginPage()),
+              onTap: () => Get.toNamed(Routes.login),
               child: Container(
                 padding: EdgeInsets.symmetric(
                   vertical: AppDimens.height(12),
@@ -316,7 +317,6 @@ class CommentItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(comment);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

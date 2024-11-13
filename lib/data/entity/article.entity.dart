@@ -1,4 +1,5 @@
 import 'package:zippy/app/utils/format.dart';
+import 'package:zippy/data/entity/article_metadata.entity.dart';
 import 'package:zippy/domain/model/article.model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,8 @@ class ArticleEntity extends Equatable {
   // final String terms;
   final DateTime published;
 
+  final ArticleMetadataEntity? metadata;
+
   const ArticleEntity({
     this.id,
     required this.source_id,
@@ -55,6 +58,7 @@ class ArticleEntity extends Equatable {
     // required this.topic,
     // required this.terms,
     required this.published,
+    this.metadata,
   });
 
   @override
@@ -109,6 +113,9 @@ class ArticleEntity extends Equatable {
       published: json['published'] != null
           ? DateTime.parse(json['published'])
           : DateTime.now(), // 또는 다른 기본값
+      metadata: json['article_metadata'] != null
+          ? ArticleMetadataEntity.fromJson(json['article_metadata'])
+          : null,
     );
   }
 
@@ -138,6 +145,7 @@ class ArticleEntity extends Equatable {
       // topic: topic,
       // terms: terms,
       published: published,
+      metadata: metadata?.toModel(),
     );
   }
 }

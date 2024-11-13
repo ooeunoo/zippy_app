@@ -21,7 +21,7 @@ class SourceDatasourceImpl implements SourceDatasource {
   Future<Either<Failure, List<Source>>> getSources(
       {bool withJoin = false}) async {
     try {
-      String select = withJoin ? '*, content_types(*)' : '*';
+      String select = withJoin ? '*, content_types(*), platforms(*)' : '*';
 
       List<Map<String, dynamic>> response =
           await provider.client.from(TABLE).select(select).eq('status', true);
@@ -29,9 +29,10 @@ class SourceDatasourceImpl implements SourceDatasource {
       List<Source> result =
           response.map((r) => SourceEntity.fromJson(r).toModel()).toList();
 
+      print(result);
       return Right(result);
     } catch (e) {
-      print('error: $e');
+      print(e);
       return Left(ServerFailure());
     }
   }

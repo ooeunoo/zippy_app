@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:zippy/domain/model/article_metadata.model.dart';
 
 @immutable
 class Article extends Equatable {
@@ -26,6 +27,8 @@ class Article extends Equatable {
   // final String topic;
   // final String terms;
   final DateTime published;
+
+  final ArticleMetadata? metadata;
 
   //
   final bool isAd;
@@ -54,6 +57,7 @@ class Article extends Equatable {
     // required this.topic,
     // required this.terms,
     required this.published,
+    this.metadata,
     this.isAd = false,
   });
 
@@ -92,7 +96,8 @@ class Article extends Equatable {
         // "topic": topic,
         // "terms": terms,
         "published": published,
-        'isAd': isAd
+        'isAd': isAd,
+        'metadata': metadata?.toJson(),
       };
 
   @override

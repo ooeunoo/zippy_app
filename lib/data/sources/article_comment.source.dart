@@ -41,7 +41,7 @@ class ArticleCommentDatasourceImpl implements ArticleCommentDatasource {
 
       return Right(comments);
     } catch (e) {
-      print('Error getting comments: $e');
+      print(e);
       return Left(ServerFailure());
     }
   }
@@ -60,7 +60,7 @@ class ArticleCommentDatasourceImpl implements ArticleCommentDatasource {
           ArticleCommentEntity.fromJson(response).toModel();
       return Right(comment);
     } catch (e) {
-      print('Error creating comment: $e');
+      print(e);
       return Left(ServerFailure());
     }
   }
