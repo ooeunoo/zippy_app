@@ -10,6 +10,7 @@ import 'package:zippy/domain/model/ad_content.model.dart';
 import 'package:zippy/domain/model/article.model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:zippy/domain/model/params/get_recommend_aritlces.params.dart';
 import 'package:zippy/presentation/board/page/widgets/bottom_extension_menu.dart';
 import 'package:zippy/app/services/article.service.dart';
 
@@ -25,21 +26,34 @@ class BoardController extends GetxService {
     keepPage: true, // 페이지 상태 유지
   );
 
-  RxList<Article> articles = RxList<Article>([]).obs();
-  RxBool isLoadingContents = RxBool(true).obs();
-  RxBool isLoadingUserSubscription = RxBool(true).obs();
-  Rxn<String> error = Rxn<String>();
+  final articles = RxList<Article>([]);
+  final isLoadingContents = true.obs;
+  final isLoadingUserSubscription = true.obs;
+  final error = Rxn<String>();
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
-    listenArticles();
+    await _initialize();
   }
 
-  void listenArticles() {
-    articleService.articles.listen((articles) {
-      this.articles.assignAll(articles);
-    });
+  Future<void> onHandleFetchRecommendedArticles() async {
+    try {
+      isLoadingContents.value = true;
+      final fetchedArticles =
+          await articleService.onHandleFetchRecommendedArticles(
+        GetRecommendedArticlesParams(
+          userId: authService.currentUser.value?.id,
+        ),
+      );
+      print("Fetched articles: ${fetchedArticles.length}");
+
+      // articles를 업데이트
+      articles.assignAll(fetchedArticles);
+      print("Updated articles in controller: ${articles.length}");
+    } finally {
+      isLoadingContents.value = false;
+    }
   }
 
   Future<void> onHandleOpenMenu(Article article) async {
@@ -135,4 +149,7 @@ class BoardController extends GetxService {
   //////////////////////////////////////////////////////////////////
   /// Initialization Methods
   //////////////////////////////////////////////////////////////////
+  Future<void> _initialize() async {
+    await onHandleFetchRecommendedArticles();
+  }
 }

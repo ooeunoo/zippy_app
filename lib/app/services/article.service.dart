@@ -12,6 +12,7 @@ import 'package:zippy/domain/model/article_comment.model.dart';
 import 'package:zippy/domain/model/params/create_article_comment.params.dart';
 import 'package:zippy/domain/model/params/create_user_interaction.params.dart';
 import 'package:zippy/domain/model/params/get_aritlces.params.dart';
+import 'package:zippy/domain/model/params/get_recommend_aritlces.params.dart';
 import 'package:zippy/domain/model/params/update_user_interaction.params.dart';
 import 'package:zippy/domain/model/source.model.dart';
 import 'package:zippy/domain/model/user_bookmark.model.dart';
@@ -22,6 +23,7 @@ import 'package:zippy/domain/usecases/create_user_interaction.usecase.dart';
 import 'package:zippy/domain/usecases/delete_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/get_article_comments.usecase.dart';
 import 'package:zippy/domain/usecases/get_articles.usecase.dart';
+import 'package:zippy/domain/usecases/get_recommend_articles.usecase.dart';
 import 'package:zippy/domain/usecases/get_sources.usecase.dart';
 import 'package:zippy/domain/usecases/get_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/get_user_subscriptions.usecase.dart';
@@ -35,6 +37,7 @@ class ArticleService extends GetxService {
 
   final GetSources getSources = Get.find();
   final GetArticles getArticles = Get.find();
+  final GetRecommendedArticles getRecommendedArticles = Get.find();
   final SubscribeUserSubscriptions subscribeUserSubscriptions = Get.find();
   final CreateUserInteraction createUserInteraction = Get.find();
   final UpdateUserInteraction updateUserInteraction = Get.find();
@@ -47,18 +50,16 @@ class ArticleService extends GetxService {
   final CreateArticleComment createArticleComment = Get.find();
 
   Rx<ArticleViewType> currentViewType = ArticleViewType.Keypoint.obs;
-  RxBool isLoadingContents = RxBool(true).obs();
   RxBool isLoadingUserSubscription = RxBool(true).obs();
   RxMap<int, Source> sources = RxMap<int, Source>({}).obs();
-  RxList<Article> articles = RxList<Article>([]).obs();
   RxList<UserSubscription> userSubscriptions =
       RxList<UserSubscription>([]).obs();
   RxList<UserBookmark> userBookmarks = RxList<UserBookmark>([]).obs();
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
-    _setupSources();
+    await _initialize();
   }
 
   ///*********************************
@@ -81,22 +82,31 @@ class ArticleService extends GetxService {
     }
   }
 
-  Future<void> onHandleFetchArticle() async {
-    isLoadingContents.value = true;
-    final result = await getArticles.execute(const GetArticlesParams(
-      limit: 10,
-    ));
-    result.fold(
+  Future<List<Article>> onHandleFetchRecommendedArticles(
+      GetRecommendedArticlesParams params) async {
+    final result = await getRecommendedArticles.execute(params);
+    return result.fold(
       (failure) {
         return [];
       },
       (data) {
-        articles.assignAll(data);
-        articles.refresh();
+        return data;
       },
     );
+  }
 
-    isLoadingContents.value = false;
+  Future<List<Article>> onHandleFetchArticle() async {
+    final result = await getArticles.execute(const GetArticlesParams(
+      limit: 10,
+    ));
+    return result.fold(
+      (failure) {
+        return [];
+      },
+      (data) {
+        return data;
+      },
+    );
   }
 
   Future<void> onHandleBookmarkArticle(Article article) async {
@@ -216,6 +226,13 @@ class ArticleService extends GetxService {
   ///*********************************
   /// Initialization Methods
   ///*********************************
+  ///
+  Future<void> _initialize() async {
+    await _setupSources();
+    await _setupUserBookmark();
+    await _setupUserSubscriptions();
+  }
+
   Future<void> _setupSources() async {
     final result = await getSources.execute(withJoin: true);
 

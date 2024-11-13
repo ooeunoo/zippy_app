@@ -8,10 +8,30 @@ import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
 import 'package:zippy/domain/model/params/get_aritlces.params.dart';
 import 'package:zippy/domain/model/params/get_articles_by_keyword.params.dart';
+import 'package:zippy/domain/model/params/get_recommend_aritlces.params.dart';
 
 String TABLE = 'articles';
 
+// CREATE OR REPLACE FUNCTION get_recommended_articles(
+//     user_id UUID DEFAULT NULL,            -- 사용자 ID (NULL인 경우 익명 사용자)
+//     time_range INTERVAL DEFAULT '7 days'::INTERVAL,  -- 기사 검색 시간 범위 (기본값: 7일)
+//     exclude_viewed BOOLEAN DEFAULT true,   -- 이미 본 기사 제외 여부
+//     min_published_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,  -- 최소 발행 시간
+//     max_published_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,  -- 최대 발행 시간
+//     limit_count INTEGER DEFAULT 20         -- 반환할 기사 수
+// )
+enum RPC {
+  getRecommendedArticles('get_recommended_articles'),
+  ;
+
+  final String function;
+
+  const RPC(this.function);
+}
+
 abstract class ArticleDatasource {
+  Future<Either<Failure, List<Article>>> getRecommendedArticles(
+      GetRecommendedArticlesParams params);
   Future<Either<Failure, List<Article>>> getArticles(GetArticlesParams params);
   Future<Either<Failure, Article>> getArticle(int id);
   Future<Either<Failure, List<Article>>> getArticlesByKeyword(
@@ -20,6 +40,25 @@ abstract class ArticleDatasource {
 
 class ArticleDatasourceImpl implements ArticleDatasource {
   SupabaseProvider provider = Get.find();
+
+  @override
+  Future<Either<Failure, List<Article>>> getRecommendedArticles(
+      GetRecommendedArticlesParams params) async {
+    try {
+      var response = await provider.client
+          .rpc(RPC.getRecommendedArticles.function, params: params.toJson());
+
+      print(response);
+      List<Article> result = (response as List)
+          .map((r) => ArticleEntity.fromJson(r).toModel())
+          .toList();
+
+      return Right(result);
+    } catch (e) {
+      print(e);
+      return Left(ServerFailure());
+    }
+  }
 
   @override
   Future<Either<Failure, List<Article>>> getArticles(

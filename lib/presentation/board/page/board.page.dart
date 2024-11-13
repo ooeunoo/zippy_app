@@ -1,18 +1,11 @@
 import 'package:flutter/cupertino.dart';
-import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/app/services/admob_service.dart';
 import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/styles/color.dart';
-import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
-import 'package:zippy/app/utils/assets.dart';
-import 'package:zippy/app/widgets/app_button.dart';
-import 'package:zippy/app/widgets/app_spacer_v.dart';
-import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/ad_content.model.dart';
 import 'package:zippy/domain/model/article.model.dart';
-import 'package:zippy/domain/model/source.model.dart';
 import 'package:zippy/presentation/board/controller/board.controller.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_ad_content_card.dart';
 import 'package:flutter/gestures.dart';
@@ -119,125 +112,69 @@ class _BoardPageState extends State<BoardPage> {
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          Obx(() {
-            if (controller.isLoadingContents.value ||
-                controller.isLoadingUserSubscription.value) {
-              return const Center(
-                child: CupertinoActivityIndicator(
-                  color: AppColor.brand600,
-                ),
-              );
-            }
-            // else if (controller.userSubscriptions.isEmpty) {
-            //   return Column(
-            //       crossAxisAlignment: CrossAxisAlignment.center,
-            //       mainAxisAlignment: MainAxisAlignment.center,
-            //       children: [
-            //         AppSvg(Assets.logo, size: AppDimens.size(200)),
-            //         AppText("채널을 구독하시면 \n다양한 콘텐츠를 만나보실 수 있어요!",
-            //             align: TextAlign.center,
-            //             style: Theme.of(context)
-            //                 .textTheme
-            //                 .text2XL
-            //                 .copyWith(color: AppColor.graymodern100)),
-            //         AppSpacerV(value: AppDimens.height(60)),
-            //         Center(
-            //             child: Padding(
-            //           padding:
-            //               EdgeInsets.symmetric(horizontal: AppDimens.width(20)),
-            //           child: AppButton(
-            //             '채널 구독하기',
-            //             color: AppColor.brand600,
-            //             titleStyle: Theme.of(context)
-            //                 .textTheme
-            //                 .textLG
-            //                 .copyWith(color: AppColor.graymodern100),
-            //             onPressed: () {
-            //               Get.toNamed(Routes.subscription);
-            //             },
-            //             width: double.infinity,
-            //             height: AppDimens.height(50),
-            //           ),
-            //         )),
-            //       ]);
-            // }
-            else {
-              return RefreshIndicator(
+      body: GetX<BoardController>(
+        // GetX를 사용하여 컨트롤러 상태 관찰
+        builder: (controller) {
+          print(
+              "Building main view with ${controller.articles.length} articles");
+
+          if (controller.isLoadingContents.value) {
+            return const Center(
+              child: CupertinoActivityIndicator(
                 color: AppColor.brand600,
-                backgroundColor: AppColor.graymodern950,
-                displacement: 50,
-                strokeWidth: 3,
-                onRefresh: () async {
-                  await articleService.onHandleFetchArticle();
-                },
-                child: PageView.builder(
-                  scrollDirection: Axis.vertical,
-                  pageSnapping: true, // 페이지 스냅 효과 유지
-                  dragStartBehavior: DragStartBehavior.start,
-                  controller: controller.pageController,
-                  onPageChanged: (int pageIndex) =>
-                      controller.onHandleChangedArticle(
-                          pageIndex), // onHandleJumpToArticle 대신 onHandleChangedArticle 사용
-                  physics: const BouncingScrollPhysics(
-                    // 스크롤 물리 효과 추가
-                    parent: AlwaysScrollableScrollPhysics(),
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            color: AppColor.brand600,
+            backgroundColor: AppColor.graymodern950,
+            displacement: 50,
+            strokeWidth: 3,
+            onRefresh: () async {
+              await controller.onHandleFetchRecommendedArticles();
+            },
+            child: PageView.builder(
+              scrollDirection: Axis.vertical,
+              pageSnapping: true,
+              dragStartBehavior: DragStartBehavior.start,
+              controller: controller.pageController,
+              onPageChanged: controller.onHandleChangedArticle,
+              physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics(),
+              ),
+              itemCount: controller.articles.length,
+              itemBuilder: (context, index) {
+                print("Building item at index $index");
+                final article = controller.articles[index];
+
+                if (article.isAd) {
+                  return ZippyAdContentCard(content: article as AdContent);
+                }
+
+                final source = articleService.getSourceById(article.sourceId);
+                final isBookmarked = articleService.isBookmarked(article.id!);
+
+                return GestureDetector(
+                  onTap: () => controller.onHandleClickArticle(article),
+                  child: ZippyArticleCard(
+                    article: article,
+                    source: source,
+                    isBookMarked: isBookmarked,
+                    onHandleBookmarkArticle:
+                        articleService.onHandleBookmarkArticle,
+                    onHandleShareArticle: articleService.onHandleShareArticle,
+                    openMenu: () => controller.onHandleOpenMenu(article),
+                    onHandleGetArticleComments:
+                        articleService.onHandleGetArticleComments,
+                    onHandleCreateArticleComment:
+                        articleService.onHandleCreateArticleComment,
                   ),
-                  scrollBehavior: const ScrollBehavior().copyWith(
-                    // 스크롤 동작 개선
-                    overscroll: false,
-                    physics: const BouncingScrollPhysics(),
-                  ),
-                  itemBuilder: (BuildContext context, int index) {
-                    return Obx(() {
-                      Article article = controller.articles[index];
-                      if (article.isAd) {
-                        AdContent adContent = article as AdContent;
-                        return ZippyAdContentCard(content: adContent);
-                      } else {
-                        Source? source =
-                            articleService.getSourceById(article.sourceId);
-                        bool isBookmarked =
-                            articleService.isBookmarked(article.id!);
-                        return GestureDetector(
-                          onTap: () => controller.onHandleClickArticle(article),
-                          child: ZippyArticleCard(
-                            article: article,
-                            source: source,
-                            isBookMarked: isBookmarked,
-                            onHandleBookmarkArticle:
-                                articleService.onHandleBookmarkArticle,
-                            onHandleShareArticle:
-                                articleService.onHandleShareArticle,
-                            openMenu: () =>
-                                controller.onHandleOpenMenu(article),
-                            onHandleGetArticleComments:
-                                articleService.onHandleGetArticleComments,
-                            onHandleCreateArticleComment:
-                                articleService.onHandleCreateArticleComment,
-                          ),
-                        );
-                      }
-                    });
-                  },
-                  itemCount: controller.articles.length,
-                ),
-              );
-            }
-          }),
-          // if (admobService.bannerAd.value != null) ...{
-          //   Align(
-          //     alignment: Alignment.bottomCenter,
-          //     child: Container(
-          //       color: AppColor.graymodern950,
-          //       width: admobService.bannerAd.value?.size.width.toDouble(),
-          //       height: admobService.bannerAd.value?.size.height.toDouble(),
-          //       child: AdWidget(ad: admobService.bannerAd.value!),
-          //     ),
-          //   )
-          // }
-        ],
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }
