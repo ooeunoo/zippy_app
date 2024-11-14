@@ -41,8 +41,9 @@ class KeywordRankSnapshotDatasourceImpl
           .toList();
 
       return Right(result);
-    } catch (e) {
-      print(e);
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }

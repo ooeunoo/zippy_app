@@ -29,10 +29,10 @@ class SourceDatasourceImpl implements SourceDatasource {
       List<Source> result =
           response.map((r) => SourceEntity.fromJson(r).toModel()).toList();
 
-      print(result);
       return Right(result);
-    } catch (e) {
-      print(e);
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -57,7 +57,9 @@ class SourceDatasourceImpl implements SourceDatasource {
           response.map((r) => SourceEntity.fromJson(r).toModel()).toList();
 
       return Right(result);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -75,7 +77,9 @@ class SourceDatasourceImpl implements SourceDatasource {
       Source result = SourceEntity.fromJson(response).toModel();
 
       return Right(result);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }

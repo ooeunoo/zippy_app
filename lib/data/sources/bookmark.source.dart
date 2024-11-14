@@ -25,7 +25,9 @@ class BookmarkDatasourceImpl implements BookmarkDatasource {
     try {
       await provider.client.from(TABLE).insert(bookmark.toParams());
       return const Right(true);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -35,7 +37,9 @@ class BookmarkDatasourceImpl implements BookmarkDatasource {
     try {
       await provider.client.from(TABLE).delete().match(bookmark.toParams());
       return const Right(true);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -56,7 +60,9 @@ class BookmarkDatasourceImpl implements BookmarkDatasource {
       List<Bookmark> result =
           response.map((r) => BookmarkEntity.fromJson(r).toModel()).toList();
       return Right(result);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }

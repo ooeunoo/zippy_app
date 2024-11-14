@@ -38,7 +38,9 @@ class AuthDatasourceImpl implements AuthDatasource {
           await userDatasource.getUser(currentUser.id);
 
       return result;
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -67,7 +69,9 @@ class AuthDatasourceImpl implements AuthDatasource {
     try {
       await provider.client.auth.signOut();
       return const Right(true);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -87,7 +91,9 @@ class AuthDatasourceImpl implements AuthDatasource {
 
       User user = UserEntity.fromJson(response.user!.toJson()).toModel();
       return Right(user);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -111,7 +117,9 @@ class AuthDatasourceImpl implements AuthDatasource {
 
       User user = UserEntity.fromJson(response.user!.toJson()).toModel();
       return Right(user);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -150,8 +158,9 @@ class AuthDatasourceImpl implements AuthDatasource {
       );
 
       return const Right(true);
-    } catch (e) {
-      print(e);
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }

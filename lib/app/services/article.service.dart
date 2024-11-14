@@ -49,7 +49,7 @@ class ArticleService extends GetxService {
   final GetArticleComments getArticleComments = Get.find();
   final CreateArticleComment createArticleComment = Get.find();
 
-  Rx<ArticleViewType> currentViewType = ArticleViewType.Keypoint.obs;
+  Rx<ArticleViewType> currentViewType = ArticleViewType.Summary.obs;
   RxBool isLoadingUserSubscription = RxBool(true).obs();
   RxMap<int, Source> sources = RxMap<int, Source>({}).obs();
   RxList<UserSubscription> userSubscriptions =

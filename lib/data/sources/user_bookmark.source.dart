@@ -36,7 +36,9 @@ class UserBookmarkDatasourceImpl implements UserBookmarkDatasource {
       await box.put(UserBookmarkKey.all.name, bookmarks);
 
       return Right(toBookmarkModelAll());
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -51,7 +53,9 @@ class UserBookmarkDatasourceImpl implements UserBookmarkDatasource {
       await box.put(UserBookmarkKey.all.name, bookmarks);
 
       return Right(toBookmarkModelAll());
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -60,7 +64,9 @@ class UserBookmarkDatasourceImpl implements UserBookmarkDatasource {
   Future<Either<Failure, List<UserBookmark>>> getBookmarks() async {
     try {
       return Right(toBookmarkModelAll());
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }

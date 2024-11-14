@@ -53,8 +53,9 @@ class ArticleDatasourceImpl implements ArticleDatasource {
           .toList();
 
       return Right(result);
-    } catch (e) {
-      print(e);
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -77,8 +78,9 @@ class ArticleDatasourceImpl implements ArticleDatasource {
           response.map((r) => ArticleEntity.fromJson(r).toModel()).toList();
 
       return Right(result);
-    } catch (e) {
-      print(e);
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -98,7 +100,9 @@ class ArticleDatasourceImpl implements ArticleDatasource {
           response.map((r) => ArticleEntity.fromJson(r).toModel()).toList();
 
       return Right(result);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -115,7 +119,9 @@ class ArticleDatasourceImpl implements ArticleDatasource {
       Article result = ArticleEntity.fromJson(response).toModel();
 
       return Right(result);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }

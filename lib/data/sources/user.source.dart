@@ -26,7 +26,9 @@ class UserDatasourceImpl implements UserDatasource {
       User? result =
           response != null ? UserEntity.fromJson(response).toModel() : null;
       return Right(result);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }

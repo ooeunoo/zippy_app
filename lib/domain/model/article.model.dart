@@ -7,12 +7,12 @@ class Article extends Equatable {
   final int? id;
   final int sourceId;
   final String title;
-  final String? subtitle;
-  final String? subtitleEn;
+  // final String? subtitle;
+  // final String? subtitleEn;
   final String link;
   final String author;
   final String content;
-  final String formattedContent;
+  // final String formattedContent;
   final List<dynamic> images;
   // final String tags;
   final String? summary;
@@ -37,12 +37,12 @@ class Article extends Equatable {
     this.id,
     required this.sourceId,
     required this.title,
-    this.subtitle,
-    this.subtitleEn,
+    // this.subtitle,
+    // this.subtitleEn,
     required this.link,
     required this.author,
     required this.content,
-    required this.formattedContent,
+    // required this.formattedContent,
     required this.images,
     // required this.tags,
     this.summary,
@@ -77,11 +77,11 @@ class Article extends Equatable {
         'sourceId': sourceId,
         'link': link,
         'title': title,
-        "subtitle": subtitle,
-        "subtitleEn": subtitleEn,
+        // "subtitle": subtitle,
+        // "subtitleEn": subtitleEn,
         "author": author,
         "content": content,
-        "formattedContent": formattedContent,
+        // "formattedContent": formattedContent,
         "images": images,
         // "tags": tags,
         "summary": summary,

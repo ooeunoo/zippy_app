@@ -9,11 +9,11 @@ class AdContent extends Article {
   AdContent({
     super.sourceId = 0,
     super.title = '',
-    super.subtitle = '',
+    // super.subtitle = '',
     super.link = '',
     super.author = '',
     super.content = '',
-    super.formattedContent = '',
+    // super.formattedContent = '',
     super.images = const [],
     // super.tags = '',
     super.summary = '',

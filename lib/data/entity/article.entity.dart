@@ -9,12 +9,12 @@ class ArticleEntity extends Equatable {
   final int? id;
   final int source_id;
   final String title;
-  final String? subtitle;
-  final String? subtitle_en;
+  // final String? subtitle;
+  // final String? subtitle_en;
   final String link;
   final String author;
   final String content;
-  final String formatted_content;
+  // final String formatted_content;
   // final String formatted_content_en;
   final List<dynamic> images;
   // final String tags;
@@ -37,12 +37,12 @@ class ArticleEntity extends Equatable {
     this.id,
     required this.source_id,
     required this.title,
-    this.subtitle,
-    this.subtitle_en,
+    // this.subtitle,
+    // this.subtitle_en,
     required this.link,
     required this.author,
     required this.content,
-    required this.formatted_content,
+    // required this.formatted_content,
     // required this.formatted_content_en,
     required this.images,
     // required this.tags,
@@ -90,12 +90,12 @@ class ArticleEntity extends Equatable {
       id: json['id'],
       source_id: json['source_id'],
       title: json['title'],
-      subtitle: json['subtitle'],
-      subtitle_en: json['subtitle_en'],
+      // subtitle: json['subtitle'],
+      // subtitle_en: json['subtitle_en'],
       link: json['link'],
       author: json['author'],
       content: json['content'],
-      formatted_content: json['formatted_content'],
+      // formatted_content: json['formatted_content'],
       // formatted_content_en: json['formatted_content_en'],
       images: json['images'],
       // tags: json['tags'],
@@ -125,11 +125,11 @@ class ArticleEntity extends Equatable {
       sourceId: source_id,
       link: link,
       title: title,
-      subtitle: subtitle,
-      subtitleEn: subtitle_en,
+      // subtitle: subtitle,
+      // subtitleEn: subtitle_en,
       author: author,
       content: content,
-      formattedContent: formatted_content,
+      // formattedContent: formatted_content,
       // formattedContentEn: formatted_content_en,
       images: images,
       // tags: tags,

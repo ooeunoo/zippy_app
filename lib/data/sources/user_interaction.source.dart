@@ -30,8 +30,9 @@ class UserInteractionDatasourceImpl implements UserInteractionDatasource {
           .single();
 
       return Right(UserInteractionEntity.fromJson(result).toModel());
-    } catch (e) {
-      print(e);
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -46,7 +47,9 @@ class UserInteractionDatasourceImpl implements UserInteractionDatasource {
           .eq('id', params.id)
           .select('*');
       return const Right(true);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }

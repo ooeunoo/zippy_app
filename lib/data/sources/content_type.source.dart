@@ -26,8 +26,9 @@ class ContentTypeDatasourceImpl implements ContentTypeDatasource {
           response.map((r) => ContentTypeEntity.fromJson(r).toModel()).toList();
 
       return Right(result);
-    } catch (e) {
-      print(e);
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }

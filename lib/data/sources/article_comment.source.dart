@@ -40,8 +40,9 @@ class ArticleCommentDatasourceImpl implements ArticleCommentDatasource {
           .toList();
 
       return Right(comments);
-    } catch (e) {
-      print(e);
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -59,8 +60,9 @@ class ArticleCommentDatasourceImpl implements ArticleCommentDatasource {
       ArticleComment comment =
           ArticleCommentEntity.fromJson(response).toModel();
       return Right(comment);
-    } catch (e) {
-      print(e);
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }

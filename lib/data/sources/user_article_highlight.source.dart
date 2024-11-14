@@ -47,7 +47,9 @@ class UserArticleHighlightDatasourceImpl
           .toList();
 
       return Right(result);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -67,7 +69,9 @@ class UserArticleHighlightDatasourceImpl
           UserArticleHighlightEntity.fromJson(response).toModel();
 
       return Right(result);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -78,7 +82,9 @@ class UserArticleHighlightDatasourceImpl
     try {
       await provider.client.from(TABLE).insert(params.toJson());
       return const Right(true);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Caught an exception: $e');
+      print('Stack Trace: $stackTrace');
       return Left(ServerFailure());
     }
   }

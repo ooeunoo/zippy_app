@@ -18,16 +18,16 @@ class ZippyArticleView extends StatefulWidget {
   final ScrollController? scrollController;
   final Article article;
   final Function(int, int)? handleUpdateUserInteraction;
-  final ArticleViewType viewType; // 추가
-  final Function(ArticleViewType) onViewTypeChanged; // 추가
+  final ArticleViewType viewType;
+  final Function(ArticleViewType) onViewTypeChanged;
 
   const ZippyArticleView({
     super.key,
     this.scrollController,
     required this.article,
     this.handleUpdateUserInteraction,
-    required this.viewType, // 추가
-    required this.onViewTypeChanged, // 추가
+    required this.viewType,
+    required this.onViewTypeChanged,
   });
   @override
   State<ZippyArticleView> createState() => _ZippyArticleViewState();
@@ -68,15 +68,32 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
             });
           },
           onPageFinished: (String url) async {
-            // 웹뷰 스타일 및 스크롤 설정
+            // 웹뷰 최적화 설정
             await _webViewController.runJavaScript('''
-            document.querySelector('meta[name="viewport"]')?.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0');
-            document.body.style.overflow = 'scroll';
-            document.documentElement.style.overflow = 'scroll';
-            document.body.style.pointerEvents = 'none';
-            document.documentElement.style.pointerEvents = 'none';
-            true;
-          ''');
+              // 뷰포트 설정
+              document.querySelector('meta[name="viewport"]')?.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0');
+              
+              // 불필요한 리소스 로딩 차단
+              const blockElements = document.querySelectorAll('img, video, iframe, script');
+              blockElements.forEach(el => el.remove());
+              
+              // 스타일 최적화
+              document.body.style.cssText = 'overflow: scroll; pointer-events: none;';
+              document.documentElement.style.cssText = 'overflow: scroll; pointer-events: none;';
+              
+              // 불필요한 요소 제거
+              const removeSelectors = [
+                'header', 'footer', 'nav', 'aside', 
+                '.ad', '.advertisement', '.social-share',
+                '#comments', '.related-posts'
+              ];
+              removeSelectors.forEach(selector => {
+                document.querySelectorAll(selector).forEach(el => el.remove());
+              });
+              
+              true;
+            ''');
+
             setState(() {
               _isWebViewLoading = false;
             });
@@ -167,7 +184,6 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
         const AppDivider(color: AppColor.gray600, height: 2),
         AppSpacerV(value: AppDimens.height(15)),
         switch (widget.viewType) {
-          ArticleViewType.Keypoint => _buildKeyPoints(),
           ArticleViewType.Summary => _buildSummary(),
           _ => const SizedBox.shrink(),
         },
@@ -220,15 +236,14 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
     );
   }
 
-  Widget _buildKeyPoints() {
+  Widget _buildSummary() {
     if (widget.article.keyPoints == null) return const SizedBox.shrink();
 
     return Container(
       margin: const EdgeInsets.only(top: 2),
       padding: EdgeInsets.symmetric(horizontal: AppDimens.width(16)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        if (widget.article.summary != null)
           Row(
             children: [
               Container(
@@ -249,14 +264,54 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
               ),
             ],
           ),
-          SizedBox(height: AppDimens.height(16)),
-          ...widget.article.keyPoints!.map((point) => _buildKeyPoint(point)),
+        AppSpacerV(value: AppDimens.height(16)),
+        _buildSummaryItem(widget.article.summary!),
+        if (widget.article.keyPoints!.isNotEmpty) ...[
+          AppSpacerV(value: AppDimens.height(16)),
+          Row(
+            children: [
+              Container(
+                width: 3,
+                height: 20,
+                decoration: BoxDecoration(
+                  color: AppColor.brand600,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              SizedBox(width: AppDimens.width(8)),
+              AppText(
+                'Key Point',
+                style: Theme.of(context).textTheme.textLG.copyWith(
+                      color: AppColor.gray50,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ],
+          ),
+          AppSpacerV(value: AppDimens.height(16)),
+          ...widget.article.keyPoints!
+              .map((point) => _buildKeyPointItem(point)),
+        ],
+      ]),
+    );
+  }
+
+  Widget _buildSummaryItem(String summary) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: AppDimens.height(5)),
+      child: Column(
+        children: [
+          AppText(summary,
+              style: Theme.of(context)
+                  .textTheme
+                  .textMD
+                  .copyWith(color: AppColor.gray400)),
         ],
       ),
     );
   }
 
-  Widget _buildKeyPoint(String point) {
+  Widget _buildKeyPointItem(String point) {
     return Container(
       padding: EdgeInsets.symmetric(
         vertical: AppDimens.height(5),
@@ -264,10 +319,10 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
       child: Column(
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start, // center로 변경
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.only(top: AppDimens.height(5)), // 미세 조정
+                padding: EdgeInsets.only(top: AppDimens.height(5)),
                 child: const Icon(
                   Icons.check_circle_outline_rounded,
                   size: 16,
@@ -288,74 +343,6 @@ class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
             ],
           ),
           AppSpacerV(value: AppDimens.height(5)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSummary() {
-    return Container(
-      margin: const EdgeInsets.only(top: 2),
-      padding: EdgeInsets.symmetric(horizontal: AppDimens.width(16)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          MarkdownBody(
-            data: widget.article.formattedContent,
-            selectable: true,
-            styleSheet: MarkdownStyleSheet(
-              p: Theme.of(context).textTheme.textMD.copyWith(
-                    color: AppColor.gray200,
-                    height: 1.6,
-                  ),
-              h1: Theme.of(context).textTheme.textXL.copyWith(
-                    color: AppColor.gray50,
-                    fontWeight: FontWeight.bold,
-                    height: 1.5,
-                  ),
-              h2: Theme.of(context).textTheme.textLG.copyWith(
-                    color: AppColor.gray50,
-                    fontWeight: FontWeight.bold,
-                    height: 1.5,
-                  ),
-              h3: Theme.of(context).textTheme.textLG.copyWith(
-                    color: AppColor.gray50,
-                    fontWeight: FontWeight.bold,
-                    height: 1.5,
-                  ),
-              strong: Theme.of(context).textTheme.textMD.copyWith(
-                    color: AppColor.gray50,
-                    fontWeight: FontWeight.bold,
-                  ),
-              em: Theme.of(context).textTheme.textMD.copyWith(
-                    color: AppColor.gray200,
-                    fontStyle: FontStyle.italic,
-                  ),
-              blockquote: Theme.of(context).textTheme.textMD.copyWith(
-                    color: AppColor.gray400,
-                    height: 1.6,
-                  ),
-              blockquoteDecoration: const BoxDecoration(
-                border: Border(
-                  left: BorderSide(
-                    color: AppColor.brand600,
-                    width: 4,
-                  ),
-                ),
-              ),
-              code: Theme.of(context).textTheme.textMD.copyWith(
-                    color: AppColor.brand600,
-                    fontFamily: 'monospace',
-                  ),
-              codeblockDecoration: BoxDecoration(
-                color: AppColor.gray800,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              listBullet: Theme.of(context).textTheme.textMD.copyWith(
-                    color: AppColor.gray200,
-                  ),
-            ),
-          ),
         ],
       ),
     );

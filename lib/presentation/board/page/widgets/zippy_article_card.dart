@@ -84,7 +84,7 @@ class ZippyArticleCard extends StatelessWidget {
 
   Widget _buildContentTypeLabel(BuildContext context) {
     return Positioned(
-      top: AppDimens.height(50),
+      top: AppDimens.height(70),
       right: AppDimens.width(20),
       child: Container(
         width: AppDimens.width(50),
@@ -93,7 +93,8 @@ class ZippyArticleCard extends StatelessWidget {
           vertical: AppDimens.height(4),
         ),
         decoration: BoxDecoration(
-          color: Color(int.parse(source?.contentType?.color ?? '0xff000000')),
+          color: Color(int.parse(source?.contentType?.color ?? '0xff000000'))
+              .withOpacity(0.7),
           borderRadius: BorderRadius.circular(AppDimens.size(4)),
         ),
         child: AppText(
@@ -154,29 +155,29 @@ class ZippyArticleCard extends StatelessWidget {
             ),
           ),
         ),
-        AppSpacerH(value: AppDimens.width(4)),
-        AppText(
-          '·',
-          style: Theme.of(context).textTheme.textSM.copyWith(
-                color: AppColor.graymodern400,
-              ),
-        ),
-        AppSpacerH(value: AppDimens.width(4)),
-        Flexible(
-          child: Container(
-            constraints: BoxConstraints(
-              maxWidth: AppDimens.width(80),
-            ),
-            child: AppText(
-              article.author,
-              style: Theme.of(context).textTheme.textSM.copyWith(
-                    color: AppColor.graymodern400,
-                  ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
+        // AppSpacerH(value: AppDimens.width(4)),
+        // AppText(
+        //   '·',
+        //   style: Theme.of(context).textTheme.textSM.copyWith(
+        //         color: AppColor.graymodern400,
+        //       ),
+        // ),
+        // AppSpacerH(value: AppDimens.width(4)),
+        // Flexible(
+        //   child: Container(
+        //     constraints: BoxConstraints(
+        //       maxWidth: AppDimens.width(80),
+        //     ),
+        //     child: AppText(
+        //       article.author,
+        //       style: Theme.of(context).textTheme.textSM.copyWith(
+        //             color: AppColor.graymodern400,
+        //           ),
+        //       maxLines: 1,
+        //       overflow: TextOverflow.ellipsis,
+        //     ),
+        //   ),
+        // ),
         AppSpacerH(value: AppDimens.width(4)),
         AppText(
           '·',
