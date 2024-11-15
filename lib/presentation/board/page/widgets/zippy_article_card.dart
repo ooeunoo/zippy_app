@@ -5,6 +5,7 @@ import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
+import 'package:zippy/app/widgets/app_random_image.dart';
 import 'package:zippy/app/widgets/app_shadow_overlay.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
@@ -75,11 +76,11 @@ class ZippyArticleCard extends StatelessWidget {
             placeholder: (context, url) => Container(
               color: AppColor.graymodern950.withOpacity(0.5),
             ),
-            errorWidget: (context, url, error) => _RandomImageWidget(
+            errorWidget: (context, url, error) => AppRandomImage(
               id: article.id.toString(),
             ),
           )
-        : _RandomImageWidget(id: article.id.toString());
+        : AppRandomImage(id: article.id.toString());
   }
 
   Widget _buildContentTypeLabel(BuildContext context) {
@@ -137,7 +138,6 @@ class ZippyArticleCard extends StatelessWidget {
   }
 
   Widget _buildPlatformAndAuthorAndTime(BuildContext context) {
-    print('source?.platform?.id: ${source?.platform?.toJson()}');
     return Row(
       children: [
         Flexible(
@@ -155,29 +155,6 @@ class ZippyArticleCard extends StatelessWidget {
             ),
           ),
         ),
-        // AppSpacerH(value: AppDimens.width(4)),
-        // AppText(
-        //   '·',
-        //   style: Theme.of(context).textTheme.textSM.copyWith(
-        //         color: AppColor.graymodern400,
-        //       ),
-        // ),
-        // AppSpacerH(value: AppDimens.width(4)),
-        // Flexible(
-        //   child: Container(
-        //     constraints: BoxConstraints(
-        //       maxWidth: AppDimens.width(80),
-        //     ),
-        //     child: AppText(
-        //       article.author,
-        //       style: Theme.of(context).textTheme.textSM.copyWith(
-        //             color: AppColor.graymodern400,
-        //           ),
-        //       maxLines: 1,
-        //       overflow: TextOverflow.ellipsis,
-        //     ),
-        //   ),
-        // ),
         AppSpacerH(value: AppDimens.width(4)),
         AppText(
           '·',
@@ -280,41 +257,6 @@ class ZippyArticleCard extends StatelessWidget {
           ),
       maxLines: 6,
       overflow: TextOverflow.ellipsis,
-    );
-  }
-}
-
-class _RandomImageWidget extends StatelessWidget {
-  final String id;
-
-  const _RandomImageWidget({required this.id});
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        AppShadowOverlay(
-          shadowColor: AppColor.graymodern950,
-          child: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(Assets.randomImage(id)),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.center,
-          child: AppText(
-            "해당 이미지는 콘텐츠와 관련없습니다",
-            style: Theme.of(context)
-                .textTheme
-                .textSM
-                .copyWith(color: AppColor.graymodern100),
-          ),
-        )
-      ],
     );
   }
 }

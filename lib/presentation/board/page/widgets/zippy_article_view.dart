@@ -1,409 +1,261 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:get/get.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:zippy/app/styles/color.dart';
-import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
-import 'package:zippy/app/widgets/app_divider.dart';
-import 'package:zippy/app/widgets/app_spacer_h.dart';
-import 'package:zippy/app/widgets/app_spacer_v.dart';
-import 'package:zippy/app/widgets/app_text.dart';
-import 'package:zippy/domain/enum/article_view_type.enum.dart';
 import 'package:zippy/domain/model/article.model.dart';
 
 class ZippyArticleView extends StatefulWidget {
-  final ScrollController? scrollController;
   final Article article;
-  final Function(int, int)? handleUpdateUserInteraction;
-  final ArticleViewType viewType;
-  final Function(ArticleViewType) onViewTypeChanged;
 
-  const ZippyArticleView({
-    super.key,
-    this.scrollController,
-    required this.article,
-    this.handleUpdateUserInteraction,
-    required this.viewType,
-    required this.onViewTypeChanged,
-  });
+  const ZippyArticleView({Key? key, required this.article}) : super(key: key);
+
   @override
-  State<ZippyArticleView> createState() => _ZippyArticleViewState();
+  _ZippyArticleViewState createState() => _ZippyArticleViewState();
 }
 
-class _ZippyArticleViewState extends State<ZippyArticleView> with RouteAware {
-  DateTime? _startTime;
-  late WebViewController _webViewController;
-  bool _isWebViewLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _startTime = DateTime.now();
-    _initWebViewController();
-  }
-
-  @override
-  void dispose() {
-    _handleUserInteraction();
-    super.dispose();
-  }
-
-  void _handleUserInteraction() {
-    final duration = DateTime.now().difference(_startTime!);
-    widget.handleUpdateUserInteraction?.call(0, duration.inSeconds);
-  }
-
-  void _initWebViewController() {
-    _webViewController = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..enableZoom(false)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onPageStarted: (String url) {
-            setState(() {
-              _isWebViewLoading = true;
-            });
-          },
-          onPageFinished: (String url) async {
-            // 웹뷰 최적화 설정
-            await _webViewController.runJavaScript('''
-              // 뷰포트 설정
-              document.querySelector('meta[name="viewport"]')?.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0');
-              
-              // 불필요한 리소스 로딩 차단
-              const blockElements = document.querySelectorAll('img, video, iframe, script');
-              blockElements.forEach(el => el.remove());
-              
-              // 스타일 최적화
-              document.body.style.cssText = 'overflow: scroll; pointer-events: none;';
-              document.documentElement.style.cssText = 'overflow: scroll; pointer-events: none;';
-              
-              // 불필요한 요소 제거
-              const removeSelectors = [
-                'header', 'footer', 'nav', 'aside', 
-                '.ad', '.advertisement', '.social-share',
-                '#comments', '.related-posts'
-              ];
-              removeSelectors.forEach(selector => {
-                document.querySelectorAll(selector).forEach(el => el.remove());
-              });
-              
-              true;
-            ''');
-
-            setState(() {
-              _isWebViewLoading = false;
-            });
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse(widget.article.link));
-  }
+class _ZippyArticleViewState extends State<ZippyArticleView> {
+  bool _isCommentsOpen = false;
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: true,
-      onPopInvoked: (didPop) {
-        if (didPop) _handleUserInteraction();
-      },
-      child: Scaffold(
-        body: _buildBody(),
-        floatingActionButton: _buildFloatingButtons(),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    return Scaffold(
+      appBar: _buildAppBar(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildHeaderSection(),
+            _buildKeyPointsAndSummary(),
+            _buildContent(),
+            _buildKeywords(),
+          ],
+        ),
+      ),
+      bottomSheet: _isCommentsOpen ? _buildCommentSection() : null,
+    );
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      leading: IconButton(
+        icon: Icon(Icons.chevron_left),
+        onPressed: () => Navigator.pop(context),
+      ),
+      title: Text(
+        '뉴스',
+        style: Theme.of(context).textTheme.textXL,
+      ),
+      actions: [
+        IconButton(
+          icon: Icon(Icons.more_vert),
+          onPressed: () {},
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHeaderSection() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildMainImage(),
+          SizedBox(height: 16),
+          Text(
+            widget.article.title,
+            style: Theme.of(context)
+                .textTheme
+                .textXL
+                .copyWith(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 8),
+          Text(
+            widget.article.subtitle ?? '',
+            style: Theme.of(context)
+                .textTheme
+                .textSM
+                .copyWith(color: AppColor.graymodern600),
+          ),
+          SizedBox(height: 16),
+          _buildEngagementSection(),
+        ],
       ),
     );
   }
 
-  Widget _buildBody() {
-    return Column(
-      children: [
-        // 드래그 핸들 - 항상 표시
-        Container(
-          margin: EdgeInsets.symmetric(vertical: AppDimens.height(12)),
-          width: AppDimens.width(40),
-          height: AppDimens.height(4),
-          decoration: BoxDecoration(
-            color: AppColor.graymodern600,
-            borderRadius: BorderRadius.circular(2),
-          ),
-        ),
-        // 컨텐츠
-        Expanded(
-          child: widget.viewType == ArticleViewType.Original
-              ? _buildWebView()
-              : _buildContent(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildWebView() {
-    return Column(
-      children: [
-        Expanded(
-          child: SizedBox(
-            width: double.infinity,
-            child: Stack(
-              children: [
-                WebViewWidget(
-                  controller: _webViewController,
-                  gestureRecognizers: {
-                    Factory<VerticalDragGestureRecognizer>(
-                      () => VerticalDragGestureRecognizer(),
-                    ),
-                  },
-                ),
-                if (_isWebViewLoading)
-                  Container(
-                    color: AppColor.gray900,
-                    child: const Center(
-                      child: CircularProgressIndicator(
-                        color: AppColor.brand600,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ),
-        SizedBox(height: AppDimens.height(80)),
-      ],
-    );
-  }
-
-  Widget _buildContent() {
-    return ListView(
-      controller: widget.scrollController,
-      children: [
-        _buildEngagementSection(),
-        AppSpacerV(value: AppDimens.height(15)),
-        const AppDivider(color: AppColor.gray600, height: 2),
-        AppSpacerV(value: AppDimens.height(15)),
-        switch (widget.viewType) {
-          ArticleViewType.Summary => _buildSummary(),
-          _ => const SizedBox.shrink(),
-        },
-        AppSpacerV(value: AppDimens.height(80)),
-      ],
+  Widget _buildMainImage() {
+    return Container(
+      height: 200,
+      width: double.infinity,
+      child: CachedNetworkImage(
+        imageUrl:
+            widget.article.images.isNotEmpty ? widget.article.images[0] : '',
+        fit: BoxFit.cover,
+        placeholder: (context, url) => Container(color: Colors.grey[300]),
+        errorWidget: (context, url, error) => Icon(Icons.error),
+      ),
     );
   }
 
   Widget _buildEngagementSection() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Text(widget.article.author),
+            SizedBox(width: 8),
+            Text(widget.article.published.toString()),
+          ],
+        ),
+        Row(
+          children: [
+            Icon(Icons.remove_red_eye, size: 16),
+            SizedBox(width: 4),
+            Text(widget.article.metadata?.viewCount.toString() ?? '0'),
+            SizedBox(width: 16),
+            GestureDetector(
+              onTap: () => setState(() => _isCommentsOpen = true),
+              child: Row(
+                children: [
+                  Icon(Icons.chat_bubble_outline, size: 16),
+                  SizedBox(width: 4),
+                  Text(widget.article.metadata?.commentCount.toString() ?? '0'),
+                ],
+              ),
+            ),
+            SizedBox(width: 16),
+            Icon(Icons.share, size: 16),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildKeyPointsAndSummary() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: AppDimens.width(16)),
+      margin: EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(8),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppText(
-            widget.article.title,
-            style: Theme.of(context).textTheme.textXL.copyWith(
-                  color: AppColor.gray50,
-                  fontWeight: FontWeight.bold,
-                  height: 1.3,
-                ),
+          Text('주요 포인트', style: Theme.of(context).textTheme.textXL),
+          SizedBox(height: 8),
+          Column(
+            children: widget.article.keyPoints
+                    ?.map((point) => Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('• ',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Expanded(child: Text(point)),
+                            ],
+                          ),
+                        ))
+                    .toList() ??
+                [],
           ),
-          AppSpacerV(value: AppDimens.height(12)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              const Icon(Icons.remove_red_eye,
-                  size: 16, color: AppColor.gray400),
-              AppSpacerH(value: AppDimens.width(4)),
-              AppText(
-                '2.4k',
-                style: Theme.of(context).textTheme.textSM.copyWith(
-                      color: AppColor.gray400,
-                    ),
-              ),
-              AppSpacerH(value: AppDimens.width(16)),
-              const Icon(Icons.chat_bubble_outline,
-                  size: 16, color: AppColor.gray400),
-              AppSpacerH(value: AppDimens.width(4)),
-              AppText(
-                '42',
-                style: Theme.of(context).textTheme.textSM.copyWith(
-                      color: AppColor.gray400,
-                    ),
-              ),
-            ],
-          ),
+          SizedBox(height: 16),
+          Text('요약', style: Theme.of(context).textTheme.textXL),
+          SizedBox(height: 8),
+          Text(widget.article.summary ?? ''),
         ],
       ),
     );
   }
 
-  Widget _buildSummary() {
-    if (widget.article.keyPoints == null) return const SizedBox.shrink();
-
-    return Container(
-      margin: const EdgeInsets.only(top: 2),
-      padding: EdgeInsets.symmetric(horizontal: AppDimens.width(16)),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        if (widget.article.summary != null)
-          Row(
-            children: [
-              Container(
-                width: 3,
-                height: 20,
-                decoration: BoxDecoration(
-                  color: AppColor.brand600,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              SizedBox(width: AppDimens.width(8)),
-              AppText(
-                '이것만 알면 끝!',
-                style: Theme.of(context).textTheme.textLG.copyWith(
-                      color: AppColor.gray50,
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-            ],
-          ),
-        AppSpacerV(value: AppDimens.height(16)),
-        _buildSummaryItem(widget.article.summary!),
-        if (widget.article.keyPoints!.isNotEmpty) ...[
-          AppSpacerV(value: AppDimens.height(16)),
-          Row(
-            children: [
-              Container(
-                width: 3,
-                height: 20,
-                decoration: BoxDecoration(
-                  color: AppColor.brand600,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              SizedBox(width: AppDimens.width(8)),
-              AppText(
-                'Key Point',
-                style: Theme.of(context).textTheme.textLG.copyWith(
-                      color: AppColor.gray50,
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-            ],
-          ),
-          AppSpacerV(value: AppDimens.height(16)),
-          ...widget.article.keyPoints!
-              .map((point) => _buildKeyPointItem(point)),
-        ],
-      ]),
-    );
-  }
-
-  Widget _buildSummaryItem(String summary) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: AppDimens.height(5)),
-      child: Column(
-        children: [
-          AppText(summary,
-              style: Theme.of(context)
-                  .textTheme
-                  .textMD
-                  .copyWith(color: AppColor.gray400)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildKeyPointItem(String point) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        vertical: AppDimens.height(5),
-      ),
-      child: Column(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(top: AppDimens.height(5)),
-                child: const Icon(
-                  Icons.check_circle_outline_rounded,
-                  size: 16,
-                  color: AppColor.brand600,
-                ),
-              ),
-              AppSpacerH(value: AppDimens.width(4)),
-              Expanded(
-                child: AppText(
-                  point,
-                  maxLines: 2,
-                  style: Theme.of(context).textTheme.textMD.copyWith(
-                        color: AppColor.gray200,
-                        height: 1.5,
-                      ),
-                ),
-              ),
-            ],
-          ),
-          AppSpacerV(value: AppDimens.height(5)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFloatingButtons() {
-    final availableTypes = ArticleViewType.values
-        .where((type) => type != widget.viewType)
-        .toList();
-
-    final buttons = List.generate(availableTypes.length, (index) {
-      final type = availableTypes[index];
-      final config = type.buttonConfig;
-
-      // 위치에 따라 마진 설정
-      EdgeInsets margin;
-      if (index == 0) {
-        margin = EdgeInsets.only(right: AppDimens.width(8));
-      } else if (index == availableTypes.length - 1) {
-        margin = EdgeInsets.only(left: AppDimens.width(8));
-      } else {
-        margin = EdgeInsets.symmetric(horizontal: AppDimens.width(8));
-      }
-
-      return Expanded(
-        child: Container(
-          margin: margin,
-          height: AppDimens.height(48),
-          child: FloatingActionButton.extended(
-            heroTag: type.name,
-            // 좌측은 gray700, 우측은 brand600
-            backgroundColor: index == 0 ? AppColor.gray700 : AppColor.brand600,
-            onPressed: () => widget.onViewTypeChanged(type),
-            label: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  config.$1,
-                  color: AppColor.gray50,
-                  size: 20,
-                ),
-                AppSpacerH(value: AppDimens.width(8)),
-                AppText(
-                  config.$2,
-                  style: Theme.of(context).textTheme.textMD.copyWith(
-                        color: AppColor.gray50,
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    });
-
+  Widget _buildContent() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppDimens.width(16)),
+      padding: const EdgeInsets.all(16.0),
+      child: Text(widget.article.content ?? ''),
+    );
+  }
+
+  Widget _buildKeywords() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: widget.article.keywords
+                ?.map((keyword) => Chip(
+                      label: Text('#$keyword'),
+                      backgroundColor: Colors.grey[200],
+                    ))
+                .toList() ??
+            [],
+      ),
+    );
+  }
+
+  Widget _buildCommentSection() {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.8,
+      child: Column(
+        children: [
+          _buildCommentHeader(),
+          Expanded(child: _buildCommentList()),
+          _buildCommentInput(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCommentHeader() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: buttons,
+        children: [
+          Text('댓글', style: Theme.of(context).textTheme.textXL),
+          IconButton(
+            icon: Icon(Icons.close),
+            onPressed: () => setState(() => _isCommentsOpen = false),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCommentList() {
+    // Implement comment list here
+    return ListView();
+  }
+
+  Widget _buildCommentInput() {
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: Colors.grey[300]!)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: '댓글 달기...',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: 8),
+          IconButton(
+            icon: Icon(Icons.send),
+            onPressed: () {},
+          ),
+        ],
       ),
     );
   }

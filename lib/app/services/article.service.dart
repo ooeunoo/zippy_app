@@ -166,38 +166,14 @@ class ArticleService extends GetxService {
     final handleUpdateInteraction =
         await _createViewInteractionCallback(article.id!);
 
-    await showModalBottomSheet(
-      context: Get.context!,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      useSafeArea: true,
-      elevation: 0,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.95,
-        maxChildSize: 0.95,
-        snap: true,
-        snapSizes: const [0.95],
-        builder: (context, scrollController) {
-          return ClipRRect(
-            // 추가
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-            child: Container(
-                decoration: const BoxDecoration(
-                  color: AppColor.transparent,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                ),
-                child: Obx(
-                  () => ZippyArticleView(
-                    scrollController: scrollController,
-                    article: article,
-                    handleUpdateUserInteraction: handleUpdateInteraction,
-                    viewType: currentViewType.value, // 현재 뷰 타입 전달
-                    onViewTypeChanged: onHandleChangeViewType, // 상태 변경 콜백 전달
-                  ),
-                )),
-          );
-        },
+    Get.to(
+      () => ZippyArticleView(
+        article: article,
+        // handleUpdateUserInteraction: handleUpdateInteraction,
+        // viewType: currentViewType.value,
+        // onViewTypeChanged: onHandleChangeViewType,
       ),
+      transition: Transition.rightToLeftWithFade,
     );
   }
 
