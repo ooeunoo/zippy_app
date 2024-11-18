@@ -16,16 +16,12 @@ class UserBookmarkEntity extends HiveObject {
   String link;
 
   @HiveField(3)
-  String? content;
-
-  @HiveField(4)
   String? images;
 
   UserBookmarkEntity({
     required this.id,
     required this.title,
     required this.link,
-    this.content,
     this.images,
   });
 
@@ -34,7 +30,6 @@ class UserBookmarkEntity extends HiveObject {
       id: json["id"],
       title: json["title"],
       link: json["link"],
-      content: json["content"],
       images: json["images"],
     );
   }
@@ -43,13 +38,11 @@ class UserBookmarkEntity extends HiveObject {
       "id": bookmark.id,
       "title": bookmark.title,
       "link": bookmark.link,
-      "content": bookmark.content,
       "images": bookmark.images
     };
   }
 
   UserBookmark toModel() {
-    return UserBookmark(
-        id: id, title: title, link: link, content: content, images: images);
+    return UserBookmark(id: id, title: title, link: link, images: images);
   }
 }

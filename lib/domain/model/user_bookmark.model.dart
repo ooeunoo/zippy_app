@@ -7,14 +7,12 @@ class UserBookmark extends Equatable {
   final int id;
   final String link;
   final String title;
-  final String? content;
   final String? images;
 
   const UserBookmark({
     required this.id,
     required this.link,
     required this.title,
-    this.content,
     this.images,
   });
 
@@ -31,7 +29,6 @@ class UserBookmark extends Equatable {
         'id': id,
         'link': link,
         'title': title,
-        "content": content,
         "images": images,
       };
 
@@ -45,7 +42,6 @@ class UserBookmark extends Equatable {
       id: id,
       link: link,
       title: title,
-      content: content,
       images: images,
     );
   }

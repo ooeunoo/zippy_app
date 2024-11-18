@@ -114,7 +114,6 @@ class ArticleService extends GetxService {
       id: article.id!,
       title: article.title,
       link: article.link,
-      content: article.content,
       images: article.images[0],
     ).toCreateEntity();
     onHeavyVibration();

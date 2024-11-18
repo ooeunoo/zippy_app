@@ -20,8 +20,7 @@ class UserBookmarkEntityAdapter extends TypeAdapter<UserBookmarkEntity> {
       id: fields[0] as int,
       title: fields[1] as String,
       link: fields[2] as String,
-      content: fields[3] as String?,
-      images: fields[4] as String?,
+      images: fields[3] as String?,
     );
   }
 
@@ -36,8 +35,6 @@ class UserBookmarkEntityAdapter extends TypeAdapter<UserBookmarkEntity> {
       ..writeByte(2)
       ..write(obj.link)
       ..writeByte(3)
-      ..write(obj.content)
-      ..writeByte(4)
       ..write(obj.images);
   }
 

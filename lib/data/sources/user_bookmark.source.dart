@@ -37,8 +37,7 @@ class UserBookmarkDatasourceImpl implements UserBookmarkDatasource {
 
       return Right(toBookmarkModelAll());
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -54,8 +53,7 @@ class UserBookmarkDatasourceImpl implements UserBookmarkDatasource {
 
       return Right(toBookmarkModelAll());
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -65,8 +63,7 @@ class UserBookmarkDatasourceImpl implements UserBookmarkDatasource {
     try {
       return Right(toBookmarkModelAll());
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -88,7 +85,6 @@ class UserBookmarkDatasourceImpl implements UserBookmarkDatasource {
             id: bookmark.id,
             link: bookmark.link,
             title: bookmark.title,
-            content: bookmark.content,
             images: bookmark.images))
         .toList();
   }

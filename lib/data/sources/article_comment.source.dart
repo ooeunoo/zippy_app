@@ -41,8 +41,7 @@ class ArticleCommentDatasourceImpl implements ArticleCommentDatasource {
 
       return Right(comments);
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -61,8 +60,7 @@ class ArticleCommentDatasourceImpl implements ArticleCommentDatasource {
           ArticleCommentEntity.fromJson(response).toModel();
       return Right(comment);
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
   }

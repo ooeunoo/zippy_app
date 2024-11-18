@@ -19,16 +19,18 @@ class ContentTypeDatasourceImpl implements ContentTypeDatasource {
   @override
   Future<Either<Failure, List<ContentType>>> getContentTypes() async {
     try {
-      List<Map<String, dynamic>> response =
-          await provider.client.from(TABLE).select('*');
+      List<Map<String, dynamic>> response = await provider.client
+          .from(TABLE)
+          .select('*')
+          .eq("status", true)
+          .order('id', ascending: true);
 
       List<ContentType> result =
           response.map((r) => ContentTypeEntity.fromJson(r).toModel()).toList();
 
       return Right(result);
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
   }

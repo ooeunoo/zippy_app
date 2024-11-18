@@ -7,15 +7,13 @@ class Article extends Equatable {
   final int? id;
   final int sourceId;
   final String title;
-  final String? subtitle;
   final String link;
   final String author;
-  final String content;
   final List<dynamic> images;
-  final String? summary;
-  final List<dynamic>? attachments;
-  final List<String>? keyPoints;
-  final List<String>? keywords;
+  final String summary;
+  final List<Section> sections;
+  final List<String> keyPoints;
+  final List<String> keywords;
   final DateTime published;
 
   final ArticleMetadata? metadata;
@@ -27,15 +25,13 @@ class Article extends Equatable {
     this.id,
     required this.sourceId,
     required this.title,
-    this.subtitle,
     required this.link,
     required this.author,
-    required this.content,
     required this.images,
-    this.summary,
-    this.attachments,
-    this.keyPoints,
-    this.keywords,
+    required this.summary,
+    required this.sections,
+    required this.keyPoints,
+    required this.keywords,
     required this.published,
     this.metadata,
     this.isAd = false,
@@ -57,12 +53,10 @@ class Article extends Equatable {
         'sourceId': sourceId,
         'link': link,
         'title': title,
-        "subtitle": subtitle,
         "author": author,
-        "content": content,
         "images": images,
         "summary": summary,
-        "attachments": attachments,
+        "sections": sections,
         "keyPoints": keyPoints,
         "keywords": keywords,
         "published": published,
@@ -74,4 +68,26 @@ class Article extends Equatable {
   String toString() {
     return toJson().toString();
   }
+}
+
+class Section {
+  final String title;
+  final List<String> content;
+
+  Section({
+    required this.title,
+    required this.content,
+  });
+
+  static Section fromJson(Map<String, dynamic> json) {
+    return Section(
+      title: json['title'],
+      content: json['content'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'content': content,
+      };
 }

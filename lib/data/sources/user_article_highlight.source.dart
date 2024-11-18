@@ -1,16 +1,12 @@
 import 'dart:async';
 
 import 'package:zippy/app/failures/failure.dart';
-import 'package:zippy/data/entity/article.entity.dart';
 import 'package:zippy/data/entity/user_article_highlight.entity.dart';
 import 'package:zippy/data/providers/supabase.provider.dart';
-import 'package:zippy/domain/model/article.model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
 import 'package:zippy/domain/model/params/create_user_article.params.dart';
-import 'package:zippy/domain/model/params/get_aritlces.params.dart';
 import 'package:zippy/domain/model/user_article_highlight.model.dart';
-import 'package:zippy/domain/model/user_subscription.model.dart';
 
 String TABLE = 'user_article_highlights';
 
@@ -48,8 +44,7 @@ class UserArticleHighlightDatasourceImpl
 
       return Right(result);
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -70,8 +65,7 @@ class UserArticleHighlightDatasourceImpl
 
       return Right(result);
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -83,8 +77,7 @@ class UserArticleHighlightDatasourceImpl
       await provider.client.from(TABLE).insert(params.toJson());
       return const Right(true);
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
   }

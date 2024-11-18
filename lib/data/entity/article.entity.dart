@@ -9,15 +9,13 @@ class ArticleEntity extends Equatable {
   final int? id;
   final int source_id;
   final String title;
-  final String? subtitle;
   final String link;
   final String author;
-  final String content;
   final List<dynamic> images;
-  final String? summary;
-  final List<dynamic>? attachments;
-  final List<String>? keyPoints;
-  final List<String>? keywords;
+  final String summary;
+  final List<SectionEntity> sections;
+  final List<String> keyPoints;
+  final List<String> keywords;
   final DateTime published;
 
   final ArticleMetadataEntity? metadata;
@@ -26,15 +24,13 @@ class ArticleEntity extends Equatable {
     this.id,
     required this.source_id,
     required this.title,
-    this.subtitle,
     required this.link,
     required this.author,
-    required this.content,
     required this.images,
-    this.summary,
-    this.attachments,
-    this.keyPoints,
-    this.keywords,
+    required this.summary,
+    required this.sections,
+    required this.keyPoints,
+    required this.keywords,
     required this.published,
     this.metadata,
   });
@@ -46,26 +42,26 @@ class ArticleEntity extends Equatable {
       title,
       link,
       author,
-      content,
       images,
       published,
     ];
   }
 
   factory ArticleEntity.fromJson(Map<String, dynamic> json) {
+    print(
+        'json[\'sections\']: ${json['sections']}, json[\'id\']: ${json['id']}');
     return ArticleEntity(
       id: json['id'],
       source_id: json['source_id'],
       title: json['title'],
-      subtitle: json['subtitle'],
       link: json['link'],
       author: json['author'],
-      content: json['content'],
       images: json['images'],
       summary: json['summary'],
-      attachments: json['attachments'],
       keyPoints: convertToStringList(json['key_points']),
       keywords: convertToStringList(json['keywords']),
+      sections: List<SectionEntity>.from((json['sections'] as List)
+          .map((section) => SectionEntity.fromJson(section))),
       published: json['published'] != null
           ? DateTime.parse(json['published'])
           : DateTime.now(), // 또는 다른 기본값
@@ -81,16 +77,39 @@ class ArticleEntity extends Equatable {
       sourceId: source_id,
       link: link,
       title: title,
-      subtitle: subtitle,
       author: author,
-      content: content,
       images: images,
       summary: summary,
-      attachments: attachments,
+      sections: List<Section>.from(
+          sections.map((SectionEntity section) => section.toModel())),
       keyPoints: keyPoints,
       keywords: keywords,
       published: published,
       metadata: metadata?.toModel(),
+    );
+  }
+}
+
+class SectionEntity {
+  final String title;
+  final List<String> content;
+
+  SectionEntity({
+    required this.title,
+    required this.content,
+  });
+
+  factory SectionEntity.fromJson(Map<String, dynamic> json) {
+    return SectionEntity(
+      title: json['title'],
+      content: List<String>.from(json['content']),
+    );
+  }
+
+  Section toModel() {
+    return Section(
+      title: title,
+      content: content,
     );
   }
 }

@@ -26,8 +26,7 @@ class UserSubscriptionDatasourceImpl implements UserSubscriptionDatasource {
       await provider.client.from(TABLE).insert(params.toJson());
       return const Right(true);
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -39,8 +38,7 @@ class UserSubscriptionDatasourceImpl implements UserSubscriptionDatasource {
       await provider.client.from(TABLE).delete().eq('id', subscriptionId);
       return const Right(true);
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -55,8 +53,7 @@ class UserSubscriptionDatasourceImpl implements UserSubscriptionDatasource {
           .map((r) => UserSubscriptionEntity.fromJson(r).toModel())
           .toList());
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
   }

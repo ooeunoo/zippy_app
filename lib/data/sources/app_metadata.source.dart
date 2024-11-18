@@ -30,8 +30,7 @@ class AppMetadataDatasourceImpl implements AppMetadataDatasource {
       final entity = _getOrCreateEntity();
       return Right(entity.toModel());
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(CacheFailure());
     }
   }
@@ -54,8 +53,7 @@ class AppMetadataDatasourceImpl implements AppMetadataDatasource {
       await entity.save();
       return Right(entity.toModel());
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(CacheFailure());
     }
   }

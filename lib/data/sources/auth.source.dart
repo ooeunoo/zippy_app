@@ -1,14 +1,9 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao;
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
-import 'package:url_launcher/url_launcher.dart';
 import 'package:zippy/app/failures/failure.dart';
-import 'package:zippy/app/utils/log.dart';
-import 'package:zippy/app/widgets/app_oauth_webview.dart';
 import 'package:zippy/data/entity/user.entity.dart';
 import 'package:zippy/data/providers/supabase.provider.dart';
 import 'package:zippy/data/sources/user.source.dart';
@@ -39,8 +34,7 @@ class AuthDatasourceImpl implements AuthDatasource {
 
       return result;
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -70,8 +64,7 @@ class AuthDatasourceImpl implements AuthDatasource {
       await provider.client.auth.signOut();
       return const Right(true);
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -92,8 +85,7 @@ class AuthDatasourceImpl implements AuthDatasource {
       User user = UserEntity.fromJson(response.user!.toJson()).toModel();
       return Right(user);
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -118,8 +110,7 @@ class AuthDatasourceImpl implements AuthDatasource {
       User user = UserEntity.fromJson(response.user!.toJson()).toModel();
       return Right(user);
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -159,8 +150,7 @@ class AuthDatasourceImpl implements AuthDatasource {
 
       return const Right(true);
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
   }

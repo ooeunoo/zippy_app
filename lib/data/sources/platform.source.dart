@@ -36,8 +36,7 @@ class PlatformDatasourceImpl implements PlatformDatasource {
           response.map((r) => PlatformEntity.fromJson(r).toModel()).toList();
       return Right(result);
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
   }
@@ -56,8 +55,7 @@ class PlatformDatasourceImpl implements PlatformDatasource {
 
       return Right(result);
     } catch (e, stackTrace) {
-      print('Caught an exception: $e');
-      print('Stack Trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
   }
