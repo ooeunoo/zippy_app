@@ -5,6 +5,8 @@ class KakaoProvider {
   static init() async {
     KakaoSdk.init(
       nativeAppKey: ENV.KAKAO_NATIVE_APP_KEY,
+      javaScriptAppKey: ENV.KAKAO_JAVASCRIPT_KEY,
+      loggingEnabled: true,
     );
   }
 }

@@ -45,6 +45,7 @@ class AppButton extends StatelessWidget {
           }
         },
         style: ButtonStyle(
+            splashFactory: NoSplash.splashFactory,
             backgroundColor: color != null
                 ? WidgetStateProperty.all(color)
                 : disable

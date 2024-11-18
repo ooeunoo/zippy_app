@@ -71,6 +71,7 @@ class LoginPage extends GetView<LoginController> {
                   // 카카오 로그인 버튼
                   AppButton(
                     '카카오로 시작하기',
+                    borderColor: AppColor.transparent,
                     titleStyle: Theme.of(context).textTheme.textMD.copyWith(
                           color: AppColor.black,
                           fontWeight: AppFontWeight.semibold,

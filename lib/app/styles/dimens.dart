@@ -8,6 +8,6 @@ abstract class AppDimens {
 
   static size(int s) => s.r;
   static width(int s) => s.w;
-  static height(int s) => s.h;
+  static height(double s) => s.h;
   static radius(int s) => s.r;
 }

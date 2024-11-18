@@ -4,9 +4,7 @@ import 'package:zippy/app/extensions/datetime.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
-import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/widgets/app_random_image.dart';
-import 'package:zippy/app/widgets/app_shadow_overlay.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
@@ -45,7 +43,7 @@ class ZippyArticleCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildImageSection(context),
-        AppSpacerV(value: AppDimens.height(20)),
+        AppSpacerV(value: AppDimens.height(10)),
         _buildContentSection(context),
         AppSpacerV(value: AppDimens.height(20)),
       ],
@@ -62,6 +60,7 @@ class ZippyArticleCard extends StatelessWidget {
           children: [
             _buildMainImage(),
             _buildContentTypeLabel(context),
+            // _buildPlatformLabel(context),
           ],
         ),
       ),
@@ -109,6 +108,35 @@ class ZippyArticleCard extends StatelessWidget {
     );
   }
 
+  Widget _buildPlatformLabel(BuildContext context) {
+    return Positioned(
+      top: AppDimens.height(70),
+      left: AppDimens.width(20),
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: AppDimens.width(4),
+          vertical: AppDimens.height(4),
+        ),
+        decoration: BoxDecoration(
+          color: AppColor.graymodern950.withOpacity(0.7),
+          borderRadius: BorderRadius.circular(AppDimens.size(4)),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: AppDimens.width(4),
+          ),
+          child: AppText(
+            source?.platform?.name ?? '',
+            style: Theme.of(context).textTheme.textXS.copyWith(
+                  color: AppColor.white,
+                ),
+            align: TextAlign.center,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildContentSection(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppDimens.width(12)),
@@ -146,7 +174,7 @@ class ZippyArticleCard extends StatelessWidget {
               maxWidth: AppDimens.width(80),
             ),
             child: AppText(
-              source?.platform?.name ?? '',
+              article.author,
               style: Theme.of(context).textTheme.textSM.copyWith(
                     color: AppColor.graymodern400,
                   ),

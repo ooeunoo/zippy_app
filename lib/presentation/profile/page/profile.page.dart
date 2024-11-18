@@ -7,12 +7,11 @@ import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
-import 'package:zippy/app/utils/random.dart';
+import 'package:zippy/app/widgets/app_button.dart';
 import 'package:zippy/app/widgets/app_menu.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:flutter/material.dart';
-import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/menu.model.dart';
 import 'package:zippy/presentation/profile/controller/profile.controller.dart';
 
@@ -21,6 +20,7 @@ class ProfilePage extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Get.find<AuthService>();
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -38,27 +38,15 @@ class ProfilePage extends GetView<ProfileController> {
                 ],
               ),
               // 로그아웃 버튼 추가
-              Positioned(
-                bottom: AppDimens.height(20),
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: TextButton(
-                    onPressed: () {
-                      // 로그아웃 로직 추가
-                      controller.onClickLogout();
-                    },
-                    child: AppText(
-                      '로그아웃',
-                      style: Theme.of(context).textTheme.textSM.copyWith(
-                            color: AppColor.gray600,
-                            decoration: TextDecoration.underline,
-                            decorationColor: AppColor.gray600,
-                          ),
-                    ),
+              if (authService.isLoggedIn.value)
+                Positioned(
+                  bottom: AppDimens.height(20),
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: logoutButton(context),
                   ),
                 ),
-              ),
             ],
           ),
         ),
@@ -143,5 +131,18 @@ class ProfilePage extends GetView<ProfileController> {
     ];
 
     return AppMenu(menu: menu, backgroundColor: AppColor.gray100);
+  }
+
+  Widget logoutButton(BuildContext context) {
+    return AppButton(
+      '로그아웃',
+      color: AppColor.transparent,
+      titleStyle: Theme.of(context).textTheme.textSM.copyWith(
+          color: AppColor.graymodern600,
+          decoration: TextDecoration.underline,
+          decorationColor: AppColor.graymodern600),
+      borderColor: AppColor.transparent,
+      onPressed: controller.onClickLogout,
+    );
   }
 }

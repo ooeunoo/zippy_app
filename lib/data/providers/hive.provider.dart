@@ -14,7 +14,8 @@ class HiveProvider {
 
   init() async {
     await Hive.initFlutter();
-
+    await Hive.deleteBoxFromDisk(APP_METADATA_BOX);
+    await Hive.deleteBoxFromDisk(USER_BOOKMARKS_BOX);
     // // 기존 어댑터 삭제 및 재등록
     Hive.registerAdapter(AppMetadataEntityAdapter());
     Hive.registerAdapter(UserBookmarkEntityAdapter());
