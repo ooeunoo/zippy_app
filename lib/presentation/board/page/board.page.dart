@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:zippy/app/services/admob_service.dart';
+import 'package:zippy/app/services/admob.service.dart';
 import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/theme.dart';

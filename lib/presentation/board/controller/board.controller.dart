@@ -1,5 +1,5 @@
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:zippy/app/services/admob_service.dart';
+import 'package:zippy/app/services/admob.service.dart';
 import 'package:zippy/app/services/auth.service.dart';
 import 'package:zippy/app/utils/share.dart';
 import 'package:zippy/app/utils/vibrates.dart';
@@ -108,7 +108,7 @@ class BoardController extends GetxService {
   Future<void> onHandleClickArticle(Article article) async {
     if (article.isAd) return;
     await _handleInterstitialAd();
-    articleService.showArticleViewModal(article);
+    articleService.onHandleGoToArticleView(article);
   }
 
   //////////////////////////////////////////////////////////////////

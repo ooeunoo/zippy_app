@@ -15,6 +15,7 @@ class Article extends Equatable {
   final List<String> keyPoints;
   final List<String> keywords;
   final DateTime published;
+  final List<Attachment>? attachments;
 
   final ArticleMetadata? metadata;
 
@@ -33,6 +34,7 @@ class Article extends Equatable {
     required this.keyPoints,
     required this.keywords,
     required this.published,
+    this.attachments,
     this.metadata,
     this.isAd = false,
   });
@@ -56,10 +58,11 @@ class Article extends Equatable {
         "author": author,
         "images": images,
         "summary": summary,
-        "sections": sections,
+        "sections": sections?.map((section) => section.toJson()),
         "keyPoints": keyPoints,
         "keywords": keywords,
         "published": published,
+        'attachments': attachments?.map((attachment) => attachment.toJson()),
         'isAd': isAd,
         'metadata': metadata?.toJson(),
       };
@@ -68,6 +71,52 @@ class Article extends Equatable {
   String toString() {
     return toJson().toString();
   }
+}
+
+class Attachment {
+  final int id;
+  final String title;
+  final int width;
+  final int height;
+  final int postId;
+  final String duration;
+  final String contentUrl;
+  final String contentType;
+
+  Attachment({
+    required this.id,
+    required this.title,
+    required this.width,
+    required this.height,
+    required this.postId,
+    required this.duration,
+    required this.contentUrl,
+    required this.contentType,
+  });
+
+  static Attachment fromJson(Map<String, dynamic> json) {
+    return Attachment(
+      id: json['id'],
+      title: json['title'],
+      width: json['width'],
+      height: json['height'],
+      postId: json['post_id'],
+      duration: json['duration'],
+      contentUrl: json['content_url'],
+      contentType: json['content_type'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'title': title,
+        'width': width,
+        'height': height,
+        'postId': postId,
+        'duration': duration,
+        'contentUrl': contentUrl,
+        'contentType': contentType,
+      };
 }
 
 class Section {

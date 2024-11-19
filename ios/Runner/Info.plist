@@ -23,16 +23,24 @@
 		<key>CFBundleSignature</key>
 		<string>????</string>
 		<key>CFBundleURLTypes</key>
-		<array>
-			<dict>
-				<key>CFBundleTypeRole</key>
-				<string>Editor</string>
-				<key>CFBundleURLSchemes</key>
-				<array>
-					<string>com.miro.zippy</string>
-				</array>
-			</dict>
-		</array>
+<array>
+    <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+            <string>com.miro.zippy</string>
+        </array>
+    </dict>
+    <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+            <string>kakao3cdec7fb8a31c80a2caf92178fcbad33</string>
+        </array>
+    </dict>
+</array>
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>GADApplicationIdentifier</key>
@@ -285,5 +293,8 @@
 			<string>kakaokompassauth</string>
 			<string>kakaolink</string>
 		</array>
+		<key>io.flutter.embedded_views_preview</key>
+<true/>
+
 	</dict>
 </plist>

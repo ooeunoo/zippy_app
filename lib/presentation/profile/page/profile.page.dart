@@ -7,6 +7,7 @@ import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
+import 'package:zippy/app/widgets/app.snak_bar.dart';
 import 'package:zippy/app/widgets/app_button.dart';
 import 'package:zippy/app/widgets/app_menu.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
@@ -31,22 +32,38 @@ class ProfilePage extends GetView<ProfileController> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  appLogo(context),
-                  avatarInfo(context),
+                  _buildAppLogo(context),
+                  _buildAvatarInfo(context),
                   const AppSpacerV(),
-                  menu(context)
+                  _buildMenu(context)
                 ],
               ),
               // 로그아웃 버튼 추가
-              if (authService.isLoggedIn.value)
-                Positioned(
-                  bottom: AppDimens.height(20),
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: logoutButton(context),
-                  ),
+              Positioned(
+                bottom: AppDimens.height(20),
+                left: 0,
+                right: 0,
+                child: AppButton(
+                  "테스트",
+                  onPressed: () {
+                    notifyLogout();
+                  },
                 ),
+              ),
+              Obx(() {
+                if (authService.isLoggedIn.value) {
+                  return Positioned(
+                    bottom: AppDimens.height(20),
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: _buildLogoutButton(context, authService.logout),
+                    ),
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              }),
             ],
           ),
         ),
@@ -54,14 +71,14 @@ class ProfilePage extends GetView<ProfileController> {
     );
   }
 
-  Widget appLogo(BuildContext context) {
+  Widget _buildAppLogo(BuildContext context) {
     return AppSvg(
       Assets.logo,
       size: AppDimens.size(80),
     );
   }
 
-  Widget avatarInfo(BuildContext context) {
+  Widget _buildAvatarInfo(BuildContext context) {
     return Column(
       children: [
         Row(
@@ -86,7 +103,7 @@ class ProfilePage extends GetView<ProfileController> {
     );
   }
 
-  Widget menu(BuildContext context) {
+  Widget _buildMenu(BuildContext context) {
     List<MenuSection> menu = [
       MenuSection(
         section: 'My',
@@ -133,7 +150,7 @@ class ProfilePage extends GetView<ProfileController> {
     return AppMenu(menu: menu, backgroundColor: AppColor.gray100);
   }
 
-  Widget logoutButton(BuildContext context) {
+  Widget _buildLogoutButton(BuildContext context, VoidCallback logout) {
     return AppButton(
       '로그아웃',
       color: AppColor.transparent,
@@ -142,7 +159,10 @@ class ProfilePage extends GetView<ProfileController> {
           decoration: TextDecoration.underline,
           decorationColor: AppColor.graymodern600),
       borderColor: AppColor.transparent,
-      onPressed: controller.onClickLogout,
+      onPressed: () {
+        logout();
+        notifyLogout();
+      },
     );
   }
 }

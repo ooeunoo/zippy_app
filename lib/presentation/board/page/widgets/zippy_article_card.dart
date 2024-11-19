@@ -43,7 +43,7 @@ class ZippyArticleCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildImageSection(context),
-        AppSpacerV(value: AppDimens.height(10)),
+        AppSpacerV(value: AppDimens.height(8)),
         _buildContentSection(context),
         AppSpacerV(value: AppDimens.height(20)),
       ],
@@ -60,7 +60,6 @@ class ZippyArticleCard extends StatelessWidget {
           children: [
             _buildMainImage(),
             _buildContentTypeLabel(context),
-            // _buildPlatformLabel(context),
           ],
         ),
       ),
@@ -174,7 +173,7 @@ class ZippyArticleCard extends StatelessWidget {
               maxWidth: AppDimens.width(80),
             ),
             child: AppText(
-              article.author,
+              source?.platform?.name ?? '',
               style: Theme.of(context).textTheme.textSM.copyWith(
                     color: AppColor.graymodern400,
                   ),
@@ -183,7 +182,7 @@ class ZippyArticleCard extends StatelessWidget {
             ),
           ),
         ),
-        AppSpacerH(value: AppDimens.width(4)),
+        AppSpacerH(value: AppDimens.width(8)),
         AppText(
           '·',
           style: Theme.of(context).textTheme.textSM.copyWith(

@@ -16,6 +16,7 @@ class AdContent extends Article {
     super.summary = '',
     super.keyPoints = const [],
     super.keywords = const [],
+    super.attachments = const [],
     DateTime? published,
     required this.nativeAd,
     super.isAd = true,

@@ -1,6 +1,10 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/services/auth.service.dart';
+import 'package:zippy/app/services/webview.service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/utils/share.dart';
 import 'package:zippy/app/utils/vibrates.dart';
@@ -34,6 +38,7 @@ import 'package:zippy/presentation/board/page/widgets/zippy_article_view.dart';
 
 class ArticleService extends GetxService {
   final authService = Get.find<AuthService>();
+  final webViewService = Get.find<WebViewService>();
 
   final GetSources getSources = Get.find();
   final GetArticles getArticles = Get.find();
@@ -161,19 +166,20 @@ class ArticleService extends GetxService {
     currentViewType.value = type;
   }
 
-  void showArticleViewModal(Article article) async {
+  void onHandleGoToArticleView(Article article) async {
     final handleUpdateInteraction =
         await _createViewInteractionCallback(article.id!);
 
     Get.to(
       () => ZippyArticleView(
         article: article,
-        // handleUpdateUserInteraction: handleUpdateInteraction,
-        // viewType: currentViewType.value,
-        // onViewTypeChanged: onHandleChangeViewType,
       ),
       transition: Transition.rightToLeftWithFade,
     );
+  }
+
+  void onHandleOpenOriginalArticle(Article article) async {
+    webViewService.showWebView(article.link);
   }
 
   ///*********************************

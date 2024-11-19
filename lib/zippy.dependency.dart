@@ -1,7 +1,8 @@
-import 'package:zippy/app/services/admob_service.dart';
+import 'package:zippy/app/services/admob.service.dart';
 import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/services/auth.service.dart';
 import 'package:zippy/app/services/content_type.service.dart';
+import 'package:zippy/app/services/webview.service.dart';
 import 'package:zippy/data/providers/kakao.provider.dart';
 import 'package:zippy/data/providers/supabase.provider.dart';
 import 'package:zippy/data/sources/app_metadata.source.dart';
@@ -136,6 +137,7 @@ class ZippyBindings implements Bindings {
   }
 
   _initService() {
+    Get.put<WebViewService>(WebViewService(), permanent: true);
     Get.put<AdmobService>(AdmobService(), permanent: true);
     Get.put<AuthService>(AuthService(), permanent: true);
     Get.put<ContentTypeService>(ContentTypeService(), permanent: true);

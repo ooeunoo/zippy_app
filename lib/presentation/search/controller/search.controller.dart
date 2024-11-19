@@ -64,6 +64,6 @@ class AppSearchController extends GetxController {
   }
 
   Future<void> onHandleClickArticle(Article article) async {
-    articleService.showArticleViewModal(article);
+    articleService.onHandleGoToArticleView(article);
   }
 }

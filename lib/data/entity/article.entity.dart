@@ -14,6 +14,7 @@ class ArticleEntity extends Equatable {
   final List<dynamic> images;
   final String summary;
   final List<SectionEntity> sections;
+  final List<AttachmentEntity>? attachments;
   final List<String> keyPoints;
   final List<String> keywords;
   final DateTime published;
@@ -32,6 +33,7 @@ class ArticleEntity extends Equatable {
     required this.keyPoints,
     required this.keywords,
     required this.published,
+    this.attachments,
     this.metadata,
   });
 
@@ -63,6 +65,10 @@ class ArticleEntity extends Equatable {
       published: json['published'] != null
           ? DateTime.parse(json['published'])
           : DateTime.now(), // 또는 다른 기본값
+      attachments: json['attachments'] != null
+          ? List<AttachmentEntity>.from(json['attachments']
+              .map((attachment) => AttachmentEntity.fromJson(attachment)))
+          : null,
       metadata: json['article_metadata'] != null
           ? ArticleMetadataEntity.fromJson(json['article_metadata'])
           : null,
@@ -84,6 +90,58 @@ class ArticleEntity extends Equatable {
       keywords: keywords,
       published: published,
       metadata: metadata?.toModel(),
+      attachments: attachments != null
+          ? List<Attachment>.from(attachments!
+              .map((AttachmentEntity attachment) => attachment.toModel()))
+          : [],
+    );
+  }
+}
+
+class AttachmentEntity {
+  final int id;
+  final String title;
+  final int width;
+  final int height;
+  final int post_id;
+  final String duration;
+  final String cotent_url;
+  final String content_type;
+
+  AttachmentEntity({
+    required this.id,
+    required this.title,
+    required this.width,
+    required this.height,
+    required this.post_id,
+    required this.duration,
+    required this.cotent_url,
+    required this.content_type,
+  });
+
+  factory AttachmentEntity.fromJson(Map<String, dynamic> json) {
+    return AttachmentEntity(
+      id: json['id'],
+      title: json['title'],
+      width: json['width'],
+      height: json['height'],
+      post_id: json['post_id'],
+      duration: json['duration'],
+      cotent_url: json['content_url'],
+      content_type: json['content_type'],
+    );
+  }
+
+  Attachment toModel() {
+    return Attachment(
+      id: id,
+      title: title,
+      width: width,
+      height: height,
+      postId: post_id,
+      duration: duration,
+      contentUrl: cotent_url,
+      contentType: content_type,
     );
   }
 }
