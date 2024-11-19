@@ -8,7 +8,7 @@ class GetUserSubscriptions {
 
   GetUserSubscriptions(this.repo);
 
-  Future<Either<Failure, List<UserSubscription>>> execute() {
-    return repo.getUserSubscriptions();
+  Future<Either<Failure, List<UserSubscription>>> execute(String userId) {
+    return repo.getUserSubscriptions(userId);
   }
 }

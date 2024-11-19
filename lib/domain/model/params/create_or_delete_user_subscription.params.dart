@@ -2,11 +2,11 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 @immutable
-class CreateUserSubscriptionParams extends Equatable {
+class CreateOrDeleteUserSubscriptionParams extends Equatable {
   final String userId;
   final int contentTypeId;
 
-  const CreateUserSubscriptionParams({
+  const CreateOrDeleteUserSubscriptionParams({
     required this.userId,
     required this.contentTypeId,
   });

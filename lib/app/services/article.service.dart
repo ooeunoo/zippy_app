@@ -6,6 +6,7 @@ import 'package:zippy/app/utils/vibrates.dart';
 import 'package:zippy/app/widgets/app.snak_bar.dart';
 import 'package:zippy/app/widgets/app_dialog.dart';
 import 'package:zippy/data/entity/user_bookmark.entity.dart';
+import 'package:zippy/data/providers/supabase.provider.dart';
 import 'package:zippy/domain/enum/article_view_type.enum.dart';
 import 'package:zippy/domain/enum/interaction_type.enum.dart';
 import 'package:zippy/domain/model/article.model.dart';
@@ -17,7 +18,6 @@ import 'package:zippy/domain/model/params/get_recommend_aritlces.params.dart';
 import 'package:zippy/domain/model/params/update_user_interaction.params.dart';
 import 'package:zippy/domain/model/source.model.dart';
 import 'package:zippy/domain/model/user_bookmark.model.dart';
-import 'package:zippy/domain/model/user_subscription.model.dart';
 import 'package:zippy/domain/usecases/create_article_comment.usecase.dart';
 import 'package:zippy/domain/usecases/create_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/create_user_interaction.usecase.dart';
@@ -27,42 +27,46 @@ import 'package:zippy/domain/usecases/get_articles.usecase.dart';
 import 'package:zippy/domain/usecases/get_recommend_articles.usecase.dart';
 import 'package:zippy/domain/usecases/get_sources.usecase.dart';
 import 'package:zippy/domain/usecases/get_user_bookmark.usecase.dart';
-import 'package:zippy/domain/usecases/get_user_subscriptions.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_bookmark.usecase.dart';
-import 'package:zippy/domain/usecases/subscirbe_user_subscriptions.usecase.dart';
 import 'package:zippy/domain/usecases/update_user_interaction.usecase.dart';
 import 'package:zippy/presentation/board/page/widgets/bottom_extension_menu.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_article_view.dart';
+import 'dart:async';
 
 class ArticleService extends GetxService {
+  final provider = Get.find<SupabaseProvider>();
   final authService = Get.find<AuthService>();
   final webViewService = Get.find<WebViewService>();
 
   final GetSources getSources = Get.find();
   final GetArticles getArticles = Get.find();
   final GetRecommendedArticles getRecommendedArticles = Get.find();
-  final SubscribeUserSubscriptions subscribeUserSubscriptions = Get.find();
   final CreateUserInteraction createUserInteraction = Get.find();
   final UpdateUserInteraction updateUserInteraction = Get.find();
   final SubscribeUserBookmark subscribeUserBookmark = Get.find();
   final CreateUserBookmark createUserBookmark = Get.find();
   final DeleteUserBookmark deleteUserBookmark = Get.find();
   final GetUserBookmark getUserBookmark = Get.find();
-  final GetUserSubscriptions getUserSubscriptions = Get.find();
   final GetArticleComments getArticleComments = Get.find();
   final CreateArticleComment createArticleComment = Get.find();
 
   Rx<ArticleViewType> currentViewType = ArticleViewType.Summary.obs;
-  RxBool isLoadingUserSubscription = RxBool(true).obs();
   RxMap<int, Source> sources = RxMap<int, Source>({}).obs();
-  RxList<UserSubscription> userSubscriptions =
-      RxList<UserSubscription>([]).obs();
   RxList<UserBookmark> userBookmarks = RxList<UserBookmark>([]).obs();
+
+  StreamSubscription? _userBookmarksSubscription;
+  StreamSubscription? _authUserSubscription;
 
   @override
   Future<void> onInit() async {
     super.onInit();
     await _initialize();
+  }
+
+  @override
+  void onClose() {
+    _authUserSubscription?.cancel();
+    super.onClose();
   }
 
   ///*********************************
@@ -265,8 +269,7 @@ class ArticleService extends GetxService {
   Future<void> _initialize() async {
     await _setupSources();
     await _setupUserBookmark();
-    await _setupUserSubscriptions();
-    _listenUserBookmark();
+    _setupSubscriptions();
   }
 
   Future<void> _setupSources() async {
@@ -283,17 +286,6 @@ class ArticleService extends GetxService {
     });
   }
 
-  Future<void> _setupUserSubscriptions() async {
-    isLoadingUserSubscription.value = true;
-    final subscriptions = await getUserSubscriptions.execute();
-    subscriptions.fold((failure) {
-      userSubscriptions.value = [];
-    }, (data) {
-      userSubscriptions.assignAll(data);
-    });
-    isLoadingUserSubscription.value = false;
-  }
-
   Future<void> _setupUserBookmark() async {
     final bookmarks = await getUserBookmark.execute();
     bookmarks.fold((failure) {
@@ -303,19 +295,24 @@ class ArticleService extends GetxService {
     });
   }
 
-  // void _listenUserSubscriptions() {
-  //   if (user != null) {
-  //     subscribeUserSubscriptions
-  //         .execute(user!.id)
-  //         .listen((List<UserSubscription> event) {
-  //       userSubscriptions.bindStream(Stream.value(event));
-  //     });
-  //   }
-  // }
+  void _listenUser() {
+    _authUserSubscription = authService.currentUser.listen((user) {
+      _cancelSubscriptions();
+      if (user != null) {
+        _setupSubscriptions();
+      }
+    });
+  }
 
-  void _listenUserBookmark() {
-    subscribeUserBookmark.execute().listen((List<UserBookmark> event) {
+  void _setupSubscriptions() {
+    _userBookmarksSubscription =
+        subscribeUserBookmark.execute().listen((List<UserBookmark> event) {
       userBookmarks.bindStream(Stream.value(event));
     });
+  }
+
+  void _cancelSubscriptions() {
+    _userBookmarksSubscription?.cancel();
+    _userBookmarksSubscription = null;
   }
 }

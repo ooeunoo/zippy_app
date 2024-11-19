@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:zippy/app/services/content_type.service.dart';
+import 'package:zippy/app/services/subscription.service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/font.dart';
@@ -19,7 +21,8 @@ class SubscriptionPage extends StatefulWidget {
 }
 
 class _SubscriptionPageState extends State<SubscriptionPage> {
-  SubscriptionController controller = Get.find();
+  final ContentTypeService contentTypeService = Get.find();
+  final SubscriptionService subscriptionService = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -66,17 +69,18 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
   Widget subscriptionList(BuildContext context) {
     return Obx(
       () => ListView.separated(
-        itemCount: controller.contentTypes.length,
+        itemCount: contentTypeService.contentTypes.length,
         separatorBuilder: (context, index) =>
             AppSpacerV(value: AppDimens.height(16)),
         itemBuilder: (BuildContext context, int index) {
           return Obx(() {
-            ContentType contentType = controller.contentTypes[index];
-            bool isSubscribe = controller.userSubscriptions.any(
+            ContentType contentType = contentTypeService.contentTypes[index];
+            bool isSubscribe = subscriptionService.userSubscriptions.any(
                 (subscription) => subscription.contentTypeId == contentType.id);
 
             return GestureDetector(
-              onTap: () => controller.toggleSubscription(contentType),
+              onTap: () =>
+                  subscriptionService.onHandleToggleSubscription(contentType),
               child: SubscriptionCard(
                 name: contentType.name,
                 description: contentType.description,
