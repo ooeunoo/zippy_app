@@ -32,27 +32,33 @@ ThemeData themeLight(BuildContext context) => ThemeData(
               .copyWith(color: AppColor.gray500)),
     );
 
-/// Light theme
+/// Dark theme
 ThemeData themeDark(BuildContext context) => ThemeData(
       fontFamily: 'Pretendard',
       useMaterial3: true,
       highlightColor: Colors.transparent,
-      splashColor: Colors.transparent,
-      scaffoldBackgroundColor: AppColor.gray100,
+      splashColor: const Color.fromRGBO(0, 0, 0, 0),
+      scaffoldBackgroundColor: AppColor.graymodern950,
+      appBarTheme: const AppBarTheme(
+          backgroundColor: AppColor.graymodern950,
+          surfaceTintColor: AppColor.graymodern950),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: AppColor.bluelight100,
-        type: BottomNavigationBarType.fixed,
-        selectedIconTheme:
-            IconThemeData(size: AppDimens.width(24), color: AppColor.brand500),
-        unselectedIconTheme:
-            IconThemeData(size: AppDimens.width(24), color: AppColor.gray500),
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-      ),
-      tabBarTheme: const TabBarTheme(
-        indicatorColor: AppColor.white,
-        indicatorSize: TabBarIndicatorSize.tab,
-      ),
+          backgroundColor: AppColor.graymodern950,
+          type: BottomNavigationBarType.fixed,
+          selectedIconTheme:
+              IconThemeData(size: AppDimens.width(24), color: AppColor.gray900),
+          unselectedIconTheme:
+              IconThemeData(size: AppDimens.width(24), color: AppColor.gray500),
+          showSelectedLabels: true,
+          showUnselectedLabels: true,
+          selectedLabelStyle: Theme.of(context)
+              .textTheme
+              .textXS
+              .copyWith(color: AppColor.gray900),
+          unselectedLabelStyle: Theme.of(context)
+              .textTheme
+              .textXS
+              .copyWith(color: AppColor.gray500)),
     );
 
 extension CustomTextStyles on TextTheme {

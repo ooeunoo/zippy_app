@@ -8,12 +8,9 @@ import 'package:dartz/dartz.dart';
 abstract class UserSubscriptionRepository {
   Future<Either<Failure, List<UserSubscription>>> getUserSubscriptions(
       String userId);
-  Future<Either<Failure, bool>> createUserSubscriptions(
+  Future<Either<Failure, bool>> toggleUserSubscription(
       CreateOrDeleteUserSubscriptionParams subscriptions);
-  Future<Either<Failure, bool>> deleteUserSubscriptions(
-      CreateOrDeleteUserSubscriptionParams subscriptions);
-  RealtimeChannel listenUserSubscriptionChanges(
-      String userId, void Function() callback);
+  Stream<List<UserSubscription>> getUserSubscriptionsStream(String userId);
 }
 
 class UserSubscriptionRepositoryImpl implements UserSubscriptionRepository {
@@ -22,15 +19,9 @@ class UserSubscriptionRepositoryImpl implements UserSubscriptionRepository {
   UserSubscriptionRepositoryImpl(this.datasource);
 
   @override
-  Future<Either<Failure, bool>> createUserSubscriptions(
+  Future<Either<Failure, bool>> toggleUserSubscription(
       CreateOrDeleteUserSubscriptionParams subscriptions) {
-    return datasource.createUserSubscriptions(subscriptions);
-  }
-
-  @override
-  Future<Either<Failure, bool>> deleteUserSubscriptions(
-      CreateOrDeleteUserSubscriptionParams subscriptions) {
-    return datasource.deleteUserSubscriptions(subscriptions);
+    return datasource.toggleUserSubscription(subscriptions);
   }
 
   @override
@@ -40,8 +31,7 @@ class UserSubscriptionRepositoryImpl implements UserSubscriptionRepository {
   }
 
   @override
-  RealtimeChannel listenUserSubscriptionChanges(
-      String userId, void Function() callback) {
-    return datasource.listenUserSubscriptionChanges(userId, callback);
+  Stream<List<UserSubscription>> getUserSubscriptionsStream(String userId) {
+    return datasource.getUserSubscriptionsStream(userId);
   }
 }

@@ -7,24 +7,21 @@ import 'package:zippy/app/services/auth.service.dart';
 import 'package:zippy/domain/model/content_type.model.dart';
 import 'package:zippy/domain/model/params/create_or_delete_user_subscription.params.dart';
 import 'package:zippy/domain/model/user_subscription.model.dart';
-import 'package:zippy/domain/usecases/create_user_subscription.usecase.dart';
-import 'package:zippy/domain/usecases/delete_user_subscription.usecase.dart';
+import 'package:zippy/domain/usecases/toggle_user_subscription.usecase.dart';
 import 'package:zippy/domain/usecases/get_content_types.usecase.dart';
 import 'package:zippy/domain/usecases/get_user_subscriptions.usecase.dart';
-import 'package:zippy/domain/usecases/listen_user_subscription_changes.usecase.dart';
+import 'package:zippy/domain/usecases/get_user_subscriptions_stream.usecase.dart';
 
 class SubscriptionService extends GetxService {
   final AuthService authService = Get.find<AuthService>();
 
   final GetContentTypes getContentTypes = Get.find<GetContentTypes>();
-  final CreateUserSubscription createUserSubscription =
-      Get.find<CreateUserSubscription>();
-  final DeleteUserSubscription deleteUserSubscription =
-      Get.find<DeleteUserSubscription>();
+  final ToggleUserSubscription toggleUserSubscription =
+      Get.find<ToggleUserSubscription>();
   final GetUserSubscriptions getUserSubscriptions =
       Get.find<GetUserSubscriptions>();
-  final ListenUserSubscriptionChanges listenUserSubscriptionChanges =
-      Get.find<ListenUserSubscriptionChanges>();
+  final GetUserSubscriptionsStream getUserSubscriptionsStream =
+      Get.find<GetUserSubscriptionsStream>();
 
   RxList<ContentType> contentTypes = RxList<ContentType>([]);
   RxList<UserSubscription> userSubscriptions = RxList<UserSubscription>([]);
@@ -59,47 +56,33 @@ class SubscriptionService extends GetxService {
         userSubscriptions.removeWhere(
           (subscription) => subscription.contentTypeId == contentType.id,
         );
-
-        // API 호출
-        final result = await deleteUserSubscription.execute(
-          CreateOrDeleteUserSubscriptionParams(
-            userId: userId,
-            contentTypeId: contentType.id,
-          ),
-        );
-        result.fold(
-          (failure) {
-            // 실패시 롤백
-            userSubscriptions.assignAll(previousSubscriptions);
-            error.value = 'Failed to unsubscribe';
-          },
-          (_) => null, // 성공시 이미 UI가 업데이트된 상태
-        );
       } else {
         // 낙관적으로 구독 추가
         final newSubscription = UserSubscription(
           id: DateTime.now().millisecondsSinceEpoch, // 임시 ID
           userId: userId,
           contentTypeId: contentType.id,
+          isActive: true,
         );
         userSubscriptions.add(newSubscription);
-
-        // API 호출
-        final result = await createUserSubscription.execute(
-          CreateOrDeleteUserSubscriptionParams(
-            userId: userId,
-            contentTypeId: contentType.id,
-          ),
-        );
-        result.fold(
-          (failure) {
-            // 실패시 롤백
-            userSubscriptions.assignAll(previousSubscriptions);
-            error.value = 'Failed to subscribe';
-          },
-          (_) => null, // 성공시 이미 UI가 업데이트된 상태
-        );
       }
+
+      // API 호출
+      final result = await toggleUserSubscription.execute(
+        CreateOrDeleteUserSubscriptionParams(
+          userId: userId,
+          contentTypeId: contentType.id,
+        ),
+      );
+
+      result.fold(
+        (failure) {
+          // 실패시 롤백
+          userSubscriptions.assignAll(previousSubscriptions);
+          error.value = 'Failed to update subscription';
+        },
+        (_) => null, // 성공시 이미 UI가 업데이트된 상태
+      );
     } catch (e) {
       // 예외 발생시 롤백
       userSubscriptions.assignAll(previousSubscriptions);
@@ -143,12 +126,12 @@ class SubscriptionService extends GetxService {
 
   void _setupSubscriptions() {
     if (authService.currentUser.value != null) {
-      final channel = listenUserSubscriptionChanges
-          .execute(authService.currentUser.value!.id, () {
-        _fetchUserSubscriptions();
+      getUserSubscriptionsStream
+          .execute(authService.currentUser.value!.id)
+          .listen((List<UserSubscription> value) {
+        final activeSubscriptions = value.where((e) => e.isActive).toList();
+        userSubscriptions.assignAll(activeSubscriptions);
       });
-      _userSubscriptionsChannel = channel;
-      _userSubscriptionsChannel?.subscribe();
     }
   }
 

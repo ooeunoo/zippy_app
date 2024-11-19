@@ -10,7 +10,6 @@ import 'package:zippy/app/widgets/app_header.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/content_type.model.dart';
-import 'package:zippy/presentation/subscription/controller/subscription.controller.dart';
 import 'package:zippy/presentation/subscription/page/widget/subscription_card.dart';
 
 class SubscriptionPage extends StatefulWidget {
