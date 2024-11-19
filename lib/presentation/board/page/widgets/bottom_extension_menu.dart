@@ -14,12 +14,14 @@ class BottomExtensionMenu extends StatelessWidget {
   final Article article;
   final Function() share;
   final Function() report;
+  final Function() openOriginalArticle;
 
   const BottomExtensionMenu({
     super.key,
     required this.article,
     required this.share,
     required this.report,
+    required this.openOriginalArticle,
   });
 
   @override
@@ -36,6 +38,8 @@ class BottomExtensionMenu extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          _buildMenuItem(context, "원문 기사 보기", Icons.web, openOriginalArticle),
+          const AppDivider(),
           _buildMenuItem(context, "공유하기", Icons.share, share),
           const AppDivider(),
           _buildMenuItem(context, "신고하기", Icons.report, report),

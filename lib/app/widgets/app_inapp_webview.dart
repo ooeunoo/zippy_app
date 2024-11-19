@@ -1,16 +1,16 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/styles/color.dart';
 
 class AppInAppWebView extends StatefulWidget {
   final Uri uri;
-  final InAppWebViewSettings settings;
 
   const AppInAppWebView({
     Key? key,
     required this.uri,
-    required this.settings,
   }) : super(key: key);
 
   @override
@@ -18,9 +18,29 @@ class AppInAppWebView extends StatefulWidget {
 }
 
 class _AppInAppWebViewState extends State<AppInAppWebView> {
-  InAppWebViewController? _webViewController;
+  late final WebViewController _webViewController;
   final RxBool _isLoading = true.obs;
   final RxDouble _progress = 0.0.obs;
+
+  @override
+  void initState() {
+    super.initState();
+    _initWebView();
+  }
+
+  void _initWebView() {
+    _webViewController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageStarted: _onLoadStart,
+          onPageFinished: _onLoadStop,
+          onProgress: _onProgressChanged,
+          onWebResourceError: _onReceivedError,
+        ),
+      )
+      ..loadRequest(widget.uri);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +57,15 @@ class _AppInAppWebViewState extends State<AppInAppWebView> {
         child: Column(
           children: [
             _buildHeader(),
-            Expanded(child: _buildWebView()),
             Obx(() => _isLoading.value
-                ? LinearProgressIndicator(value: _progress.value)
-                : SizedBox.shrink()),
+                ? LinearProgressIndicator(
+                    value: _progress.value,
+                    backgroundColor: Colors.white,
+                    valueColor:
+                        const AlwaysStoppedAnimation<Color>(AppColor.brand600),
+                  )
+                : const SizedBox.shrink()),
+            Expanded(child: _buildWebView()),
           ],
         ),
       ),
@@ -49,7 +74,7 @@ class _AppInAppWebViewState extends State<AppInAppWebView> {
 
   Widget _buildHeader() {
     return Container(
-      height: 40,
+      height: 60,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
@@ -64,58 +89,61 @@ class _AppInAppWebViewState extends State<AppInAppWebView> {
             onPressed: () => Get.back(),
             color: AppColor.graymodern400,
           ),
-          const Expanded(
-            child: Center(
-              child: Text(
-                '원문 보기',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
+          IconButton(
+            icon: const Icon(Icons.refresh_outlined),
+            onPressed: () => _webViewController.reload(),
+            color: AppColor.graymodern400,
           ),
-          const SizedBox(width: 48),
         ],
       ),
     );
   }
 
   Widget _buildWebView() {
-    return InAppWebView(
-      key: UniqueKey(),
-      initialUrlRequest: URLRequest(url: WebUri(widget.uri.toString())),
-      initialSettings: widget.settings,
-      onWebViewCreated: (controller) {
-        _webViewController = controller;
-      },
-      onLoadStart: _onLoadStart,
-      onLoadStop: _onLoadStop,
-      onProgressChanged: _onProgressChanged,
-      onReceivedError: _onReceivedError,
+    return Stack(
+      children: [
+        RefreshIndicator(
+          onRefresh: () async {
+            await _webViewController.reload();
+          },
+          color: AppColor.brand400,
+          child: WebViewWidget(
+            controller: _webViewController,
+            gestureRecognizers: {Factory(() => EagerGestureRecognizer())},
+          ),
+        ),
+      ],
     );
   }
 
-  void _onLoadStart(InAppWebViewController controller, WebUri? url) {
-    debugPrint("WebView Started Loading: ${url?.toString()}");
+  void _onLoadStart(String url) {
+    debugPrint("WebView Started Loading: $url");
     _isLoading.value = true;
   }
 
-  void _onLoadStop(InAppWebViewController controller, WebUri? url) {
-    debugPrint("WebView Finished Loading: ${url?.toString()}");
+  void _onLoadStop(String url) {
+    debugPrint("WebView Finished Loading: $url");
     _isLoading.value = false;
   }
 
-  void _onProgressChanged(InAppWebViewController controller, int progress) {
+  void _onProgressChanged(int progress) {
     debugPrint("WebView Progress: $progress");
     _progress.value = progress / 100;
   }
 
-  void _onReceivedError(InAppWebViewController controller,
-      WebResourceRequest request, WebResourceError error) {
-    debugPrint("WebView Error: ${error.type} - ${error.description}");
-    debugPrint("Failed URL: ${request.url}");
+  void _onReceivedError(WebResourceError error) {
+    debugPrint("WebView Error: ${error.errorCode} - ${error.description}");
     _isLoading.value = false;
-    Get.snackbar('오류 발생', '웹페이지를 불러오는 데 실패했습니다: ${error.description}');
+    _showError(error.description);
+  }
+
+  void _showError(String message) {
+    Get.snackbar(
+      '오류 발생',
+      '웹페이지를 불러오는 데 실패했습니다: $message',
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+      snackPosition: SnackPosition.BOTTOM,
+    );
   }
 }

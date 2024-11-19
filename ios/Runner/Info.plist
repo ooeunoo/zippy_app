@@ -287,6 +287,7 @@
 		<false />
 		<key>LSApplicationQueriesSchemes</key>
 		<array>
+			<string>http</string>
 			<string>https</string>
 			<string>kakao</string>
 			<string>kakao3cdec7fb8a31c80a2caf92178fcbad33</string>

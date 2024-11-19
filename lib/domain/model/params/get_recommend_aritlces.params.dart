@@ -16,7 +16,7 @@ class GetRecommendedArticlesParams extends Equatable {
     this.excludeViewed = true,
     this.minPublishedAt,
     this.maxPublishedAt,
-    this.limit = 20,
+    this.limit = 100,
   });
 
   @override

@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:zippy/app/extensions/datetime.dart';
+import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
@@ -9,34 +11,22 @@ import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/article.model.dart';
-import 'package:zippy/domain/model/article_comment.model.dart';
-import 'package:zippy/domain/model/params/create_article_comment.params.dart';
 import 'package:zippy/domain/model/source.model.dart';
-import 'package:zippy/presentation/board/page/widgets/zippy_article_comment.dart';
 
-class ZippyArticleCard extends StatelessWidget {
+class ZippyArticleCard extends StatefulWidget {
   final Article article;
-  final Source? source;
-  final bool isBookMarked;
-  final Function(Article) onHandleBookmarkArticle;
-  final Function(Article) onHandleShareArticle;
-  final Future<List<ArticleComment>> Function(int) onHandleGetArticleComments;
-  final Future<void> Function(CreateArticleCommentParams)
-      onHandleCreateArticleComment;
-  final VoidCallback openMenu;
 
   const ZippyArticleCard({
     super.key,
-    required this.source,
     required this.article,
-    required this.isBookMarked,
-    required this.onHandleBookmarkArticle,
-    required this.onHandleShareArticle,
-    required this.onHandleGetArticleComments,
-    required this.onHandleCreateArticleComment,
-    required this.openMenu,
   });
 
+  @override
+  State<ZippyArticleCard> createState() => _ZippyArticleCardState();
+}
+
+class _ZippyArticleCardState extends State<ZippyArticleCard> {
+  final articleService = Get.find<ArticleService>();
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -67,21 +57,23 @@ class ZippyArticleCard extends StatelessWidget {
   }
 
   Widget _buildMainImage() {
-    return article.images.isNotEmpty
+    return widget.article.images.isNotEmpty
         ? CachedNetworkImage(
-            imageUrl: article.images[0],
+            imageUrl: widget.article.images[0],
             fit: BoxFit.cover,
             placeholder: (context, url) => Container(
               color: AppColor.graymodern950.withOpacity(0.5),
             ),
             errorWidget: (context, url, error) => AppRandomImage(
-              id: article.id.toString(),
+              id: widget.article.id.toString(),
             ),
           )
-        : AppRandomImage(id: article.id.toString());
+        : AppRandomImage(id: widget.article.id.toString());
   }
 
   Widget _buildContentTypeLabel(BuildContext context) {
+    Source? source = articleService.getSourceById(widget.article.sourceId);
+
     return Positioned(
       top: AppDimens.height(70),
       right: AppDimens.width(20),
@@ -102,35 +94,6 @@ class ZippyArticleCard extends StatelessWidget {
                 color: AppColor.white,
               ),
           align: TextAlign.center,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPlatformLabel(BuildContext context) {
-    return Positioned(
-      top: AppDimens.height(70),
-      left: AppDimens.width(20),
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: AppDimens.width(4),
-          vertical: AppDimens.height(4),
-        ),
-        decoration: BoxDecoration(
-          color: AppColor.graymodern950.withOpacity(0.7),
-          borderRadius: BorderRadius.circular(AppDimens.size(4)),
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: AppDimens.width(4),
-          ),
-          child: AppText(
-            source?.platform?.name ?? '',
-            style: Theme.of(context).textTheme.textXS.copyWith(
-                  color: AppColor.white,
-                ),
-            align: TextAlign.center,
-          ),
         ),
       ),
     );
@@ -165,6 +128,8 @@ class ZippyArticleCard extends StatelessWidget {
   }
 
   Widget _buildPlatformAndAuthorAndTime(BuildContext context) {
+    Source? source = articleService.getSourceById(widget.article.sourceId);
+
     return Row(
       children: [
         Flexible(
@@ -191,7 +156,7 @@ class ZippyArticleCard extends StatelessWidget {
         ),
         AppSpacerH(value: AppDimens.width(4)),
         AppText(
-          article.published.timeAgo(),
+          widget.article.published.timeAgo(),
           style: Theme.of(context).textTheme.textSM.copyWith(
                 color: AppColor.graymodern400,
               ),
@@ -207,10 +172,13 @@ class ZippyArticleCard extends StatelessWidget {
           padding: EdgeInsets.zero,
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
-          onPressed: () => onHandleBookmarkArticle(article),
+          onPressed: () =>
+              articleService.onHandleBookmarkArticle(widget.article),
           icon: Icon(
             Icons.bookmark,
-            color: isBookMarked ? AppColor.brand600 : null,
+            color: articleService.isBookmarked(widget.article.id!)
+                ? AppColor.brand600
+                : null,
           ),
         ),
         _buildCommentButton(context),
@@ -218,7 +186,8 @@ class ZippyArticleCard extends StatelessWidget {
           padding: EdgeInsets.zero,
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
-          onPressed: openMenu,
+          onPressed: () =>
+              articleService.onHandleArticleSupportMenu(widget.article),
           icon: const Icon(Icons.more_vert),
         ),
       ],
@@ -232,11 +201,11 @@ class ZippyArticleCard extends StatelessWidget {
           padding: EdgeInsets.zero,
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
-          onPressed: () => showCommentBottomSheet(context, article.id!,
-              onHandleGetArticleComments, onHandleCreateArticleComment),
+          onPressed: () =>
+              articleService.onHandleGetArticleComments(widget.article.id!),
           icon: const Icon(Icons.chat_bubble_outline),
         ),
-        if ((article.metadata?.commentCount ?? 0) > 0)
+        if ((widget.article.metadata?.commentCount ?? 0) > 0)
           _buildCommentCount(context),
       ],
     );
@@ -253,7 +222,7 @@ class ZippyArticleCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(18),
         ),
         child: AppText(
-          article.metadata?.commentCount.toString() ?? '0',
+          widget.article.metadata?.commentCount.toString() ?? '0',
           style: Theme.of(context).textTheme.textXS.copyWith(
                 color: AppColor.white,
               ),
@@ -264,7 +233,7 @@ class ZippyArticleCard extends StatelessWidget {
 
   Widget _buildTitle(BuildContext context) {
     return AppText(
-      article.title,
+      widget.article.title,
       style: Theme.of(context).textTheme.text2XL.copyWith(
             color: AppColor.graymodern50,
             fontWeight: FontWeight.w600,
@@ -276,7 +245,7 @@ class ZippyArticleCard extends StatelessWidget {
 
   Widget _buildSummary(BuildContext context) {
     return AppText(
-      article.summary ?? '',
+      widget.article.summary,
       style: Theme.of(context).textTheme.textSM.copyWith(
             color: AppColor.graymodern400,
             height: 1.6,

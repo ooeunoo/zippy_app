@@ -151,28 +151,11 @@ class _BoardPageState extends State<BoardPage> {
                                 content: article as AdContent);
                           }
 
-                          final source =
-                              articleService.getSourceById(article.sourceId);
-                          final isBookmarked =
-                              articleService.isBookmarked(article.id!);
-
                           return GestureDetector(
                             onTap: () =>
                                 controller.onHandleClickArticle(article),
                             child: ZippyArticleCard(
                               article: article,
-                              source: source,
-                              isBookMarked: isBookmarked,
-                              onHandleBookmarkArticle:
-                                  articleService.onHandleBookmarkArticle,
-                              onHandleShareArticle:
-                                  articleService.onHandleShareArticle,
-                              openMenu: () =>
-                                  controller.onHandleOpenMenu(article),
-                              onHandleGetArticleComments:
-                                  articleService.onHandleGetArticleComments,
-                              onHandleCreateArticleComment:
-                                  articleService.onHandleCreateArticleComment,
                             ),
                           );
                         },

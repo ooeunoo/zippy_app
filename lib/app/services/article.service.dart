@@ -1,13 +1,10 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/services/auth.service.dart';
 import 'package:zippy/app/services/webview.service.dart';
-import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/utils/share.dart';
 import 'package:zippy/app/utils/vibrates.dart';
+import 'package:zippy/app/widgets/app.snak_bar.dart';
+import 'package:zippy/app/widgets/app_dialog.dart';
 import 'package:zippy/data/entity/user_bookmark.entity.dart';
 import 'package:zippy/domain/enum/article_view_type.enum.dart';
 import 'package:zippy/domain/enum/interaction_type.enum.dart';
@@ -34,6 +31,7 @@ import 'package:zippy/domain/usecases/get_user_subscriptions.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_subscriptions.usecase.dart';
 import 'package:zippy/domain/usecases/update_user_interaction.usecase.dart';
+import 'package:zippy/presentation/board/page/widgets/bottom_extension_menu.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_article_view.dart';
 
 class ArticleService extends GetxService {
@@ -150,16 +148,26 @@ class ArticleService extends GetxService {
 
   Future<void> onHandleShareArticle(Article article) async {
     await toShare(article.title, article.link);
-    await onHandleCreateUserInteraction(article.id!, InteractionType.Share);
+    await onHandleCreateUserInteraction(article, InteractionType.Share);
   }
 
-  Future<void> onHandleCreateUserInteraction(
-      int articleId, InteractionType type) async {
-    await createUserInteraction.execute(CreateUserInteractionParams(
-      userId: authService.currentUser.value!.id,
-      articleId: articleId,
-      interactionType: type,
-    ));
+  Future<Article> onHandleCreateUserInteraction(
+      Article article, InteractionType type) async {
+    try {
+      article.copyWithOptimisticUpdate(type, increment: true);
+
+      final result = await createUserInteraction.execute(
+        CreateUserInteractionParams(
+          userId: authService.currentUser.value!.id,
+          articleId: article.id!,
+          interactionType: type,
+        ),
+      );
+      return result.fold((failure) => article, (data) => article);
+    } catch (e) {
+      article.copyWithOptimisticUpdate(type, increment: false);
+      rethrow;
+    }
   }
 
   void onHandleChangeViewType(ArticleViewType type) {
@@ -168,7 +176,7 @@ class ArticleService extends GetxService {
 
   void onHandleGoToArticleView(Article article) async {
     final handleUpdateInteraction =
-        await _createViewInteractionCallback(article.id!);
+        await _createViewInteractionCallback(article);
 
     Get.to(
       () => ZippyArticleView(
@@ -179,34 +187,75 @@ class ArticleService extends GetxService {
   }
 
   void onHandleOpenOriginalArticle(Article article) async {
-    webViewService.showWebView(article.link);
+    Get.back(); // bottomSheet 닫기
+    // 약간의 딜레이를 주어 bottomSheet가 완전히 닫힌 후 다이얼로그 표시
+    Future.delayed(const Duration(milliseconds: 100), () {
+      webViewService.showWebView(article.link);
+    });
+  }
+
+  Future<void> onHandleArticleSupportMenu(Article article) async {
+    onHeavyVibration();
+    Get.bottomSheet(BottomExtensionMenu(
+      article: article,
+      openOriginalArticle: () => onHandleOpenOriginalArticle(article),
+      share: () => _handleUserAction(
+        requiredLoggedIn: false,
+        action: () async {
+          await toShare(article.title, article.link);
+          await onHandleCreateUserInteraction(article, InteractionType.Share);
+        },
+      ),
+      report: () => _handleUserAction(
+        requiredLoggedIn: true,
+        action: () async {
+          await onHandleCreateUserInteraction(article, InteractionType.Report);
+          notifyReported();
+        },
+      ),
+    ));
   }
 
   ///*********************************
   /// Private Methods
   ///*********************************
   Future<Function(int, int)?> _createViewInteractionCallback(
-      int articleId) async {
+      Article article) async {
     if (!authService.isLoggedIn.value) return null;
 
-    final result = await createUserInteraction.execute(
-      CreateUserInteractionParams(
-        userId: authService.currentUser.value!.id,
-        articleId: articleId,
-        interactionType: InteractionType.View,
-      ),
+    final result = await onHandleCreateUserInteraction(
+      article,
+      InteractionType.View,
     );
 
-    return result.fold(
-      (failure) => null,
-      (interaction) => (int readPercent, int readDuration) async {
-        await updateUserInteraction.execute(UpdateUserInteractionParams(
-          id: interaction.id!,
+    updateInteraction(int readPercent, int readDuration) async {
+      await updateUserInteraction.execute(
+        UpdateUserInteractionParams(
+          id: result.id!,
           readPercent: readPercent,
           readDuration: readDuration,
-        ));
-      },
-    );
+        ),
+      );
+    }
+
+    return updateInteraction;
+  }
+
+  Future<void> _handleUserAction({
+    required bool requiredLoggedIn,
+    required Future<void> Function() action,
+  }) async {
+    bool isLoggedIn = authService.isLoggedIn.value;
+    // requiredLoggedIn가 true이고 로그인이 되어있지 않으면 로그인 다이얼로그 표시
+    if (!requiredLoggedIn && !isLoggedIn) {
+      Get.back(); // bottomSheet 닫기
+      // 약간의 딜레이를 주어 bottomSheet가 완전히 닫힌 후 다이얼로그 표시
+      Future.delayed(const Duration(milliseconds: 100), () {
+        showLoginDialog();
+      });
+      return;
+    }
+    await action();
   }
 
   ///*********************************
