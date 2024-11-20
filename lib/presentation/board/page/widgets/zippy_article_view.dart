@@ -10,14 +10,12 @@ import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
-import 'package:zippy/app/widgets/app_button.dart';
 import 'package:zippy/app/widgets/app_divider.dart';
 import 'package:zippy/app/widgets/app_header.dart';
 import 'package:zippy/app/widgets/app_random_image.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
-import 'package:zippy/app/widgets/app_video_player.dart';
 import 'package:zippy/domain/model/article.model.dart';
 
 class ZippyArticleView extends StatefulWidget {
@@ -33,6 +31,8 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
   final articleService = Get.find<ArticleService>();
   bool isKeyPointsExpanded = false;
   final scrollController = ScrollController();
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
   final Map<String, GlobalKey> sectionKeys = {};
   // 각 섹션의 확장 상태를 추적하기 위한 맵
   final Map<String, bool> expandedSections = {};
@@ -49,6 +49,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
 
   @override
   void dispose() {
+    _pageController.dispose();
     scrollController.dispose();
     super.dispose();
   }
@@ -96,13 +97,13 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildMetadataRow(context),
-                  AppSpacerV(value: AppDimens.height(12)),
+                  // _buildMetadataRow(context),
+                  AppSpacerV(value: AppDimens.height(30)),
 
                   // Key Points Card
                   _buildKeyPointsCard(context),
                   AppSpacerV(value: AppDimens.height(24)),
-                  AppDivider(
+                  const AppDivider(
                     color: AppColor.graymodern800,
                     height: 1,
                   ),
@@ -110,6 +111,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
 
                   // Content Sections
                   _buildContentSections(context),
+                  AppSpacerV(value: AppDimens.height(100)),
                 ],
               ),
             ),
@@ -176,11 +178,9 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
   }
 
   Widget _buildMainImage() {
-    // 모든 미디어 URL을 저장할 리스트
     List<String> allImages = List<String>.from(widget.article.images);
     List<String> allVideos = [];
 
-    // attachments에서 미디어 타입별로 분류
     if (widget.article.attachments != null) {
       for (var attachment in widget.article.attachments!) {
         if (attachment.contentType.startsWith('image/') &&
@@ -192,7 +192,6 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
       }
     }
 
-    // 미디어가 없는 경우 랜덤 이미지 표시
     if (allImages.isEmpty && allVideos.isEmpty) {
       return SizedBox(
         height: AppDimens.height(200),
@@ -201,35 +200,81 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
       );
     }
 
-    return SizedBox(
-      height: AppDimens.height(200),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: allImages.length + allVideos.length,
-        itemBuilder: (context, index) {
-          bool isVideo = index >= allImages.length;
-          String mediaUrl =
-              isVideo ? allVideos[index - allImages.length] : allImages[index];
+    final List<String> allMedia = [...allImages, ...allVideos];
 
-          return ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: (allImages.length + allVideos.length) == 1
-                  ? double.infinity
-                  : MediaQuery.of(context).size.width / 2,
+    return Stack(
+      children: [
+        SizedBox(
+          height: AppDimens.height(200),
+          child: PageView.builder(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                _currentPage = index;
+              });
+            },
+            itemCount: allMedia.length,
+            itemBuilder: (context, index) {
+              final bool isVideo = index >= allImages.length;
+              final String mediaUrl = allMedia[index];
+
+              return SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: CachedNetworkImage(
+                  imageUrl: mediaUrl,
+                  fit: BoxFit.cover,
+                  errorWidget: (context, url, error) =>
+                      AppRandomImage(id: widget.article.id.toString()),
+                ),
+              );
+            },
+          ),
+        ),
+        if (allMedia.length > 1)
+          Positioned(
+            bottom: AppDimens.height(8),
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                allMedia.length,
+                (index) => Container(
+                  width: AppDimens.width(8),
+                  height: AppDimens.width(8),
+                  margin: EdgeInsets.symmetric(horizontal: AppDimens.width(4)),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _currentPage == index
+                        ? AppColor.blue400
+                        : AppColor.graymodern700,
+                  ),
+                ),
+              ),
             ),
-            child:
-                //  isVideo
-                //     ? AppVideoPlayer(videoUrl: mediaUrl) // VideoPlayer 위젯 구현 필요
-                //     :
-                CachedNetworkImage(
-              imageUrl: mediaUrl,
-              fit: BoxFit.cover,
-              errorWidget: (context, url, error) =>
-                  AppRandomImage(id: widget.article.id.toString()),
+          ),
+        // 이미지 개수 표시
+        Positioned(
+          bottom: AppDimens.height(8),
+          right: AppDimens.width(8),
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppDimens.width(8),
+              vertical: AppDimens.height(4),
             ),
-          );
-        },
-      ),
+            decoration: BoxDecoration(
+              color: AppColor.graymodern900.withOpacity(0.6),
+              borderRadius: BorderRadius.circular(AppDimens.radius(4)),
+            ),
+            child: AppText(
+              '${_currentPage + 1}/${allMedia.length}',
+              style: Theme.of(context).textTheme.textXS.copyWith(
+                    color: AppColor.graymodern200,
+                  ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -383,7 +428,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
                             size: AppDimens.size(16),
                           ),
                         ),
-                        AppSpacerH(value: AppDimens.width(5)),
+                        AppSpacerH(value: AppDimens.width(8)),
                         Expanded(
                           child: AppText(
                             point,
@@ -442,9 +487,9 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
                 setState(() {
                   expandedSections[section.title] = expanded;
                 });
-                // if (expanded) {
-                //   _scrollToSection(sectionKeys[section.title]!);
-                // }
+                if (expanded) {
+                  _scrollToSection(sectionKeys[section.title]!);
+                }
               },
               tilePadding: EdgeInsets.symmetric(
                 horizontal: AppDimens.width(12),
@@ -567,8 +612,8 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
                                       .textMD
                                       .copyWith(
                                         color: isExpanded
-                                            ? AppColor.graymodern200
-                                            : AppColor.graymodern400,
+                                            ? AppColor.graymodern400
+                                            : AppColor.graymodern600,
                                         height: 1.8,
                                         letterSpacing: 0.2,
                                       ),
@@ -580,8 +625,8 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
                                       .textMD
                                       .copyWith(
                                         color: isExpanded
-                                            ? AppColor.graymodern50
-                                            : AppColor.graymodern300,
+                                            ? AppColor.graymodern300
+                                            : AppColor.graymodern500,
                                         fontWeight: AppFontWeight.bold,
                                       ),
                                   blockquote: Theme.of(context)

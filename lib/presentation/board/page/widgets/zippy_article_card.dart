@@ -120,14 +120,14 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
-          child: _buildPlatformAndAuthorAndTime(context),
+          child: _buildPlatformAndTime(context),
         ),
         _buildActionButtons(context),
       ],
     );
   }
 
-  Widget _buildPlatformAndAuthorAndTime(BuildContext context) {
+  Widget _buildPlatformAndTime(BuildContext context) {
     Source? source = articleService.getSourceById(widget.article.sourceId);
 
     return Row(
@@ -168,20 +168,20 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
   Widget _buildActionButtons(BuildContext context) {
     return Row(
       children: [
-        IconButton(
-          padding: EdgeInsets.zero,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          onPressed: () =>
-              articleService.onHandleBookmarkArticle(widget.article),
-          icon: Icon(
-            Icons.bookmark,
-            color: articleService.isBookmarked(widget.article.id!)
-                ? AppColor.brand600
-                : null,
-          ),
-        ),
-        _buildCommentButton(context),
+        // IconButton(
+        //   padding: EdgeInsets.zero,
+        //   splashColor: Colors.transparent,
+        //   highlightColor: Colors.transparent,
+        //   onPressed: () =>
+        //       articleService.onHandleBookmarkArticle(widget.article),
+        //   icon: Icon(
+        //     Icons.bookmark,
+        //     color: articleService.isBookmarked(widget.article.id!)
+        //         ? AppColor.brand600
+        //         : null,
+        //   ),
+        // ),
+        // _buildCommentButton(context),
         IconButton(
           padding: EdgeInsets.zero,
           splashColor: Colors.transparent,
