@@ -15,9 +15,9 @@ void main() async {
     () async {
       WidgetsFlutterBinding.ensureInitialized();
 
-      if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-        // await InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
-      }
+      // if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+      //   // await InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
+      // }
 
       await initHive();
       await MobileAds.instance.initialize();
