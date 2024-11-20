@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:zippy/data/entity/user_bookmark.entity.dart';
 import 'package:zippy/data/entity/user_bookmark_folder.entity.dart';
 
 @immutable

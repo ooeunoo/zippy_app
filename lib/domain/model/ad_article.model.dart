@@ -3,10 +3,10 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/domain/model/article.model.dart';
 
 @immutable
-class AdContent extends Article {
+class AdArticle extends Article {
   final NativeAd nativeAd;
 
-  AdContent({
+  AdArticle({
     super.sourceId = 0,
     super.title = '',
     super.link = '',

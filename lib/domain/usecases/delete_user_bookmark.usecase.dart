@@ -10,7 +10,7 @@ class DeleteUserBookmark {
   DeleteUserBookmark(this.repo);
 
   Future<Either<Failure, List<UserBookmark>>> execute(
-      UserBookmarkEntity bookmark) {
-    return repo.deleteUserBookmark(bookmark);
+      int bookmarkId) {
+    return repo.deleteUserBookmark(bookmarkId);
   }
 }

@@ -10,7 +10,7 @@ class DeleteUserBookmarkFolder {
   DeleteUserBookmarkFolder(this.repo);
 
   Future<Either<Failure, List<UserBookmarkFolder>>> execute(
-      UserBookmarkFolderEntity folder) {
-    return repo.deleteUserBookmarkFolder(folder);
+      String folderId) {
+    return repo.deleteUserBookmarkFolder(folderId);
   }
 }

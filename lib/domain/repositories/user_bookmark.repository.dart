@@ -11,12 +11,12 @@ abstract class UserBookmarkRepository {
   Future<Either<Failure, List<UserBookmark>>> createUserBookmark(
       UserBookmarkEntity bookmark);
   Future<Either<Failure, List<UserBookmark>>> deleteUserBookmark(
-      UserBookmarkEntity bookmark);
+      int bookmarkId);
   Stream<List<UserBookmark>> subscribeUserBookmarks();
   Future<Either<Failure, List<UserBookmarkFolder>>> createUserBookmarkFolder(
       UserBookmarkFolderEntity folder);
   Future<Either<Failure, List<UserBookmarkFolder>>> deleteUserBookmarkFolder(
-      UserBookmarkFolderEntity folder);
+      String folderId);
   Future<Either<Failure, List<UserBookmarkFolder>>> getUserBookmarkFolders();
   Stream<List<UserBookmarkFolder>> subscribeUserBookmarkFolders();
 }
@@ -34,8 +34,8 @@ class UserBookmarkRepositoryImpl implements UserBookmarkRepository {
 
   @override
   Future<Either<Failure, List<UserBookmark>>> deleteUserBookmark(
-      UserBookmarkEntity bookmark) {
-    return datasource.deleteBookmark(bookmark);
+      int bookmarkId) {
+    return datasource.deleteBookmark(bookmarkId);
   }
 
   @override
@@ -56,8 +56,8 @@ class UserBookmarkRepositoryImpl implements UserBookmarkRepository {
 
   @override
   Future<Either<Failure, List<UserBookmarkFolder>>> deleteUserBookmarkFolder(
-      UserBookmarkFolderEntity folder) {
-    return datasource.deleteFolder(folder.id);
+      String folderId) {
+    return datasource.deleteFolder(folderId);
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'package:zippy/app/services/admob.service.dart';
 import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/services/auth.service.dart';
+import 'package:zippy/app/services/bookmark.service.dart';
 import 'package:zippy/app/services/content_type.service.dart';
 import 'package:zippy/app/services/subscription.service.dart';
 import 'package:zippy/app/services/webview.service.dart';
@@ -10,7 +11,6 @@ import 'package:zippy/data/sources/app_metadata.source.dart';
 import 'package:zippy/data/sources/article.source.dart';
 import 'package:zippy/data/sources/article_comment.source.dart';
 import 'package:zippy/data/sources/auth.source.dart';
-import 'package:zippy/data/sources/bookmark.source.dart';
 import 'package:zippy/data/sources/content_type.source.dart';
 import 'package:zippy/data/sources/keyword_rank_snapshot.source.dart';
 import 'package:zippy/data/sources/source.source.dart';
@@ -23,7 +23,6 @@ import 'package:zippy/domain/repositories/app_metadata.repository.dart';
 import 'package:zippy/domain/repositories/article.repository.dart';
 import 'package:zippy/domain/repositories/article_comment.repository.dart';
 import 'package:zippy/domain/repositories/auth.repository.dart';
-import 'package:zippy/domain/repositories/bookmark.repository.dart';
 import 'package:zippy/domain/repositories/content_type.repository.dart';
 import 'package:zippy/domain/repositories/keyword_rank_snapshot.repository.dart';
 import 'package:zippy/domain/repositories/source.repository.dart';
@@ -80,7 +79,6 @@ class ZippyBindings implements Bindings {
     Get.lazyPut<AppMetadataDatasource>(() => AppMetadataDatasourceImpl());
     Get.lazyPut<ArticleDatasource>(() => ArticleDatasourceImpl());
     Get.lazyPut<AuthDatasource>(() => AuthDatasourceImpl());
-    Get.lazyPut<BookmarkDatasource>(() => BookmarkDatasourceImpl());
     Get.lazyPut<PlatformDatasource>(() => PlatformDatasourceImpl());
     Get.lazyPut<SourceDatasource>(() => SourceDatasourceImpl());
     Get.lazyPut<UserBookmarkDatasource>(() => UserBookmarkDatasourceImpl());
@@ -100,7 +98,6 @@ class ZippyBindings implements Bindings {
         () => AppMetadataRepositoryImpl(Get.find()));
     Get.lazyPut<ArticleRepository>(() => ArticleRepositoryImpl(Get.find()));
     Get.lazyPut<AuthRepository>(() => AuthRepositoryImpl(Get.find()));
-    Get.lazyPut<BookmarkRepository>(() => BookmarkRepositoryImpl(Get.find()));
     Get.lazyPut<PlatformRepository>(() => PlatformRepositoryImpl(Get.find()));
     Get.lazyPut<SourceRepository>(() => SourceRepositoryImpl(Get.find()));
     Get.lazyPut<UserBookmarkRepository>(
@@ -158,6 +155,7 @@ class ZippyBindings implements Bindings {
     Get.put<AdmobService>(AdmobService(), permanent: true);
     Get.put<AuthService>(AuthService(), permanent: true);
     Get.put<ContentTypeService>(ContentTypeService(), permanent: true);
+    Get.put<BookmarkService>(BookmarkService(), permanent: true);
     Get.put<ArticleService>(ArticleService(), permanent: true);
     Get.put<SubscriptionService>(SubscriptionService(), permanent: true);
   }

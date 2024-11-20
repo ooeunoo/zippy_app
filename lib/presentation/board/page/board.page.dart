@@ -4,13 +4,13 @@ import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/widgets/app_text.dart';
-import 'package:zippy/domain/model/ad_content.model.dart';
+import 'package:zippy/domain/model/ad_article.model.dart';
 import 'package:zippy/domain/model/article.model.dart';
 import 'package:zippy/presentation/board/controller/board.controller.dart';
-import 'package:zippy/presentation/board/page/widgets/zippy_ad_content_card.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:zippy/presentation/board/page/widgets/zippy_ad_article_card.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_article_card.dart';
 
 class BoardPage extends StatefulWidget {
@@ -147,8 +147,8 @@ class _BoardPageState extends State<BoardPage> {
                           final article = controller.articles[index];
 
                           if (article.isAd) {
-                            return ZippyAdContentCard(
-                                content: article as AdContent);
+                            return ZippyAdArticleCard(
+                                adArticle: article as AdArticle);
                           }
 
                           return GestureDetector(

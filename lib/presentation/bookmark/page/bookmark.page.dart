@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:zippy/app/services/bookmark.service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/font.dart';
@@ -10,9 +12,9 @@ import 'package:zippy/app/widgets/app_header.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
+import 'package:zippy/data/sources/user_bookmark.source.dart';
 import 'package:zippy/domain/model/user_bookmark.model.dart';
-import 'package:zippy/presentation/bookmark/controller/bookmark.controller.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:zippy/presentation/bookmark/page/widget/bookmark-action.dialog.dart';
 
 class BookmarkPage extends StatefulWidget {
   const BookmarkPage({super.key});
@@ -21,20 +23,37 @@ class BookmarkPage extends StatefulWidget {
   State<BookmarkPage> createState() => _BookmarkPageState();
 }
 
-
 class _BookmarkPageState extends State<BookmarkPage> {
+  final BookmarkService bookmarkService = Get.find();
+  String selectedFolderId = UserBookmarkKey.all.name;
+
   @override
-  Widget build(BuildContext context) {
-    BookmarkController controller = Get.find();
-    return Scaffold(
-        appBar: appBar(context),
-        body: Padding(
-          padding: EdgeInsets.only(top: AppDimens.height(20)),
-          child: bookmarkLists(context, controller),
-        ));
+  void initState() {
+    super.initState();
   }
 
-  PreferredSizeWidget appBar(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: _buildAppBar(context),
+      body: Column(
+        children: [
+          _buildFolderList(context),
+          Expanded(child: _buildBookmarkList(context)),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => showCreateFolderDialog(
+          context,
+          bookmarkService.onHandleCreateUserBookmarkFolder,
+        ),
+        backgroundColor: AppColor.blue500,
+        child: const Icon(Icons.create_new_folder, color: AppColor.white),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppHeader(
       backgroundColor: AppColor.transparent,
       automaticallyImplyLeading: true,
@@ -44,54 +63,265 @@ class _BookmarkPageState extends State<BookmarkPage> {
             color: AppColor.gray100, fontWeight: AppFontWeight.medium),
       ),
     );
-   
   }
 
+  Widget _buildFolderList(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          height: AppDimens.height(45),
+          margin: EdgeInsets.only(
+            top: AppDimens.height(8),
+            bottom: AppDimens.height(16),
+          ),
+          child: Obx(() => ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: bookmarkService.userBookmarkFolders.length + 1,
+                padding: EdgeInsets.symmetric(horizontal: AppDimens.width(16)),
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return _buildTabItem(
+                      context,
+                      UserBookmarkKey.all.name,
+                      UserBookmarkKey.all.name,
+                      null,
+                      true,
+                    );
+                  }
+                  final folder = bookmarkService.userBookmarkFolders[index - 1];
+                  return _buildTabItem(
+                    context,
+                    folder.id,
+                    folder.name,
+                    folder.description,
+                    false,
+                  );
+                },
+              )),
+        ),
+      ],
+    );
+  }
 
-  Widget bookmarkLists(BuildContext context, BookmarkController controller) {
-    return Obx(() => ListView.builder(
-          itemCount: controller.userBookmarks.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Obx(() {
-              UserBookmark bookmark = controller.userBookmarks[index];
-              bool isLastItem = index == controller.userBookmarks.length - 1;
-              var deleteAction = controller.deleteBookmarkContent;
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: AppDimens.width(5)),
-                child: bookmarkItems(
-                    context, controller, bookmark, isLastItem, deleteAction),
-              );
+  Widget _buildTabItem(
+    BuildContext context,
+    String folderId,
+    String name,
+    String? description,
+    bool isAll,
+  ) {
+    final isSelected = selectedFolderId == folderId;
+
+    return Container(
+      margin: EdgeInsets.only(right: AppDimens.width(4)),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            setState(() {
+              selectedFolderId = folderId;
             });
           },
-        ));
+          onLongPress: isAll
+              ? null
+              : () => showFolderOptionsDialog(
+                    context,
+                    folderId,
+                    name,
+                    bookmarkService.onHandleDeleteUserBookmarkFolder,
+                  ),
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppDimens.width(16),
+            ),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: isSelected ? AppColor.blue400 : Colors.transparent,
+                  width: 2,
+                ),
+              ),
+            ),
+            child: Stack(
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          isAll ? Icons.folder : Icons.folder_outlined,
+                          size: AppDimens.size(16),
+                          color: isSelected
+                              ? AppColor.blue400
+                              : AppColor.graymodern400,
+                        ),
+                        AppSpacerH(value: AppDimens.width(8)),
+                        Tooltip(
+                          message:
+                              '$name${description != null ? '\n$description' : ''}',
+                          child: AppText(
+                            name,
+                            style: Theme.of(context).textTheme.textSM.copyWith(
+                                  color: isSelected
+                                      ? AppColor.blue400
+                                      : AppColor.graymodern400,
+                                  fontWeight: isSelected
+                                      ? AppFontWeight.bold
+                                      : FontWeight.normal,
+                                ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                if (!isAll)
+                  Positioned(
+                    right: 0,
+                    top: AppDimens.height(2),
+                    child: Obx(() {
+                      final count = bookmarkService.userBookmarks
+                          .where((bookmark) => bookmark.folderId == folderId)
+                          .length;
+                      if (count == 0) return const SizedBox.shrink();
+                      return Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: AppDimens.width(4),
+                          vertical: AppDimens.height(1),
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? AppColor.blue400
+                              : AppColor.graymodern700,
+                          borderRadius:
+                              BorderRadius.circular(AppDimens.radius(6)),
+                        ),
+                        child: AppText(
+                          count.toString(),
+                          style: Theme.of(context).textTheme.textXXS.copyWith(
+                                color: isSelected
+                                    ? AppColor.white
+                                    : AppColor.graymodern400,
+                              ),
+                        ),
+                      );
+                    }),
+                  ),
+                // 활성화 표시 애니메이션
+                if (isSelected)
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      height: 2,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColor.blue400.withOpacity(0.5),
+                            AppColor.blue400,
+                            AppColor.blue400.withOpacity(0.5),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
-  Widget bookmarkItems(BuildContext context, BookmarkController controller,
-      UserBookmark bookmark, bool isLastItem, delete) {
+  Widget _buildBookmarkList(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: AppDimens.height(16)),
+      child: Obx(() {
+        final bookmarks = selectedFolderId == UserBookmarkKey.all.name
+            ? bookmarkService.userBookmarks
+            : bookmarkService.userBookmarks
+                .where((bookmark) => bookmark.folderId == selectedFolderId)
+                .toList();
+
+        if (bookmarks.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.bookmark_border,
+                  size: AppDimens.size(48),
+                  color: AppColor.graymodern600,
+                ),
+                AppSpacerV(value: AppDimens.height(16)),
+                AppText(
+                  '저장된 콘텐츠가 없습니다',
+                  style: Theme.of(context).textTheme.textMD.copyWith(
+                        color: AppColor.graymodern600,
+                      ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return ListView.builder(
+          itemCount: bookmarks.length,
+          padding: EdgeInsets.symmetric(horizontal: AppDimens.width(16)),
+          itemBuilder: (BuildContext context, int index) {
+            final bookmark = bookmarks[index];
+            final isLastItem = index == bookmarks.length - 1;
+
+            return Column(
+              children: [
+                _buildBookmarkItem(
+                  context,
+                  bookmark,
+                  isLastItem,
+                  bookmarkService.onHandleDeleteUserBookmark,
+                ),
+                if (!isLastItem) const AppDivider(),
+              ],
+            );
+          },
+        );
+      }),
+    );
+  }
+
+  Widget _buildBookmarkItem(
+    BuildContext context,
+    UserBookmark bookmark,
+    bool isLastItem,
+    Function delete,
+  ) {
     return Slidable(
-        key: const ValueKey(0),
-        startActionPane: ActionPane(
-          motion: const ScrollMotion(),
-          children: [
-            SlidableAction(
-              onPressed: (BuildContext context) => delete(bookmark),
-              backgroundColor: AppColor.rose700.withOpacity(0.9),
-              foregroundColor: AppColor.white,
-              icon: Icons.delete,
-              label: 'Delete',
-            ),
-            SlidableAction(
-              onPressed: (BuildContext context) async {
-                await toShare(bookmark.link, bookmark.title);
-              },
-              backgroundColor: AppColor.brand600.withOpacity(0.9),
-              foregroundColor: AppColor.white,
-              icon: Icons.share,
-              label: 'Share',
-            ),
-          ],
-        ),
-        child: Column(children: [
+      key: ValueKey(bookmark.id),
+      startActionPane: ActionPane(
+        motion: const ScrollMotion(),
+        children: [
+          SlidableAction(
+            onPressed: (BuildContext context) => delete(bookmark),
+            backgroundColor: AppColor.rose700.withOpacity(0.9),
+            foregroundColor: AppColor.white,
+            icon: Icons.delete,
+            label: 'Delete',
+          ),
+          SlidableAction(
+            onPressed: (BuildContext context) async {
+              await toShare(bookmark.link, bookmark.title);
+            },
+            backgroundColor: AppColor.brand600.withOpacity(0.9),
+            foregroundColor: AppColor.white,
+            icon: Icons.share,
+            label: 'Share',
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
           AppSpacerV(value: AppDimens.size(5)),
           ListTile(
             leading: SizedBox(
@@ -107,16 +337,17 @@ class _BookmarkPageState extends State<BookmarkPage> {
             title: AppText(
               bookmark.title.trim(),
               maxLines: 2,
-              style: Theme.of(context)
-                  .textTheme
-                  .textMD
-                  .copyWith(color: AppColor.graymodern100),
+              style: Theme.of(context).textTheme.textMD.copyWith(
+                    color: AppColor.graymodern100,
+                  ),
             ),
-            onTap: () => controller.onClickBookmark(bookmark),
+            // onTap: () => articleService.onHandleClickUserBookmark(bookmark),
             minLeadingWidth: bookmark.images != null ? 30 : 0,
           ),
           AppSpacerV(value: AppDimens.size(5)),
           if (!isLastItem) const AppDivider(),
-        ]));
+        ],
+      ),
+    );
   }
 }

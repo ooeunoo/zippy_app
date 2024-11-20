@@ -20,8 +20,7 @@ abstract class UserBookmarkDatasource {
   // 북마크 관련
   Future<Either<Failure, List<UserBookmark>>> createBookmark(
       UserBookmarkEntity bookmark);
-  Future<Either<Failure, List<UserBookmark>>> deleteBookmark(
-      UserBookmarkEntity bookmark);
+  Future<Either<Failure, List<UserBookmark>>> deleteBookmark(int bookmarkId);
   Future<Either<Failure, List<UserBookmark>>> getBookmarks();
   Future<Either<Failure, List<UserBookmark>>> getBookmarksByFolderId(
       int folderId);
@@ -56,10 +55,10 @@ class UserBookmarkDatasourceImpl implements UserBookmarkDatasource {
 
   @override
   Future<Either<Failure, List<UserBookmark>>> deleteBookmark(
-      UserBookmarkEntity removeBookmark) async {
+      int removeBookmarkId) async {
     try {
       List<dynamic> bookmarks = _getBookmarks();
-      bookmarks.removeWhere((bookmark) => bookmark.id == removeBookmark.id);
+      bookmarks.removeWhere((bookmark) => bookmark.id == removeBookmarkId);
       await box.put(UserBookmarkKey.all.name, bookmarks);
       return Right(toBookmarkModelAll());
     } catch (e, stackTrace) {

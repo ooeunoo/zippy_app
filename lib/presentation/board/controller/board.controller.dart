@@ -1,17 +1,11 @@
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/services/admob.service.dart';
 import 'package:zippy/app/services/auth.service.dart';
-import 'package:zippy/app/utils/share.dart';
-import 'package:zippy/app/utils/vibrates.dart';
-import 'package:zippy/app/widgets/app.snak_bar.dart';
-import 'package:zippy/app/widgets/app_dialog.dart';
-import 'package:zippy/domain/enum/interaction_type.enum.dart';
-import 'package:zippy/domain/model/ad_content.model.dart';
+import 'package:zippy/domain/model/ad_article.model.dart';
 import 'package:zippy/domain/model/article.model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zippy/domain/model/params/get_recommend_aritlces.params.dart';
-import 'package:zippy/presentation/board/page/widgets/bottom_extension_menu.dart';
 import 'package:zippy/app/services/article.service.dart';
 
 class BoardController extends GetxService {
@@ -67,10 +61,10 @@ class BoardController extends GetxService {
     NativeAd? nativeAd = admobService.nativeAd.value;
 
     if (credit == 0 && nativeAd != null) {
-      AdContent adContent = AdContent(
+      AdArticle adArticle = AdArticle(
         nativeAd: nativeAd,
       );
-      articles.insert(curPageIndex + 1, adContent);
+      articles.insert(curPageIndex + 1, adArticle);
       articles.refresh();
       admobService.resetAdContent();
     }
