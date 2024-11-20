@@ -14,14 +14,18 @@ class BottomExtensionMenu extends StatelessWidget {
   final Article article;
   final Function() share;
   final Function() report;
-  final Function() openOriginalArticle;
+  final Function() originalArticle;
+  final Function() bookmark;
+  final bool isBookmarked;
 
   const BottomExtensionMenu({
     super.key,
     required this.article,
     required this.share,
     required this.report,
-    required this.openOriginalArticle,
+    required this.originalArticle,
+    required this.bookmark,
+    required this.isBookmarked,
   });
 
   @override
@@ -29,7 +33,7 @@ class BottomExtensionMenu extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       decoration: const BoxDecoration(
-        color: AppColor.graymodern950,
+        color: AppColor.graymodern900,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(12.0),
           topRight: Radius.circular(12.0),
@@ -38,11 +42,21 @@ class BottomExtensionMenu extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildMenuItem(context, "원문 기사 보기", Icons.web, openOriginalArticle),
+          _buildMenuItem(context, "원문 보기", Icons.web, AppColor.graymodern300,
+              originalArticle),
           const AppDivider(),
-          _buildMenuItem(context, "공유하기", Icons.share, share),
+          _buildMenuItem(
+              context,
+              "북마크하기",
+              Icons.bookmark,
+              isBookmarked ? AppColor.brand600 : AppColor.graymodern300,
+              bookmark),
           const AppDivider(),
-          _buildMenuItem(context, "신고하기", Icons.report, report),
+          _buildMenuItem(
+              context, "공유하기", Icons.share, AppColor.graymodern300, share),
+          const AppDivider(),
+          _buildMenuItem(
+              context, "신고하기", Icons.report, AppColor.graymodern300, report),
           AppSpacerV(
             value: AppDimens.height(30),
           ),
@@ -52,28 +66,30 @@ class BottomExtensionMenu extends StatelessWidget {
   }
 
   Widget _buildMenuItem(BuildContext context, String title, IconData icon,
-      GestureTapCallback action) {
+      Color? color, GestureTapCallback action) {
     return InkWell(
       onTap: () {
-        action();
         Get.back();
+        Future.delayed(const Duration(milliseconds: 100), () {
+          action();
+        });
       },
       child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              SizedBox(width: AppDimens.width(24)),
               Icon(
                 icon,
-                color: AppColor.graymodern300,
+                color: color,
                 size: AppDimens.size(20),
               ),
-              const AppSpacerH(),
+              AppSpacerH(value: AppDimens.width(12)),
               AppText(title,
-                  style: Theme.of(context).textTheme.textLG.copyWith(
-                      color: AppColor.graymodern100,
-                      fontWeight: AppFontWeight.regular)),
-              AppSpacerH(value: AppDimens.width(10)),
+                  style: Theme.of(context).textTheme.textSM.copyWith(
+                        color: AppColor.graymodern100,
+                      )),
+              const Spacer(),
             ],
           )),
     );

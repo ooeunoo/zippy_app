@@ -134,16 +134,5 @@ class _AppInAppWebViewState extends State<AppInAppWebView> {
   void _onReceivedError(WebResourceError error) {
     debugPrint("WebView Error: ${error.errorCode} - ${error.description}");
     _isLoading.value = false;
-    _showError(error.description);
-  }
-
-  void _showError(String message) {
-    Get.snackbar(
-      '오류 발생',
-      '웹페이지를 불러오는 데 실패했습니다: $message',
-      backgroundColor: Colors.red,
-      colorText: Colors.white,
-      snackPosition: SnackPosition.BOTTOM,
-    );
   }
 }

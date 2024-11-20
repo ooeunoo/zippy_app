@@ -185,33 +185,33 @@ class ArticleService extends GetxService {
   }
 
   void onHandleOpenOriginalArticle(Article article) async {
-    Get.back(); // bottomSheet 닫기
-    // 약간의 딜레이를 주어 bottomSheet가 완전히 닫힌 후 다이얼로그 표시
-    Future.delayed(const Duration(milliseconds: 100), () {
-      webViewService.showWebView(article.link);
-    });
+    webViewService.showWebView(article.link);
   }
 
   Future<void> onHandleArticleSupportMenu(Article article) async {
     onHeavyVibration();
-    Get.bottomSheet(BottomExtensionMenu(
-      article: article,
-      openOriginalArticle: () => onHandleOpenOriginalArticle(article),
-      share: () => _handleUserAction(
-        requiredLoggedIn: false,
-        action: () async {
-          await toShare(article.title, article.link);
-          await onHandleCreateUserInteraction(article, InteractionType.Share);
-        },
-      ),
-      report: () => _handleUserAction(
-        requiredLoggedIn: true,
-        action: () async {
-          await onHandleCreateUserInteraction(article, InteractionType.Report);
-          notifyReported();
-        },
-      ),
-    ));
+    Get.bottomSheet(Obx(() => BottomExtensionMenu(
+          article: article,
+          originalArticle: () => onHandleOpenOriginalArticle(article),
+          bookmark: () => onHandleBookmarkArticle(article),
+          isBookmarked: isBookmarked(article.id!),
+          share: () => _handleUserAction(
+            requiredLoggedIn: false,
+            action: () async {
+              await toShare(article.title, article.link);
+              await onHandleCreateUserInteraction(
+                  article, InteractionType.Share);
+            },
+          ),
+          report: () => _handleUserAction(
+            requiredLoggedIn: true,
+            action: () async {
+              await onHandleCreateUserInteraction(
+                  article, InteractionType.Report);
+              notifyReported();
+            },
+          ),
+        )));
   }
 
   ///*********************************
@@ -248,11 +248,11 @@ class ArticleService extends GetxService {
     bool isLoggedIn = authService.isLoggedIn.value;
     // requiredLoggedIn가 true이고 로그인이 되어있지 않으면 로그인 다이얼로그 표시
     if (!requiredLoggedIn && !isLoggedIn) {
-      Get.back(); // bottomSheet 닫기
+      // Get.back(); // bottomSheet 닫기
       // 약간의 딜레이를 주어 bottomSheet가 완전히 닫힌 후 다이얼로그 표시
-      Future.delayed(const Duration(milliseconds: 100), () {
-        showLoginDialog();
-      });
+      // Future.delayed(const Duration(milliseconds: 100), () {
+      showLoginDialog();
+      // });
       return;
     }
     await action();
