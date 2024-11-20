@@ -8,12 +8,14 @@ class UserBookmark extends Equatable {
   final String link;
   final String title;
   final String? images;
+  final String folderId;
 
   const UserBookmark({
     required this.id,
     required this.link,
     required this.title,
     this.images,
+    required this.folderId,
   });
 
   @override
@@ -22,6 +24,7 @@ class UserBookmark extends Equatable {
       id,
       link,
       title,
+      folderId,
     ];
   }
 
@@ -30,6 +33,7 @@ class UserBookmark extends Equatable {
         'link': link,
         'title': title,
         "images": images,
+        "folder_id": folderId,
       };
 
   @override
@@ -43,6 +47,7 @@ class UserBookmark extends Equatable {
       link: link,
       title: title,
       images: images,
+      folderId: folderId,
     );
   }
 }

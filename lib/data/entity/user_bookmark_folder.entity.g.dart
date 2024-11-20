@@ -1,44 +1,42 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user_bookmark.entity.dart';
+part of 'user_bookmark_folder.entity.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class UserBookmarkEntityAdapter extends TypeAdapter<UserBookmarkEntity> {
+class UserBookmarkFolderEntityAdapter
+    extends TypeAdapter<UserBookmarkFolderEntity> {
   @override
-  final int typeId = 2;
+  final int typeId = 3;
 
   @override
-  UserBookmarkEntity read(BinaryReader reader) {
+  UserBookmarkFolderEntity read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return UserBookmarkEntity(
-      id: fields[0] as int,
-      title: fields[1] as String,
-      link: fields[2] as String,
-      images: fields[3] as String?,
-      folderId: fields[4] as String,
+    return UserBookmarkFolderEntity(
+      id: fields[0] as String,
+      name: fields[2] as String,
+      description: fields[3] as String?,
+      createdAt: fields[4] as DateTime,
     );
   }
 
   @override
-  void write(BinaryWriter writer, UserBookmarkEntity obj) {
+  void write(BinaryWriter writer, UserBookmarkFolderEntity obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.id)
-      ..writeByte(1)
-      ..write(obj.title)
       ..writeByte(2)
-      ..write(obj.link)
+      ..write(obj.name)
       ..writeByte(3)
-      ..write(obj.images)
+      ..write(obj.description)
       ..writeByte(4)
-      ..write(obj.folderId);
+      ..write(obj.createdAt);
   }
 
   @override
@@ -47,7 +45,7 @@ class UserBookmarkEntityAdapter extends TypeAdapter<UserBookmarkEntity> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is UserBookmarkEntityAdapter &&
+      other is UserBookmarkFolderEntityAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

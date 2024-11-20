@@ -35,8 +35,10 @@ import 'package:get/get.dart';
 import 'package:zippy/domain/repositories/user_interaction.repository.dart';
 import 'package:zippy/domain/usecases/create_article_comment.usecase.dart';
 import 'package:zippy/domain/usecases/create_user_bookmark.usecase.dart';
+import 'package:zippy/domain/usecases/create_user_bookmark_folder.usecase.dart';
 import 'package:zippy/domain/usecases/create_user_interaction.usecase.dart';
 import 'package:zippy/domain/usecases/delete_user_bookmark.usecase.dart';
+import 'package:zippy/domain/usecases/delete_user_bookmark_folder.usecase.dart';
 import 'package:zippy/domain/usecases/get_app_metadata.usecase.dart';
 import 'package:zippy/domain/usecases/get_article_comments.usecase.dart';
 import 'package:zippy/domain/usecases/get_articles.usecase.dart';
@@ -46,10 +48,12 @@ import 'package:zippy/domain/usecases/get_platforms.usecase.dart';
 import 'package:zippy/domain/usecases/get_recommend_articles.usecase.dart';
 import 'package:zippy/domain/usecases/get_sources.usecase.dart';
 import 'package:zippy/domain/usecases/get_user_bookmark.usecase.dart';
+import 'package:zippy/domain/usecases/get_user_bookmark_folder.usecase.dart';
 import 'package:zippy/domain/usecases/get_user_subscriptions.usecase.dart';
 import 'package:zippy/domain/usecases/logout.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/get_user_subscriptions_stream.usecase.dart';
+import 'package:zippy/domain/usecases/subscirbe_user_bookmark_folder.usecase.dart';
 import 'package:zippy/domain/usecases/subscribe_auth_status.usecase.dart';
 import 'package:zippy/domain/usecases/toggle_user_subscription.usecase.dart';
 import 'package:zippy/domain/usecases/update_app_metdata.usecase.dart';
@@ -139,6 +143,14 @@ class ZippyBindings implements Bindings {
     Get.lazyPut<GetContentTypes>(() => GetContentTypes());
     Get.lazyPut<ToggleUserSubscription>(
         () => ToggleUserSubscription(Get.find()));
+    Get.lazyPut<CreateUserBookmarkFolder>(
+        () => CreateUserBookmarkFolder(Get.find()));
+    Get.lazyPut<GetUserBookmarkFolders>(
+        () => GetUserBookmarkFolders(Get.find()));
+    Get.lazyPut<DeleteUserBookmarkFolder>(
+        () => DeleteUserBookmarkFolder(Get.find()));
+    Get.lazyPut<SubscribeUserBookmarkFolder>(
+        () => SubscribeUserBookmarkFolder(Get.find()));
   }
 
   _initService() {

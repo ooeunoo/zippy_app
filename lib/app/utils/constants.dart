@@ -6,4 +6,5 @@ abstract class Constants {
   static const int appMetadataHiveId = 0;
   static const int userSubscriptionHiveId = 1;
   static const int userBookmarkHiveId = 2;
+  static const int userBookmarkFolderHiveId = 3;
 }

@@ -9,7 +9,7 @@ class BaseController extends GetxController {
     if (currentIndex.value == index) return;
 
     currentIndex.value = index;
-    onHeavyVibration();
+    // onHeavyVibration();
 
     switch (index) {
       case 0:

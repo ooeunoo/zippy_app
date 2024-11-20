@@ -18,11 +18,15 @@ class UserBookmarkEntity extends HiveObject {
   @HiveField(3)
   String? images;
 
+  @HiveField(4)
+  String folderId;
+
   UserBookmarkEntity({
     required this.id,
     required this.title,
     required this.link,
     this.images,
+    required this.folderId,
   });
 
   factory UserBookmarkEntity.fromJson(Map<String, dynamic> json) {
@@ -31,6 +35,7 @@ class UserBookmarkEntity extends HiveObject {
       title: json["title"],
       link: json["link"],
       images: json["images"],
+      folderId: json["folder_id"],
     );
   }
   static Map<String, dynamic> toJson(UserBookmarkEntity bookmark) {
@@ -38,11 +43,18 @@ class UserBookmarkEntity extends HiveObject {
       "id": bookmark.id,
       "title": bookmark.title,
       "link": bookmark.link,
-      "images": bookmark.images
+      "images": bookmark.images,
+      "folder_id": bookmark.folderId,
     };
   }
 
   UserBookmark toModel() {
-    return UserBookmark(id: id, title: title, link: link, images: images);
+    return UserBookmark(
+      id: id,
+      title: title,
+      link: link,
+      images: images,
+      folderId: folderId,
+    );
   }
 }

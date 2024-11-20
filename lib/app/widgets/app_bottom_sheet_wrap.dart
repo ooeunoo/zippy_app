@@ -5,6 +5,7 @@ import 'package:zippy/app/widgets/app_handle_bar.dart';
 
 class AppBottomSheetWrap extends StatelessWidget {
   final Widget child;
+
   const AppBottomSheetWrap({super.key, required this.child});
 
   @override
