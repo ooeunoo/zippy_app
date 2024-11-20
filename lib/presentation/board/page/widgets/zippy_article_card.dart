@@ -140,7 +140,7 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
             child: AppText(
               source?.platform?.name ?? '',
               style: Theme.of(context).textTheme.textSM.copyWith(
-                    color: AppColor.graymodern400,
+                    color: AppColor.graymodern600,
                   ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -158,7 +158,7 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
         AppText(
           widget.article.published.timeAgo(),
           style: Theme.of(context).textTheme.textSM.copyWith(
-                color: AppColor.graymodern400,
+                color: AppColor.graymodern600,
               ),
         ),
       ],

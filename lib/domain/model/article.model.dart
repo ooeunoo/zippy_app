@@ -72,48 +72,6 @@ class Article extends Equatable {
   String toString() {
     return toJson().toString();
   }
-
-  Article copyWithOptimisticUpdate(InteractionType type,
-      {bool increment = true}) {
-    if (metadata == null) return this;
-
-    final diff = increment ? 1 : -1;
-
-    final updatedMetadata = ArticleMetadata(
-      id: metadata!.id,
-      articleId: metadata!.articleId,
-      viewCount:
-          metadata!.viewCount + (type == InteractionType.View ? diff : 0),
-      likeCount:
-          metadata!.likeCount + (type == InteractionType.Like ? diff : 0),
-      shareCount:
-          metadata!.shareCount + (type == InteractionType.Share ? diff : 0),
-      commentCount:
-          metadata!.commentCount + (type == InteractionType.Comment ? diff : 0),
-      bookmarkCount: metadata!.bookmarkCount +
-          (type == InteractionType.Bookmark ? diff : 0),
-      reportCount:
-          metadata!.reportCount + (type == InteractionType.Report ? diff : 0),
-      updatedAt: DateTime.now(),
-    );
-
-    return Article(
-      id: id,
-      sourceId: sourceId,
-      title: title,
-      link: link,
-      author: author,
-      images: images,
-      summary: summary,
-      sections: sections,
-      keyPoints: keyPoints,
-      keywords: keywords,
-      published: published,
-      attachments: attachments,
-      metadata: updatedMetadata,
-      isAd: isAd,
-    );
-  }
 }
 
 class Attachment {

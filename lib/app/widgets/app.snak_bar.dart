@@ -73,14 +73,14 @@ notifyReported() {
               .textTheme
               .textMD
               .copyWith(color: AppColor.graymodern100)),
-      duration: const Duration(seconds: 2),
-      backgroundColor: AppColor.brand600,
+      backgroundColor: AppColor.brand800,
       snackPosition: SnackPosition.TOP,
-      borderRadius: 10,
+      borderRadius: AppDimens.size(10),
+      duration: const Duration(seconds: 1),
       animationDuration: const Duration(seconds: 1),
-      margin: EdgeInsets.symmetric(horizontal: AppDimens.width(20)),
-      padding: EdgeInsets.symmetric(
-          horizontal: AppDimens.width(20), vertical: AppDimens.height(15)),
+      margin: EdgeInsets.symmetric(horizontal: AppDimens.width(100)),
+      // padding: EdgeInsets.symmetric(
+      //     horizontal: AppDimens.width(20), vertical: AppDimens.height(15)),
     ),
   );
 }
