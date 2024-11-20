@@ -104,7 +104,7 @@ class RankContent extends StatelessWidget {
       BuildContext context, String title, List<String> descriptions) {
     return Expanded(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           AppText(
             title,
@@ -112,19 +112,19 @@ class RankContent extends StatelessWidget {
                   color: Colors.white,
                 ),
           ),
-          AppSpacerV(value: AppDimens.height(5)),
-          SizedBox(
-            height: AppDimens.height(20),
-            child: descriptions.isEmpty
-                ? const SizedBox.shrink()
-                : AppMarqueeText(
-                    text: descriptions.join(', '),
-                    width: AppDimens.width(200),
-                    style: Theme.of(context).textTheme.textXS.copyWith(
-                          color: AppColor.gray400,
-                        ),
-                  ),
-          ),
+          // AppSpacerV(value: AppDimens.height(5)),
+          // SizedBox(
+          //   height: AppDimens.height(20),
+          //   child: descriptions.isEmpty
+          //       ? const SizedBox.shrink()
+          //       : AppMarqueeText(
+          //           text: descriptions.join(', '),
+          //           width: AppDimens.width(200),
+          //           style: Theme.of(context).textTheme.textXS.copyWith(
+          //                 color: AppColor.gray400,
+          //               ),
+          //         ),
+          // ),
         ],
       ),
     );
