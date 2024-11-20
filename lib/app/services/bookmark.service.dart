@@ -83,7 +83,6 @@ class BookmarkService extends GetxService {
   ///*********************************
   /// Private Methods
   ///*********************************
-
   Future<void> _setupUserBookmark() async {
     final bookmarks = await getUserBookmark.execute();
     bookmarks.fold((failure) {
@@ -99,6 +98,20 @@ class BookmarkService extends GetxService {
       userBookmarkFolders.value = [];
     }, (data) {
       userBookmarkFolders.assignAll(data);
+    });
+  }
+
+  ///*********************************
+  /// Listen Subscriptions
+  ///*********************************
+  void _listenUser() {
+    _authUserSubscription = authService.currentUser.listen((user) {
+      _cancelBookmarkSubscriptions();
+      _cancelUserBookmarkFoldersSubscription();
+      if (user != null) {
+        _setupBookmarkSubscriptions();
+        _setupUserBookmarkFoldersSubscription();
+      }
     });
   }
 
@@ -125,19 +138,5 @@ class BookmarkService extends GetxService {
   void _cancelUserBookmarkFoldersSubscription() {
     _userBookmarkFoldersSubscription?.cancel();
     _userBookmarkFoldersSubscription = null;
-  }
-
-  ///*********************************
-  /// Listen Subscriptions
-  ///*********************************
-  void _listenUser() {
-    _authUserSubscription = authService.currentUser.listen((user) {
-      _cancelBookmarkSubscriptions();
-      _cancelUserBookmarkFoldersSubscription();
-      if (user != null) {
-        _setupBookmarkSubscriptions();
-        _setupUserBookmarkFoldersSubscription();
-      }
-    });
   }
 }
