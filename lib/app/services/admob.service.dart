@@ -47,25 +47,25 @@ class AdmobService extends GetxService {
   Rxn<NativeAd> nativeAd = Rxn<NativeAd>().obs();
   Rxn<BannerAd> bannerAd = Rxn<BannerAd>().obs();
 
-  // @override
-  // onInit() {
-  //   super.onInit();
-  //   print("OnInit");
-  //   resetAdContent();
-  //   resetIntersitialAdCredits();
+  @override
+  onInit() {
+    super.onInit();
+    print("OnInit");
+    resetAdContent();
+    resetIntersitialAdCredits();
 
-  //   ever(intersitialAdCredits, (credits) {
-  //     if (credits == PRELOAD_AD_INDEX) {
-  //       _loadInterstitialAd();
-  //     }
-  //   });
+    ever(intersitialAdCredits, (credits) {
+      if (credits == PRELOAD_AD_INDEX) {
+        _loadInterstitialAd();
+      }
+    });
 
-  //   ever(adContentCredits, (credits) {
-  //     if (credits == PRELOAD_AD_INDEX) {
-  //       _loadNativeAd();
-  //     }
-  //   });
-  // }
+    ever(adContentCredits, (credits) {
+      if (credits == PRELOAD_AD_INDEX) {
+        _loadNativeAd();
+      }
+    });
+  }
 
   int useIntersitialAdCredits() {
     if (intersitialAdCredits.value <= 0) {

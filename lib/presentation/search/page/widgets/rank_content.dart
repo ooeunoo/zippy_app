@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
-import 'package:zippy/app/widgets/app_marquee_text.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
-import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/keyword_rank_snaoshot.model.dart';
 
@@ -23,22 +21,8 @@ class RankContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // _buildLastUpdateText(context),
-        // AppSpacerV(value: AppDimens.height(10)),
         _buildRankList(context),
       ],
-    );
-  }
-
-  Widget _buildLastUpdateText(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppDimens.width(20)),
-      child: AppText(
-        '5분 전 업데이트',
-        style: Theme.of(context).textTheme.textXS.copyWith(
-              color: AppColor.gray400,
-            ),
-      ),
     );
   }
 
