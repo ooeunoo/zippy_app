@@ -109,10 +109,8 @@ class SubscriptionService extends GetxService {
 
   void _listenUser() {
     ever(authService.currentUser, (user) {
-      print("user: $user");
       _cancelSubscriptions();
       if (user != null) {
-        print("user: $user");
         _setupSubscriptions();
         _fetchUserSubscriptions();
       }

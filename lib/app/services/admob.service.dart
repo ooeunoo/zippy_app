@@ -8,188 +8,117 @@ import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/utils/env.dart';
 import 'package:zippy/app/utils/random.dart';
 
-int PRELOAD_AD_INDEX = 4;
+int PRELOAD_CARD_AD_INDEX = 3;
+
+enum NativeFactoryAdId {
+  card("cardAd"),
+  bottomBanner("bottomBannerAd"),
+  ;
+
+  final String value;
+  const NativeFactoryAdId(this.value);
+}
 
 class AdmobService extends GetxService {
-  static String get bannerAdUnitId {
+  static String get cardNativeAdUnitId {
     if (Platform.isAndroid) {
-      return ENV.GOOGLE_ADMOB_PROD_BANNER_AOS;
+      return ENV.GOOGLE_ADMOB_CARD_NATIVE_AOS;
     } else if (Platform.isIOS) {
-      return ENV.GOOGLE_ADMOB_PROD_BANNER_IOS;
-    } else {
-      throw UnsupportedError('Unsupported platform');
-    }
-  }
-
-  static String get interstitialAdUnitId {
-    if (Platform.isAndroid) {
-      return ENV.GOOGLE_ADMOB_PROD_INTERSTITIAL_AOS;
-    } else if (Platform.isIOS) {
-      return ENV.GOOGLE_ADMOB_PROD_INTERSTITIAL_IOS;
+      return ENV.GOOGLE_ADMOB_CARD_NATIVE_IOS;
     } else {
       throw UnsupportedError("Unsupported platform");
     }
   }
 
-  static String get nativeAdUnitId {
+  static String get bottomBannerAdUnitId {
     if (Platform.isAndroid) {
-      return ENV.GOOGLE_ADMOB_PROD_NATIVE_AOS;
+      return ENV.GOOGLE_ADMOB_BOTTOM_BANNER_AOS;
     } else if (Platform.isIOS) {
-      return ENV.GOOGLE_ADMOB_PROD_NATIVE_IOS;
+      return ENV.GOOGLE_ADMOB_BOTTOM_BANNER_IOS;
     } else {
       throw UnsupportedError("Unsupported platform");
     }
   }
 
-  Rx<int> intersitialAdCredits = Rx<int>(0).obs();
-  Rx<int> adContentCredits = Rx<int>(0).obs();
-  Rxn<InterstitialAd> interstitialAd = Rxn<InterstitialAd>().obs();
-  Rxn<NativeAd> nativeAd = Rxn<NativeAd>().obs();
-  Rxn<BannerAd> bannerAd = Rxn<BannerAd>().obs();
+  Rx<int> cardAdCredits = Rx<int>(0).obs();
+  Rxn<NativeAd> cardAd = Rxn<NativeAd>().obs();
+  Rxn<NativeAd> bottomBannerAd = Rxn<NativeAd>().obs();
 
   @override
   onInit() {
     super.onInit();
-    print("OnInit");
-    resetAdContent();
-    resetIntersitialAdCredits();
+    resetCardAdContent();
 
-    ever(intersitialAdCredits, (credits) {
-      if (credits == PRELOAD_AD_INDEX) {
-        _loadInterstitialAd();
-      }
-    });
-
-    ever(adContentCredits, (credits) {
-      if (credits == PRELOAD_AD_INDEX) {
-        _loadNativeAd();
+    ever(cardAdCredits, (credits) {
+      if (credits == PRELOAD_CARD_AD_INDEX) {
+        _loadCardNativeAd();
       }
     });
   }
 
-  int useIntersitialAdCredits() {
-    if (intersitialAdCredits.value <= 0) {
-      intersitialAdCredits.value = 0;
+  int useCardAdCredits() {
+    if (cardAdCredits.value <= 0) {
+      cardAdCredits.value = 0;
     } else {
-      intersitialAdCredits.value = intersitialAdCredits.value - 1;
+      cardAdCredits.value = cardAdCredits.value - 1;
     }
-    return intersitialAdCredits.value;
+    return cardAdCredits.value;
   }
 
-  int useAdContentCredits() {
-    if (adContentCredits.value <= 0) {
-      adContentCredits.value = 0;
-    } else {
-      adContentCredits.value = adContentCredits.value - 1;
+  void resetCardAdContent() {
+    cardAdCredits.value = randomInt(5, 8);
+  }
+
+  void _loadCardNativeAd() {
+    NativeAd ad = _getNativeAdTemplate(NativeFactoryAdId.card)..load();
+    cardAd.value = ad;
+  }
+
+  void loadBottomBannerNativeAd() {
+    NativeAd ad = _getNativeAdTemplate(NativeFactoryAdId.bottomBanner)..load();
+    bottomBannerAd.value = ad;
+  }
+
+  NativeAd _getNativeAdTemplate(NativeFactoryAdId id) {
+    late String adUnitId;
+    late String factoryId;
+
+    switch (id) {
+      case NativeFactoryAdId.card:
+        adUnitId = cardNativeAdUnitId;
+        factoryId = "cardAd";
+        break;
+      case NativeFactoryAdId.bottomBanner:
+        adUnitId = bottomBannerAdUnitId;
+        factoryId = "bottomBannerAd";
+        break;
     }
-    return adContentCredits.value;
-  }
 
-  void resetIntersitialAdCredits() {
-    intersitialAdCredits.value = randomInt(5, 8);
-  }
-
-  void resetAdContent() {
-    adContentCredits.value = randomInt(4, 7);
-  }
-
-  void _loadInterstitialAd() {
-    InterstitialAd.load(
-      adUnitId: interstitialAdUnitId,
-      request: const AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
+    return NativeAd(
+      adUnitId: adUnitId,
+      factoryId: factoryId,
+      listener: NativeAdListener(
         onAdLoaded: (ad) {
-          interstitialAd.value = ad;
+          if (id == NativeFactoryAdId.card) {
+            print('Native Card ad loaded successfully');
+            cardAd.value = ad as NativeAd;
+          } else if (id == NativeFactoryAdId.bottomBanner) {
+            print('Native Banner ad loaded successfully');
+            bottomBannerAd.value = ad as NativeAd;
+          }
         },
-        onAdFailedToLoad: (err) {
-          interstitialAd.value = null;
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+          if (id == NativeFactoryAdId.card) {
+            print('Native Card ad failed to load: $error');
+            cardAd.value = null;
+          } else if (id == NativeFactoryAdId.bottomBanner) {
+            print('Native Banner ad failed to load: $error');
+            bottomBannerAd.value = null;
+          }
         },
       ),
+      request: const AdRequest(),
     );
-  }
-
-  void _loadNativeAd() {
-    NativeAd ad = _getNativeAdTemplate()..load();
-    nativeAd.value = ad;
-  }
-
-  void loadBannerAd() async {
-    // Get the size before loading the ad.
-    final size = await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
-        MediaQuery.sizeOf(Get.context!).width.truncate());
-
-    if (size == null) {
-      // Unable to get the size.
-      return;
-    }
-
-    // Create an extra parameter that aligns the bottom of the expanded ad to the
-    // bottom of the banner ad.
-    const adRequest = AdRequest(extras: {
-      "collapsible": "bottom",
-    });
-
-    BannerAd ad = BannerAd(
-        adUnitId: bannerAdUnitId,
-        request: adRequest,
-        size: size,
-        listener: const BannerAdListener())
-      ..load();
-    bannerAd.value = ad;
-  }
-
-  // void loadBannerAd() async {
-  //   final width = MediaQuery.of(Get.context!).size.width.truncate();
-
-  //   BannerAd ad = BannerAd(
-  //     adUnitId: bannerAdUnitId,
-  //     request: const AdRequest(),
-  //     size: AdSize(width: width, height: AppDimens.height(40).toInt()),
-  //     listener: BannerAdListener(
-  //       onAdLoaded: (ad) {},
-  //       onAdFailedToLoad: (ad, err) {
-  //         print('err: $err');
-  //         ad.dispose();
-  //       },
-  //     ),
-  //   )..load();
-
-  //   bannerAd.value = ad;
-  // }
-
-  NativeAd _getNativeAdTemplate() {
-    return NativeAd(
-        adUnitId: nativeAdUnitId,
-        listener: NativeAdListener(
-          onAdLoaded: (ad) {},
-          onAdFailedToLoad: (ad, error) {
-            ad.dispose();
-          },
-        ),
-        request: const AdRequest(),
-        nativeTemplateStyle: NativeTemplateStyle(
-            templateType: TemplateType.medium,
-            mainBackgroundColor: AppColor.white,
-            cornerRadius: AppDimens.size(12),
-            callToActionTextStyle: NativeTemplateTextStyle(
-                textColor: AppColor.gray100,
-                backgroundColor: AppColor.brand600,
-                style: NativeTemplateFontStyle.monospace,
-                size: 16.0),
-            primaryTextStyle: NativeTemplateTextStyle(
-                textColor: AppColor.graymodern600,
-                backgroundColor: AppColor.white,
-                style: NativeTemplateFontStyle.italic,
-                size: 16.0),
-            secondaryTextStyle: NativeTemplateTextStyle(
-                textColor: AppColor.graymodern600,
-                backgroundColor: AppColor.white,
-                style: NativeTemplateFontStyle.bold,
-                size: 16.0),
-            tertiaryTextStyle: NativeTemplateTextStyle(
-                textColor: AppColor.graymodern600,
-                backgroundColor: AppColor.white,
-                style: NativeTemplateFontStyle.normal,
-                size: 16.0)));
   }
 }

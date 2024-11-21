@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <!-- 기기 및 의존성 설정 -->
+    <device id="retina6_72" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        
+        <!-- 메인 뷰: GADNativeAdView 커스텀 클래스 사용 -->
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="GADNativeAdView">
+            <rect key="frame" x="0.0" y="0.0" width="430" height="600"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <!-- 이미지 컨테이너 -->
+                <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="img-container">
+                    <rect key="frame" x="0.0" y="0.0" width="430" height="430"/>
+                    <subviews>
+                        <!-- 미디어 뷰: GADMediaView 커스텀 클래스 사용 -->
+                        <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="media-view" customClass="GADMediaView">
+                            <rect key="frame" x="0.0" y="0.0" width="430" height="430"/>
+                            <color key="backgroundColor" red="0.05098039216" green="0.07058823529" blue="0.10980392157" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </view>
+                        
+                        <!-- 광고 배지 -->
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Ad" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ad-badge">
+                            <rect key="frame" x="386" y="70" width="24" height="20"/>
+                            <color key="backgroundColor" red="0.49803921569" green="0.33725490196" blue="0.85098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="50" id="w-const"/>
+                                <constraint firstAttribute="height" constant="20" id="h-const"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" red="0.05098039216" green="0.07058823529" blue="0.10980392157" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <!-- 이미지 컨테이너 제약 조건 -->
+                        <constraint firstAttribute="width" secondItem="img-container" secondAttribute="height" multiplier="1:1" id="aspect"/>
+                        <constraint firstItem="media-view" firstAttribute="leading" secondItem="img-container" secondAttribute="leading" id="media-left"/>
+                        <constraint firstItem="media-view" firstAttribute="top" secondItem="img-container" secondAttribute="top" id="media-top"/>
+                        <constraint firstAttribute="trailing" secondItem="media-view" secondAttribute="trailing" id="media-right"/>
+                        <constraint firstAttribute="bottom" secondItem="media-view" secondAttribute="bottom" id="media-bottom"/>
+                        <constraint firstItem="ad-badge" firstAttribute="top" secondItem="img-container" secondAttribute="top" constant="70" id="badge-top"/>
+                        <constraint firstAttribute="trailing" secondItem="ad-badge" secondAttribute="trailing" constant="20" id="badge-right"/>
+                    </constraints>
+                </view>
+                
+                <!-- 콘텐츠 컨테이너 -->
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="content-container">
+                    <rect key="frame" x="12" y="446" width="406" height="138"/>
+                    <subviews>
+                        <!-- 메타데이터 행 -->
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="metadata-row">
+                            <rect key="frame" x="0.0" y="0.0" width="406" height="24"/>
+                            <subviews>
+                                <!-- 아이콘 이미지 -->
+                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="icon">
+                                    <rect key="frame" x="0.0" y="0.0" width="24" height="24"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="24" id="icon-w"/>
+                                        <constraint firstAttribute="height" constant="24" id="icon-h"/>
+                                    </constraints>
+                                </imageView>
+                                
+                                <!-- 광고주 레이블 -->
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Advertiser" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="advertiser">
+                                    <rect key="frame" x="32" y="0.0" width="374" height="24"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <color key="textColor" red="0.29411764705882354" green="0.33333333333333331" blue="0.396078431372549" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" red="0.05098039216" green="0.07058823529" blue="0.10980392157" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <!-- 메타데이터 행 제약 조건 -->
+                                <constraint firstAttribute="height" constant="24" id="meta-h"/>
+                                <constraint firstItem="icon" firstAttribute="leading" secondItem="metadata-row" secondAttribute="leading" id="icon-left"/>
+                                <constraint firstItem="icon" firstAttribute="centerY" secondItem="metadata-row" secondAttribute="centerY" id="icon-center"/>
+                                <constraint firstItem="advertiser" firstAttribute="leading" secondItem="icon" secondAttribute="trailing" constant="8" id="adv-left"/>
+                                <constraint firstAttribute="trailing" secondItem="advertiser" secondAttribute="trailing" id="adv-right"/>
+                                <constraint firstItem="advertiser" firstAttribute="centerY" secondItem="metadata-row" secondAttribute="centerY" id="adv-center"/>
+                            </constraints>
+                        </view>
+                        
+                        <!-- 헤드라인 레이블 -->
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Headline" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="headline">
+                            <rect key="frame" x="0.0" y="34" width="406" height="50"/>
+                            <constraints>
+                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="headline-h"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
+                            <color key="textColor" red="0.97254901960784312" green="0.98039215686274506" blue="0.98823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </label>
+                        
+                        <!-- 본문 레이블 -->
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Body" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="body">
+                            <rect key="frame" x="0.0" y="104" width="406" height="34"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <color key="textColor" red="0.603921568627451" green="0.6431372549019608" blue="0.6980392156862745" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" red="0.05098039216" green="0.07058823529" blue="0.10980392157" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <!-- 콘텐츠 컨테이너 제약 조건 -->
+                        <constraint firstItem="metadata-row" firstAttribute="top" secondItem="content-container" secondAttribute="top" id="meta-top"/>
+                        <constraint firstItem="metadata-row" firstAttribute="leading" secondItem="content-container" secondAttribute="leading" id="meta-left"/>
+                        <constraint firstAttribute="trailing" secondItem="metadata-row" secondAttribute="trailing" id="meta-right"/>
+                        <constraint firstItem="headline" firstAttribute="top" secondItem="metadata-row" secondAttribute="bottom" constant="10" id="headline-top"/>
+                        <constraint firstItem="headline" firstAttribute="leading" secondItem="content-container" secondAttribute="leading" id="headline-left"/>
+                        <constraint firstAttribute="trailing" secondItem="headline" secondAttribute="trailing" id="headline-right"/>
+                        <constraint firstItem="body" firstAttribute="top" secondItem="headline" secondAttribute="bottom" constant="20" id="body-top"/>
+                        <constraint firstItem="body" firstAttribute="leading" secondItem="content-container" secondAttribute="leading" id="body-left"/>
+                        <constraint firstAttribute="trailing" secondItem="body" secondAttribute="trailing" id="body-right"/>
+                        <constraint firstAttribute="bottom" secondItem="body" secondAttribute="bottom" id="body-bottom"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="0.05098039216" green="0.07058823529" blue="0.10980392157" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <!-- 메인 뷰 제약 조건 -->
+                <constraint firstItem="img-container" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="top"/>
+                <constraint firstItem="img-container" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="left"/>
+                <constraint firstAttribute="trailing" secondItem="img-container" secondAttribute="trailing" id="right"/>
+                <constraint firstItem="content-container" firstAttribute="top" secondItem="img-container" secondAttribute="bottom" constant="16" id="content-top"/>
+                <constraint firstItem="content-container" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="12" id="content-left"/>
+                <constraint firstAttribute="trailing" secondItem="content-container" secondAttribute="trailing" constant="12" id="content-right"/>
+                <constraint firstAttribute="bottom" secondItem="content-container" secondAttribute="bottom" constant="16" id="content-bottom"/>
+            </constraints>
+            <connections>
+                <!-- IBOutlet 연결 -->
+                <outlet property="bodyView" destination="body" id="body-outlet"/>
+                <outlet property="headlineView" destination="headline" id="headline-outlet"/>
+                <outlet property="iconView" destination="icon" id="icon-outlet"/>
+                <outlet property="mediaView" destination="media-view" id="media-outlet"/>
+                <outlet property="advertiserView" destination="advertiser" id="advertiser-outlet"/>
+            </connections>
+            <point key="canvasLocation" x="137.68115942028987" y="152.44565217391306"/>
+        </view>
+    </objects>
+</document>

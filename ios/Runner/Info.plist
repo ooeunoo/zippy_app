@@ -44,9 +44,9 @@
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>GADApplicationIdentifier</key>
-		<string>ca-app-pub-2434467954234557~6651694679</string>
+		<string>ca-app-pub-9891463696347744~1819693213</string>
 		<key>GADNativeAdValidatorEnabled</key>
-		<false />
+		<true />
 		<key>ITSAppUsesNonExemptEncryption</key>
 		<false />
 		<key>LSRequiresIPhoneOS</key>

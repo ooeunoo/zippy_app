@@ -41,14 +41,15 @@ class BoardController extends GetxController {
 
   Future<void> onHandleChangedArticle(int curPageIndex) async {
     if (curPageIndex < prevPageIndex.value) return;
-    int credit = admobService.useAdContentCredits();
-    NativeAd? nativeAd = admobService.nativeAd.value;
+    int credit = admobService.useCardAdCredits();
+    NativeAd? nativeAd = admobService.cardAd.value;
 
+    print("credit: $credit");
     if (credit == 0 && nativeAd != null) {
       AdArticle adArticle = AdArticle(nativeAd: nativeAd);
       articles.insert(curPageIndex + 1, adArticle);
       articles.refresh();
-      admobService.resetAdContent();
+      admobService.resetCardAdContent();
     }
 
     prevPageIndex.value = curPageIndex;
@@ -61,13 +62,13 @@ class BoardController extends GetxController {
   }
 
   Future<void> _handleInterstitialAd() async {
-    final credit = admobService.useIntersitialAdCredits();
-    final interstitialAd = admobService.interstitialAd.value;
+    // final credit = admobService.useIntersitialAdCredits();
+    // final interstitialAd = admobService.interstitialAd.value;
 
-    if (credit == 0 && interstitialAd != null) {
-      interstitialAd.show();
-      admobService.resetIntersitialAdCredits();
-    }
+    // if (credit == 0 && interstitialAd != null) {
+    //   interstitialAd.show();
+    //   admobService.resetIntersitialAdCredits();
+    // }
   }
 
   @override
