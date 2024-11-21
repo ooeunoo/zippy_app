@@ -8,28 +8,18 @@ import 'package:get/get.dart';
 import 'package:zippy/domain/model/params/get_recommend_aritlces.params.dart';
 import 'package:zippy/app/services/article.service.dart';
 
-class BoardController extends GetxService {
+class BoardController extends GetxController {
   AuthService authService = Get.find<AuthService>();
   AdmobService admobService = Get.find<AdmobService>();
   ArticleService articleService = Get.find<ArticleService>();
 
-  Rx<int> prevPageIndex = Rx<int>(0);
-  PageController pageController = PageController(
-    initialPage: 0,
-    viewportFraction: 1.0, // 전체 화면 표시
-    keepPage: true, // 페이지 상태 유지
-  );
+  final currentPage = 0.obs;
+  final prevPageIndex = 0.obs;
 
   final articles = RxList<Article>([]);
   final isLoadingContents = true.obs;
   final isLoadingUserSubscription = true.obs;
   final error = Rxn<String>();
-
-  @override
-  Future<void> onInit() async {
-    super.onInit();
-    await _initialize();
-  }
 
   Future<void> onHandleFetchRecommendedArticles() async {
     try {
@@ -42,17 +32,11 @@ class BoardController extends GetxService {
       );
 
       articles.assignAll(fetchedArticles);
+    } catch (e) {
+      error.value = e.toString();
     } finally {
       isLoadingContents.value = false;
     }
-  }
-
-  Future<void> onHandleJumpToArticle(int index) async {
-    await pageController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 300), // 애니메이션 시간
-      curve: Curves.easeInOut, // 부드러운 애니메이션 커브
-    );
   }
 
   Future<void> onHandleChangedArticle(int curPageIndex) async {
@@ -61,9 +45,7 @@ class BoardController extends GetxService {
     NativeAd? nativeAd = admobService.nativeAd.value;
 
     if (credit == 0 && nativeAd != null) {
-      AdArticle adArticle = AdArticle(
-        nativeAd: nativeAd,
-      );
+      AdArticle adArticle = AdArticle(nativeAd: nativeAd);
       articles.insert(curPageIndex + 1, adArticle);
       articles.refresh();
       admobService.resetAdContent();
@@ -78,11 +60,6 @@ class BoardController extends GetxService {
     articleService.onHandleGoToArticleView(article);
   }
 
-  //////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////
-  /// PRIVATE METHODS
-  //////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////
   Future<void> _handleInterstitialAd() async {
     final credit = admobService.useIntersitialAdCredits();
     final interstitialAd = admobService.interstitialAd.value;
@@ -93,9 +70,12 @@ class BoardController extends GetxService {
     }
   }
 
-  //////////////////////////////////////////////////////////////////
-  /// Initialization Methods
-  //////////////////////////////////////////////////////////////////
+  @override
+  void onInit() {
+    super.onInit();
+    _initialize();
+  }
+
   Future<void> _initialize() async {
     await onHandleFetchRecommendedArticles();
   }

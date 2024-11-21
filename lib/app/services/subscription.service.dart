@@ -148,7 +148,6 @@ class SubscriptionService extends GetxService {
           }
         },
         (data) {
-          print("fetched: $data");
           userSubscriptions.assignAll(data);
         },
       );
