@@ -14,7 +14,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="stack">
-                    <rect key="frame" x="186.33333333333334" y="4" width="57.666666666666657" height="12"/>
+                    <rect key="frame" x="165" y="4" width="100" height="12"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AD" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ad-badge">
                             <rect key="frame" x="0.0" y="0.0" width="16" height="12"/>
@@ -28,18 +28,26 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="광고 제목" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="headline">
-                            <rect key="frame" x="19.999999999999996" y="0.0" width="37.666666666666657" height="12"/>
+                            <rect key="frame" x="20" y="0.0" width="80" height="12"/>
+                            <constraints>
+                                <constraint firstAttribute="width" relation="lessThanOrEqual" constant="200" id="headline-max-width"/>
+                            </constraints>
                             <fontDescription key="fontDescription" type="system" pointSize="10"/>
                             <color key="textColor" red="0.93333333333333335" green="0.94901960784313721" blue="0.96470588235294119" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
+                    <constraints>
+                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="300" id="stack-max-width"/>
+                    </constraints>
                 </stackView>
             </subviews>
             <color key="backgroundColor" red="0.050980392156862744" green="0.070588235294117646" blue="0.10980392156862745" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="stack" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="stack-centerX"/>
                 <constraint firstItem="stack" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="stack-centerY"/>
+                <constraint firstItem="stack" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="leading" constant="16" id="leading-margin"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="stack" secondAttribute="trailing" constant="16" id="trailing-margin"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
