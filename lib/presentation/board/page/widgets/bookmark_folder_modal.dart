@@ -17,7 +17,7 @@ import 'package:zippy/presentation/bookmark/page/widget/bookmark-action.dialog.d
 
 class BookmarkFolderModal extends StatelessWidget {
   final Article article;
-  final Function(String folderId) onFolderSelected;
+  final Function(int folderId) onFolderSelected;
 
   const BookmarkFolderModal({
     super.key,

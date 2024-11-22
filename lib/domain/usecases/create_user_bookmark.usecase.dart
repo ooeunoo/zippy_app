@@ -1,7 +1,7 @@
 import 'package:zippy/app/failures/failure.dart';
-import 'package:zippy/data/entity/user_bookmark.entity.dart';
+import 'package:zippy/data/entity/user_bookmark_item.entity.dart';
 import 'package:dartz/dartz.dart';
-import 'package:zippy/domain/model/user_bookmark.model.dart';
+import 'package:zippy/domain/model/params/create_bookmark_item.params.dart';
 import 'package:zippy/domain/repositories/user_bookmark.repository.dart';
 
 class CreateUserBookmark {
@@ -9,8 +9,7 @@ class CreateUserBookmark {
 
   CreateUserBookmark(this.repo);
 
-  Future<Either<Failure, List<UserBookmark>>> execute(
-      UserBookmarkEntity bookmark) {
+  Future<Either<Failure, bool>> execute(CreateBookmarkItemParams bookmark) {
     return repo.createUserBookmark(bookmark);
   }
 }

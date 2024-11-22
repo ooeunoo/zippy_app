@@ -46,7 +46,7 @@ import 'package:zippy/domain/usecases/get_current_user.usecase.dart';
 import 'package:zippy/domain/usecases/get_platforms.usecase.dart';
 import 'package:zippy/domain/usecases/get_recommend_articles.usecase.dart';
 import 'package:zippy/domain/usecases/get_sources.usecase.dart';
-import 'package:zippy/domain/usecases/get_user_bookmark.usecase.dart';
+import 'package:zippy/domain/usecases/get_user_bookmarks.usecase.dart';
 import 'package:zippy/domain/usecases/get_user_bookmark_folder.usecase.dart';
 import 'package:zippy/domain/usecases/get_user_subscriptions.usecase.dart';
 import 'package:zippy/domain/usecases/logout.usecase.dart';
@@ -125,7 +125,7 @@ class ZippyBindings implements Bindings {
     Get.lazyPut<GetPlatforms>(() => GetPlatforms(Get.find()));
     Get.lazyPut<GetSources>(() => GetSources());
     Get.lazyPut<GetArticles>(() => GetArticles());
-    Get.lazyPut<GetUserBookmark>(() => GetUserBookmark(Get.find()));
+    Get.lazyPut<GetUserBookmarks>(() => GetUserBookmarks(Get.find()));
     Get.lazyPut<CreateUserBookmark>(() => CreateUserBookmark(Get.find()));
     Get.lazyPut<DeleteUserBookmark>(() => DeleteUserBookmark(Get.find()));
     Get.lazyPut<SubscribeUserBookmark>(() => SubscribeUserBookmark(Get.find()));

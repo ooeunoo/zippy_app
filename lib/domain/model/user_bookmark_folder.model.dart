@@ -4,32 +4,32 @@ import 'package:zippy/data/entity/user_bookmark_folder.entity.dart';
 
 @immutable
 class UserBookmarkFolder extends Equatable {
-  final String id;
+  final int id;
+  final String user_id;
   final String name;
   final String? description;
-  final DateTime createdAt;
 
   const UserBookmarkFolder({
     required this.id,
+    required this.user_id,
     required this.name,
     this.description,
-    required this.createdAt,
   });
 
   @override
   List<Object> get props {
     return [
       id,
+      user_id,
       name,
-      createdAt,
     ];
   }
 
   dynamic toJson() => {
         'id': id,
+        'user_id': user_id,
         'name': name,
         'description': description,
-        'created_at': createdAt.toIso8601String(),
       };
 
   @override
@@ -40,9 +40,9 @@ class UserBookmarkFolder extends Equatable {
   UserBookmarkFolderEntity toCreateEntity() {
     return UserBookmarkFolderEntity(
       id: id,
+      user_id: user_id,
       name: name,
       description: description,
-      createdAt: createdAt,
     );
   }
 }

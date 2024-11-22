@@ -103,10 +103,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
                   // Key Points Card
                   _buildKeyPointsCard(context),
                   AppSpacerV(value: AppDimens.height(24)),
-                  const AppDivider(
-                    color: AppColor.graymodern800,
-                    height: 1,
-                  ),
+                  const AppDivider(),
                   AppSpacerV(value: AppDimens.height(24)),
 
                   // Content Sections

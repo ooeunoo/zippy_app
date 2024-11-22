@@ -1,52 +1,49 @@
 import 'package:zippy/app/failures/failure.dart';
-import 'package:zippy/data/entity/user_bookmark.entity.dart';
+import 'package:zippy/data/entity/user_bookmark_item.entity.dart';
 import 'package:zippy/data/entity/user_bookmark_folder.entity.dart';
-import 'package:zippy/data/providers/hive.provider.dart';
 import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
-import 'package:zippy/domain/model/user_bookmark.model.dart';
+import 'package:zippy/data/providers/supabase.provider.dart';
+import 'package:zippy/domain/model/params/create_bookmark_folder.params.dart';
+import 'package:zippy/domain/model/params/create_bookmark_item.params.dart';
+import 'package:zippy/domain/model/user_bookmark_item.model.dart';
 import 'package:zippy/domain/model/user_bookmark_folder.model.dart';
 
-enum UserBookmarkKey {
-  all('전체보기'),
-  folders('폴더목록'),
-  ;
-
-  const UserBookmarkKey(this.name);
-  final String name;
-}
+String USER_BOOKMARK_FOLDERS = 'user_bookmark_folders';
+String USER_BOOKMARK_ITEMS = 'user_bookmark_items';
 
 abstract class UserBookmarkDatasource {
   // 북마크 관련
-  Future<Either<Failure, List<UserBookmark>>> createBookmark(
-      UserBookmarkEntity bookmark);
-  Future<Either<Failure, List<UserBookmark>>> deleteBookmark(int bookmarkId);
-  Future<Either<Failure, List<UserBookmark>>> getBookmarks();
-  Future<Either<Failure, List<UserBookmark>>> getBookmarksByFolderId(
-      int folderId);
-  Stream<List<UserBookmark>> subscribeUserBookmarks();
+  Future<Either<Failure, bool>> createUserBookmark(
+      CreateBookmarkItemParams bookmark);
+  Future<Either<Failure, bool>> deleteUserBookmark(int bookmarkId);
+  Future<Either<Failure, List<UserBookmarkItem>>> getUserBookmarks(
+      String userId);
+  Future<Either<Failure, List<UserBookmarkItem>>> getUserBookmarksByFolderId(
+      String userId, int folderId);
+  Stream<List<UserBookmarkItem>> subscribeUserBookmarks(String userId);
 
   // 폴더 관련
-  Future<Either<Failure, List<UserBookmarkFolder>>> createFolder(
-      UserBookmarkFolderEntity folder);
-  Future<Either<Failure, List<UserBookmarkFolder>>> deleteFolder(
-      String folderId);
-  Future<Either<Failure, List<UserBookmarkFolder>>> getFolders();
-  Stream<List<UserBookmarkFolder>> subscribeUserBookmarkFolders();
+  Future<Either<Failure, bool>> createUserBookmarkFolder(
+      CreateBookmarkFolderParams folder);
+  Future<Either<Failure, bool>> deleteUserBookmarkFolder(int folderId);
+  Future<Either<Failure, List<UserBookmarkFolder>>> getUserBookmarkFolders(
+      String userId);
+  Stream<List<UserBookmarkFolder>> subscribeUserBookmarkFolders(String userId);
 }
 
 class UserBookmarkDatasourceImpl implements UserBookmarkDatasource {
-  var box = Get.find<HiveProvider>().userBookMarks!;
-  var folderBox = Get.find<HiveProvider>().userBookmarkFolders!;
+  SupabaseProvider provider = Get.find();
 
   @override
-  Future<Either<Failure, List<UserBookmark>>> createBookmark(
-      UserBookmarkEntity newBookmark) async {
+  Future<Either<Failure, bool>> createUserBookmark(
+      CreateBookmarkItemParams newBookmark) async {
     try {
-      List<dynamic> bookmarks = _getBookmarks();
-      bookmarks.add(newBookmark);
-      await box.put(UserBookmarkKey.all.name, bookmarks);
-      return Right(toBookmarkModelAll());
+      await provider.client
+          .from(USER_BOOKMARK_ITEMS)
+          .insert(newBookmark.toJson());
+
+      return const Right(true);
     } catch (e, stackTrace) {
       print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
@@ -54,13 +51,13 @@ class UserBookmarkDatasourceImpl implements UserBookmarkDatasource {
   }
 
   @override
-  Future<Either<Failure, List<UserBookmark>>> deleteBookmark(
-      int removeBookmarkId) async {
+  Future<Either<Failure, bool>> deleteUserBookmark(int removeBookmarkId) async {
     try {
-      List<dynamic> bookmarks = _getBookmarks();
-      bookmarks.removeWhere((bookmark) => bookmark.id == removeBookmarkId);
-      await box.put(UserBookmarkKey.all.name, bookmarks);
-      return Right(toBookmarkModelAll());
+      await provider.client
+          .from(USER_BOOKMARK_ITEMS)
+          .delete()
+          .eq('id', removeBookmarkId);
+      return const Right(true);
     } catch (e, stackTrace) {
       print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
@@ -68,9 +65,18 @@ class UserBookmarkDatasourceImpl implements UserBookmarkDatasource {
   }
 
   @override
-  Future<Either<Failure, List<UserBookmark>>> getBookmarks() async {
+  Future<Either<Failure, List<UserBookmarkItem>>> getUserBookmarks(
+      String userId) async {
     try {
-      return Right(toBookmarkModelAll());
+      List<Map<String, dynamic>> response = await provider.client
+          .from(USER_BOOKMARK_ITEMS)
+          .select('*, articles(*)')
+          .eq('user_id', userId)
+          .order('id', ascending: true);
+
+      return Right(response
+          .map((e) => UserBookmarkItemEntity.fromJson(e).toModel())
+          .toList());
     } catch (e, stackTrace) {
       print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
@@ -78,21 +84,18 @@ class UserBookmarkDatasourceImpl implements UserBookmarkDatasource {
   }
 
   @override
-  Future<Either<Failure, List<UserBookmark>>> getBookmarksByFolderId(
-      int folderId) async {
+  Future<Either<Failure, List<UserBookmarkItem>>> getUserBookmarksByFolderId(
+      String userId, int folderId) async {
     try {
-      final bookmarks = _getBookmarks();
-      final filteredBookmarks = bookmarks
-          .where((bookmark) => bookmark.folderId == folderId)
-          .map((bookmark) => UserBookmark(
-                id: bookmark.id,
-                link: bookmark.link,
-                title: bookmark.title,
-                images: bookmark.images,
-                folderId: bookmark.folderId,
-              ))
-          .toList();
-      return Right(filteredBookmarks);
+      List<Map<String, dynamic>> response = await provider.client
+          .from(USER_BOOKMARK_ITEMS)
+          .select('*')
+          .eq('user_id', userId)
+          .eq('folder_id', folderId)
+          .order('id', ascending: true);
+      return Right(response
+          .map((e) => UserBookmarkItemEntity.fromJson(e).toModel())
+          .toList());
     } catch (e, stackTrace) {
       print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
@@ -100,19 +103,26 @@ class UserBookmarkDatasourceImpl implements UserBookmarkDatasource {
   }
 
   @override
-  Stream<List<UserBookmark>> subscribeUserBookmarks() {
-    return box.watch().map((event) => toBookmarkModelAll());
+  Stream<List<UserBookmarkItem>> subscribeUserBookmarks(String userId) {
+    return provider.client
+        .from(USER_BOOKMARK_ITEMS)
+        .stream(primaryKey: ['id'])
+        .eq('user_id', userId)
+        .order('id', ascending: true)
+        .map((event) => event
+            .map((e) => UserBookmarkItemEntity.fromJson(e).toModel())
+            .toList());
   }
 
   // 폴더 관련 메서드 구현
   @override
-  Future<Either<Failure, List<UserBookmarkFolder>>> createFolder(
-      UserBookmarkFolderEntity newFolder) async {
+  Future<Either<Failure, bool>> createUserBookmarkFolder(
+      CreateBookmarkFolderParams newFolder) async {
     try {
-      List<dynamic> folders = _getFolders();
-      folders.add(newFolder);
-      await folderBox.put(UserBookmarkKey.folders.name, folders);
-      return Right(toFolderModelAll());
+      await provider.client
+          .from(USER_BOOKMARK_FOLDERS)
+          .insert(newFolder.toJson());
+      return const Right(true);
     } catch (e, stackTrace) {
       print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
@@ -120,20 +130,19 @@ class UserBookmarkDatasourceImpl implements UserBookmarkDatasource {
   }
 
   @override
-  Future<Either<Failure, List<UserBookmarkFolder>>> deleteFolder(
-      String folderId) async {
+  Future<Either<Failure, bool>> deleteUserBookmarkFolder(int folderId) async {
     try {
-      // 폴더 삭제
-      List<dynamic> folders = _getFolders();
-      folders.removeWhere((folder) => folder.id == folderId);
-      await folderBox.put(UserBookmarkKey.folders.name, folders);
+      await provider.client
+          .from(USER_BOOKMARK_ITEMS)
+          .delete()
+          .eq('folder_id', folderId);
 
-      // 해당 폴더의 북마크들도 삭제
-      List<dynamic> bookmarks = _getBookmarks();
-      bookmarks.removeWhere((bookmark) => bookmark.folderId == folderId);
-      await box.put(UserBookmarkKey.all.name, bookmarks);
+      await provider.client
+          .from(USER_BOOKMARK_FOLDERS)
+          .delete()
+          .eq('id', folderId);
 
-      return Right(toFolderModelAll());
+      return const Right(true);
     } catch (e, stackTrace) {
       print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
@@ -141,9 +150,17 @@ class UserBookmarkDatasourceImpl implements UserBookmarkDatasource {
   }
 
   @override
-  Future<Either<Failure, List<UserBookmarkFolder>>> getFolders() async {
+  Future<Either<Failure, List<UserBookmarkFolder>>> getUserBookmarkFolders(
+      String userId) async {
     try {
-      return Right(toFolderModelAll());
+      List<Map<String, dynamic>> response = await provider.client
+          .from(USER_BOOKMARK_FOLDERS)
+          .select('*')
+          .eq('user_id', userId)
+          .order('id', ascending: true);
+      return Right(response
+          .map((e) => UserBookmarkFolderEntity.fromJson(e).toModel())
+          .toList());
     } catch (e, stackTrace) {
       print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
@@ -151,39 +168,14 @@ class UserBookmarkDatasourceImpl implements UserBookmarkDatasource {
   }
 
   @override
-  Stream<List<UserBookmarkFolder>> subscribeUserBookmarkFolders() {
-    return folderBox.watch().map((event) => toFolderModelAll());
-  }
-
-  // Private helper methods
-  List<dynamic> _getBookmarks() {
-    return box.get(UserBookmarkKey.all.name, defaultValue: []);
-  }
-
-  List<dynamic> _getFolders() {
-    return folderBox.get(UserBookmarkKey.folders.name, defaultValue: []);
-  }
-
-  List<UserBookmark> toBookmarkModelAll() {
-    return _getBookmarks()
-        .map((bookmark) => UserBookmark(
-              id: bookmark.id,
-              link: bookmark.link,
-              title: bookmark.title,
-              images: bookmark.images,
-              folderId: bookmark.folderId,
-            ))
-        .toList();
-  }
-
-  List<UserBookmarkFolder> toFolderModelAll() {
-    return _getFolders()
-        .map((folder) => UserBookmarkFolder(
-              id: folder.id,
-              name: folder.name,
-              description: folder.description,
-              createdAt: folder.createdAt,
-            ))
-        .toList();
+  Stream<List<UserBookmarkFolder>> subscribeUserBookmarkFolders(String userId) {
+    return provider.client
+        .from(USER_BOOKMARK_FOLDERS)
+        .stream(primaryKey: ['id'])
+        .eq('user_id', userId)
+        .order('id', ascending: true)
+        .map((event) => event
+            .map((e) => UserBookmarkFolderEntity.fromJson(e).toModel())
+            .toList());
   }
 }

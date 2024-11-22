@@ -7,10 +7,13 @@ import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
+import 'package:zippy/domain/model/params/create_bookmark_folder.params.dart';
 import 'package:zippy/domain/model/user_bookmark_folder.model.dart';
 
-void showCreateFolderDialog(BuildContext context,
-    Function(UserBookmarkFolder) onHandleCreateUserBookmarkFolder) {
+void showCreateFolderDialog(
+    BuildContext context,
+    Function(String name, String? description)
+        onHandleCreateUserBookmarkFolder) {
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
 
@@ -119,14 +122,10 @@ void showCreateFolderDialog(BuildContext context,
                 onPressed: () {
                   if (nameController.text.isNotEmpty) {
                     onHandleCreateUserBookmarkFolder(
-                      UserBookmarkFolder(
-                        id: const Uuid().v4(),
-                        name: nameController.text,
-                        description: descriptionController.text.isNotEmpty
-                            ? descriptionController.text
-                            : null,
-                        createdAt: DateTime.now(),
-                      ),
+                      nameController.text,
+                      descriptionController.text.isNotEmpty
+                          ? descriptionController.text
+                          : null,
                     );
                     Navigator.pop(context);
                   }
@@ -153,8 +152,8 @@ void showCreateFolderDialog(BuildContext context,
   );
 }
 
-void showDeleteFolderConfirmationDialog(BuildContext context, String folderId,
-    String folderName, Function(String) onHandleDeleteUserBookmarkFolder) {
+void showDeleteFolderConfirmationDialog(BuildContext context, int folderId,
+    String folderName, Function(int) onHandleDeleteUserBookmarkFolder) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -235,8 +234,8 @@ void showDeleteFolderConfirmationDialog(BuildContext context, String folderId,
   );
 }
 
-void showFolderOptionsDialog(BuildContext context, String folderId,
-    String folderName, Function(String) onHandleDeleteUserBookmarkFolder) {
+void showFolderOptionsDialog(BuildContext context, int folderId,
+    String folderName, Function(int) onHandleDeleteUserBookmarkFolder) {
   showDialog(
     context: context,
     builder: (BuildContext context) {

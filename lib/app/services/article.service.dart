@@ -7,19 +7,19 @@ import 'package:zippy/app/utils/share.dart';
 import 'package:zippy/app/utils/vibrates.dart';
 import 'package:zippy/app/widgets/app.snak_bar.dart';
 import 'package:zippy/app/widgets/app_dialog.dart';
-import 'package:zippy/data/entity/user_bookmark.entity.dart';
 import 'package:zippy/data/providers/supabase.provider.dart';
 import 'package:zippy/domain/enum/article_view_type.enum.dart';
 import 'package:zippy/domain/enum/interaction_type.enum.dart';
 import 'package:zippy/domain/model/article.model.dart';
 import 'package:zippy/domain/model/article_comment.model.dart';
 import 'package:zippy/domain/model/params/create_article_comment.params.dart';
+import 'package:zippy/domain/model/params/create_bookmark_item.params.dart';
 import 'package:zippy/domain/model/params/create_user_interaction.params.dart';
 import 'package:zippy/domain/model/params/get_aritlces.params.dart';
 import 'package:zippy/domain/model/params/get_recommend_aritlces.params.dart';
 import 'package:zippy/domain/model/params/update_user_interaction.params.dart';
 import 'package:zippy/domain/model/source.model.dart';
-import 'package:zippy/domain/model/user_bookmark.model.dart';
+import 'package:zippy/domain/model/user_bookmark_item.model.dart';
 import 'package:zippy/domain/model/user_interaction.model.dart';
 import 'package:zippy/domain/usecases/create_article_comment.usecase.dart';
 import 'package:zippy/domain/usecases/create_user_interaction.usecase.dart';
@@ -104,26 +104,18 @@ class ArticleService extends GetxService {
       builder: (context) => BookmarkFolderModal(
         article: article,
         onFolderSelected: (folderId) async {
-          UserBookmarkEntity entity = UserBookmark(
-            id: article.id!,
-            title: article.title,
-            link: article.link,
-            images: article.images.isNotEmpty ? article.images[0] : null,
+          CreateBookmarkItemParams entity = CreateBookmarkItemParams(
+            userId: authService.currentUser.value!.id,
+            articleId: article.id!,
             folderId: folderId,
-          ).toCreateEntity();
-
-          onHeavyVibration();
-          if (bookmarkService.isBookmarked(article.id!)) {
-            await bookmarkService.deleteUserBookmark.execute(entity.id);
-          } else {
-            await bookmarkService.createUserBookmark.execute(entity);
-          }
+          );
+          await bookmarkService.onHandleCreateUserBookmark(entity);
         },
       ),
     );
   }
 
-  Future<void> onHandleClickUserBookmark(UserBookmark bookmark) async {
+  Future<void> onHandleClickUserBookmark(UserBookmarkItem bookmark) async {
     //  const article = getArticleById()
     // onHandleGoToArticleView(bookmark.toModel());
   }
@@ -189,8 +181,16 @@ class ArticleService extends GetxService {
     Get.bottomSheet(Obx(() => BottomSupportMenu(
           article: article,
           originalArticle: () => onHandleOpenOriginalArticle(article),
-          bookmark: () => onHandleBookmarkArticle(article),
-          isBookmarked: bookmarkService.isBookmarked(article.id!),
+          bookmark: () async {
+            onHeavyVibration();
+            final bookmark = bookmarkService.isBookmarked(article.id!);
+            if (bookmark != null) {
+              bookmarkService.onHandleDeleteUserBookmark(bookmark.id);
+            } else {
+              onHandleBookmarkArticle(article);
+            }
+          },
+          isBookmarked: bookmarkService.isBookmarked(article.id!) != null,
           share: () => _handleUserAction(
             requiredLoggedIn: false,
             action: () async {

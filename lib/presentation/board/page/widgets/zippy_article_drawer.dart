@@ -92,8 +92,7 @@ class ZippyArticleDrawer extends StatelessWidget {
             },
           ),
         ),
-        if (index != articles.length - 1)
-          const AppDivider(color: AppColor.graymodern900),
+        if (index != articles.length - 1) const AppDivider(),
       ],
     );
   }

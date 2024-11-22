@@ -1,55 +1,51 @@
-// 2. 폴더 Hive 엔티티 (bookmark_folder.entity.dart)
-import 'package:hive/hive.dart';
-import 'package:zippy/app/utils/constants.dart';
+// ignore_for_file: non_constant_identifier_names
+
+import 'package:zippy/data/entity/article.entity.dart';
+import 'package:zippy/domain/model/bookmark.model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:zippy/domain/model/user_bookmark_folder.model.dart';
 
-part 'user_bookmark_folder.entity.g.dart';
+@immutable
+class UserBookmarkFolderEntity extends Equatable {
+  final int id;
+  final String user_id;
+  final String name;
+  final String? description;
 
-@HiveType(typeId: Constants.userBookmarkFolderHiveId)
-class UserBookmarkFolderEntity extends HiveObject {
-  @HiveField(0)
-  String id;
-
-  @HiveField(2)
-  String name;
-
-  @HiveField(3)
-  String? description;
-
-  @HiveField(4)
-  DateTime createdAt;
-
-  UserBookmarkFolderEntity({
+  const UserBookmarkFolderEntity({
     required this.id,
+    required this.user_id,
     required this.name,
     this.description,
-    required this.createdAt,
   });
+
+  @override
+  List<Object> get props {
+    return [id, user_id, name];
+  }
 
   factory UserBookmarkFolderEntity.fromJson(Map<String, dynamic> json) {
     return UserBookmarkFolderEntity(
-      id: json["id"],
-      name: json["name"],
-      description: json["description"],
-      createdAt: DateTime.parse(json["created_at"]),
+      id: json['id'],
+      user_id: json['user_id'],
+      name: json['name'],
+      description: json['description'],
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      "id": id,
-      "name": name,
-      "description": description,
-      "created_at": createdAt.toIso8601String(),
-    };
-  }
+  dynamic toParams() => {
+        'user_id': user_id,
+        'name': name,
+        'description': description,
+      };
 
   UserBookmarkFolder toModel() {
     return UserBookmarkFolder(
       id: id,
+      user_id: user_id,
       name: name,
       description: description,
-      createdAt: createdAt,
     );
   }
 }

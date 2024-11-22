@@ -1,24 +1,25 @@
 import 'package:zippy/app/failures/failure.dart';
-import 'package:zippy/data/entity/user_bookmark.entity.dart';
-import 'package:zippy/data/entity/user_bookmark_folder.entity.dart';
 import 'package:zippy/data/sources/user_bookmark.source.dart';
-import 'package:zippy/domain/model/user_bookmark.model.dart';
+import 'package:zippy/domain/model/params/create_bookmark_folder.params.dart';
+import 'package:zippy/domain/model/params/create_bookmark_item.params.dart';
+import 'package:zippy/domain/model/user_bookmark_item.model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:zippy/domain/model/user_bookmark_folder.model.dart';
 
 abstract class UserBookmarkRepository {
-  Future<Either<Failure, List<UserBookmark>>> getUserBookmarks();
-  Future<Either<Failure, List<UserBookmark>>> createUserBookmark(
-      UserBookmarkEntity bookmark);
-  Future<Either<Failure, List<UserBookmark>>> deleteUserBookmark(
-      int bookmarkId);
-  Stream<List<UserBookmark>> subscribeUserBookmarks();
-  Future<Either<Failure, List<UserBookmarkFolder>>> createUserBookmarkFolder(
-      UserBookmarkFolderEntity folder);
-  Future<Either<Failure, List<UserBookmarkFolder>>> deleteUserBookmarkFolder(
-      String folderId);
-  Future<Either<Failure, List<UserBookmarkFolder>>> getUserBookmarkFolders();
-  Stream<List<UserBookmarkFolder>> subscribeUserBookmarkFolders();
+  Future<Either<Failure, List<UserBookmarkItem>>> getUserBookmarks(
+      String userId);
+  Future<Either<Failure, bool>> createUserBookmark(
+      CreateBookmarkItemParams bookmark);
+  Future<Either<Failure, bool>> deleteUserBookmark(int bookmarkId);
+  Stream<List<UserBookmarkItem>> subscribeUserBookmarks(String userId);
+
+  Future<Either<Failure, bool>> createUserBookmarkFolder(
+      CreateBookmarkFolderParams folder);
+  Future<Either<Failure, bool>> deleteUserBookmarkFolder(int folderId);
+  Future<Either<Failure, List<UserBookmarkFolder>>> getUserBookmarkFolders(
+      String userId);
+  Stream<List<UserBookmarkFolder>> subscribeUserBookmarkFolders(String userId);
 }
 
 class UserBookmarkRepositoryImpl implements UserBookmarkRepository {
@@ -27,46 +28,46 @@ class UserBookmarkRepositoryImpl implements UserBookmarkRepository {
   UserBookmarkRepositoryImpl(this.datasource);
 
   @override
-  Future<Either<Failure, List<UserBookmark>>> createUserBookmark(
-      UserBookmarkEntity bookmark) {
-    return datasource.createBookmark(bookmark);
+  Future<Either<Failure, bool>> createUserBookmark(
+      CreateBookmarkItemParams bookmark) {
+    return datasource.createUserBookmark(bookmark);
   }
 
   @override
-  Future<Either<Failure, List<UserBookmark>>> deleteUserBookmark(
-      int bookmarkId) {
-    return datasource.deleteBookmark(bookmarkId);
+  Future<Either<Failure, bool>> deleteUserBookmark(int bookmarkId) {
+    return datasource.deleteUserBookmark(bookmarkId);
   }
 
   @override
-  Future<Either<Failure, List<UserBookmark>>> getUserBookmarks() {
-    return datasource.getBookmarks();
+  Future<Either<Failure, List<UserBookmarkItem>>> getUserBookmarks(
+      String userId) {
+    return datasource.getUserBookmarks(userId);
   }
 
   @override
-  Stream<List<UserBookmark>> subscribeUserBookmarks() {
-    return datasource.subscribeUserBookmarks();
+  Stream<List<UserBookmarkItem>> subscribeUserBookmarks(String userId) {
+    return datasource.subscribeUserBookmarks(userId);
   }
 
   @override
-  Future<Either<Failure, List<UserBookmarkFolder>>> createUserBookmarkFolder(
-      UserBookmarkFolderEntity folder) {
-    return datasource.createFolder(folder);
+  Future<Either<Failure, bool>> createUserBookmarkFolder(
+      CreateBookmarkFolderParams folder) {
+    return datasource.createUserBookmarkFolder(folder);
   }
 
   @override
-  Future<Either<Failure, List<UserBookmarkFolder>>> deleteUserBookmarkFolder(
-      String folderId) {
-    return datasource.deleteFolder(folderId);
+  Future<Either<Failure, bool>> deleteUserBookmarkFolder(int folderId) {
+    return datasource.deleteUserBookmarkFolder(folderId);
   }
 
   @override
-  Future<Either<Failure, List<UserBookmarkFolder>>> getUserBookmarkFolders() {
-    return datasource.getFolders();
+  Future<Either<Failure, List<UserBookmarkFolder>>> getUserBookmarkFolders(
+      String userId) {
+    return datasource.getUserBookmarkFolders(userId);
   }
 
   @override
-  Stream<List<UserBookmarkFolder>> subscribeUserBookmarkFolders() {
-    return datasource.subscribeUserBookmarkFolders();
+  Stream<List<UserBookmarkFolder>> subscribeUserBookmarkFolders(String userId) {
+    return datasource.subscribeUserBookmarkFolders(userId);
   }
 }

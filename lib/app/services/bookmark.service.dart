@@ -2,13 +2,15 @@ import 'dart:async';
 
 import 'package:get/get.dart';
 import 'package:zippy/app/services/auth.service.dart';
-import 'package:zippy/domain/model/user_bookmark.model.dart';
+import 'package:zippy/domain/model/params/create_bookmark_folder.params.dart';
+import 'package:zippy/domain/model/params/create_bookmark_item.params.dart';
+import 'package:zippy/domain/model/user_bookmark_item.model.dart';
 import 'package:zippy/domain/model/user_bookmark_folder.model.dart';
 import 'package:zippy/domain/usecases/create_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/create_user_bookmark_folder.usecase.dart';
 import 'package:zippy/domain/usecases/delete_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/delete_user_bookmark_folder.usecase.dart';
-import 'package:zippy/domain/usecases/get_user_bookmark.usecase.dart';
+import 'package:zippy/domain/usecases/get_user_bookmarks.usecase.dart';
 import 'package:zippy/domain/usecases/get_user_bookmark_folder.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_bookmark_folder.usecase.dart';
@@ -18,7 +20,7 @@ class BookmarkService extends GetxService {
 
   final CreateUserBookmark createUserBookmark = Get.find();
   final DeleteUserBookmark deleteUserBookmark = Get.find();
-  final GetUserBookmark getUserBookmark = Get.find();
+  final GetUserBookmarks getUserBookmarks = Get.find();
   final SubscribeUserBookmark subscribeUserBookmark = Get.find();
 
   final CreateUserBookmarkFolder createUserBookmarkFolder = Get.find();
@@ -28,10 +30,10 @@ class BookmarkService extends GetxService {
 
   RxList<UserBookmarkFolder> userBookmarkFolders =
       RxList<UserBookmarkFolder>([]);
-  RxList<UserBookmark> userBookmarks = RxList<UserBookmark>([]).obs();
+  RxList<UserBookmarkItem> userBookmarks = RxList<UserBookmarkItem>([]);
+  RxMap<int, UserBookmarkItem> userBookmarkFolderItemMap =
+      RxMap<int, UserBookmarkItem>({});
 
-  StreamSubscription? _userBookmarksSubscription;
-  StreamSubscription? _userBookmarkFoldersSubscription;
   StreamSubscription? _authUserSubscription;
 
   @override
@@ -43,57 +45,72 @@ class BookmarkService extends GetxService {
   @override
   void onClose() {
     _authUserSubscription?.cancel();
-    _cancelBookmarkSubscriptions();
-    _cancelUserBookmarkFoldersSubscription();
     super.onClose();
   }
 
   ///*********************************
   /// Getter Methods
   ///*********************************
-  bool isBookmarked(int itemId) {
-    return userBookmarks.any((bookmark) => bookmark.id == itemId);
+  UserBookmarkItem? isBookmarked(int itemId) {
+    print(itemId);
+    print(userBookmarks);
+    final bookmark = userBookmarks.firstWhereOrNull(
+      (bookmark) => bookmark.article!.id == itemId,
+    );
+
+    print(bookmark);
+    return bookmark;
   }
 
   ///*********************************
   /// Handle Methods
   ///*********************************
   Future<void> onHandleCreateUserBookmarkFolder(
-      UserBookmarkFolder folder) async {
-    await createUserBookmarkFolder.execute(folder.toCreateEntity());
+      String name, String? description) async {
+    await createUserBookmarkFolder.execute(CreateBookmarkFolderParams(
+      userId: authService.currentUser.value!.id,
+      name: name,
+      description: description,
+    ));
+    await _fetchUserBookmarkFolders();
   }
 
-  Future<void> onHandleDeleteUserBookmarkFolder(String folderId) async {
+  Future<void> onHandleDeleteUserBookmarkFolder(int folderId) async {
     await deleteUserBookmarkFolder.execute(folderId);
+    await _fetchUserBookmarkFolders();
+  }
+
+  Future<void> onHandleCreateUserBookmark(
+      CreateBookmarkItemParams params) async {
+    await createUserBookmark.execute(params);
+    await _fetchUserBookmark();
   }
 
   Future<void> onHandleDeleteUserBookmark(int bookmarkId) async {
     await deleteUserBookmark.execute(bookmarkId);
+    await _fetchUserBookmark();
   }
 
   ///*********************************
   /// Initialization Methods
   ///*********************************
   Future<void> _initialize() async {
-    await _setupUserBookmark();
-    await _setupUserBookmarkFolders();
+    await _fetchUserBookmarkFolders();
+    await _fetchUserBookmark();
     _listenUser();
   }
 
   ///*********************************
   /// Private Methods
   ///*********************************
-  Future<void> _setupUserBookmark() async {
-    final bookmarks = await getUserBookmark.execute();
-    bookmarks.fold((failure) {
-      userBookmarks.value = [];
-    }, (data) {
-      userBookmarks.assignAll(data);
-    });
-  }
+  Future<void> _fetchUserBookmarkFolders() async {
+    if (authService.isLoggedIn.value == false) {
+      return;
+    }
 
-  Future<void> _setupUserBookmarkFolders() async {
-    final result = await getUserBookmarkFolders.execute();
+    final userId = authService.currentUser.value!.id;
+
+    final result = await getUserBookmarkFolders.execute(userId);
     result.fold((failure) {
       userBookmarkFolders.value = [];
     }, (data) {
@@ -101,42 +118,31 @@ class BookmarkService extends GetxService {
     });
   }
 
+  Future<void> _fetchUserBookmark() async {
+    if (authService.isLoggedIn.value == false) {
+      return;
+    }
+
+    final userId = authService.currentUser.value!.id;
+
+    final bookmarks = await getUserBookmarks.execute(userId);
+    bookmarks.fold((failure) {
+      userBookmarks.value = [];
+    }, (data) {
+      userBookmarks.assignAll(data);
+    });
+  }
+
   ///*********************************
   /// Listen Subscriptions
   ///*********************************
   void _listenUser() {
+    _authUserSubscription?.cancel();
     _authUserSubscription = authService.currentUser.listen((user) {
-      _cancelBookmarkSubscriptions();
-      _cancelUserBookmarkFoldersSubscription();
       if (user != null) {
-        _setupBookmarkSubscriptions();
-        _setupUserBookmarkFoldersSubscription();
+        _fetchUserBookmarkFolders();
+        _fetchUserBookmark();
       }
     });
-  }
-
-  void _setupBookmarkSubscriptions() {
-    _userBookmarksSubscription =
-        subscribeUserBookmark.execute().listen((List<UserBookmark> event) {
-      userBookmarks.bindStream(Stream.value(event));
-    });
-  }
-
-  void _setupUserBookmarkFoldersSubscription() {
-    _userBookmarkFoldersSubscription = subscribeUserBookmarkFolder
-        .execute()
-        .listen((List<UserBookmarkFolder> event) {
-      userBookmarkFolders.bindStream(Stream.value(event));
-    });
-  }
-
-  void _cancelBookmarkSubscriptions() {
-    _userBookmarksSubscription?.cancel();
-    _userBookmarksSubscription = null;
-  }
-
-  void _cancelUserBookmarkFoldersSubscription() {
-    _userBookmarkFoldersSubscription?.cancel();
-    _userBookmarkFoldersSubscription = null;
   }
 }

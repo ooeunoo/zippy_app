@@ -8,7 +8,7 @@ class GetUserBookmarkFolders {
 
   GetUserBookmarkFolders(this.repo);
 
-  Future<Either<Failure, List<UserBookmarkFolder>>> execute() {
-    return repo.getUserBookmarkFolders();
+  Future<Either<Failure, List<UserBookmarkFolder>>> execute(String userId) {
+    return repo.getUserBookmarkFolders(userId);
   }
 }
