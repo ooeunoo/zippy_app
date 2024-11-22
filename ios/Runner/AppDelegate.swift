@@ -19,7 +19,7 @@ import google_mobile_ads
        let bottomBannerFactory = BottomBannerAdFactory()
         FLTGoogleMobileAdsPlugin.registerNativeAdFactory(
             self,
-            factoryId: "bottomBannerAd",  // 이 ID가 Flutter 코드의 factoryId와 일치해야 함
+            factoryId: "bottomBannerAd",  
             nativeAdFactory: bottomBannerFactory)
 
         // Replace with your actual test device ID

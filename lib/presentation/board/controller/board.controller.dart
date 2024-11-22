@@ -3,7 +3,6 @@ import 'package:zippy/app/services/admob.service.dart';
 import 'package:zippy/app/services/auth.service.dart';
 import 'package:zippy/domain/model/ad_article.model.dart';
 import 'package:zippy/domain/model/article.model.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zippy/domain/model/params/get_recommend_aritlces.params.dart';
 import 'package:zippy/app/services/article.service.dart';
@@ -44,7 +43,6 @@ class BoardController extends GetxController {
     int credit = admobService.useCardAdCredits();
     NativeAd? nativeAd = admobService.cardAd.value;
 
-    print("credit: $credit");
     if (credit == 0 && nativeAd != null) {
       AdArticle adArticle = AdArticle(nativeAd: nativeAd);
       articles.insert(curPageIndex + 1, adArticle);
@@ -57,18 +55,7 @@ class BoardController extends GetxController {
 
   Future<void> onHandleClickArticle(Article article) async {
     if (article.isAd) return;
-    await _handleInterstitialAd();
     articleService.onHandleGoToArticleView(article);
-  }
-
-  Future<void> _handleInterstitialAd() async {
-    // final credit = admobService.useIntersitialAdCredits();
-    // final interstitialAd = admobService.interstitialAd.value;
-
-    // if (credit == 0 && interstitialAd != null) {
-    //   interstitialAd.show();
-    //   admobService.resetIntersitialAdCredits();
-    // }
   }
 
   @override

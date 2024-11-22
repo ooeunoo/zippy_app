@@ -22,7 +22,6 @@ class BoardPage extends StatefulWidget {
 }
 
 class _BoardPageState extends State<BoardPage> {
-  final AdmobService _admobService = Get.find();
   late final BoardController _controller;
   late final PageController _pageController;
 
@@ -40,15 +39,33 @@ class _BoardPageState extends State<BoardPage> {
     super.dispose();
   }
 
-  Future<void> _handleJumpToArticle(int index) async {
-    if (!(index >= 0 && index < _controller.articles.length)) return;
+  Future<void> _handleJumpToArticle(int articleId) async {
+    int targetIndex = 0;
+    bool found = false;
+
+    for (int i = 0; i < _controller.articles.length; i++) {
+      final article = _controller.articles[i];
+      if (article.id == articleId) {
+        targetIndex = i;
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) return;
 
     try {
-      await _pageController.animateToPage(
-        index,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
+      // animateToPage 대신 jumpToPage 사용
+      _pageController.jumpToPage(targetIndex);
+
+      // await Future.delayed(const Duration(milliseconds: 100));
+      // if (mounted) {
+      //   _pageController.animateTo(
+      //     _pageController.position.pixels,
+      //     duration: const Duration(milliseconds: 150),
+      //     curve: Curves.easeOut,
+      //   );
+      // }
     } catch (e) {
       debugPrint('Error navigating to page: $e');
     }
@@ -67,23 +84,24 @@ class _BoardPageState extends State<BoardPage> {
     return Drawer(
       backgroundColor: AppColor.graymodern950,
       child: SafeArea(
-        child: Obx(() => ListView.builder(
-              shrinkWrap: true,
-              physics: const ClampingScrollPhysics(),
-              itemCount: _controller.articles.length,
-              itemBuilder: _buildDrawerItem,
-            )),
+        child: Obx(() {
+          // 광고를 제외한 실제 콘텐츠만 필터링
+          final contentArticles =
+              _controller.articles.where((article) => !article.isAd).toList();
+
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: const ClampingScrollPhysics(),
+            itemCount: contentArticles.length,
+            itemBuilder: (context, index) =>
+                _buildDrawerItem(context, contentArticles[index]),
+          );
+        }),
       ),
     );
   }
 
-  Widget _buildDrawerItem(BuildContext context, int index) {
-    Article article = _controller.articles[index];
-
-    if (article.isAd) {
-      return const SizedBox.shrink();
-    }
-
+  Widget _buildDrawerItem(BuildContext context, Article article) {
     return Column(
       children: [
         Padding(
@@ -95,12 +113,11 @@ class _BoardPageState extends State<BoardPage> {
             article: article,
             onHandleClickArticle: () {
               Navigator.of(context).pop();
-              _handleJumpToArticle(index);
+              _handleJumpToArticle(article.id!);
             },
           ),
         ),
-        if (index != _controller.articles.length - 1)
-          const AppDivider(color: AppColor.graymodern900),
+        const AppDivider(color: AppColor.graymodern900),
       ],
     );
   }
