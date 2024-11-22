@@ -140,7 +140,7 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
             child: AppText(
               source?.platform?.name ?? '',
               style: Theme.of(context).textTheme.textSM.copyWith(
-                    color: AppColor.graymodern600,
+                    color: AppColor.graymodern300,
                   ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -151,14 +151,14 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
         AppText(
           '·',
           style: Theme.of(context).textTheme.textSM.copyWith(
-                color: AppColor.graymodern400,
+                color: AppColor.graymodern300,
               ),
         ),
         AppSpacerH(value: AppDimens.width(4)),
         AppText(
           widget.article.published.timeAgo(),
           style: Theme.of(context).textTheme.textSM.copyWith(
-                color: AppColor.graymodern600,
+                color: AppColor.graymodern300,
               ),
         ),
       ],
@@ -188,7 +188,7 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
           highlightColor: Colors.transparent,
           onPressed: () =>
               articleService.onHandleArticleSupportMenu(widget.article),
-          icon: const Icon(Icons.more_vert),
+          icon: const Icon(Icons.more_vert, color: AppColor.graymodern300),
         ),
       ],
     );
@@ -247,7 +247,7 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
     return AppText(
       widget.article.summary,
       style: Theme.of(context).textTheme.textSM.copyWith(
-            color: AppColor.graymodern400,
+            color: AppColor.graymodern200,
             height: 1.6,
             letterSpacing: 0.5,
           ),

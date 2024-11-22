@@ -64,7 +64,8 @@ class AdmobService extends GetxService {
   }
 
   int useCardAdCredits() {
-    cardAdCredits.value = cardAdCredits.value <= 0 ? 0 : cardAdCredits.value - 1;
+    cardAdCredits.value =
+        cardAdCredits.value <= 0 ? 0 : cardAdCredits.value - 1;
     return cardAdCredits.value;
   }
 
@@ -114,7 +115,8 @@ class AdmobService extends GetxService {
     Function()? onAdClosed,
     NativeAdOptions? nativeAdOptions,
   }) {
-    final currentAd = type == NativeAdType.card ? cardAd.value : bottomBannerAd.value;
+    final currentAd =
+        type == NativeAdType.card ? cardAd.value : bottomBannerAd.value;
     currentAd?.dispose();
 
     try {
@@ -123,27 +125,23 @@ class AdmobService extends GetxService {
         factoryId: type.factoryId,
         listener: NativeAdListener(
           onAdLoaded: (ad) {
-            debugPrint('${type.name} ad loaded successfully');
             isAdLoaded.value = true;
             onAdLoaded(ad as NativeAd);
           },
           onAdFailedToLoad: (ad, error) {
-            debugPrint('${type.name} ad failed to load: $error');
             ad.dispose();
             isAdLoaded.value = false;
             onAdFailedToLoad();
           },
-          onAdClicked: (_) => debugPrint('${type.name} ad clicked'),
           onAdClosed: onAdClosed != null ? (_) => onAdClosed() : null,
-          onAdImpression: (_) => debugPrint('${type.name} ad impression recorded'),
         ),
         request: const AdRequest(),
         nativeAdOptions: nativeAdOptions,
       );
 
       ad.load();
-    } catch (e) {
-      debugPrint('Exception during ${type.name} ad load: $e');
+    } catch (e, stackTrace) {
+      print('e:$e \n stackTrace:$stackTrace');
     }
   }
 

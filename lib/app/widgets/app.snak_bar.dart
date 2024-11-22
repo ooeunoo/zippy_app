@@ -126,3 +126,24 @@ notifyLogout() {
     ),
   );
 }
+
+notifyPreparing() {
+  Get.showSnackbar(
+    GetSnackBar(
+      messageText: AppText("기능을 준비중이에요 😃",
+          align: TextAlign.center,
+          style: Theme.of(Get.context!)
+              .textTheme
+              .textSM
+              .copyWith(color: AppColor.graymodern300)),
+      backgroundColor: AppColor.brand800,
+      snackPosition: SnackPosition.TOP,
+      borderRadius: AppDimens.size(10),
+      duration: const Duration(seconds: 1),
+      animationDuration: const Duration(seconds: 1),
+      margin: EdgeInsets.symmetric(horizontal: AppDimens.width(100)),
+      // padding: EdgeInsets.symmetric(
+      //     horizontal: AppDimens.width(20), vertical: AppDimens.height(15)),
+    ),
+  );
+}

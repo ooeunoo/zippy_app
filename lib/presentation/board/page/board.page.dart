@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:zippy/app/services/admob.service.dart';
-import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
+import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/widgets/app_divider.dart';
+import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/ad_article.model.dart';
 import 'package:zippy/domain/model/article.model.dart';
 import 'package:zippy/presentation/board/controller/board.controller.dart';
@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_ad_article_card.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_article_card.dart';
+import 'package:zippy/presentation/board/page/widgets/zippy_article_drawer.dart';
 import 'package:zippy/presentation/search/page/widgets/article_row_item.dart';
 
 class BoardPage extends StatefulWidget {
@@ -22,7 +23,6 @@ class BoardPage extends StatefulWidget {
 }
 
 class _BoardPageState extends State<BoardPage> {
-  final AdmobService _admobService = Get.find();
   late final BoardController _controller;
   late final PageController _pageController;
 
@@ -54,50 +54,12 @@ class _BoardPageState extends State<BoardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      drawer: _buildDrawerContent(),
-      body: _buildPageContent(),
-    );
-  }
-
-  Widget _buildDrawerContent() {
-    return Drawer(
-      backgroundColor: AppColor.graymodern950,
-      child: SafeArea(
-        child: Obx(() => ListView.builder(
-              shrinkWrap: true,
-              physics: const ClampingScrollPhysics(),
-              itemCount: _controller.articles.length,
-              itemBuilder: _buildDrawerItem,
-            )),
+      drawer: ZippyArticleDrawer(
+        articles: _controller.articles,
+        handleJumpToArticle: _handleJumpToArticle,
+        handleFetchArticles: _controller.onHandleFetchRecommendedArticles,
       ),
-    );
-  }
-
-  Widget _buildDrawerItem(BuildContext context, int index) {
-    Article article = _controller.articles[index];
-
-    if (article.isAd) {
-      return const SizedBox.shrink();
-    }
-
-    return Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: AppDimens.width(10),
-            vertical: AppDimens.height(10),
-          ),
-          child: ArticleRowItem(
-            article: article,
-            onHandleClickArticle: () {
-              Navigator.of(context).pop();
-              _handleJumpToArticle(index);
-            },
-          ),
-        ),
-        if (index != _controller.articles.length - 1)
-          const AppDivider(color: AppColor.graymodern900),
-      ],
+      body: _buildPageContent(),
     );
   }
 
@@ -144,6 +106,7 @@ class _BoardPageState extends State<BoardPage> {
 
     return GestureDetector(
       onTap: () => _controller.onHandleClickArticle(article),
+      behavior: HitTestBehavior.opaque,
       child: ZippyArticleCard(
         article: article,
       ),

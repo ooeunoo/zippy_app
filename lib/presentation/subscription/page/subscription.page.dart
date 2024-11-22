@@ -80,6 +80,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
             return GestureDetector(
               onTap: () =>
                   subscriptionService.onHandleToggleSubscription(contentType),
+              behavior: HitTestBehavior.opaque,
               child: SubscriptionCard(
                 name: contentType.name,
                 description: contentType.description,

@@ -26,6 +26,7 @@ class ArticleRowItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => onHandleClickArticle(),
+      behavior: HitTestBehavior.opaque,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

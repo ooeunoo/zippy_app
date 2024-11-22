@@ -10,7 +10,7 @@ import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/article.model.dart';
 
-class BottomExtensionMenu extends StatelessWidget {
+class BottomSupportMenu extends StatelessWidget {
   final Article article;
   final Function() share;
   final Function() report;
@@ -18,7 +18,7 @@ class BottomExtensionMenu extends StatelessWidget {
   final Function() bookmark;
   final bool isBookmarked;
 
-  const BottomExtensionMenu({
+  const BottomSupportMenu({
     super.key,
     required this.article,
     required this.share,

@@ -64,6 +64,7 @@ class AppMenu extends StatelessWidget {
         onTap: () {
           onTap();
         },
+        behavior: HitTestBehavior.opaque,
         child: Row(
           children: [
             AppSvg(

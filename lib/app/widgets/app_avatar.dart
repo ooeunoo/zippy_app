@@ -31,6 +31,7 @@ class AppAvatar extends StatelessWidget {
           onTap: () async {
             if (!upload) return;
           },
+          behavior: HitTestBehavior.opaque,
           child: Container(
             width: size ?? AppDimens.width(40),
             height: size ?? AppDimens.height(40),

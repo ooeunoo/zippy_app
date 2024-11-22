@@ -3,7 +3,8 @@ import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 
 class AppHandleBar extends StatelessWidget {
-  const AppHandleBar({super.key});
+  final Color color;
+  const AppHandleBar({super.key, this.color = AppColor.gray300});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +12,7 @@ class AppHandleBar extends StatelessWidget {
       width: AppDimens.width(40),
       height: AppDimens.height(4),
       decoration: BoxDecoration(
-        color: AppColor.gray300,
+        color: color,
         borderRadius: BorderRadius.circular(AppDimens.width(5)),
       ),
     );

@@ -97,9 +97,9 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // _buildMetadataRow(context),
-                  AppSpacerV(value: AppDimens.height(30)),
-
+                  AppSpacerV(value: AppDimens.height(8)),
+                  _buildMetadataRow(context),
+                  AppSpacerV(value: AppDimens.height(22)),
                   // Key Points Card
                   _buildKeyPointsCard(context),
                   AppSpacerV(value: AppDimens.height(24)),
@@ -297,7 +297,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
             child: AppText(
               platform?.name ?? "",
               style: Theme.of(context).textTheme.textSM.copyWith(
-                    color: AppColor.graymodern600,
+                    color: AppColor.graymodern300,
                     fontWeight: AppFontWeight.medium,
                   ),
             ),
@@ -306,14 +306,14 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
           AppText(
             '·',
             style: Theme.of(context).textTheme.textSM.copyWith(
-                  color: AppColor.graymodern400,
+                  color: AppColor.graymodern300,
                 ),
           ),
           AppSpacerH(value: AppDimens.width(4)),
           AppText(
             widget.article.published.timeAgo(),
             style: Theme.of(context).textTheme.textSM.copyWith(
-                  color: AppColor.graymodern600,
+                  color: AppColor.graymodern300,
                 ),
           ),
           const Spacer(),
@@ -347,13 +347,13 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
         Icon(
           icon,
           size: AppDimens.size(14),
-          color: AppColor.graymodern400,
+          color: AppColor.graymodern300,
         ),
         AppSpacerH(value: AppDimens.width(4)),
         AppText(
           count,
           style: Theme.of(context).textTheme.textSM.copyWith(
-                color: AppColor.graymodern400,
+                color: AppColor.graymodern300,
               ),
         ),
       ],
@@ -487,9 +487,9 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
                 setState(() {
                   expandedSections[section.title] = expanded;
                 });
-                if (expanded) {
-                  _scrollToSection(sectionKeys[section.title]!);
-                }
+                // if (expanded) {
+                //   _scrollToSection(sectionKeys[section.title]!);
+                // }
               },
               tilePadding: EdgeInsets.symmetric(
                 horizontal: AppDimens.width(12),
@@ -612,7 +612,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
                                       .textMD
                                       .copyWith(
                                         color: isExpanded
-                                            ? AppColor.graymodern400
+                                            ? AppColor.graymodern300
                                             : AppColor.graymodern600,
                                         height: 1.8,
                                         letterSpacing: 0.2,
@@ -625,7 +625,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
                                       .textMD
                                       .copyWith(
                                         color: isExpanded
-                                            ? AppColor.graymodern300
+                                            ? AppColor.graymodern50
                                             : AppColor.graymodern500,
                                         fontWeight: AppFontWeight.bold,
                                       ),
@@ -727,8 +727,9 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
                                 padding: EdgeInsets.symmetric(
                                   horizontal: AppDimens.width(20),
                                 ),
-                                height: AppDimens.height(16),
+                                height: AppDimens.height(8),
                                 child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Container(
                                       width: AppDimens.width(3),

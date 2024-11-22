@@ -39,6 +39,8 @@ class _BookmarkPageState extends State<BookmarkPage> {
       body: Column(
         children: [
           _buildFolderList(context),
+          AppSpacerV(value: AppDimens.height(12)),
+          _buildFolderInfo(context), // 추가된 부분
           Expanded(child: _buildBookmarkList(context)),
         ],
       ),
@@ -72,12 +74,11 @@ class _BookmarkPageState extends State<BookmarkPage> {
           height: AppDimens.height(45),
           margin: EdgeInsets.only(
             top: AppDimens.height(8),
-            bottom: AppDimens.height(16),
           ),
           child: Obx(() => ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: bookmarkService.userBookmarkFolders.length + 1,
-                padding: EdgeInsets.symmetric(horizontal: AppDimens.width(16)),
+                padding: EdgeInsets.symmetric(horizontal: AppDimens.width(12)),
                 itemBuilder: (context, index) {
                   if (index == 0) {
                     return _buildTabItem(
@@ -111,6 +112,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
     bool isAll,
   ) {
     final isSelected = selectedFolderId == folderId;
+    final displayName = name.length > 10 ? '${name.substring(0, 10)}...' : name;
 
     return Container(
       margin: EdgeInsets.only(right: AppDimens.width(4)),
@@ -132,83 +134,77 @@ class _BookmarkPageState extends State<BookmarkPage> {
                   ),
           child: Container(
             padding: EdgeInsets.symmetric(
-              horizontal: AppDimens.width(16),
-            ),
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: isSelected ? AppColor.blue400 : Colors.transparent,
-                  width: 2,
-                ),
-              ),
+              horizontal: AppDimens.width(7),
             ),
             child: Stack(
+              clipBehavior: Clip.none,
               children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Row(
-                      children: [
-                        Icon(
-                          isAll ? Icons.folder : Icons.folder_outlined,
-                          size: AppDimens.size(16),
-                          color: isSelected
-                              ? AppColor.blue400
-                              : AppColor.graymodern400,
-                        ),
-                        AppSpacerH(value: AppDimens.width(8)),
-                        Tooltip(
-                          message:
-                              '$name${description != null ? '\n$description' : ''}',
-                          child: AppText(
-                            name,
-                            style: Theme.of(context).textTheme.textSM.copyWith(
-                                  color: isSelected
-                                      ? AppColor.blue400
-                                      : AppColor.graymodern400,
-                                  fontWeight: isSelected
-                                      ? AppFontWeight.bold
-                                      : FontWeight.normal,
-                                ),
-                          ),
-                        ),
-                      ],
+                    Icon(
+                      isAll ? Icons.folder : Icons.folder_outlined,
+                      size: AppDimens.size(16),
+                      color: isSelected
+                          ? AppColor.blue400
+                          : AppColor.graymodern400,
                     ),
+                    AppSpacerH(value: AppDimens.width(8)),
+                    Tooltip(
+                      message:
+                          '$name${description != null ? '\n$description' : ''}',
+                      child: AppText(
+                        displayName,
+                        style: Theme.of(context).textTheme.textSM.copyWith(
+                              color: isSelected
+                                  ? AppColor.blue400
+                                  : AppColor.graymodern400,
+                              fontWeight: isSelected
+                                  ? AppFontWeight.bold
+                                  : FontWeight.normal,
+                            ),
+                      ),
+                    ),
+                    //     if (!isAll) ...[
+                    //       AppSpacerH(value: AppDimens.width(6)),
+                    //       Obx(() {
+                    //         final count = bookmarkService.userBookmarks
+                    //             .where((bookmark) => bookmark.folderId == folderId)
+                    //             .length;
+                    //         if (count == 0) return const SizedBox.shrink();
+
+                    //         return Container(
+                    //           padding: EdgeInsets.symmetric(
+                    //             horizontal: AppDimens.width(6),
+                    //             vertical: AppDimens.height(2),
+                    //           ),
+                    //           decoration: BoxDecoration(
+                    //             color: isSelected
+                    //                 ? AppColor.blue400.withOpacity(0.15)
+                    //                 : AppColor.graymodern700,
+                    //             borderRadius:
+                    //                 BorderRadius.circular(AppDimens.radius(10)),
+                    //             border: Border.all(
+                    //               color: isSelected
+                    //                   ? AppColor.blue400
+                    //                   : AppColor.graymodern600,
+                    //               width: 1,
+                    //             ),
+                    //           ),
+                    //           child: AppText(
+                    //             count.toString(),
+                    //             style: Theme.of(context).textTheme.textXS.copyWith(
+                    //                   color: isSelected
+                    //                       ? AppColor.blue400
+                    //                       : AppColor.graymodern400,
+                    //                   fontWeight: AppFontWeight.medium,
+                    //                 ),
+                    //           ),
+                    //         );
+                    //       }),
+                    //     ],
                   ],
                 ),
-                if (!isAll)
-                  Positioned(
-                    right: 0,
-                    top: AppDimens.height(2),
-                    child: Obx(() {
-                      final count = bookmarkService.userBookmarks
-                          .where((bookmark) => bookmark.folderId == folderId)
-                          .length;
-                      if (count == 0) return const SizedBox.shrink();
-                      return Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: AppDimens.width(4),
-                          vertical: AppDimens.height(1),
-                        ),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? AppColor.blue400
-                              : AppColor.graymodern700,
-                          borderRadius:
-                              BorderRadius.circular(AppDimens.radius(6)),
-                        ),
-                        child: AppText(
-                          count.toString(),
-                          style: Theme.of(context).textTheme.textXXS.copyWith(
-                                color: isSelected
-                                    ? AppColor.white
-                                    : AppColor.graymodern400,
-                              ),
-                        ),
-                      );
-                    }),
-                  ),
-                // 활성화 표시 애니메이션
                 if (isSelected)
                   Positioned(
                     bottom: 0,
@@ -235,60 +231,107 @@ class _BookmarkPageState extends State<BookmarkPage> {
     );
   }
 
-  Widget _buildBookmarkList(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: AppDimens.height(16)),
-      child: Obx(() {
-        final bookmarks = selectedFolderId == UserBookmarkKey.all.name
-            ? bookmarkService.userBookmarks
-            : bookmarkService.userBookmarks
-                .where((bookmark) => bookmark.folderId == selectedFolderId)
-                .toList();
+  Widget _buildFolderInfo(BuildContext context) {
+    return Obx(() {
+      final description = selectedFolderId == UserBookmarkKey.all.name
+          ? "저장된 모든 콘텐츠"
+          : bookmarkService.userBookmarkFolders
+              .firstWhere((folder) => folder.id == selectedFolderId)
+              .description;
 
-        if (bookmarks.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.bookmark_border,
-                  size: AppDimens.size(48),
-                  color: AppColor.graymodern600,
-                ),
-                AppSpacerV(value: AppDimens.height(16)),
-                AppText(
-                  '저장된 콘텐츠가 없습니다',
-                  style: Theme.of(context).textTheme.textMD.copyWith(
-                        color: AppColor.graymodern600,
-                      ),
-                ),
-              ],
+      final bookmarkCount = selectedFolderId == UserBookmarkKey.all.name
+          ? bookmarkService.userBookmarks.length
+          : bookmarkService.userBookmarks
+              .where((bookmark) => bookmark.folderId == selectedFolderId)
+              .length;
+
+      // if (description == null || description.isEmpty) {
+      //   return const SizedBox.shrink();
+      // }
+
+      return Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: AppDimens.width(16),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: AppDimens.width(200), // description의 최대 너비 제한
+              child: AppText(
+                description ?? '',
+                style: Theme.of(context).textTheme.textSM.copyWith(
+                      color: AppColor.graymodern600,
+                      height: 1.3,
+                    ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          );
-        }
+            AppText(
+              '$bookmarkCount개',
+              style: Theme.of(context).textTheme.textSM.copyWith(
+                    color: AppColor.graymodern600,
+                  ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
 
-        return ListView.builder(
-          itemCount: bookmarks.length,
-          padding: EdgeInsets.symmetric(horizontal: AppDimens.width(16)),
-          itemBuilder: (BuildContext context, int index) {
-            final bookmark = bookmarks[index];
-            final isLastItem = index == bookmarks.length - 1;
+  Widget _buildBookmarkList(BuildContext context) {
+    return Obx(() {
+      final bookmarks = selectedFolderId == UserBookmarkKey.all.name
+          ? bookmarkService.userBookmarks
+          : bookmarkService.userBookmarks
+              .where((bookmark) => bookmark.folderId == selectedFolderId)
+              .toList();
 
-            return Column(
-              children: [
-                _buildBookmarkItem(
-                  context,
-                  bookmark,
-                  isLastItem,
-                  bookmarkService.onHandleDeleteUserBookmark,
-                ),
-                if (!isLastItem) const AppDivider(),
-              ],
-            );
-          },
+      if (bookmarks.isEmpty) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.bookmark_border,
+                size: AppDimens.size(48),
+                color: AppColor.graymodern600,
+              ),
+              AppSpacerV(value: AppDimens.height(16)),
+              AppText(
+                '저장된 콘텐츠가 없습니다',
+                style: Theme.of(context).textTheme.textMD.copyWith(
+                      color: AppColor.graymodern600,
+                    ),
+              ),
+              AppSpacerV(value: AppDimens.height(150)),
+            ],
+          ),
         );
-      }),
-    );
+      }
+
+      return ListView.builder(
+        itemCount: bookmarks.length,
+        padding: EdgeInsets.symmetric(horizontal: AppDimens.width(16)),
+        itemBuilder: (BuildContext context, int index) {
+          final bookmark = bookmarks[index];
+          final isLastItem = index == bookmarks.length - 1;
+
+          return Column(
+            children: [
+              _buildBookmarkItem(
+                context,
+                bookmark,
+                isLastItem,
+                bookmarkService.onHandleDeleteUserBookmark,
+              ),
+              if (!isLastItem) const AppDivider(),
+            ],
+          );
+        },
+      );
+    });
   }
 
   Widget _buildBookmarkItem(

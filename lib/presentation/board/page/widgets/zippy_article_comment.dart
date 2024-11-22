@@ -253,6 +253,7 @@ class _ZippyArticleCommentState extends State<ZippyArticleComment> {
                       AppSpacerH(value: AppDimens.width(8)),
                       GestureDetector(
                         onTap: () => setState(() => replyingTo = null),
+                        behavior: HitTestBehavior.opaque,
                         child: const Icon(
                           Icons.close,
                           size: 16,

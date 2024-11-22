@@ -29,7 +29,7 @@ import 'package:zippy/domain/usecases/get_recommend_articles.usecase.dart';
 import 'package:zippy/domain/usecases/get_sources.usecase.dart';
 import 'package:zippy/domain/usecases/update_user_interaction.usecase.dart';
 import 'package:zippy/presentation/board/page/widgets/bookmark_folder_modal.dart';
-import 'package:zippy/presentation/board/page/widgets/bottom_extension_menu.dart';
+import 'package:zippy/presentation/board/page/widgets/bottom_support_menu.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_article_view.dart';
 import 'dart:async';
 
@@ -186,7 +186,7 @@ class ArticleService extends GetxService {
 
   Future<void> onHandleArticleSupportMenu(Article article) async {
     onHeavyVibration();
-    Get.bottomSheet(Obx(() => BottomExtensionMenu(
+    Get.bottomSheet(Obx(() => BottomSupportMenu(
           article: article,
           originalArticle: () => onHandleOpenOriginalArticle(article),
           bookmark: () => onHandleBookmarkArticle(article),

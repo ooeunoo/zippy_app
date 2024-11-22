@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/styles/color.dart';
+import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/widgets/app_header.dart';
@@ -130,20 +131,23 @@ class _SearchPageState extends State<SearchPage> {
   AppHeader _buildRankAppBar() {
     return AppHeader(
       title: AppText(
-        '실시간 검색 순위',
+        '실시간 순위',
         style: Theme.of(context).textTheme.textXL.copyWith(
             color: AppColor.gray100, fontWeight: AppFontWeight.medium),
       ),
       automaticallyImplyLeading: false,
       leading: const SizedBox.shrink(),
       actions: [
-        IconButton(
-          onPressed: () {
-            setState(() {
-              _showSearchBar = true;
-            });
-          },
-          icon: const Icon(Icons.search, color: AppColor.gray100),
+        Padding(
+          padding: EdgeInsets.only(right: AppDimens.width(12)),
+          child: IconButton(
+            onPressed: () {
+              setState(() {
+                _showSearchBar = true;
+              });
+            },
+            icon: const Icon(Icons.search, color: AppColor.gray100),
+          ),
         ),
       ],
     );

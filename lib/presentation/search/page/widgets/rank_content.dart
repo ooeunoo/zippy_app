@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
+import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_text.dart';
@@ -52,7 +53,7 @@ class RankContent extends StatelessWidget {
       child: Container(
         margin: EdgeInsets.symmetric(
             horizontal: AppDimens.width(20), vertical: AppDimens.height(8)),
-        padding: EdgeInsets.all(AppDimens.width(10)),
+        padding: EdgeInsets.all(AppDimens.width(18)),
         decoration: BoxDecoration(
           color: AppColor.graymodern900,
           borderRadius: BorderRadius.circular(AppDimens.radius(10)),
@@ -75,11 +76,14 @@ class RankContent extends StatelessWidget {
     return AppText(
       '$rank',
       style: Theme.of(context).textTheme.textXL.copyWith(
+            fontWeight: AppFontWeight.medium,
             color: rank == 1
                 ? AppColor.orange400
                 : rank == 2
                     ? AppColor.yellow400
-                    : AppColor.gray500,
+                    : rank == 3
+                        ? AppColor.green400
+                        : AppColor.gray500,
           ),
     );
   }
@@ -88,27 +92,17 @@ class RankContent extends StatelessWidget {
       BuildContext context, String title, List<String> descriptions) {
     return Expanded(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppText(
             title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.textMD.copyWith(
-                  color: Colors.white,
+                  color: AppColor.gray50,
+                  fontWeight: AppFontWeight.semibold,
                 ),
           ),
-          // AppSpacerV(value: AppDimens.height(5)),
-          // SizedBox(
-          //   height: AppDimens.height(20),
-          //   child: descriptions.isEmpty
-          //       ? const SizedBox.shrink()
-          //       : AppMarqueeText(
-          //           text: descriptions.join(', '),
-          //           width: AppDimens.width(200),
-          //           style: Theme.of(context).textTheme.textXS.copyWith(
-          //                 color: AppColor.gray400,
-          //               ),
-          //         ),
-          // ),
         ],
       ),
     );
@@ -119,7 +113,6 @@ class RankContent extends StatelessWidget {
       return AppText(
         '－',
         style: Theme.of(context).textTheme.textMD.copyWith(
-              fontSize: 14,
               color: AppColor.gray200,
             ),
       );
@@ -127,7 +120,6 @@ class RankContent extends StatelessWidget {
     return AppText(
       '${rankChange > 0 ? "▲" : "▼"} ${rankChange.abs()}',
       style: Theme.of(context).textTheme.textMD.copyWith(
-            fontSize: 14,
             color: rankChange > 0 ? AppColor.rose400 : AppColor.blue400,
           ),
     );

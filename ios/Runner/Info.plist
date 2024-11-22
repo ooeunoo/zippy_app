@@ -46,7 +46,7 @@
 		<key>GADApplicationIdentifier</key>
 		<string>ca-app-pub-9891463696347744~1819693213</string>
 		<key>GADNativeAdValidatorEnabled</key>
-		<true />
+		<false />
 		<key>ITSAppUsesNonExemptEncryption</key>
 		<false />
 		<key>LSRequiresIPhoneOS</key>
@@ -62,7 +62,6 @@
 		<string>This app requires access to the photo library.</string>
 		<key>NSUserTrackingUsageDescription</key>
 		<string>This identifier will be used to deliver personalized ads to you.</string>
-
 		<key>SKAdNetworkItems</key>
 		<array>
 			<dict>

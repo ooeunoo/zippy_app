@@ -48,7 +48,13 @@ class _BasePageState extends State<BasePage> {
                           topRight: Radius.circular(AppDimens.size(20)),
                           topLeft: Radius.circular(AppDimens.size(20)),
                         ),
+                        border: const Border(
+                          top: BorderSide(
+                            color: AppColor.graymodern900,
+                          ),
+                        ),
                       ),
+                      height: AppDimens.height(80),
                       child: ClipRRect(
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(AppDimens.size(20)),
@@ -72,7 +78,7 @@ class _BasePageState extends State<BasePage> {
               ],
             ),
             Positioned(
-              bottom: -10,
+              bottom: -12,
               left: 0,
               right: 0,
               child: Obx(() {
