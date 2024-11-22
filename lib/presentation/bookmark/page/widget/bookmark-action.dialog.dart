@@ -27,12 +27,12 @@ void showCreateFolderDialog(BuildContext context,
             Container(
               padding: EdgeInsets.all(AppDimens.width(8)),
               decoration: BoxDecoration(
-                color: AppColor.blue500.withOpacity(0.1),
+                color: AppColor.brand500.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(AppDimens.radius(8)),
               ),
               child: Icon(
                 Icons.create_new_folder,
-                color: AppColor.blue400,
+                color: AppColor.brand400,
                 size: AppDimens.size(20),
               ),
             ),
@@ -65,7 +65,7 @@ void showCreateFolderDialog(BuildContext context,
                   borderSide: BorderSide(color: AppColor.graymodern700),
                 ),
                 focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: AppColor.blue400),
+                  borderSide: BorderSide(color: AppColor.brand400),
                 ),
               ),
             ),
@@ -84,7 +84,7 @@ void showCreateFolderDialog(BuildContext context,
                   borderSide: BorderSide(color: AppColor.graymodern700),
                 ),
                 focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: AppColor.blue400),
+                  borderSide: BorderSide(color: AppColor.brand400),
                 ),
               ),
             ),
@@ -132,7 +132,7 @@ void showCreateFolderDialog(BuildContext context,
                   }
                 },
                 style: FilledButton.styleFrom(
-                  backgroundColor: AppColor.blue500,
+                  backgroundColor: AppColor.brand500,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppDimens.radius(8)),
                   ),

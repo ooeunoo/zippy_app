@@ -93,7 +93,7 @@ class ArticleRowItem extends StatelessWidget {
           TextSpan(
             text: matchText,
             style: Theme.of(context).textTheme.textSM.copyWith(
-                  color: AppColor.blue400,
+                  color: AppColor.brand400,
                   fontWeight: AppFontWeight.medium,
                 ),
           ),

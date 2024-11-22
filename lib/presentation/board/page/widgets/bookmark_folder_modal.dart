@@ -76,14 +76,14 @@ class BookmarkFolderModal extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.add_circle_outline,
-                            color: AppColor.blue400,
+                            color: AppColor.brand400,
                             size: AppDimens.width(20),
                           ),
                           SizedBox(width: AppDimens.width(4)),
                           AppText(
                             '새 폴더',
                             style: Theme.of(context).textTheme.textSM.copyWith(
-                                  color: AppColor.blue400,
+                                  color: AppColor.brand400,
                                   fontWeight: AppFontWeight.medium,
                                 ),
                           ),
@@ -132,13 +132,13 @@ class BookmarkFolderModal extends StatelessWidget {
                               Container(
                                 padding: EdgeInsets.all(AppDimens.width(10)),
                                 decoration: BoxDecoration(
-                                  color: AppColor.blue400.withOpacity(0.15),
+                                  color: AppColor.brand400.withOpacity(0.15),
                                   borderRadius: BorderRadius.circular(
                                       AppDimens.radius(12)),
                                 ),
                                 child: Icon(
                                   Icons.folder_rounded,
-                                  color: AppColor.blue400,
+                                  color: AppColor.brand400,
                                   size: AppDimens.width(24),
                                 ),
                               ),

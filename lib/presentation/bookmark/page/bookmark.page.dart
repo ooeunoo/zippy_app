@@ -41,6 +41,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
           _buildFolderList(context),
           AppSpacerV(value: AppDimens.height(12)),
           _buildFolderInfo(context), // 추가된 부분
+          AppSpacerV(value: AppDimens.height(12)),
           Expanded(child: _buildBookmarkList(context)),
         ],
       ),
@@ -49,7 +50,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
           context,
           bookmarkService.onHandleCreateUserBookmarkFolder,
         ),
-        backgroundColor: AppColor.blue500,
+        backgroundColor: AppColor.brand500,
         child: const Icon(Icons.create_new_folder, color: AppColor.white),
       ),
     );
@@ -146,7 +147,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                       isAll ? Icons.folder : Icons.folder_outlined,
                       size: AppDimens.size(16),
                       color: isSelected
-                          ? AppColor.blue400
+                          ? AppColor.brand400
                           : AppColor.graymodern400,
                     ),
                     AppSpacerH(value: AppDimens.width(8)),
@@ -157,7 +158,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                         displayName,
                         style: Theme.of(context).textTheme.textSM.copyWith(
                               color: isSelected
-                                  ? AppColor.blue400
+                                  ? AppColor.brand400
                                   : AppColor.graymodern400,
                               fontWeight: isSelected
                                   ? AppFontWeight.bold
@@ -215,9 +216,9 @@ class _BookmarkPageState extends State<BookmarkPage> {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            AppColor.blue400.withOpacity(0.5),
-                            AppColor.blue400,
-                            AppColor.blue400.withOpacity(0.5),
+                            AppColor.brand400.withOpacity(0.5),
+                            AppColor.brand400,
+                            AppColor.brand400.withOpacity(0.5),
                           ],
                         ),
                       ),
@@ -346,7 +347,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
         motion: const ScrollMotion(),
         children: [
           SlidableAction(
-            onPressed: (BuildContext context) => delete(bookmark),
+            onPressed: (BuildContext context) => delete(bookmark.id),
             backgroundColor: AppColor.rose700.withOpacity(0.9),
             foregroundColor: AppColor.white,
             icon: Icons.delete,

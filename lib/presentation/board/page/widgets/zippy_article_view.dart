@@ -374,10 +374,10 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [AppColor.blue900, AppColor.graymodern900],
+            colors: [AppColor.brand900, AppColor.graymodern900],
           ),
           borderRadius: BorderRadius.circular(AppDimens.radius(12)),
-          border: Border.all(color: AppColor.blue800, width: 1),
+          border: Border.all(color: AppColor.brand800, width: 1),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -396,7 +396,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
                     AppText(
                       '주요 포인트',
                       style: Theme.of(context).textTheme.textLG.copyWith(
-                            color: AppColor.blue400,
+                            color: AppColor.brand400,
                             fontWeight: AppFontWeight.bold,
                           ),
                     ),
@@ -406,7 +406,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
                   isKeyPointsExpanded
                       ? Icons.keyboard_arrow_up
                       : Icons.keyboard_arrow_down,
-                  color: AppColor.blue400,
+                  color: AppColor.brand400,
                 ),
               ],
             ),
@@ -424,7 +424,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
                           ),
                           child: Icon(
                             Icons.circle_outlined,
-                            color: AppColor.blue600,
+                            color: AppColor.brand600,
                             size: AppDimens.size(16),
                           ),
                         ),
@@ -461,7 +461,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
             color: AppColor.graymodern900,
             border: Border.all(
               color: isExpanded
-                  ? AppColor.blue500.withOpacity(0.3)
+                  ? AppColor.brand500.withOpacity(0.3)
                   : AppColor.graymodern800,
               width: 1,
             ),
@@ -499,13 +499,14 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
                 padding: EdgeInsets.all(AppDimens.width(8)),
                 decoration: BoxDecoration(
                   color: isExpanded
-                      ? AppColor.blue500.withOpacity(0.1)
+                      ? AppColor.brand500.withOpacity(0.1)
                       : AppColor.graymodern800.withOpacity(0.5),
                   borderRadius: BorderRadius.circular(AppDimens.radius(8)),
                 ),
                 child: Icon(
                   Icons.keyboard_arrow_down,
-                  color: isExpanded ? AppColor.blue400 : AppColor.graymodern400,
+                  color:
+                      isExpanded ? AppColor.brand400 : AppColor.graymodern400,
                   size: AppDimens.size(20),
                 ),
               ),
@@ -537,7 +538,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
                           Icons.format_list_bulleted,
                           size: AppDimens.size(14),
                           color: isExpanded
-                              ? AppColor.blue400
+                              ? AppColor.brand400
                               : AppColor.graymodern500,
                         ),
                         AppSpacerH(value: AppDimens.width(6)),
@@ -545,7 +546,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
                           '${section.content.length}개의 내용',
                           style: Theme.of(context).textTheme.textSM.copyWith(
                                 color: isExpanded
-                                    ? AppColor.blue400
+                                    ? AppColor.brand400
                                     : AppColor.graymodern500,
                                 fontWeight: AppFontWeight.medium,
                               ),
@@ -736,7 +737,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
                                       height: AppDimens.height(3),
                                       decoration: BoxDecoration(
                                         color: isExpanded
-                                            ? AppColor.blue400.withOpacity(0.5)
+                                            ? AppColor.brand400.withOpacity(0.5)
                                             : AppColor.graymodern600,
                                         shape: BoxShape.circle,
                                       ),
@@ -747,7 +748,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
                                       height: AppDimens.height(3),
                                       decoration: BoxDecoration(
                                         color: isExpanded
-                                            ? AppColor.blue400.withOpacity(0.3)
+                                            ? AppColor.brand400.withOpacity(0.3)
                                             : AppColor.graymodern700,
                                         shape: BoxShape.circle,
                                       ),
@@ -758,7 +759,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
                                       height: AppDimens.height(3),
                                       decoration: BoxDecoration(
                                         color: isExpanded
-                                            ? AppColor.blue400.withOpacity(0.1)
+                                            ? AppColor.brand400.withOpacity(0.1)
                                             : AppColor.graymodern800,
                                         shape: BoxShape.circle,
                                       ),
