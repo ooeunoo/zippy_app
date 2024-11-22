@@ -12,14 +12,6 @@ import 'package:zippy/domain/model/params/get_recommend_aritlces.params.dart';
 
 String TABLE = 'articles';
 
-// CREATE OR REPLACE FUNCTION get_recommended_articles(
-//     user_id UUID DEFAULT NULL,            -- 사용자 ID (NULL인 경우 익명 사용자)
-//     time_range INTERVAL DEFAULT '7 days'::INTERVAL,  -- 기사 검색 시간 범위 (기본값: 7일)
-//     exclude_viewed BOOLEAN DEFAULT true,   -- 이미 본 기사 제외 여부
-//     min_published_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,  -- 최소 발행 시간
-//     max_published_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,  -- 최대 발행 시간
-//     limit_count INTEGER DEFAULT 20         -- 반환할 기사 수
-// )
 enum RPC {
   getRecommendedArticles('get_recommended_articles'),
   ;
@@ -48,9 +40,15 @@ class ArticleDatasourceImpl implements ArticleDatasource {
       var response = await provider.client
           .rpc(RPC.getRecommendedArticles.function, params: params.toJson());
 
-      List<Article> result = (response as List)
-          .map((r) => ArticleEntity.fromJson(r).toModel())
-          .toList();
+      List<Article> result = [];
+      for (var r in (response as List)) {
+        try {
+          result.add(ArticleEntity.fromJson(r).toModel());
+        } catch (e) {
+          print('Error parsing article: ${r['id']}');
+          continue;
+        }
+      }
 
       return Right(result);
     } catch (e, stackTrace) {

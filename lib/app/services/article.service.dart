@@ -246,7 +246,6 @@ class ArticleService extends GetxService {
     required Future<void> Function() action,
   }) async {
     bool isLoggedIn = authService.isLoggedIn.value;
-    print('isLoggedIn: $isLoggedIn');
     if (requiredLoggedIn && !isLoggedIn) {
       showLoginDialog();
       return;

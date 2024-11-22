@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:zippy/app/extensions/datetime.dart';
-import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
-import 'package:zippy/app/styles/font.dart';
-import 'package:zippy/app/styles/theme.dart';
-import 'package:zippy/app/widgets/app_circle_image.dart';
-import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
-import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/article.model.dart';
 import 'package:zippy/presentation/search/page/widgets/article_row_item.dart';
 
