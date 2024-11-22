@@ -181,16 +181,20 @@ class ArticleService extends GetxService {
     Get.bottomSheet(Obx(() => BottomSupportMenu(
           article: article,
           originalArticle: () => onHandleOpenOriginalArticle(article),
-          bookmark: () async {
-            onHeavyVibration();
-            final bookmark = bookmarkService.isBookmarked(article.id!);
-            if (bookmark != null) {
-              bookmarkService.onHandleDeleteUserBookmark(bookmark.id);
-            } else {
-              onHandleBookmarkArticle(article);
-            }
-          },
           isBookmarked: bookmarkService.isBookmarked(article.id!) != null,
+          bookmark: () => _handleUserAction(
+            requiredLoggedIn: true,
+            action: () async {
+              final bookmark = bookmarkService.isBookmarked(article.id!);
+              if (bookmark != null) {
+                await bookmarkService.onHandleDeleteUserBookmark(bookmark.id);
+              } else {
+                await onHandleBookmarkArticle(article);
+                await onHandleCreateUserInteraction(
+                    article, InteractionType.Bookmark);
+              }
+            },
+          ),
           share: () => _handleUserAction(
             requiredLoggedIn: false,
             action: () async {
@@ -242,7 +246,8 @@ class ArticleService extends GetxService {
     required Future<void> Function() action,
   }) async {
     bool isLoggedIn = authService.isLoggedIn.value;
-    if (!requiredLoggedIn && !isLoggedIn) {
+    print('isLoggedIn: $isLoggedIn');
+    if (requiredLoggedIn && !isLoggedIn) {
       showLoginDialog();
       return;
     }

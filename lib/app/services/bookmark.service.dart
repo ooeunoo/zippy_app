@@ -52,13 +52,10 @@ class BookmarkService extends GetxService {
   /// Getter Methods
   ///*********************************
   UserBookmarkItem? isBookmarked(int itemId) {
-    print(itemId);
-    print(userBookmarks);
     final bookmark = userBookmarks.firstWhereOrNull(
       (bookmark) => bookmark.article!.id == itemId,
     );
 
-    print(bookmark);
     return bookmark;
   }
 
