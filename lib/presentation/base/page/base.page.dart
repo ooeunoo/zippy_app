@@ -1,14 +1,10 @@
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/app/services/admob.service.dart';
-import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
-import 'package:zippy/app/widgets/app_spacer_h.dart';
-import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
-import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/presentation/base/controller/base.controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -40,75 +36,60 @@ class _BasePageState extends State<BasePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+        child: Stack(
           children: [
-            // AppSpacerV(value: AppDimens.height(10)),
-            Obx(() => Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(AppDimens.size(20)),
-                      topLeft: Radius.circular(AppDimens.size(20)),
-                    ),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(AppDimens.size(20)),
-                      topRight: Radius.circular(AppDimens.size(20)),
-                    ),
-                    child: BottomNavigationBar(
-                      elevation: 1,
-                      currentIndex: controller.currentIndex.value,
-                      onTap: controller.changeTab,
-                      items: [
-                        tabItem(Assets.home01, '', 0),
-                        tabItem(Assets.search, '', 1),
-                        tabItem(Assets.user01, '', 2),
-                      ],
-                    ),
-                  ),
-                )),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Obx(() => Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(AppDimens.size(20)),
+                          topLeft: Radius.circular(AppDimens.size(20)),
+                        ),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(AppDimens.size(20)),
+                          topRight: Radius.circular(AppDimens.size(20)),
+                        ),
+                        child: BottomNavigationBar(
+                          elevation: 1,
+                          currentIndex: controller.currentIndex.value,
+                          onTap: controller.changeTab,
+                          selectedFontSize: 0,
+                          unselectedFontSize: 0,
+                          type: BottomNavigationBarType.fixed,
+                          items: [
+                            tabItem(Assets.home01, '', 0),
+                            tabItem(Assets.search, '', 1),
+                            tabItem(Assets.user01, '', 2),
+                          ],
+                        ),
+                      ),
+                    )),
+              ],
+            ),
+            Positioned(
+              bottom: -10,
+              left: 0,
+              right: 0,
+              child: Obx(() {
+                final ad = admobService.bottomBannerAd.value;
+                if (ad == null) return const SizedBox.shrink();
 
-            /// ///////////
-            // native bannerAd
-            // SizedBox(
-            //   height: AppDimens.height(14),
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     children: [
-            //       Container(
-            //         height: AppDimens.height(12),
-            //         decoration: BoxDecoration(
-            //           color: AppColor.graymodern800,
-            //           borderRadius: BorderRadius.circular(AppDimens.size(12)),
-            //         ),
-            //         child: Center(
-            //           child: Padding(
-            //             padding: EdgeInsets.symmetric(
-            //               horizontal: AppDimens.width(8),
-            //             ),
-            //             child: AppText("AD",
-            //                 style: Theme.of(context)
-            //                     .textTheme
-            //                     .textXXS
-            //                     .copyWith(color: AppColor.graymodern50)),
-            //           ),
-            //         ),
-            //       ),
-            //       AppSpacerH(value: AppDimens.width(4)),
-            //       AppText("인천 소상공인 반값택시 지원 사업",
-            //           style: Theme.of(context)
-            //               .textTheme
-            //               .textXS
-            //               .copyWith(color: AppColor.graymodern100)),
-            //     ],
-            //   ),
-            // ),
-            //////////////////
-            SizedBox(
-              height: AppDimens.height(13),
-              child: AdWidget(ad: admobService.bottomBannerAd.value!),
+                return Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: AppDimens.width(10)),
+                  child: Container(
+                    width: double.infinity,
+                    height: 32,
+                    alignment: Alignment.center,
+                    child: AdWidget(ad: ad),
+                  ),
+                );
+              }),
             ),
           ],
         ),
@@ -159,10 +140,16 @@ class _BasePageState extends State<BasePage> {
 
   BottomNavigationBarItem tabItem(String iconPath, String label, int index) {
     return BottomNavigationBarItem(
-      icon: AppSvg(iconPath,
+      icon: Container(
+        padding: EdgeInsets.only(bottom: 0), // 하단 패딩 제거
+        height: 24, // 아이콘 컨테이너 높이 지정
+        child: AppSvg(
+          iconPath,
           color: controller.currentIndex.value == index
               ? AppColor.graymodern100
-              : AppColor.graymodern600),
+              : AppColor.graymodern600,
+        ),
+      ),
       label: label,
     );
   }
