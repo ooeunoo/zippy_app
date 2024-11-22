@@ -13,7 +13,6 @@ import 'package:zippy/app/widgets/app_header.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
-import 'package:zippy/data/sources/user_bookmark.source.dart';
 import 'package:zippy/domain/model/user_bookmark_item.model.dart';
 import 'package:zippy/presentation/bookmark/page/widget/bookmark-action.dialog.dart';
 
@@ -277,7 +276,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
       return ListView.builder(
         itemCount: bookmarks.length,
-        padding: EdgeInsets.symmetric(horizontal: AppDimens.width(16)),
+        padding: EdgeInsets.symmetric(horizontal: AppDimens.width(8)),
         itemBuilder: (BuildContext context, int index) {
           final bookmark = bookmarks[index];
           final isLastItem = index == bookmarks.length - 1;

@@ -72,7 +72,7 @@ class UserBookmarkDatasourceImpl implements UserBookmarkDatasource {
           .from(USER_BOOKMARK_ITEMS)
           .select('*, articles(*)')
           .eq('user_id', userId)
-          .order('id', ascending: true);
+          .order('created_at', ascending: false);
 
       return Right(response
           .map((e) => UserBookmarkItemEntity.fromJson(e).toModel())
@@ -92,7 +92,7 @@ class UserBookmarkDatasourceImpl implements UserBookmarkDatasource {
           .select('*')
           .eq('user_id', userId)
           .eq('folder_id', folderId)
-          .order('id', ascending: true);
+          .order('created_at', ascending: false);
       return Right(response
           .map((e) => UserBookmarkItemEntity.fromJson(e).toModel())
           .toList());
