@@ -2,7 +2,7 @@ name: zippy
 description: "Zippy"
 publish_to: "none"
 
-version: 1.0.2+1
+version: 1.0.3+1
 
 environment:
   sdk: ">=3.3.3 <4.0.0"
@@ -26,7 +26,6 @@ dependencies:
   flutter_slidable: ^3.1.0
   share_plus: ^10.1.1
   app_tracking_transparency: ^2.0.4
-  flutter_naver_login: ^1.8.0
   random_avatar: ^0.0.8
   kakao_flutter_sdk_talk: ^1.9.1+2
   hive: ^2.2.3
@@ -42,9 +41,7 @@ dependencies:
   kakao_flutter_sdk: ^1.9.6
   flutter_markdown: ^0.7.4+1
   webview_flutter: ^4.8.0
-
-  # flutter_inappwebview: ^6.1.5
-  # onesignal_flutter: ^5.2.7
+  google_sign_in: ^6.2.2
 
 dev_dependencies:
   flutter_test:

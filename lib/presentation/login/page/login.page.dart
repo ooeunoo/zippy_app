@@ -82,6 +82,18 @@ class LoginPage extends GetView<LoginController> {
                   ),
                   AppSpacerV(value: AppDimens.height(12)),
                   // 구글 로그인 버튼
+                  AppButton(
+                    '구글로 시작하기',
+                    borderColor: AppColor.transparent,
+                    titleStyle: Theme.of(context).textTheme.textMD.copyWith(
+                          color: AppColor.black,
+                          fontWeight: AppFontWeight.semibold,
+                        ),
+                    onPressed: () => controller.onClickLoginInWithGoogle(),
+                    leadingIcon:
+                        AppSvg(Assets.google, size: AppDimens.size(18)),
+                    color: AppColor.white,
+                  ),
                 ],
               ),
               AppSpacerV(value: AppDimens.height(40)),

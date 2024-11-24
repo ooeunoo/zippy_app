@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:zippy/app/failures/failure.dart';
+import 'package:zippy/app/utils/env.dart';
 import 'package:zippy/data/entity/user.entity.dart' as userEntity;
 import 'package:zippy/data/providers/supabase.provider.dart';
 import 'package:zippy/data/sources/user.source.dart';
@@ -20,6 +24,7 @@ abstract class AuthDatasource {
   Future<Either<Failure, userModel.User>> loginInWithEmail(
       String email, String password);
   Future<Either<Failure, bool>> loginInWithKakao();
+  Future<Either<Failure, bool>> loginInWithGoogle();
 }
 
 class AuthDatasourceImpl implements AuthDatasource {
@@ -173,6 +178,53 @@ class AuthDatasourceImpl implements AuthDatasource {
     } catch (e, stackTrace) {
       print('Error3:$e');
       print('Error:$e \n stackTrace:$stackTrace');
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> loginInWithGoogle() async {
+    try {
+      final webClientId = ENV.GOOGLE_WEB_CLIENT_ID;
+      final iosClientId = ENV.GOOGLE_IOS_CLIENT_ID;
+
+      print('webClientId:$webClientId');
+      print('iosClientId:$iosClientId');
+
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId: Platform.isIOS ? iosClientId : null, // iOS일 때만 clientId 설정
+        serverClientId: webClientId,
+        scopes: [
+          'email',
+          'profile',
+        ],
+      );
+
+      // 기존 로그인 세션 클리어
+      await googleSignIn.signOut();
+
+      final googleUser = await googleSignIn.signIn();
+      if (googleUser == null) throw 'Google Sign In canceled';
+
+      final googleAuth = await googleUser.authentication;
+      final accessToken = googleAuth.accessToken;
+      final idToken = googleAuth.idToken;
+
+      if (accessToken == null) throw 'No Access Token found.';
+      if (idToken == null) throw 'No ID Token found.';
+
+      final response = await provider.client.auth.signInWithIdToken(
+        provider: supabase.OAuthProvider.google,
+        idToken: idToken,
+        accessToken: accessToken,
+        nonce: null, // Supabase가 자동으로 처리
+      );
+
+      if (response.user == null) throw 'No user data returned';
+
+      return const Right(true);
+    } catch (e, stackTrace) {
+      print('Google Sign In Error: $e \nStack trace: $stackTrace');
       return Left(ServerFailure());
     }
   }

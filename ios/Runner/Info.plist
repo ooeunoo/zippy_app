@@ -40,6 +40,14 @@
 					<string>kakao3cdec7fb8a31c80a2caf92178fcbad33</string>
 				</array>
 			</dict>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.googleusercontent.apps.369207296753-hif2aq3poaqeaspuiv5cvmheetk9tfvv</string>
+				</array>
+			</dict>
 		</array>
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
@@ -47,6 +55,8 @@
 		<string>ca-app-pub-2916187888854784~9588199149</string>
 		<key>GADNativeAdValidatorEnabled</key>
 		<false />
+		<key>GIDClientID</key>
+		<string>369207296753-hif2aq3poaqeaspuiv5cvmheetk9tfvv.apps.googleusercontent.com</string>
 		<key>ITSAppUsesNonExemptEncryption</key>
 		<false />
 		<key>LSRequiresIPhoneOS</key>
@@ -292,9 +302,10 @@
 			<string>kakao3cdec7fb8a31c80a2caf92178fcbad33</string>
 			<string>kakaokompassauth</string>
 			<string>kakaolink</string>
+			<string>googlechromes</string>
+			<string>googleusercontent</string>
 		</array>
 		<key>io.flutter.embedded_views_preview</key>
 		<true />
-
 	</dict>
 </plist>
