@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>940310796536-ege5fepeecqpdok0vtk94jhtbqkunnu9.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.940310796536-ege5fepeecqpdok0vtk94jhtbqkunnu9</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBjbPSaLrzZ4cA1hRMd1yu0yUlF-jBDNKE</string>
+	<key>GCM_SENDER_ID</key>
+	<string>940310796536</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.miro.zippy</string>
+	<key>PROJECT_ID</key>
+	<string>zippy-709cf</string>
+	<key>STORAGE_BUCKET</key>
+	<string>zippy-709cf.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:940310796536:ios:5c831b0ef1d5f9bc9bc30d</string>
+</dict>
+</plist>

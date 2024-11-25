@@ -58,6 +58,7 @@ class _BoardPageState extends State<BoardPage> {
         articles: _controller.articles,
         handleJumpToArticle: _handleJumpToArticle,
         handleFetchArticles: _controller.onHandleFetchRecommendedArticles,
+        handleClickBookmark: _controller.onHandleClickBookmark,
       ),
       body: _buildPageContent(),
     );

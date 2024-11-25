@@ -40,6 +40,7 @@ class AdmobService extends GetxService {
   final cardAd = Rxn<NativeAd>();
   final bottomBannerAd = Rxn<NativeAd>();
   final isAdLoaded = false.obs;
+  final isBottomBannerAdLoaded = false.obs;
 
   @override
   void onInit() {
@@ -92,16 +93,28 @@ class AdmobService extends GetxService {
   }
 
   void loadBottomBannerNativeAd() {
+    // Dispose existing ad if any
+    bottomBannerAd.value?.dispose();
+    bottomBannerAd.value = null;
+    isBottomBannerAdLoaded.value = false;
+
     _loadNativeAd(
       type: NativeAdType.bottomBanner,
       adUnitId: bottomBannerAdUnitId,
-      onAdLoaded: (ad) => bottomBannerAd.value = ad,
+      onAdLoaded: (ad) async {
+        // Ensure the ad is loaded before setting values
+        bottomBannerAd.value = ad;
+        // Set loaded flag after ad is available
+        isBottomBannerAdLoaded.value = true;
+      },
       onAdFailedToLoad: () {
+        bottomBannerAd.value?.dispose();
         bottomBannerAd.value = null;
+        isBottomBannerAdLoaded.value = false;
         _retryLoadBottomBanner();
       },
       onAdClosed: () {
-        isAdLoaded.value = false;
+        isBottomBannerAdLoaded.value = false;
         loadBottomBannerNativeAd();
       },
     );
@@ -115,10 +128,6 @@ class AdmobService extends GetxService {
     Function()? onAdClosed,
     NativeAdOptions? nativeAdOptions,
   }) {
-    final currentAd =
-        type == NativeAdType.card ? cardAd.value : bottomBannerAd.value;
-    currentAd?.dispose();
-
     try {
       final ad = NativeAd(
         adUnitId: adUnitId,
@@ -129,6 +138,7 @@ class AdmobService extends GetxService {
             onAdLoaded(ad as NativeAd);
           },
           onAdFailedToLoad: (ad, error) {
+            print('Failed to load ${type.name} ad: $error');
             ad.dispose();
             isAdLoaded.value = false;
             onAdFailedToLoad();
@@ -139,9 +149,11 @@ class AdmobService extends GetxService {
         nativeAdOptions: nativeAdOptions,
       );
 
+      // Start loading the ad
       ad.load();
     } catch (e, stackTrace) {
-      print('e:$e \n stackTrace:$stackTrace');
+      print('Error loading ${type.name} ad: $e\nStack trace: $stackTrace');
+      onAdFailedToLoad();
     }
   }
 

@@ -117,7 +117,7 @@ class ProfilePage extends GetView<ProfileController> {
           icon: Assets.bookmarkLine,
           title: '저장한 콘텐츠',
           onTap: () {
-            Get.toNamed(Routes.bookmark);
+            controller.onClickBookmark();
           },
         ),
       ],

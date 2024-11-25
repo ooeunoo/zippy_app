@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:zippy/app/routes/app_pages.dart';
@@ -68,6 +70,8 @@ class LoginPage extends GetView<LoginController> {
               // 로그인 버튼들
               Column(
                 children: [
+                  // 애플 로그인 버튼
+
                   // 카카오 로그인 버튼
                   AppButton(
                     '카카오로 시작하기',
@@ -94,6 +98,23 @@ class LoginPage extends GetView<LoginController> {
                         AppSvg(Assets.google, size: AppDimens.size(18)),
                     color: AppColor.white,
                   ),
+                  AppSpacerV(value: AppDimens.height(12)),
+                  if (Platform.isIOS)
+                    AppButton(
+                      'Apple로 시작하기',
+                      borderColor: AppColor.transparent,
+                      titleStyle: Theme.of(context).textTheme.textMD.copyWith(
+                            color: AppColor.white,
+                            fontWeight: AppFontWeight.semibold,
+                          ),
+                      onPressed: () => controller.onClickLoginInWithApple(),
+                      leadingIcon: AppSvg(
+                        Assets.apple,
+                        size: AppDimens.size(18),
+                        color: AppColor.white,
+                      ),
+                      color: AppColor.black,
+                    ),
                 ],
               ),
               AppSpacerV(value: AppDimens.height(40)),

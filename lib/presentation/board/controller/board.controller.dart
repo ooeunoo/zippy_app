@@ -1,6 +1,8 @@
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/app/services/admob.service.dart';
 import 'package:zippy/app/services/auth.service.dart';
+import 'package:zippy/app/widgets/app_dialog.dart';
 import 'package:zippy/domain/model/ad_article.model.dart';
 import 'package:zippy/domain/model/article.model.dart';
 import 'package:get/get.dart';
@@ -56,6 +58,14 @@ class BoardController extends GetxController {
   Future<void> onHandleClickArticle(Article article) async {
     if (article.isAd) return;
     articleService.onHandleGoToArticleView(article);
+  }
+
+  Future<void> onHandleClickBookmark() async {
+    if (authService.isLoggedIn.value) {
+      Get.toNamed(Routes.bookmark);
+    } else {
+      showLoginDialog();
+    }
   }
 
   @override

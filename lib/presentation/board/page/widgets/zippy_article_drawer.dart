@@ -16,13 +16,15 @@ class ZippyArticleDrawer extends StatelessWidget {
   final List<Article> articles;
   final Function(int) handleJumpToArticle;
   final Function() handleFetchArticles;
+  final Function() handleClickBookmark;
 
   const ZippyArticleDrawer({
-    Key? key,
+    super.key,
     required this.articles,
     required this.handleJumpToArticle,
     required this.handleFetchArticles,
-  }) : super(key: key);
+    required this.handleClickBookmark,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -133,8 +135,7 @@ class ZippyArticleDrawer extends StatelessWidget {
             label: '저장목록',
             onTap: () {
               Navigator.pop(context);
-              Get.toNamed(Routes.bookmark);
-              // TODO: 북마크 페이지로 이동
+              handleClickBookmark();
             },
           ),
           Container(

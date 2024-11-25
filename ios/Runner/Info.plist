@@ -45,7 +45,7 @@
 				<string>Editor</string>
 				<key>CFBundleURLSchemes</key>
 				<array>
-					<string>com.googleusercontent.apps.369207296753-hif2aq3poaqeaspuiv5cvmheetk9tfvv</string>
+					<string>com.googleusercontent.apps.940310796536-ege5fepeecqpdok0vtk94jhtbqkunnu9</string>
 				</array>
 			</dict>
 		</array>
@@ -56,7 +56,7 @@
 		<key>GADNativeAdValidatorEnabled</key>
 		<false />
 		<key>GIDClientID</key>
-		<string>369207296753-hif2aq3poaqeaspuiv5cvmheetk9tfvv.apps.googleusercontent.com</string>
+		<string>940310796536-ege5fepeecqpdok0vtk94jhtbqkunnu9.apps.googleusercontent.com</string>
 		<key>ITSAppUsesNonExemptEncryption</key>
 		<false />
 		<key>LSRequiresIPhoneOS</key>

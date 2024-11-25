@@ -1,19 +1,21 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
-import 'package:url_launcher/url_launcher_string.dart';
 import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/app/utils/env.dart';
 import 'package:zippy/data/entity/user.entity.dart' as userEntity;
 import 'package:zippy/data/providers/supabase.provider.dart';
 import 'package:zippy/data/sources/user.source.dart';
 import 'package:zippy/domain/model/user.model.dart' as userModel;
+import 'package:crypto/crypto.dart';
 
 abstract class AuthDatasource {
   Future<Either<Failure, userModel.User?>> getCurrentUser();
@@ -25,6 +27,7 @@ abstract class AuthDatasource {
       String email, String password);
   Future<Either<Failure, bool>> loginInWithKakao();
   Future<Either<Failure, bool>> loginInWithGoogle();
+  Future<Either<Failure, bool>> loginInWithApple();
 }
 
 class AuthDatasourceImpl implements AuthDatasource {
@@ -224,7 +227,38 @@ class AuthDatasourceImpl implements AuthDatasource {
 
       return const Right(true);
     } catch (e, stackTrace) {
-      print('Google Sign In Error: $e \nStack trace: $stackTrace');
+      print('Error:$e \n stackTrace:$stackTrace');
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> loginInWithApple() async {
+    try {
+      final rawNonce = provider.client.auth.generateRawNonce();
+      final hashedNonce = sha256.convert(utf8.encode(rawNonce)).toString();
+
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        nonce: hashedNonce,
+      );
+
+      final idToken = credential.identityToken;
+      if (idToken == null) {
+        return Left(ServerFailure());
+      }
+
+      await provider.client.auth.signInWithIdToken(
+        provider: supabase.OAuthProvider.apple,
+        idToken: idToken,
+        nonce: rawNonce,
+      );
+      return const Right(true);
+    } catch (e, stackTrace) {
+      print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
   }

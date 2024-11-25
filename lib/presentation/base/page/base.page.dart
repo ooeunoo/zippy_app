@@ -29,7 +29,16 @@ class _BasePageState extends State<BasePage> {
   @override
   void initState() {
     super.initState();
-    admobService.loadBottomBannerNativeAd();
+    // Load ad after frame is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      admobService.loadBottomBannerNativeAd();
+    });
+  }
+
+  @override
+  void dispose() {
+    admobService.bottomBannerAd.value?.dispose();
+    super.dispose();
   }
 
   @override
@@ -81,21 +90,7 @@ class _BasePageState extends State<BasePage> {
               bottom: -12,
               left: 0,
               right: 0,
-              child: Obx(() {
-                final ad = admobService.bottomBannerAd.value;
-                if (ad == null) return const SizedBox.shrink();
-
-                return Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: AppDimens.width(10)),
-                  child: Container(
-                    width: double.infinity,
-                    height: 32,
-                    alignment: Alignment.center,
-                    child: AdWidget(ad: ad),
-                  ),
-                );
-              }),
+              child: _buildAdWidget(),
             ),
           ],
         ),
@@ -158,5 +153,34 @@ class _BasePageState extends State<BasePage> {
       ),
       label: label,
     );
+  }
+
+  Widget _buildAdWidget() {
+    return Obx(() {
+      final ad = admobService.bottomBannerAd.value;
+      final isLoaded = admobService.isBottomBannerAdLoaded.value;
+
+      if (ad == null || !isLoaded) {
+        return const SizedBox.shrink();
+      }
+
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: AppDimens.width(10)),
+        child: SizedBox(
+          width: double.infinity,
+          height: 32,
+          child: Builder(
+            builder: (context) {
+              try {
+                return AdWidget(ad: ad);
+              } catch (e) {
+                print('Error building AdWidget: $e');
+                return const SizedBox.shrink();
+              }
+            },
+          ),
+        ),
+      );
+    });
   }
 }

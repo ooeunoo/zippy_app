@@ -18,6 +18,14 @@ class ProfileController extends GetxController {
     }
   }
 
+  void onClickBookmark() {
+    if (authService.isLoggedIn.value) {
+      Get.toNamed(Routes.bookmark);
+    } else {
+      showLoginDialog();
+    }
+  }
+
   //////////////////////////////////////////////////////////////////
   /// private methods
   //////////////////////////////////////////////////////////////////
