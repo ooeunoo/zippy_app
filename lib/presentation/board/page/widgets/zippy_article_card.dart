@@ -119,8 +119,10 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(
-          child: _buildPlatformAndTime(context),
+        Obx(
+          () => Expanded(
+            child: _buildPlatformAndTime(context),
+          ),
         ),
         _buildActionButtons(context),
       ],

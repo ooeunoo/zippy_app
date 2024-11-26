@@ -61,7 +61,7 @@ class ArticleService extends GetxService {
   /// Public Methods
   ///*********************************
   Source? getSourceById(int sourceId) {
-    Source? source = sources[sourceId];
+    Source? source = sources.value[sourceId];
 
     if (source != null) {
       return source;
@@ -262,7 +262,6 @@ class ArticleService extends GetxService {
 
   Future<void> _setupSources() async {
     final result = await getSources.execute(withJoin: true);
-
     result.fold((failure) {
       sources.value = {};
     }, (data) {
@@ -270,6 +269,7 @@ class ArticleService extends GetxService {
       for (var source in data) {
         map = source.toIdAssign(map);
       }
+      print(map[51]);
       sources.assignAll(map);
     });
   }

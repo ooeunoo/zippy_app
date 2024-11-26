@@ -135,7 +135,12 @@ class _BookmarkPageState extends State<BookmarkPage> {
                     context,
                     folderId,
                     name,
-                    bookmarkService.onHandleDeleteUserBookmarkFolder,
+                    (int id) async {
+                      await bookmarkService.onHandleDeleteUserBookmarkFolder(id);
+                      setState(() {
+                        selectedFolderId = ALL_FOLDER_ID;
+                      });
+                    },
                   ),
           child: Container(
             padding: EdgeInsets.symmetric(

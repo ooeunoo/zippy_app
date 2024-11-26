@@ -1,4 +1,4 @@
 enum PlatformType {
-  Community,
+  Youtube,
   News,
 }

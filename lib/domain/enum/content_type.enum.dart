@@ -1,4 +1,3 @@
-
 enum ContentType {
   Politics("정치", "정치 관련 뉴스와 분석", "assets/images/politics.png"),
   Economy("경제", "경제, 금융, 시장 동향", "assets/images/economy.png"),
@@ -17,6 +16,7 @@ enum ContentType {
   Crime("범죄", "사건, 사고, 법률 소식", "assets/images/crime.png"),
   Travel("여행", "여행지와 관광 정보", "assets/images/travel.png"),
   RealEstate("부동산", "부동산 시장과 주거 정보", "assets/images/realestate.png"),
+  All("전체", "전체 카테고리", "assets/images/all.png"),
   ;
 
   final String title;
