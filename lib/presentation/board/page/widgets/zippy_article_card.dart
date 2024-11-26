@@ -77,7 +77,7 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
     Source? source = articleService.getSourceById(widget.article.sourceId);
 
     return Positioned(
-      top: AppDimens.height(70),
+      top: AppDimens.height(60),
       right: AppDimens.width(20),
       child: Container(
         padding: EdgeInsets.symmetric(
