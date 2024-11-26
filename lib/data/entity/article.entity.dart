@@ -156,7 +156,6 @@ class SectionEntity {
   });
 
   factory SectionEntity.fromJson(Map<String, dynamic> json) {
-    print(json);
     return SectionEntity(
       title: json['title'],
       content: List<String>.from(json['content']),
