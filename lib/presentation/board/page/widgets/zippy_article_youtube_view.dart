@@ -18,29 +18,28 @@ import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/article.model.dart';
 
-class ZippyArticleView extends StatefulWidget {
+class ZippyArticleYoutubeView extends StatefulWidget {
   final Article article;
 
-  const ZippyArticleView({super.key, required this.article});
+  const ZippyArticleYoutubeView({super.key, required this.article});
 
   @override
-  State<ZippyArticleView> createState() => _ZippyArticleViewState();
+  State<ZippyArticleYoutubeView> createState() =>
+      _ZippyArticleYoutubeViewState();
 }
 
-class _ZippyArticleViewState extends State<ZippyArticleView> {
+class _ZippyArticleYoutubeViewState extends State<ZippyArticleYoutubeView> {
   final articleService = Get.find<ArticleService>();
   bool isKeyPointsExpanded = false;
   final scrollController = ScrollController();
   final PageController _pageController = PageController();
   int _currentPage = 0;
   final Map<String, GlobalKey> sectionKeys = {};
-  // 각 섹션의 확장 상태를 추적하기 위한 맵
   final Map<String, bool> expandedSections = {};
 
   @override
   void initState() {
     super.initState();
-    // 각 섹션에 대한 키 생성 및 초기 확장 상태 설정
     for (var section in widget.article.sections) {
       sectionKeys[section.title] = GlobalKey();
       expandedSections[section.title] = false;
@@ -52,32 +51,6 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
     _pageController.dispose();
     scrollController.dispose();
     super.dispose();
-  }
-
-  void _scrollToSection(GlobalKey key) {
-    final context = key.currentContext;
-    if (context != null) {
-      final RenderBox box = context.findRenderObject() as RenderBox;
-      final offset = box.localToGlobal(Offset.zero);
-
-      // 현재 스크롤 뷰의 위치 가져오기
-      final scrollable = Scrollable.of(context);
-
-      // 헤더 높이와 약간의 여백을 고려한 타겟 위치 계산
-      final targetPosition = max(
-          0,
-          offset.dy -
-              MediaQuery.of(context).padding.top -
-              kToolbarHeight -
-              AppDimens.height(16));
-
-      // 부드럽게 스크롤
-      scrollable.position.animateTo(
-        targetPosition.toDouble(),
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
   }
 
   @override
@@ -100,6 +73,7 @@ class _ZippyArticleViewState extends State<ZippyArticleView> {
                   AppSpacerV(value: AppDimens.height(8)),
                   _buildMetadataRow(context),
                   AppSpacerV(value: AppDimens.height(22)),
+                  
                   // Key Points Card
                   _buildKeyPointsCard(context),
                   AppSpacerV(value: AppDimens.height(24)),

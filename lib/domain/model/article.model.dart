@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:zippy/domain/enum/interaction_type.enum.dart';
 import 'package:zippy/domain/model/article_metadata.model.dart';
 
 @immutable
@@ -123,21 +122,50 @@ class Attachment {
 class Section {
   final String title;
   final List<String> content;
+  final Timestamp? timestamp;
 
   Section({
     required this.title,
     required this.content,
+    this.timestamp,
   });
 
   static Section fromJson(Map<String, dynamic> json) {
     return Section(
       title: json['title'],
       content: json['content'],
+      timestamp: json['timestamp'] != null
+          ? Timestamp.fromJson(json['timestamp'])
+          : null,
     );
   }
 
   Map<String, dynamic> toJson() => {
         'title': title,
         'content': content,
+        'timestamp': timestamp?.toJson(),
+      };
+}
+
+// youtube 일경우만 존재
+class Timestamp {
+  final String end;
+  final String start;
+
+  Timestamp({
+    required this.end,
+    required this.start,
+  });
+
+  static Timestamp fromJson(Map<String, dynamic> json) {
+    return Timestamp(
+      end: json['end'],
+      start: json['start'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'end': end,
+        'start': start,
       };
 }

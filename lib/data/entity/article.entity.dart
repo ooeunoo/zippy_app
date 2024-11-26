@@ -149,16 +149,21 @@ class AttachmentEntity {
 class SectionEntity {
   final String title;
   final List<String> content;
+  final TimestampEntity? timestamp;
 
   SectionEntity({
     required this.title,
     required this.content,
+    this.timestamp,
   });
 
   factory SectionEntity.fromJson(Map<String, dynamic> json) {
     return SectionEntity(
       title: json['title'],
       content: List<String>.from(json['content']),
+      timestamp: json['timestamp'] != null
+          ? TimestampEntity.fromJson(json['timestamp'])
+          : null,
     );
   }
 
@@ -166,6 +171,31 @@ class SectionEntity {
     return Section(
       title: title,
       content: content,
+      timestamp: timestamp?.toModel(),
+    );
+  }
+}
+
+class TimestampEntity {
+  final String end;
+  final String start;
+
+  TimestampEntity({
+    required this.end,
+    required this.start,
+  });
+
+  factory TimestampEntity.fromJson(Map<String, dynamic> json) {
+    return TimestampEntity(
+      end: json['end'],
+      start: json['start'],
+    );
+  }
+
+  Timestamp toModel() {
+    return Timestamp(
+      end: end,
+      start: start,
     );
   }
 }

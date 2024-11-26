@@ -10,6 +10,7 @@ import 'package:zippy/app/widgets/app_dialog.dart';
 import 'package:zippy/data/providers/supabase.provider.dart';
 import 'package:zippy/domain/enum/article_view_type.enum.dart';
 import 'package:zippy/domain/enum/interaction_type.enum.dart';
+import 'package:zippy/domain/enum/platform_type.enum.dart';
 import 'package:zippy/domain/model/article.model.dart';
 import 'package:zippy/domain/model/article_comment.model.dart';
 import 'package:zippy/domain/model/params/create_article_comment.params.dart';
@@ -30,8 +31,10 @@ import 'package:zippy/domain/usecases/get_sources.usecase.dart';
 import 'package:zippy/domain/usecases/update_user_interaction.usecase.dart';
 import 'package:zippy/presentation/board/page/widgets/bookmark_folder_modal.dart';
 import 'package:zippy/presentation/board/page/widgets/bottom_support_menu.dart';
-import 'package:zippy/presentation/board/page/widgets/zippy_article_view.dart';
+import 'package:zippy/presentation/board/page/widgets/zippy_article_news_view.dart';
 import 'dart:async';
+
+import 'package:zippy/presentation/board/page/widgets/zippy_article_youtube_view.dart';
 
 class ArticleService extends GetxService {
   final provider = Get.find<SupabaseProvider>();
@@ -165,10 +168,15 @@ class ArticleService extends GetxService {
     // final handleUpdateInteraction =
     //     await _createViewInteractionCallback(article);
 
+    final source = getSourceById(article.sourceId);
+    final type = source!.platform!.type;
+
+    final view = type == PlatformType.News
+        ? ZippyArticleNewsView(article: article)
+        : ZippyArticleYoutubeView(article: article);
+
     Get.to(
-      () => ZippyArticleView(
-        article: article,
-      ),
+      () => view,
       transition: Transition.rightToLeftWithFade,
     );
   }
