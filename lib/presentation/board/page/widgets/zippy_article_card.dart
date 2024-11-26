@@ -49,7 +49,9 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
           fit: StackFit.expand,
           children: [
             _buildMainImage(),
-            _buildContentTypeLabel(context),
+            Obx(
+              () => _buildContentTypeLabel(context),
+            ),
           ],
         ),
       ),
@@ -78,9 +80,8 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
       top: AppDimens.height(70),
       right: AppDimens.width(20),
       child: Container(
-        width: AppDimens.width(50),
         padding: EdgeInsets.symmetric(
-          horizontal: AppDimens.width(4),
+          horizontal: AppDimens.width(8),
           vertical: AppDimens.height(4),
         ),
         decoration: BoxDecoration(

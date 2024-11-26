@@ -73,6 +73,7 @@ class ArticleService extends GetxService {
   Future<List<Article>> onHandleFetchRecommendedArticles(
       GetRecommendedArticlesParams params) async {
     final result = await getRecommendedArticles.execute(params);
+
     return result.fold(
       (failure) {
         return [];
@@ -269,7 +270,6 @@ class ArticleService extends GetxService {
       for (var source in data) {
         map = source.toIdAssign(map);
       }
-      print(map[51]);
       sources.assignAll(map);
     });
   }

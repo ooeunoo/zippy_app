@@ -37,15 +37,15 @@ class ArticleDatasourceImpl implements ArticleDatasource {
   Future<Either<Failure, List<Article>>> getRecommendedArticles(
       GetRecommendedArticlesParams params) async {
     try {
+      // print(params.toJson());
       var response = await provider.client
           .rpc(RPC.getRecommendedArticles.function, params: params.toJson());
-
       List<Article> result = [];
       for (var r in (response as List)) {
         try {
           result.add(ArticleEntity.fromJson(r).toModel());
-        } catch (e) {
-          print('Error parsing article: ${r['id']}');
+        } catch (e, stackTrace) {
+          print('Error:$e \n stackTrace:$stackTrace');
           continue;
         }
       }

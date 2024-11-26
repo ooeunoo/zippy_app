@@ -25,14 +25,19 @@ class BoardController extends GetxController {
   Future<void> onHandleFetchRecommendedArticles() async {
     try {
       isLoadingContents.value = true;
+
       final fetchedArticles =
           await articleService.onHandleFetchRecommendedArticles(
         GetRecommendedArticlesParams(
           userId: authService.currentUser.value?.id,
+          excludeViewed: false,
+          limit: 100,
         ),
       );
 
-      articles.assignAll(fetchedArticles);
+      if (fetchedArticles.isNotEmpty) {
+        articles.assignAll(fetchedArticles);
+      }
     } catch (e) {
       error.value = e.toString();
     } finally {
@@ -75,6 +80,11 @@ class BoardController extends GetxController {
   }
 
   Future<void> _initialize() async {
-    await onHandleFetchRecommendedArticles();
+    // 세션 초기화 상태 감지
+    ever(authService.isInitializedSession, (bool initialized) {
+      if (initialized) {
+        onHandleFetchRecommendedArticles();
+      }
+    });
   }
 }

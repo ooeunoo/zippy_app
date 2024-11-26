@@ -6,7 +6,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/utils/env.dart';
 import 'package:zippy/app/utils/random.dart';
 
-const int PRELOAD_CARD_AD_INDEX = 5;
+const int PRELOAD_CARD_AD_INDEX = 3;
 
 enum NativeAdType {
   card('cardAd'),
@@ -71,7 +71,7 @@ class AdmobService extends GetxService {
   }
 
   void resetCardAdContent() {
-    cardAdCredits.value = randomInt(8, 10);
+    cardAdCredits.value = randomInt(5, 6);
     cardAd.value = null;
   }
 
