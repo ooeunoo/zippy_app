@@ -164,6 +164,7 @@ class _BasePageState extends State<BasePage> {
         return const SizedBox.shrink();
       }
 
+      // 각 AdWidget 인스턴스에 유니크한 키를 부여
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: AppDimens.width(10)),
         child: SizedBox(
@@ -172,7 +173,9 @@ class _BasePageState extends State<BasePage> {
           child: Builder(
             builder: (context) {
               try {
-                return AdWidget(ad: ad);
+                return AdWidget(
+                    key: ValueKey('ad_widget_${ad.hashCode}'), // 유니크한 키 추가
+                    ad: ad);
               } catch (e) {
                 print('Error building AdWidget: $e');
                 return const SizedBox.shrink();
