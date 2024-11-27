@@ -7,6 +7,7 @@ import 'package:zippy/app/translation/translation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:zippy/zippy_version.dart';
 
 class ZippyApp extends StatefulWidget {
   const ZippyApp({super.key});
@@ -38,6 +39,8 @@ class _ZippyAppState extends State<ZippyApp> {
             translations: ZippyTranslations(),
             locale: Get.deviceLocale,
             fallbackLocale: const Locale('ko', 'KR'),
+            builder: (context, child) =>
+                ZippyVersion(child: child ?? const SizedBox()),
           );
         });
   }

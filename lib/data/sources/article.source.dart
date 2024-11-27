@@ -43,8 +43,12 @@ class ArticleDatasourceImpl implements ArticleDatasource {
       List<Article> result = [];
       for (var r in (response as List)) {
         try {
+          if (r['link'].startsWith('https://www.youtube.com/')) {
+            continue;
+          }
           result.add(ArticleEntity.fromJson(r).toModel());
         } catch (e, stackTrace) {
+          print(r['id']);
           // TODO: 올바르지않은 형태의 데이터가 들어있는경우, 로깅 필요!!
           print('Error:$e \n stackTrace:$stackTrace');
           continue;

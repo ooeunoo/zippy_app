@@ -23,6 +23,19 @@ showLoginDialog() {
   );
 }
 
+/**
+ * 업데이트가 필요한 경우 사용하는 다이얼로그
+ */
+showVersionUpdateDialog(String version, String releaseNotes, VoidCallback onConfirm) {
+  showAppDialog(
+    "새로운 업데이트가 있습니다",
+    message: "새 버전: $version\n$releaseNotes",
+    confirmText: "업데이트",
+    onlyConfirm: true,
+    onConfirm: onConfirm,
+  );
+}
+
 showAppDialog(
   String title, {
   String? message,
