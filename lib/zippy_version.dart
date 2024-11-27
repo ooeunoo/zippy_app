@@ -19,8 +19,6 @@ class _ZippyVersionState extends State<ZippyVersion> {
   @override
   void initState() {
     super.initState();
-    print('ZippyVersion initState');
-
     // 앱이 완전히 초기화된 후에 버전 체크 실행
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Timer(const Duration(seconds: 2), () {
@@ -33,12 +31,8 @@ class _ZippyVersionState extends State<ZippyVersion> {
     try {
       final packageInfo = await PackageInfo.fromPlatform();
       final currentVersion = packageInfo.version;
-      print('currentVersion: $currentVersion');
       final latestVersionInfo = await _getLatestVersionFromServer();
-      print('latestVersionInfo: $latestVersionInfo');
       if (_isUpdateRequired(currentVersion, latestVersionInfo)) {
-        // 컨텍스트가 유효한지 확인 후 대화 상자 표시
-        print("showUpdateDialog");
         if (mounted) {
           _showUpdateDialog(latestVersionInfo);
         }
@@ -83,25 +77,20 @@ class _ZippyVersionState extends State<ZippyVersion> {
   }
 
   void _showUpdateDialog(Map<String, dynamic> latestVersionInfo) {
-    print("mounted: ${mounted}");
     if (!mounted) return;
 
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    // print("here");
     showVersionUpdateDialog(
       latestVersionInfo['version'],
       latestVersionInfo['release_notes'],
       () {
         _launchAppStore();
         if (latestVersionInfo['is_mandatory']) {
-          // 필수 업데이트인 경우 앱 종료
           Timer(const Duration(seconds: 1), () {
             exit(0);
           });
         }
       },
     );
-    // });
   }
 
   void _launchAppStore() async {
