@@ -126,3 +126,21 @@ flutter:
           weight: 800
         - asset: assets/fonts/Pretendard-Black.ttf
           weight: 900
+    - family: Suit
+      fonts:
+        - asset: assets/fonts/Suit-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/Suit-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/Suit-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Suit-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Suit-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Suit-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Suit-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Suit-ExtraBold.ttf
+          weight: 800

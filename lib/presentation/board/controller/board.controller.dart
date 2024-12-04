@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/app/services/admob.service.dart';
@@ -21,7 +23,6 @@ class BoardController extends GetxController {
   final isLoadingContents = true.obs;
   final isLoadingUserSubscription = true.obs;
   final error = Rxn<String>();
-
   Future<void> onHandleFetchRecommendedArticles() async {
     try {
       isLoadingContents.value = true;
@@ -37,6 +38,14 @@ class BoardController extends GetxController {
 
       if (fetchedArticles.isNotEmpty) {
         articles.assignAll(fetchedArticles);
+
+        // 이미지 미리 캐시
+        for (var article in fetchedArticles) {
+          if (article.images.isNotEmpty) {
+            precacheImage(
+                CachedNetworkImageProvider(article.images[0]), Get.context!);
+          }
+        }
       }
     } catch (e) {
       error.value = e.toString();

@@ -46,13 +46,15 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
   }
 
   PreferredSizeWidget appBar(BuildContext context) {
-    return AppHeader(
-      backgroundColor: AppColor.transparent,
-      automaticallyImplyLeading: true,
-      title: AppText(
-        "나의 채널 관리하기",
-        style: Theme.of(context).textTheme.textXL.copyWith(
-            color: AppColor.gray100, fontWeight: AppFontWeight.medium),
+    return AppHeaderWrap(
+      child: AppHeader(
+        backgroundColor: AppColor.transparent,
+        automaticallyImplyLeading: true,
+        title: AppText(
+          "나의 채널 관리하기",
+          style: Theme.of(context).textTheme.textXL.copyWith(
+              color: AppColor.gray100, fontWeight: AppFontWeight.medium),
+        ),
       ),
     );
   }

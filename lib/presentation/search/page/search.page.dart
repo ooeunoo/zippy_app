@@ -78,7 +78,9 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   PreferredSizeWidget _buildAppBar() {
-    return _showSearchBar ? _buildSearchAppBar() : _buildRankAppBar();
+    return AppHeaderWrap(
+      child: _showSearchBar ? _buildSearchAppBar() : _buildRankAppBar(),
+    );
   }
 
   AppBar _buildSearchAppBar() {

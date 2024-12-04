@@ -23,38 +23,41 @@ class LoginPage extends GetView<LoginController> {
     final hasPreviousRoute = Get.routing.route?.isFirst == false;
 
     return Scaffold(
-      appBar: AppHeader(
-        backgroundColor: AppColor.transparent,
-        leading: hasPreviousRoute
-            ? IconButton(
-                padding: EdgeInsets.only(left: AppDimens.size(20)),
-                icon: const Icon(Icons.close, color: AppColor.gray50),
-                onPressed: () => Get.back(),
-                splashRadius: 24,
-                highlightColor: Colors.transparent,
-                splashColor: Colors.transparent,
-              )
-            : null,
-        automaticallyImplyLeading: hasPreviousRoute,
-        title: const SizedBox.shrink(),
-        actions: hasPreviousRoute
-            ? null
-            : [
-                Padding(
-                  padding: const EdgeInsets.only(right: 12.0),
-                  child: AppButton(
-                    '둘러보기',
-                    width: AppDimens.width(70),
-                    color: AppColor.transparent,
-                    borderColor: AppColor.transparent,
-                    titleStyle: Theme.of(context).textTheme.display2XL.copyWith(
-                          color: AppColor.white,
-                          fontWeight: AppFontWeight.semibold,
-                        ),
-                    onPressed: () => Get.offAllNamed(Routes.base),
+      appBar: AppHeaderWrap(
+        child: AppHeader(
+          backgroundColor: AppColor.transparent,
+          leading: hasPreviousRoute
+              ? IconButton(
+                  padding: EdgeInsets.only(left: AppDimens.size(20)),
+                  icon: const Icon(Icons.close, color: AppColor.gray50),
+                  onPressed: () => Get.back(),
+                  splashRadius: 24,
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                )
+              : null,
+          automaticallyImplyLeading: hasPreviousRoute,
+          title: const SizedBox.shrink(),
+          actions: hasPreviousRoute
+              ? null
+              : [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 12.0),
+                    child: AppButton(
+                      '둘러보기',
+                      width: AppDimens.width(70),
+                      color: AppColor.transparent,
+                      borderColor: AppColor.transparent,
+                      titleStyle:
+                          Theme.of(context).textTheme.display2XL.copyWith(
+                                color: AppColor.white,
+                                fontWeight: AppFontWeight.semibold,
+                              ),
+                      onPressed: () => Get.offAllNamed(Routes.base),
+                    ),
                   ),
-                ),
-              ],
+                ],
+        ),
       ),
       body: SafeArea(
         child: Padding(

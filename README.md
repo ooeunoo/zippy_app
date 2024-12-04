@@ -1,17 +1,128 @@
-# zippy
+서비스 정의 및 타겟
 
-A new Flutter project.
+서비스 목적: 짧은 영상으로 뉴스를 전달하여 Z세대와 밀레니얼 세대의 뉴스 소비 습관에 맞춘 서비스
+주요 타겟층: 15-35세의 모바일 네이티브 세대
+핵심 가치: 신속성, 신뢰성, 참여도
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+핵심 기능
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+수직 스와이프로 다음 뉴스로 이동
+카테고리별 뉴스 분류 (정치, 경제, 사회, 연예 등)
+댓글 및 토론 기능
+공유 기능
+관심사 기반 맞춤 추천
+팩트체크 기능
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# zippy
+
+콘텐츠 전략
+
+
+뉴스 길이: 30초-1분
+자막 필수 포함
+주요 키워드 하이라이트
+인포그래픽 활용
+전문가 인터뷰 클립
+
+
+UI/UX 디자인 방향
+메인 화면부터 상세히 디자인해보겠습니다:
+뉴스 쇼츠 앱 메인 화면Click to open component
+UI/UX 설명
+
+
+메인 화면 구성:
+
+전체 화면 비디오 재생
+상단: 카테고리 태그, 북마크 버튼
+하단: 뉴스 제목, 설명, 상호작용 버튼(좋아요, 댓글, 공유)
+우측: 스와이프 안내 아이콘
+그라데이션 오버레이로 텍스트 가독성 향상
+
+
+
+
+추가 화면 기획:
+
+프로필/설정 화면:
+
+관심 카테고리 설정
+알림 설정
+시청 기록
+저장된 뉴스
+데이터 사용 설정
+
+검색/탐색 화면:
+
+실시간 인기 키워드
+카테고리별 브라우징
+검색어 자동완성
+최근 검색어 기록
+
+
+기술적 고려사항
+
+
+동영상 최적화 (적응형 스트리밍)
+오프라인 재생 지원
+캐싱 전략
+데이터 사용량 최적화
+배터리 소모 최적화
+
+
+차별화 전략
+
+
+AI 기반 개인화 추천
+전문가 팩트체크 배지
+관련 뉴스 연결
+인터랙티브 투표/퀴즈
+지역 기반 뉴스 필터링
+
+
+수익화 모델
+
+
+프리미엄 구독 (광고 제거, 추가 기능)
+맞춤형 네이티브 광고
+협찬 콘텐츠
+제휴 언론사 프로그램
+
+
+###
+
+홈 (Home)
+
+
+메인 피드 화면
+개인화된 뉴스 쇼츠 피드
+실시간 인기 뉴스
+최근 본 뉴스 이어보기
+
+
+탐색 (Discover)
+
+
+카테고리별 브라우징
+트렌딩 토픽
+검색 기능
+추천 콘텐츠
+
+저장 (Bookmarks)
+
+
+저장한 뉴스 모아보기
+카테고리별 정리
+오프라인 저장 콘텐츠
+나중에 볼 뉴스
+
+
+프로필 (Profile)
+
+
+개인 설정
+관심사 설정
+시청 기록
+앱 설정
+데이터 관리

@@ -13,6 +13,8 @@ class ArticleEntity extends Equatable {
   final String author;
   final List<dynamic> images;
   final String summary;
+  final String content;
+  final String excerpt;
   final List<SectionEntity> sections;
   final List<AttachmentEntity>? attachments;
   final List<String> keyPoints;
@@ -29,6 +31,8 @@ class ArticleEntity extends Equatable {
     required this.author,
     required this.images,
     required this.summary,
+    required this.content,
+    required this.excerpt,
     required this.sections,
     required this.keyPoints,
     required this.keywords,
@@ -58,6 +62,8 @@ class ArticleEntity extends Equatable {
       author: json['author'],
       images: json['images'],
       summary: json['summary'],
+      content: json['content'],
+      excerpt: json['excerpt'],
       keyPoints: convertToStringList(json['key_points']),
       keywords: convertToStringList(json['keywords']),
       sections: List<SectionEntity>.from((json['sections'] as List)
@@ -83,6 +89,8 @@ class ArticleEntity extends Equatable {
       title: title,
       author: author,
       images: images,
+      excerpt: excerpt,
+      content: content,
       summary: summary,
       sections: List<Section>.from(
           sections.map((SectionEntity section) => section.toModel())),

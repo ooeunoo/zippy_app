@@ -1,19 +1,16 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:zippy/app/extensions/datetime.dart';
-import 'package:zippy/app/services/article.service.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
-import 'package:zippy/app/widgets/app_random_image.dart';
+import 'package:zippy/app/utils/format.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
-import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/article.model.dart';
-import 'package:zippy/domain/model/source.model.dart';
 
-class ZippyArticleCard extends StatefulWidget {
+class ZippyArticleCard extends StatelessWidget {
   final Article article;
 
   const ZippyArticleCard({
@@ -22,35 +19,104 @@ class ZippyArticleCard extends StatefulWidget {
   });
 
   @override
-  State<ZippyArticleCard> createState() => _ZippyArticleCardState();
-}
-
-class _ZippyArticleCardState extends State<ZippyArticleCard> {
-  final articleService = Get.find<ArticleService>();
-  @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _buildImageSection(context),
-        AppSpacerV(value: AppDimens.height(8)),
-        _buildContentSection(context),
-        AppSpacerV(value: AppDimens.height(20)),
-      ],
+    print(article.id);
+    return SizedBox(
+      height: MediaQuery.of(context).size.width * 2,
+      child: Stack(
+        children: [
+          _buildMainImage(),
+          _buildTopTag(context),
+          _buildBookmarkButton(),
+          _buildBottomContent(context),
+        ],
+      ),
     );
   }
 
-  Widget _buildImageSection(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1,
-      child: ClipRRect(
-        borderRadius: BorderRadius.zero,
-        child: Stack(
-          fit: StackFit.expand,
+  Widget _buildMainImage() {
+    return Positioned.fill(
+      child: article.images.isNotEmpty
+          ? CachedNetworkImage(
+              imageUrl: article.images[0],
+              fit: BoxFit.cover,
+              placeholder: (context, url) => _buildPlaceholderImage(),
+              errorWidget: (context, url, error) => _buildErrorImage(),
+              fadeInDuration: const Duration(milliseconds: 300),
+              fadeOutDuration: const Duration(milliseconds: 300),
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            )
+          : _buildPlaceholderImage(),
+    );
+  }
+
+  Widget _buildPlaceholderImage() {
+    return Container(
+      color: AppColor.gray900,
+      child: const Icon(
+        Icons.image,
+        color: AppColor.gray400,
+      ),
+    );
+  }
+
+  Widget _buildErrorImage() {
+    return Container(
+      color: AppColor.gray900,
+      child: const Icon(
+        Icons.error,
+        color: AppColor.gray400,
+      ),
+    );
+  }
+
+  Widget _buildTopTag(BuildContext context) {
+    return Positioned(
+      top: AppDimens.height(16),
+      left: AppDimens.width(16),
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: AppDimens.width(12),
+          vertical: AppDimens.height(6),
+        ),
+        decoration: BoxDecoration(
+          color: AppColor.graymodern400,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.25),
+              spreadRadius: 0,
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+          border: Border.all(
+            color: Colors.white.withOpacity(0.2),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            _buildMainImage(),
-            Obx(
-              () => _buildContentTypeLabel(context),
+            AppText(
+              '테크',
+              style: Theme.of(context).textTheme.textXS.copyWith(
+                color: AppColor.white,
+                shadows: [
+                  Shadow(
+                    offset: const Offset(0, 1),
+                    blurRadius: 2.0,
+                    color: Colors.black.withOpacity(0.3),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -58,177 +124,62 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
     );
   }
 
-  Widget _buildMainImage() {
-    return widget.article.images.isNotEmpty
-        ? CachedNetworkImage(
-            imageUrl: widget.article.images[0],
-            fit: BoxFit.cover,
-            placeholder: (context, url) => Container(
-              color: AppColor.graymodern950.withOpacity(0.5),
-            ),
-            errorWidget: (context, url, error) => AppRandomImage(
-              id: widget.article.id.toString(),
-            ),
-          )
-        : AppRandomImage(id: widget.article.id.toString());
-  }
-
-  Widget _buildContentTypeLabel(BuildContext context) {
-    Source? source = articleService.getSourceById(widget.article.sourceId);
-
+  Widget _buildBookmarkButton() {
     return Positioned(
-      top: AppDimens.height(60),
-      right: AppDimens.width(20),
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: AppDimens.width(8),
-          vertical: AppDimens.height(4),
-        ),
-        decoration: BoxDecoration(
-          color: Color(int.parse(source?.contentType?.color ?? '0xff000000'))
-              .withOpacity(0.7),
-          borderRadius: BorderRadius.circular(AppDimens.size(4)),
-        ),
-        child: AppText(
-          source?.contentType?.name ?? '',
-          style: Theme.of(context).textTheme.textXS.copyWith(
-                color: AppColor.white,
+      top: AppDimens.height(16),
+      right: AppDimens.width(16),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: EdgeInsets.all(AppDimens.width(8)),
+          child: const Icon(
+            Icons.bookmark_border_rounded,
+            color: AppColor.white,
+            size: 24,
+            shadows: [
+              Shadow(
+                color: AppColor.black,
+                blurRadius: 12,
+                offset: Offset(0, 2),
               ),
-          align: TextAlign.center,
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildContentSection(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppDimens.width(12)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildMetadataRow(context),
-          AppSpacerV(value: AppDimens.height(10)),
-          _buildTitle(context),
-          AppSpacerV(value: AppDimens.height(20)),
-          _buildSummary(context),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMetadataRow(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Obx(
-          () => Expanded(
-            child: _buildPlatformAndTime(context),
-          ),
-        ),
-        _buildActionButtons(context),
-      ],
-    );
-  }
-
-  Widget _buildPlatformAndTime(BuildContext context) {
-    Source? source = articleService.getSourceById(widget.article.sourceId);
-
-    return Row(
-      children: [
-        Flexible(
-          child: Container(
-            constraints: BoxConstraints(
-              maxWidth: AppDimens.width(80),
-            ),
-            child: AppText(
-              source?.platform?.name ?? '',
-              style: Theme.of(context).textTheme.textSM.copyWith(
-                    color: AppColor.graymodern300,
-                  ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        AppSpacerH(value: AppDimens.width(8)),
-        AppText(
-          '·',
-          style: Theme.of(context).textTheme.textSM.copyWith(
-                color: AppColor.graymodern300,
-              ),
-        ),
-        AppSpacerH(value: AppDimens.width(4)),
-        AppText(
-          widget.article.published.timeAgo(),
-          style: Theme.of(context).textTheme.textSM.copyWith(
-                color: AppColor.graymodern300,
-              ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildActionButtons(BuildContext context) {
-    return Row(
-      children: [
-        // IconButton(
-        //   padding: EdgeInsets.zero,
-        //   splashColor: Colors.transparent,
-        //   highlightColor: Colors.transparent,
-        //   onPressed: () =>
-        //       articleService.onHandleBookmarkArticle(widget.article),
-        //   icon: Icon(
-        //     Icons.bookmark,
-        //     color: articleService.isBookmarked(widget.article.id!)
-        //         ? AppColor.brand600
-        //         : null,
-        //   ),
-        // ),
-        // _buildCommentButton(context),
-        IconButton(
-          padding: EdgeInsets.zero,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          onPressed: () =>
-              articleService.onHandleArticleSupportMenu(widget.article),
-          icon: const Icon(Icons.more_vert, color: AppColor.graymodern300),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCommentButton(BuildContext context) {
-    return Stack(
-      children: [
-        IconButton(
-          padding: EdgeInsets.zero,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          onPressed: () =>
-              articleService.onHandleGetArticleComments(widget.article.id!),
-          icon: const Icon(Icons.chat_bubble_outline),
-        ),
-        if ((widget.article.metadata?.commentCount ?? 0) > 0)
-          _buildCommentCount(context),
-      ],
-    );
-  }
-
-  Widget _buildCommentCount(BuildContext context) {
+  Widget _buildBottomContent(BuildContext context) {
     return Positioned(
-      right: 0,
-      top: 0,
+      left: AppDimens.width(0),
+      right: AppDimens.width(0),
+      bottom: AppDimens.height(0),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+        padding: EdgeInsets.all(AppDimens.width(16)),
         decoration: BoxDecoration(
-          color: AppColor.brand600,
-          borderRadius: BorderRadius.circular(18),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.transparent,
+              Colors.black.withOpacity(0.4),
+              Colors.black.withOpacity(0.7),
+              Colors.black.withOpacity(0.9),
+              Colors.black.withOpacity(0.95),
+            ],
+            stops: const [0.0, 0.3, 0.5, 0.8, 1.0],
+          ),
         ),
-        child: AppText(
-          widget.article.metadata?.commentCount.toString() ?? '0',
-          style: Theme.of(context).textTheme.textXS.copyWith(
-                color: AppColor.white,
-              ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildTitle(context),
+            const SizedBox(height: 8),
+            _buildSummary(context),
+            const SizedBox(height: 16),
+            _buildInteractionBar(context),
+          ],
         ),
       ),
     );
@@ -236,11 +187,23 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
 
   Widget _buildTitle(BuildContext context) {
     return AppText(
-      widget.article.title,
-      style: Theme.of(context).textTheme.text2XL.copyWith(
-            color: AppColor.graymodern50,
-            fontWeight: FontWeight.w600,
+      article.title,
+      style: Theme.of(context).textTheme.displayXS.copyWith(
+        color: AppColor.graymodern50,
+        fontWeight: FontWeight.bold,
+        shadows: [
+          Shadow(
+            offset: Offset(0, 1),
+            blurRadius: 3.0,
+            color: Colors.black.withOpacity(0.8),
           ),
+          Shadow(
+            offset: Offset(0, 2),
+            blurRadius: 6.0,
+            color: Colors.black.withOpacity(0.6),
+          ),
+        ],
+      ),
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
     );
@@ -248,14 +211,66 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
 
   Widget _buildSummary(BuildContext context) {
     return AppText(
-      widget.article.summary,
+      cleanMarkdownText(article.excerpt),
       style: Theme.of(context).textTheme.textSM.copyWith(
-            color: AppColor.graymodern200,
-            height: 1.6,
-            letterSpacing: 0.5,
+        color: AppColor.graymodern200,
+        fontSize: 14,
+        shadows: [
+          Shadow(
+            offset: Offset(0, 1),
+            blurRadius: 2.0,
+            color: Colors.black.withOpacity(0.6),
           ),
-      maxLines: 6,
+        ],
+      ),
+      maxLines: 2,
       overflow: TextOverflow.ellipsis,
+    );
+  }
+
+  Widget _buildInteractionBar(BuildContext context) {
+    return Row(
+      children: [
+        _buildInteractionItem(
+          icon: Icons.favorite_border,
+          text: '1200',
+          context: context,
+        ),
+        AppSpacerH(value: AppDimens.width(16)),
+        _buildInteractionItem(
+          icon: Icons.chat_bubble_outline,
+          text: '324',
+          context: context,
+        ),
+        AppSpacerH(value: AppDimens.width(16)),
+        const Icon(Icons.share, color: AppColor.white, size: 20),
+        const Spacer(),
+        AppText(
+          '2.5만 조회',
+          style: Theme.of(context).textTheme.textSM.copyWith(
+                color: AppColor.white,
+              ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInteractionItem({
+    required IconData icon,
+    required String text,
+    required BuildContext context,
+  }) {
+    return Row(
+      children: [
+        Icon(icon, color: AppColor.white, size: 20),
+        AppSpacerH(value: AppDimens.width(4)),
+        AppText(
+          text,
+          style: Theme.of(context).textTheme.textSM.copyWith(
+                color: AppColor.white,
+              ),
+        ),
+      ],
     );
   }
 }

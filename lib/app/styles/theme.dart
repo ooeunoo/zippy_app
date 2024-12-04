@@ -5,7 +5,7 @@ import 'package:zippy/app/styles/dimens.dart';
 
 /// Light theme
 ThemeData themeLight(BuildContext context) => ThemeData(
-      fontFamily: 'Pretendard',
+      fontFamily: 'Suit',
       useMaterial3: true,
       highlightColor: Colors.transparent,
       splashColor: const Color.fromRGBO(0, 0, 0, 0),
@@ -34,16 +34,15 @@ ThemeData themeLight(BuildContext context) => ThemeData(
 
 /// Dark theme
 ThemeData themeDark(BuildContext context) => ThemeData(
-      fontFamily: 'Pretendard',
+      fontFamily: 'Suit',
       useMaterial3: true,
       highlightColor: Colors.transparent,
       splashColor: const Color.fromRGBO(0, 0, 0, 0),
-      scaffoldBackgroundColor: AppColor.graymodern950,
+      scaffoldBackgroundColor: AppColor.black,
       appBarTheme: const AppBarTheme(
-          backgroundColor: AppColor.graymodern950,
-          surfaceTintColor: AppColor.graymodern950),
+          backgroundColor: AppColor.black, surfaceTintColor: AppColor.black),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          backgroundColor: AppColor.graymodern950,
+          backgroundColor: AppColor.black,
           type: BottomNavigationBarType.fixed,
           selectedIconTheme:
               IconThemeData(size: AppDimens.width(24), color: AppColor.gray900),
@@ -70,10 +69,10 @@ extension CustomTextStyles on TextTheme {
   TextStyle get displayXS => TextStyle(fontSize: 24.sp);
   TextStyle get text2XL =>
       (TextStyle(fontSize: 22.sp, color: AppColor.gray900));
-  TextStyle get textXL => (TextStyle(fontSize: 20.sp, color: AppColor.gray900));
-  TextStyle get textLG => TextStyle(fontSize: 18.sp, color: AppColor.gray800);
-  TextStyle get textMD => TextStyle(fontSize: 16.sp, color: AppColor.gray700);
-  TextStyle get textSM => TextStyle(fontSize: 14.sp, color: AppColor.gray600);
-  TextStyle get textXS => TextStyle(fontSize: 12.sp, color: AppColor.gray500);
-  TextStyle get textXXS => TextStyle(fontSize: 10.sp, color: AppColor.gray500);
+  TextStyle get textXL => (TextStyle(fontSize: 21.sp, color: AppColor.gray900));
+  TextStyle get textLG => TextStyle(fontSize: 19.sp, color: AppColor.gray800);
+  TextStyle get textMD => TextStyle(fontSize: 17.sp, color: AppColor.gray700);
+  TextStyle get textSM => TextStyle(fontSize: 15.sp, color: AppColor.gray600);
+  TextStyle get textXS => TextStyle(fontSize: 13.sp, color: AppColor.gray500);
+  TextStyle get textXXS => TextStyle(fontSize: 11.sp, color: AppColor.gray500);
 }

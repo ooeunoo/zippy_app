@@ -6,8 +6,8 @@ abstract class AppDimens {
   static double screenW = 375;
   static double screenH = 812;
 
-  static size(int s) => s.r;
-  static width(int s) => s.w;
+  static size(double s) => s.sp;
+  static width(double s) => s.w;
   static height(double s) => s.h;
-  static radius(int s) => s.r;
+  static radius(double s) => s.r;
 }

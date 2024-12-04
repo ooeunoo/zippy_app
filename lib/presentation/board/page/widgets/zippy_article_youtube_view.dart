@@ -73,7 +73,7 @@ class _ZippyArticleYoutubeViewState extends State<ZippyArticleYoutubeView> {
                   AppSpacerV(value: AppDimens.height(8)),
                   _buildMetadataRow(context),
                   AppSpacerV(value: AppDimens.height(22)),
-                  
+
                   // Key Points Card
                   _buildKeyPointsCard(context),
                   AppSpacerV(value: AppDimens.height(24)),
@@ -92,59 +92,61 @@ class _ZippyArticleYoutubeViewState extends State<ZippyArticleYoutubeView> {
     );
   }
 
-  AppHeader _buildAppBar(BuildContext context) {
-    return AppHeader(
-      title: Tooltip(
-        message: widget.article.title,
-        preferBelow: true,
-        verticalOffset: AppDimens.height(24),
-        margin: EdgeInsets.symmetric(
-          horizontal: AppDimens.width(16),
-        ),
-        padding: EdgeInsets.symmetric(
-          horizontal: AppDimens.width(16),
-          vertical: AppDimens.height(8),
-        ),
-        decoration: BoxDecoration(
-          color: AppColor.graymodern800,
-          borderRadius: BorderRadius.circular(AppDimens.radius(8)),
-          border: Border.all(
-            color: AppColor.graymodern700,
-            width: 1,
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
+    return AppHeaderWrap(
+      child: AppHeader(
+        title: Tooltip(
+          message: widget.article.title,
+          preferBelow: true,
+          verticalOffset: AppDimens.height(24),
+          margin: EdgeInsets.symmetric(
+            horizontal: AppDimens.width(16),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
+          padding: EdgeInsets.symmetric(
+            horizontal: AppDimens.width(16),
+            vertical: AppDimens.height(8),
+          ),
+          decoration: BoxDecoration(
+            color: AppColor.graymodern800,
+            borderRadius: BorderRadius.circular(AppDimens.radius(8)),
+            border: Border.all(
+              color: AppColor.graymodern700,
+              width: 1,
             ),
-          ],
-        ),
-        textStyle: Theme.of(context).textTheme.textSM.copyWith(
-              color: AppColor.graymodern200,
-              height: 1.5,
-            ),
-        waitDuration: const Duration(milliseconds: 500),
-        showDuration: const Duration(seconds: 3),
-        triggerMode: TooltipTriggerMode.tap,
-        child: AppText(
-          widget.article.title,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.textSM.copyWith(
-                color: AppColor.graymodern100,
-                fontWeight: AppFontWeight.bold,
-                height: 1.4,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
               ),
+            ],
+          ),
+          textStyle: Theme.of(context).textTheme.textSM.copyWith(
+                color: AppColor.graymodern200,
+                height: 1.5,
+              ),
+          waitDuration: const Duration(milliseconds: 500),
+          showDuration: const Duration(seconds: 3),
+          triggerMode: TooltipTriggerMode.tap,
+          child: AppText(
+            widget.article.title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.textSM.copyWith(
+                  color: AppColor.graymodern100,
+                  fontWeight: AppFontWeight.bold,
+                  height: 1.4,
+                ),
+          ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_vert, color: AppColor.graymodern200),
+            onPressed: () =>
+                articleService.onHandleArticleSupportMenu(widget.article),
+          ),
+        ],
       ),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.more_vert, color: AppColor.graymodern200),
-          onPressed: () =>
-              articleService.onHandleArticleSupportMenu(widget.article),
-        ),
-      ],
     );
   }
 

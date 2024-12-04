@@ -3,13 +3,30 @@ import 'package:get/get.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 
-class AppHeader extends StatelessWidget implements PreferredSizeWidget {
+class AppHeaderWrap extends StatelessWidget implements PreferredSizeWidget {
+  final Widget child;
+
+  const AppHeaderWrap({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return child;
+  }
+
+  @override
+  Size get preferredSize {
+    return Size.fromHeight(AppDimens.height(64));
+  }
+}
+
+class AppHeader extends StatelessWidget {
   final Widget? title;
   final Widget? leading;
   final List<Widget>? actions;
   final bool automaticallyImplyLeading;
   final Color? backgroundColor;
   final Function()? onLeadingPressed;
+  final bool noLeading;
 
   const AppHeader({
     super.key,
@@ -19,25 +36,32 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
     this.automaticallyImplyLeading = true,
     this.backgroundColor,
     this.onLeadingPressed,
+    this.noLeading = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: backgroundColor ?? AppColor.transparent,
+      color: backgroundColor,
       child: SafeArea(
         bottom: false,
         child: SizedBox(
           height: AppDimens.height(64),
           child: Row(
             children: [
-              _buildLeading(),
+              if (!noLeading) _buildLeading(),
               if (title != null)
                 Expanded(
                   child: Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: AppDimens.width(20)),
-                    child: title!,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppDimens.width(20),
+                    ),
+                    child: noLeading
+                        ? Align(
+                            alignment: Alignment.centerLeft,
+                            child: title!,
+                          )
+                        : Center(child: title!),
                   ),
                 ),
               _buildActions(),
@@ -55,8 +79,8 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
 
     if (automaticallyImplyLeading && Get.previousRoute.isNotEmpty) {
       return IconButton(
-        padding: EdgeInsets.only(left: AppDimens.size(20)),
-        icon: const Icon(Icons.arrow_back, color: AppColor.graymodern200),
+        padding: EdgeInsets.all(AppDimens.size(20)),
+        icon: const Icon(Icons.arrow_back, color: AppColor.gray600),
         onPressed: onLeadingPressed ?? () => Get.back(),
         splashRadius: 24,
         highlightColor: Colors.transparent,
@@ -76,11 +100,5 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
       mainAxisSize: MainAxisSize.min,
       children: actions!,
     );
-  }
-
-  @override
-  Size get preferredSize {
-    return Size.fromHeight(
-        AppDimens.height(64) + MediaQuery.of(Get.context!).padding.top);
   }
 }

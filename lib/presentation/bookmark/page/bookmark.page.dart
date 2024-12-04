@@ -61,13 +61,15 @@ class _BookmarkPageState extends State<BookmarkPage> {
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
-    return AppHeader(
-      backgroundColor: AppColor.transparent,
-      automaticallyImplyLeading: true,
-      title: AppText(
-        "저장한 콘텐츠",
-        style: Theme.of(context).textTheme.textXL.copyWith(
-            color: AppColor.gray100, fontWeight: AppFontWeight.medium),
+    return AppHeaderWrap(
+      child: AppHeader(
+        backgroundColor: AppColor.transparent,
+        automaticallyImplyLeading: true,
+        title: AppText(
+          "저장한 콘텐츠",
+          style: Theme.of(context).textTheme.textXL.copyWith(
+              color: AppColor.gray100, fontWeight: AppFontWeight.medium),
+        ),
       ),
     );
   }
@@ -136,7 +138,8 @@ class _BookmarkPageState extends State<BookmarkPage> {
                     folderId,
                     name,
                     (int id) async {
-                      await bookmarkService.onHandleDeleteUserBookmarkFolder(id);
+                      await bookmarkService
+                          .onHandleDeleteUserBookmarkFolder(id);
                       setState(() {
                         selectedFolderId = ALL_FOLDER_ID;
                       });

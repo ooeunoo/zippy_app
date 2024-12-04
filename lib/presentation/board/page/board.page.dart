@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
-import 'package:zippy/app/styles/theme.dart';
-import 'package:zippy/app/widgets/app_divider.dart';
-import 'package:zippy/app/widgets/app_text.dart';
+import 'package:zippy/app/utils/assets.dart';
+import 'package:zippy/app/widgets/app_header.dart';
+import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/domain/model/ad_article.model.dart';
-import 'package:zippy/domain/model/article.model.dart';
 import 'package:zippy/presentation/board/controller/board.controller.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,6 @@ import 'package:get/get.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_ad_article_card.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_article_card.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_article_drawer.dart';
-import 'package:zippy/presentation/search/page/widgets/article_row_item.dart';
 
 class BoardPage extends StatefulWidget {
   const BoardPage({super.key});
@@ -60,7 +58,15 @@ class _BoardPageState extends State<BoardPage> {
         handleFetchArticles: _controller.onHandleFetchRecommendedArticles,
         handleClickBookmark: _controller.onHandleClickBookmark,
       ),
-      body: _buildPageContent(),
+      appBar: _buildHeader(),
+      body: Column(
+        children: [
+          _buildStoriesSection(),
+          Expanded(
+            child: _buildPageContent(),
+          ),
+        ],
+      ),
     );
   }
 
@@ -95,6 +101,56 @@ class _BoardPageState extends State<BoardPage> {
           ),
         );
       },
+    );
+  }
+
+  PreferredSizeWidget _buildHeader() {
+    return AppHeaderWrap(
+      child: AppHeader(
+        leading: Padding(
+          padding: EdgeInsets.symmetric(horizontal: AppDimens.size(20)),
+          child: AppSvg(Assets.logo, size: AppDimens.size(50)),
+        ),
+        title: const SizedBox.shrink(),
+        actions: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppDimens.size(12)),
+            child: IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.menu, color: AppColor.graymodern200),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStoriesSection() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: AppDimens.size(12)),
+      child: SizedBox(
+        height: AppDimens.height(90),
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: _controller.articles.length,
+          itemBuilder: (context, index) {
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 38,
+                    backgroundImage: NetworkImage(
+                      _controller.articles[index].images[0] ?? '',
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 

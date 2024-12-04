@@ -17,9 +17,11 @@ class AdArticle extends Article {
     super.keyPoints = const [],
     super.keywords = const [],
     super.attachments = const [],
+    super.content = '',
     DateTime? published,
     required this.nativeAd,
     super.isAd = true,
+    super.excerpt = '',
   }) : super(published: published ?? DateTime.now());
 
   @override

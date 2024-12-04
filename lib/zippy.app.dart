@@ -35,7 +35,7 @@ class _ZippyAppState extends State<ZippyApp> {
             initialBinding: ZippyBindings(),
             getPages: AppPages.routes,
             initialRoute: AppPages.initial,
-            theme: themeLight(context),
+            theme: themeDark(context),
             translations: ZippyTranslations(),
             locale: Get.deviceLocale,
             fallbackLocale: const Locale('ko', 'KR'),
