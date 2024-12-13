@@ -1,5 +1,6 @@
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
+import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
@@ -43,12 +44,11 @@ class AppMenu extends StatelessWidget {
 
   Widget _buildSection(BuildContext context, String sectionTitle) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: AppDimens.height(8)),
+      padding: EdgeInsets.symmetric(vertical: AppDimens.height(12)),
       child: AppText(sectionTitle,
-          style: Theme.of(context)
-              .textTheme
-              .textSM
-              .copyWith(color: AppColor.graymodern500)),
+          style: Theme.of(context).textTheme.textSM.copyWith(
+              color: AppThemeColors.textLow(context),
+              fontWeight: AppFontWeight.medium)),
     );
   }
 
@@ -59,7 +59,7 @@ class AppMenu extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.symmetric(
-          horizontal: AppDimens.width(10), vertical: AppDimens.height(8)),
+          horizontal: AppDimens.width(4), vertical: AppDimens.height(8)),
       child: GestureDetector(
         onTap: () {
           onTap();
@@ -70,16 +70,15 @@ class AppMenu extends StatelessWidget {
             AppSvg(
               icon,
               size: AppDimens.size(20),
-              color: AppColor.graymodern400,
+              color: AppThemeColors.iconColor(context),
             ),
             AppSpacerH(value: AppDimens.width(10)),
             Expanded(
               child: AppText(title,
                   maxLines: 1,
-                  style: Theme.of(context)
-                      .textTheme
-                      .textMD
-                      .copyWith(color: AppColor.graymodern100)),
+                  style: Theme.of(context).textTheme.textMD.copyWith(
+                      color: AppThemeColors.textHighest(context),
+                      fontWeight: AppFontWeight.medium)),
             ),
           ],
         ),

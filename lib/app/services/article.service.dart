@@ -165,14 +165,15 @@ class ArticleService extends GetxService {
   }
 
   void onHandleGoToArticleView(Article article) async {
-    // final handleUpdateInteraction =
-    //     await _createViewInteractionCallback(article);
+    final handleUpdateInteraction =
+        await _createViewInteractionCallback(article);
 
     final source = getSourceById(article.sourceId);
     final type = source!.platform!.type;
 
     final view = type == PlatformType.News
-        ? ZippyArticleNewsView(article: article)
+        ? ZippyArticleNewsView(
+            article: article, handleUpdateInteraction: handleUpdateInteraction)
         : ZippyArticleYoutubeView(article: article);
 
     Get.to(

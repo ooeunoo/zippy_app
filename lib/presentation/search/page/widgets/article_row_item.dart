@@ -93,8 +93,8 @@ class ArticleRowItem extends StatelessWidget {
                           // Timestamp
                           Text(
                             article.published.timeAgo(),
-                            style: Theme.of(context).textTheme.textXXS.copyWith(
-                                  color: AppThemeColors.textLow(context),
+                            style: Theme.of(context).textTheme.textXS.copyWith(
+                                  color: AppThemeColors.textHigh(context),
                                 ),
                           ),
                         ],
@@ -136,14 +136,14 @@ class ArticleRowItem extends StatelessWidget {
       children: [
         Icon(
           icon,
-          size: AppDimens.size(12),
+          size: AppDimens.size(14),
           color: AppThemeColors.iconColor(context),
         ),
         AppSpacerH(value: AppDimens.width(4)),
         Text(
           count,
-          style: Theme.of(context).textTheme.textXXS.copyWith(
-                color: AppThemeColors.textLow(context),
+          style: Theme.of(context).textTheme.textXS.copyWith(
+                color: AppThemeColors.textHigh(context),
               ),
         ),
       ],

@@ -20,7 +20,8 @@ class LoginController extends GetxController {
       admobService.bottomBannerAd.value = null;
       admobService.isBottomBannerAdLoaded.value = false;
 
-      Navigator.pop(Get.context!);
+      // Navigator.pop(Get.context!);
+      Get.back();
     }
   }
 

@@ -106,7 +106,7 @@ class RankContent extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.textMD.copyWith(
-                  color: AppThemeColors.textMedium(context),
+                  color: AppThemeColors.textHighest(context),
                   fontWeight: AppFontWeight.semibold,
                 ),
           ),

@@ -17,8 +17,13 @@ import 'package:zippy/domain/model/source.model.dart';
 
 class ZippyArticleNewsView extends StatefulWidget {
   final Article article;
+  final Function(int, int)? handleUpdateInteraction;
 
-  const ZippyArticleNewsView({super.key, required this.article});
+  const ZippyArticleNewsView({
+    super.key,
+    required this.article,
+    required this.handleUpdateInteraction,
+  });
 
   @override
   State<ZippyArticleNewsView> createState() => _ZippyArticleNewsViewState();
@@ -26,6 +31,8 @@ class ZippyArticleNewsView extends StatefulWidget {
 
 class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
   final articleService = Get.find<ArticleService>();
+
+  DateTime? _startTime;
 
   final scrollController = ScrollController();
   final PageController _pageController = PageController();
@@ -39,13 +46,23 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
       sectionKeys[section.title] = GlobalKey();
       expandedSections[section.title] = false;
     }
+    _startTime = DateTime.now();
   }
 
   @override
   void dispose() {
     _pageController.dispose();
     scrollController.dispose();
+    _handleUserInteraction();
+
     super.dispose();
+  }
+
+  void _handleUserInteraction() {
+    final duration = DateTime.now().difference(_startTime!);
+    if (widget.handleUpdateInteraction != null) {
+      widget.handleUpdateInteraction!(0, duration.inSeconds);
+    }
   }
 
   void _showSummarySheet() {
@@ -72,7 +89,9 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
               _buildSummaryHeader(context),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: EdgeInsets.all(AppDimens.width(16)),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppDimens.width(16),
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -228,7 +247,7 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppText(
-                      '3분 요약',
+                      '10초 요약 ',
                       style: Theme.of(context).textTheme.textMD.copyWith(
                             color:
                                 AppThemeColors.summaryButtonTextColor(context),
@@ -284,9 +303,10 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
 
   Widget _buildSummaryHeader(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: AppDimens.width(16),
-        vertical: AppDimens.height(12),
+      padding: EdgeInsets.only(
+        left: AppDimens.width(16),
+        right: AppDimens.width(16),
+        top: AppDimens.height(12),
       ),
       decoration: BoxDecoration(
         border: Border(
@@ -299,18 +319,19 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppDimens.width(16),
-            ),
-            child: AppText(
-              '3분 요약',
-              style: Theme.of(context).textTheme.textLG.copyWith(
-                    color: AppThemeColors.textHighest(context),
-                    fontWeight: AppFontWeight.bold,
-                  ),
-            ),
-          ),
+          SizedBox.shrink(),
+          // Padding(
+          //   padding: EdgeInsets.symmetric(
+          //     horizontal: AppDimens.width(16),
+          //   ),
+          //   child: AppText(
+          //     '10초 요약',
+          //     style: Theme.of(context).textTheme.textLG.copyWith(
+          //           color: AppThemeColors.textHighest(context),
+          //           fontWeight: AppFontWeight.bold,
+          //         ),
+          //   ),
+          // ),
           IconButton(
             icon: Icon(
               Icons.close,
@@ -350,7 +371,7 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: AppDimens.width(8),
-        vertical: AppDimens.height(12),
+        vertical: AppDimens.height(16),
       ),
       decoration: BoxDecoration(
         border: Border(
@@ -387,7 +408,7 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
               style: Theme.of(context).textTheme.textMD.copyWith(
                     color: AppThemeColors.textHigh(context),
                     fontWeight: AppFontWeight.medium,
-                    height: 1.5,
+                    height: 1.2,
                     letterSpacing: -0.3,
                   ),
             ),

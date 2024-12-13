@@ -81,6 +81,12 @@ class ProfilePage extends GetView<ProfileController> {
   }
 
   Widget _buildUserInfo(BuildContext context, AuthService authService) {
+    final isDarkMode = AppThemeColors.isDarkMode(context);
+    final baseColor =
+        isDarkMode ? AppColor.graymodern950 : AppColor.graymodern100;
+    final baseColor2 =
+        isDarkMode ? AppColor.graymodern800 : AppColor.graymodern200;
+
     return Obx(() {
       final user = authService.currentUser.value;
       final provider = user?.provider;
@@ -93,22 +99,25 @@ class ProfilePage extends GetView<ProfileController> {
           vertical: AppDimens.size(12),
         ),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             colors: [
-              AppColor.graymodern950,
-              AppColor.graymodern800,
+              baseColor2,
+              baseColor,
+              baseColor2,
+              baseColor,
+              baseColor2,
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(AppDimens.radius(12)),
           border: Border.all(
-            color: AppColor.graymodern800,
+            color: AppThemeColors.articleItemBoxBorderColor(context),
             width: 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColor.graymodern950.withOpacity(0.3),
+              color: baseColor.withOpacity(0.3),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -116,13 +125,13 @@ class ProfilePage extends GetView<ProfileController> {
         ),
         child: Row(
           children: [
-            _buildProviderIcon(provider),
+            _buildProviderIcon(context, provider),
             AppSpacerH(value: AppDimens.width(12)),
             Expanded(
               child: AppText(
                 email,
                 style: Theme.of(context).textTheme.textSM.copyWith(
-                      color: AppColor.graymodern100,
+                      color: AppThemeColors.textHighest(context),
                       fontWeight: AppFontWeight.regular,
                     ),
                 overflow: TextOverflow.ellipsis,
@@ -135,16 +144,12 @@ class ProfilePage extends GetView<ProfileController> {
     });
   }
 
-  Widget _buildProviderIcon(OAuthProviderType? provider) {
+  Widget _buildProviderIcon(BuildContext context, OAuthProviderType? provider) {
     return Container(
       padding: EdgeInsets.all(AppDimens.size(8)),
       decoration: BoxDecoration(
         color: _getProviderBackground(provider),
         shape: BoxShape.circle,
-        border: Border.all(
-          color: AppColor.graymodern600,
-          width: 1,
-        ),
       ),
       child: AppSvg(
         provider?.image ?? '',
@@ -274,9 +279,9 @@ class ProfilePage extends GetView<ProfileController> {
       '로그아웃',
       color: AppColor.transparent,
       titleStyle: Theme.of(context).textTheme.textSM.copyWith(
-            color: AppColor.graymodern600,
+            color: AppThemeColors.textLow(context),
             decoration: TextDecoration.underline,
-            decorationColor: AppColor.graymodern600,
+            decorationColor: AppThemeColors.textLow(context),
           ),
       borderColor: AppColor.transparent,
       onPressed: () {

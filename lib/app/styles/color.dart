@@ -13,7 +13,7 @@ class AppThemeColors {
       isDarkMode(context) ? AppColor.graymodern950 : AppColor.graymodern50;
 
   static Color bottomSheetBackground(BuildContext context) =>
-      isDarkMode(context) ? AppColor.graymodern900 : AppColor.graymodern100;
+      isDarkMode(context) ? AppColor.graymodern900 : AppColor.graymodern50;
 
   static Color bottomSheetBorder(BuildContext context) =>
       isDarkMode(context) ? AppColor.graymodern900 : AppColor.graymodern100;
@@ -39,7 +39,7 @@ class AppThemeColors {
       isDarkMode(context) ? AppColor.graymodern700 : AppColor.graymodern300;
 
   static Color articleItemBoxBackgroundColor(BuildContext context) =>
-      isDarkMode(context) ? AppColor.graymodern900 : AppColor.graymodern100;
+      isDarkMode(context) ? AppColor.graymodern900 : AppColor.graytrue25;
 
   static Color articleItemBoxBorderColor(BuildContext context) =>
       isDarkMode(context) ? AppColor.graymodern800 : AppColor.graymodern200;
@@ -61,6 +61,18 @@ class AppThemeColors {
 
   static Color summaryButtonTextColor(BuildContext context) =>
       isDarkMode(context) ? AppColor.brand300 : AppColor.brand700;
+
+  static Color buttonBackgroundColor(BuildContext context) =>
+      isDarkMode(context) ? AppColor.brand600 : AppColor.brand600;
+
+  static Color buttonBorderColor(BuildContext context) =>
+      isDarkMode(context) ? AppColor.brand700 : AppColor.brand700;
+
+  static Color buttonDisableBackgroundColor(BuildContext context) =>
+      isDarkMode(context) ? AppColor.gray200 : AppColor.gray200;
+
+  static Color buttonDisableBorderColor(BuildContext context) =>
+      isDarkMode(context) ? AppColor.gray300 : AppColor.gray300;
 
   static Color textHighest(BuildContext context) =>
       isDarkMode(context) ? AppColor.graymodern100 : AppColor.graymodern900;

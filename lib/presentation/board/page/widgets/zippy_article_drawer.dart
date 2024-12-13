@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
+import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/widgets/app.snak_bar.dart';
@@ -27,7 +28,7 @@ class ZippyArticleDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: AppColor.graymodern900,
+      backgroundColor: AppThemeColors.bottomSheetBackground(context),
       child: SafeArea(
         child: Column(
           children: [
@@ -50,16 +51,13 @@ class ZippyArticleDrawer extends StatelessWidget {
 
   Widget _buildDrawerHeader(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: AppDimens.height(8)),
+      padding:
+          EdgeInsets.only(top: AppDimens.height(8), left: AppDimens.width(16)),
       decoration: BoxDecoration(
-        color: AppColor.graymodern900,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(16),
-          bottomRight: Radius.circular(16),
-        ),
+        color: AppThemeColors.bottomSheetBackground(context),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           AppSvg(
             Assets.logo,
@@ -79,20 +77,13 @@ class ZippyArticleDrawer extends StatelessWidget {
 
     return Column(
       children: [
-        Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: AppDimens.width(10),
-            vertical: AppDimens.height(10),
-          ),
-          child: ArticleRowItem(
-            article: article,
-            onHandleClickArticle: () {
-              Navigator.of(context).pop();
-              handleJumpToArticle(index);
-            },
-          ),
+        ArticleRowItem(
+          article: article,
+          onHandleClickArticle: () {
+            Navigator.of(context).pop();
+            handleJumpToArticle(index);
+          },
         ),
-        if (index != articles.length - 1) const AppDivider(),
       ],
     );
   }
@@ -103,9 +94,9 @@ class ZippyArticleDrawer extends StatelessWidget {
         horizontal: AppDimens.width(8),
         vertical: AppDimens.height(8),
       ),
-      decoration: const BoxDecoration(
-        color: AppColor.graymodern900,
-        borderRadius: BorderRadius.only(
+      decoration: BoxDecoration(
+        color: AppThemeColors.bottomSheetBackground(context),
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(16),
           topRight: Radius.circular(16),
         ),
@@ -178,7 +169,8 @@ class ZippyArticleDrawer extends StatelessWidget {
             AppText(
               label,
               style: Theme.of(context).textTheme.textSM.copyWith(
-                    color: AppColor.graymodern300,
+                    color: AppThemeColors.textHigh(context),
+                    fontWeight: AppFontWeight.medium,
                   ),
             ),
           ],

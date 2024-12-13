@@ -26,7 +26,8 @@ showLoginDialog() {
 /**
  * 업데이트가 필요한 경우 사용하는 다이얼로그
  */
-showVersionUpdateDialog(String version, String releaseNotes, VoidCallback onConfirm) {
+showVersionUpdateDialog(
+    String version, String releaseNotes, VoidCallback onConfirm) {
   showAppDialog(
     "새로운 업데이트가 있습니다",
     message: "새 버전: $version\n$releaseNotes",
@@ -114,7 +115,7 @@ class AppDialog extends StatelessWidget {
       padding: EdgeInsets.all(AppDimens.size(20)),
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
-        color: AppColor.graymodern950,
+        color: AppThemeColors.bottomSheetBackground(context),
         borderRadius: BorderRadius.circular(AppDimens.size(16)),
       ),
       child: Column(
@@ -123,7 +124,7 @@ class AppDialog extends StatelessWidget {
           Text(
             title,
             style: Theme.of(context).textTheme.textMD.copyWith(
-                  color: AppColor.gray50,
+                  color: AppThemeColors.textHigh(context),
                   fontWeight: AppFontWeight.semibold,
                 ),
           ),
@@ -132,7 +133,7 @@ class AppDialog extends StatelessWidget {
             Text(
               message!,
               style: Theme.of(context).textTheme.textSM.copyWith(
-                    color: AppColor.gray50,
+                    color: AppThemeColors.textHigh(context),
                   ),
               textAlign: TextAlign.center,
             ),
@@ -141,7 +142,7 @@ class AppDialog extends StatelessWidget {
             AppSpacerV(value: AppDimens.height(15)),
             child!,
           ],
-          AppSpacerV(value: AppDimens.height(22)),
+          AppSpacerV(value: AppDimens.height(12)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -159,7 +160,7 @@ class AppDialog extends StatelessWidget {
                     color: AppColor.transparent,
                     borderColor: AppColor.transparent,
                     titleStyle: Theme.of(context).textTheme.textMD.copyWith(
-                          color: AppColor.gray50,
+                          color: AppThemeColors.textHigh(context),
                         ),
                   ),
                 ),

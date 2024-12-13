@@ -49,11 +49,15 @@ class AppButton extends StatelessWidget {
             backgroundColor: color != null
                 ? WidgetStateProperty.all(color)
                 : disable
-                    ? WidgetStateProperty.all(AppColor.gray100)
-                    : WidgetStateProperty.all(AppColor.brand600),
+                    ? WidgetStateProperty.all(
+                        AppThemeColors.buttonDisableBackgroundColor(context))
+                    : WidgetStateProperty.all(
+                        AppThemeColors.buttonBackgroundColor(context)),
             shape: WidgetStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppDimens.size(8)),
-                side: BorderSide(color: borderSideColorWrap(), width: 1)))),
+                side: BorderSide(
+                    color: borderSideColorWrap(context),
+                    width: AppDimens.width(1))))),
         child: FittedBox(
           fit: BoxFit.fitWidth,
           child: Row(
@@ -76,10 +80,10 @@ class AppButton extends StatelessWidget {
     );
   }
 
-  Color borderSideColorWrap() {
-    Color color = borderColor ?? AppColor.brand600;
+  Color borderSideColorWrap(BuildContext context) {
+    Color color = borderColor ?? AppThemeColors.buttonBorderColor(context);
     if (disable) {
-      color = AppColor.gray200;
+      color = AppThemeColors.buttonDisableBorderColor(context);
     }
     return color;
   }
@@ -87,10 +91,11 @@ class AppButton extends StatelessWidget {
   TextStyle titleStyleWrap(BuildContext context) {
     TextStyle style = titleStyle ??
         Theme.of(context).textTheme.textSM.copyWith(
-            fontWeight: AppFontWeight.semibold, color: AppColor.white);
+            fontWeight: AppFontWeight.semibold,
+            color: AppThemeColors.textHigh(context));
 
     if (disable) {
-      style = style.copyWith(color: AppColor.gray400);
+      style = style.copyWith(color: AppThemeColors.textHigh(context));
     }
 
     return style;

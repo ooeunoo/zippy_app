@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/services/bookmark.service.dart';
@@ -7,14 +6,12 @@ import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
-import 'package:zippy/app/utils/share.dart';
-import 'package:zippy/app/widgets/app_divider.dart';
 import 'package:zippy/app/widgets/app_header.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
-import 'package:zippy/domain/model/user_bookmark_item.model.dart';
 import 'package:zippy/presentation/bookmark/page/widget/bookmark-action.dialog.dart';
+import 'package:zippy/presentation/search/page/widgets/article_row_item.dart';
 
 const int ALL_FOLDER_ID = 0;
 
@@ -54,7 +51,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
           context,
           bookmarkService.onHandleCreateUserBookmarkFolder,
         ),
-        backgroundColor: AppColor.brand500,
+        backgroundColor: AppThemeColors.buttonBackgroundColor(context),
         child: const Icon(Icons.create_new_folder, color: AppColor.white),
       ),
     );
@@ -68,7 +65,9 @@ class _BookmarkPageState extends State<BookmarkPage> {
         title: AppText(
           "저장한 콘텐츠",
           style: Theme.of(context).textTheme.textMD.copyWith(
-              color: AppColor.gray100, fontWeight: AppFontWeight.medium),
+                color: AppThemeColors.textHigh(context),
+                fontWeight: AppFontWeight.medium,
+              ),
         ),
       ),
     );
@@ -156,11 +155,11 @@ class _BookmarkPageState extends State<BookmarkPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      isAll ? Icons.folder : Icons.folder_outlined,
+                      Icons.folder_outlined,
                       size: AppDimens.size(16),
                       color: isSelected
                           ? AppColor.brand400
-                          : AppColor.graymodern400,
+                          : AppColor.graymodern600,
                     ),
                     AppSpacerH(value: AppDimens.width(8)),
                     Tooltip(
@@ -171,7 +170,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                         style: Theme.of(context).textTheme.textSM.copyWith(
                               color: isSelected
                                   ? AppColor.brand400
-                                  : AppColor.graymodern400,
+                                  : AppColor.graymodern600,
                               fontWeight: isSelected
                                   ? AppFontWeight.bold
                                   : FontWeight.normal,
@@ -232,7 +231,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
               child: AppText(
                 description ?? '',
                 style: Theme.of(context).textTheme.textSM.copyWith(
-                      color: AppColor.graymodern600,
+                      color: AppThemeColors.textLow(context),
                       height: 1.3,
                     ),
                 maxLines: 1,
@@ -242,7 +241,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
             AppText(
               '$bookmarkCount개',
               style: Theme.of(context).textTheme.textSM.copyWith(
-                    color: AppColor.graymodern600,
+                    color: AppThemeColors.textLow(context),
                   ),
             ),
           ],
@@ -266,14 +265,14 @@ class _BookmarkPageState extends State<BookmarkPage> {
             children: [
               Icon(
                 Icons.bookmark_border,
-                size: AppDimens.size(48),
-                color: AppColor.graymodern600,
+                size: AppDimens.size(32),
+                color: AppThemeColors.iconColor(context),
               ),
               AppSpacerV(value: AppDimens.height(16)),
               AppText(
                 '저장된 콘텐츠가 없습니다',
                 style: Theme.of(context).textTheme.textMD.copyWith(
-                      color: AppColor.graymodern600,
+                      color: AppThemeColors.textHigh(context),
                     ),
               ),
               AppSpacerV(value: AppDimens.height(150)),
@@ -287,84 +286,12 @@ class _BookmarkPageState extends State<BookmarkPage> {
         padding: EdgeInsets.symmetric(horizontal: AppDimens.width(8)),
         itemBuilder: (BuildContext context, int index) {
           final bookmark = bookmarks[index];
-          final isLastItem = index == bookmarks.length - 1;
-
-          return Column(
-            children: [
-              _buildBookmarkItem(
-                context,
-                bookmark,
-                isLastItem,
-                bookmarkService.onHandleDeleteUserBookmark,
-              ),
-              if (!isLastItem) const AppDivider(),
-            ],
+          return ArticleRowItem(
+            article: bookmark.article!,
+            onHandleClickArticle: () {},
           );
         },
       );
     });
-  }
-
-  Widget _buildBookmarkItem(
-    BuildContext context,
-    UserBookmarkItem bookmark,
-    bool isLastItem,
-    Function delete,
-  ) {
-    return Slidable(
-      key: ValueKey(bookmark.id),
-      startActionPane: ActionPane(
-        motion: const ScrollMotion(),
-        children: [
-          SlidableAction(
-            onPressed: (BuildContext context) => delete(bookmark.id),
-            backgroundColor: AppColor.rose700.withOpacity(0.9),
-            foregroundColor: AppColor.white,
-            icon: Icons.delete,
-            label: 'Delete',
-          ),
-          SlidableAction(
-            onPressed: (BuildContext context) async {
-              await toShare(bookmark.article!.link, bookmark.article!.title);
-            },
-            backgroundColor: AppColor.brand600.withOpacity(0.9),
-            foregroundColor: AppColor.white,
-            icon: Icons.share,
-            label: 'Share',
-          ),
-        ],
-      ),
-      child: GestureDetector(
-        onTap: () => articleService.onHandleGoToArticleView(bookmark.article!),
-        behavior: HitTestBehavior.opaque,
-        child: Column(
-          children: [
-            AppSpacerV(value: AppDimens.size(5)),
-            ListTile(
-              leading: SizedBox(
-                height: AppDimens.size(40),
-                width: AppDimens.size(40),
-                child: CircleAvatar(
-                  radius: AppDimens.size(16),
-                  backgroundImage: bookmark.article!.images != null
-                      ? NetworkImage(bookmark.article!.images[0])
-                      : null,
-                ),
-              ),
-              title: AppText(
-                bookmark.article!.title.trim(),
-                maxLines: 2,
-                style: Theme.of(context).textTheme.textMD.copyWith(
-                      color: AppColor.graymodern100,
-                    ),
-              ),
-              // onTap: () => articleService.onHandleClickUserBookmark(bookmark),
-              minLeadingWidth: bookmark.article!.images != null ? 30 : 0,
-            ),
-            AppSpacerV(value: AppDimens.size(5)),
-          ],
-        ),
-      ),
-    );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/font.dart';
@@ -7,8 +6,6 @@ import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
-import 'package:zippy/domain/model/params/create_bookmark_folder.params.dart';
-import 'package:zippy/domain/model/user_bookmark_folder.model.dart';
 
 void showCreateFolderDialog(
     BuildContext context,
@@ -21,7 +18,7 @@ void showCreateFolderDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        backgroundColor: AppColor.graymodern900,
+        backgroundColor: AppThemeColors.bottomSheetBackground(context),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppDimens.radius(12)),
         ),
@@ -30,7 +27,7 @@ void showCreateFolderDialog(
             Container(
               padding: EdgeInsets.all(AppDimens.width(8)),
               decoration: BoxDecoration(
-                color: AppColor.brand500.withOpacity(0.1),
+                color: AppThemeColors.bottomSheetBackground(context),
                 borderRadius: BorderRadius.circular(AppDimens.radius(8)),
               ),
               child: Icon(
@@ -43,8 +40,8 @@ void showCreateFolderDialog(
             AppText(
               '새 폴더 만들기',
               style: Theme.of(context).textTheme.textLG.copyWith(
-                    color: AppColor.graymodern100,
-                    fontWeight: AppFontWeight.bold,
+                    color: AppThemeColors.textHigh(context),
+                    fontWeight: AppFontWeight.medium,
                   ),
             ),
           ],
@@ -57,7 +54,7 @@ void showCreateFolderDialog(
               controller: nameController,
               autofocus: true,
               style: Theme.of(context).textTheme.textMD.copyWith(
-                    color: AppColor.graymodern200,
+                    color: AppThemeColors.textHigh(context),
                   ),
               decoration: InputDecoration(
                 hintText: '폴더 이름',
@@ -76,7 +73,7 @@ void showCreateFolderDialog(
             TextField(
               controller: descriptionController,
               style: Theme.of(context).textTheme.textMD.copyWith(
-                    color: AppColor.graymodern200,
+                    color: AppThemeColors.textHigh(context),
                   ),
               decoration: InputDecoration(
                 hintText: '폴더 설명 (선택)',

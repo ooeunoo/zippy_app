@@ -94,22 +94,19 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  AppBar _buildSearchAppBar() {
-    return AppBar(
+  AppHeader _buildSearchAppBar() {
+    return AppHeader(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      leading: IconButton(
-          icon:
-              Icon(Icons.arrow_back, color: AppThemeColors.iconColor(context)),
-          onPressed: () {
-            setState(() {
-              _showSearchBar = false;
-              controller.searchArticles.clear(); // 검색 결과 초기화 추가
-            });
-          },
-          padding: EdgeInsets.zero),
+      onLeadingPressed: () {
+        setState(() {
+          _showSearchBar = false;
+          controller.searchArticles.clear(); // 검색 결과 초기화 추가
+        });
+      },
       title: TextField(
         controller: _searchController,
         focusNode: _focusNode,
+        cursorHeight: AppDimens.height(18),
         style: Theme.of(context)
             .textTheme
             .textSM
@@ -128,6 +125,8 @@ class _SearchPageState extends State<SearchPage> {
         Padding(
           padding: EdgeInsets.only(right: AppDimens.width(12)),
           child: IconButton(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
             icon: Icon(
               Icons.clear,
               color: AppThemeColors.iconColor(context),
