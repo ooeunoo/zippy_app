@@ -13,7 +13,6 @@ import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/article.model.dart';
-import 'package:zippy/domain/model/platform.model.dart';
 import 'package:zippy/domain/model/source.model.dart';
 
 class ZippyArticleNewsView extends StatefulWidget {
@@ -27,6 +26,7 @@ class ZippyArticleNewsView extends StatefulWidget {
 
 class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
   final articleService = Get.find<ArticleService>();
+
   final scrollController = ScrollController();
   final PageController _pageController = PageController();
   final Map<String, GlobalKey> sectionKeys = {};
@@ -57,13 +57,13 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
         return Container(
           height: MediaQuery.of(context).size.height * 0.7,
           decoration: BoxDecoration(
-            color: AppColor.graymodern900,
+            color: AppThemeColors.bottomSheetBackground(context),
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(AppDimens.radius(20)),
               topRight: Radius.circular(AppDimens.radius(20)),
             ),
             border: Border.all(
-              color: AppColor.brand700.withOpacity(0.2),
+              color: AppThemeColors.bottomSheetBorder(context),
               width: 1,
             ),
           ),
@@ -76,13 +76,6 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildSummarySection(
-                        context,
-                        '핵심 주제',
-                        widget.article.keyPoints.first,
-                        Icons.lightbulb_outline,
-                      ),
-                      AppSpacerV(value: AppDimens.height(24)),
                       _buildSummarySection(
                         context,
                         '주요 포인트',
@@ -103,7 +96,7 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColor.graymodern950,
+      backgroundColor: AppThemeColors.background(context),
       appBar: _buildAppBar(context),
       body: SingleChildScrollView(
         child: Column(
@@ -125,8 +118,8 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
             ),
             AppSpacerV(value: AppDimens.height(16)),
             AppDivider(
-              color: AppColor.brand700.withOpacity(0.3),
-              height: 4,
+              color: AppColor.brand700.withOpacity(0.1),
+              height: 2,
             ),
             AppSpacerV(value: AppDimens.height(16)),
             _buildContent(),
@@ -142,10 +135,18 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
       child: AppHeader(
         title: const SizedBox.shrink(),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.more_vert, color: AppColor.graymodern200),
-            onPressed: () =>
-                articleService.onHandleArticleSupportMenu(widget.article),
+          Padding(
+            padding: EdgeInsets.only(right: AppDimens.width(12)),
+            child: IconButton(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              icon: Icon(
+                Icons.more_vert,
+                color: AppThemeColors.iconColor(context),
+              ),
+              onPressed: () =>
+                  articleService.onHandleArticleSupportMenu(widget.article),
+            ),
           ),
         ],
       ),
@@ -156,7 +157,7 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
     return AppText(
       widget.article.title,
       style: Theme.of(context).textTheme.textXL.copyWith(
-            color: AppColor.graymodern100,
+            color: AppThemeColors.textHighest(context),
             height: 1.2,
             fontWeight: AppFontWeight.semibold,
           ),
@@ -182,7 +183,7 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
         AppText(
           text,
           style: Theme.of(context).textTheme.textXS.copyWith(
-                color: AppColor.graymodern400,
+                color: AppThemeColors.textLow(context),
               ),
         ),
       ],
@@ -194,53 +195,66 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
       margin: EdgeInsets.only(top: AppDimens.height(16)),
       child: InkWell(
         onTap: _showSummarySheet,
-        borderRadius: BorderRadius.circular(AppDimens.radius(8)),
+        borderRadius: BorderRadius.circular(AppDimens.radius(12)),
         child: Container(
           padding: EdgeInsets.symmetric(
-            horizontal: AppDimens.width(16),
-            vertical: AppDimens.height(12),
+            horizontal: AppDimens.width(20),
+            vertical: AppDimens.height(16),
           ),
           decoration: BoxDecoration(
-            color: AppColor.brand700.withOpacity(0.15),
+            color: AppThemeColors.summaryButtonColor(context),
             border: Border.all(
-              color: AppColor.brand400.withOpacity(0.2),
-              width: 1,
+              color: AppThemeColors.summaryButtonBorderColor(context),
             ),
-            borderRadius: BorderRadius.circular(AppDimens.radius(8)),
+            borderRadius: BorderRadius.circular(AppDimens.radius(12)),
           ),
           child: Row(
             children: [
-              Icon(
-                Icons.article_outlined,
-                color: AppColor.brand300,
-                size: AppDimens.size(20),
+              Container(
+                padding: EdgeInsets.all(AppDimens.size(4)),
+                decoration: BoxDecoration(
+                  color: AppThemeColors.transparent(context),
+                  borderRadius: BorderRadius.circular(AppDimens.radius(8)),
+                ),
+                child: Icon(
+                  Icons.article_outlined,
+                  color: AppThemeColors.summaryButtonIconColor(context),
+                  size: AppDimens.size(20),
+                ),
               ),
-              AppSpacerH(value: AppDimens.width(8)),
+              AppSpacerH(value: AppDimens.width(12)),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppText(
                       '3분 요약',
-                      style: Theme.of(context).textTheme.textSM.copyWith(
-                            color: AppColor.brand300,
-                            fontWeight: AppFontWeight.medium,
+                      style: Theme.of(context).textTheme.textMD.copyWith(
+                            color:
+                                AppThemeColors.summaryButtonTextColor(context),
+                            fontWeight: AppFontWeight.semibold,
                           ),
                     ),
-                    AppSpacerV(value: AppDimens.height(2)),
+                    AppSpacerV(value: AppDimens.height(4)),
                     AppText(
                       '주요 내용을 빠르게 파악하세요',
                       style: Theme.of(context).textTheme.textXS.copyWith(
-                            color: AppColor.graymodern400,
+                            color: AppThemeColors.textLow(context),
                           ),
                     ),
                   ],
                 ),
               ),
-              Icon(
-                Icons.keyboard_arrow_right,
-                color: AppColor.brand300,
-                size: AppDimens.size(20),
+              Container(
+                decoration: BoxDecoration(
+                  color: AppThemeColors.transparent(context),
+                  borderRadius: BorderRadius.circular(AppDimens.radius(6)),
+                ),
+                child: Icon(
+                  Icons.arrow_forward_ios,
+                  color: AppThemeColors.iconColor(context),
+                  size: AppDimens.size(16),
+                ),
               ),
             ],
           ),
@@ -285,17 +299,22 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          AppText(
-            '기사 요약',
-            style: Theme.of(context).textTheme.textLG.copyWith(
-                  color: AppColor.graymodern100,
-                  fontWeight: AppFontWeight.bold,
-                ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppDimens.width(16),
+            ),
+            child: AppText(
+              '3분 요약',
+              style: Theme.of(context).textTheme.textLG.copyWith(
+                    color: AppThemeColors.textHighest(context),
+                    fontWeight: AppFontWeight.bold,
+                  ),
+            ),
           ),
           IconButton(
             icon: Icon(
               Icons.close,
-              color: AppColor.graymodern300,
+              color: AppThemeColors.iconColor(context),
               size: AppDimens.size(24),
             ),
             onPressed: () => Navigator.pop(context),
@@ -308,72 +327,68 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
   Widget _buildSummarySection(
     BuildContext context,
     String title,
-    dynamic content,
+    List<String> content,
     IconData icon,
   ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Icon(
-              icon,
-              color: AppColor.brand300,
-              size: AppDimens.size(20),
-            ),
-            AppSpacerH(value: AppDimens.width(8)),
-            AppText(
-              title,
-              style: Theme.of(context).textTheme.textMD.copyWith(
-                    color: AppColor.brand300,
-                    fontWeight: AppFontWeight.medium,
-                  ),
-            ),
-          ],
+        // 요약 내용
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: content.length,
+          itemBuilder: (context, index) {
+            return _buildKeyPoint(context, content[index], index + 1);
+          },
         ),
-        AppSpacerV(value: AppDimens.height(12)),
-        if (content is String)
-          _buildSummaryText(context, content)
-        else if (content is List)
-          ...content.map((point) => _buildSummaryPoint(context, point)),
       ],
     );
   }
 
-  Widget _buildSummaryText(BuildContext context, String text) {
-    return AppText(
-      text,
-      style: Theme.of(context).textTheme.textMD.copyWith(
-            color: AppColor.graymodern200,
-            height: 1.6,
+  Widget _buildKeyPoint(BuildContext context, String point, int index) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: AppDimens.width(8),
+        vertical: AppDimens.height(12),
+      ),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: AppThemeColors.bottomSheetBorder(context).withOpacity(0.5),
+            width: 0.5,
           ),
-    );
-  }
-
-  Widget _buildSummaryPoint(BuildContext context, String point) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: AppDimens.height(8)),
+        ),
+      ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start, // start에서 center로 변경
         children: [
-          Padding(
-            padding: EdgeInsets.only(top: AppDimens.height(8)),
-            child: Container(
-              width: AppDimens.width(4),
-              height: AppDimens.width(4),
-              decoration: const BoxDecoration(
-                color: AppColor.brand400,
-                shape: BoxShape.circle,
+          Container(
+            width: AppDimens.width(24),
+            height: AppDimens.height(24),
+            margin: EdgeInsets.only(right: AppDimens.width(12)),
+            decoration: BoxDecoration(
+              color: AppColor.brand500.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(AppDimens.radius(6)),
+            ),
+            child: Center(
+              child: AppText(
+                index.toString(),
+                style: Theme.of(context).textTheme.textMD.copyWith(
+                      color: AppColor.brand500,
+                      fontWeight: AppFontWeight.bold,
+                    ),
               ),
             ),
           ),
-          AppSpacerH(value: AppDimens.width(8)),
           Expanded(
             child: AppText(
               point,
               style: Theme.of(context).textTheme.textMD.copyWith(
-                    color: AppColor.graymodern200,
-                    height: 1.6,
+                    color: AppThemeColors.textHigh(context),
+                    fontWeight: AppFontWeight.medium,
+                    height: 1.5,
+                    letterSpacing: -0.3,
                   ),
             ),
           ),
@@ -421,7 +436,7 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
   MarkdownStyleSheet _buildMarkdownStyleSheet(BuildContext context) {
     return MarkdownStyleSheet(
       p: Theme.of(context).textTheme.textMD.copyWith(
-            color: AppColor.graymodern300,
+            color: AppThemeColors.textMedium(context),
             fontSize: 17,
             height: 1.55,
             letterSpacing: -0.4,

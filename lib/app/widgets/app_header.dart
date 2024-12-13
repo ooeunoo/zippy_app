@@ -49,7 +49,7 @@ class AppHeader extends StatelessWidget {
           height: AppDimens.height(64),
           child: Row(
             children: [
-              if (!noLeading) _buildLeading(),
+              if (!noLeading) _buildLeading(context),
               if (title != null)
                 Expanded(
                   child: Padding(
@@ -72,7 +72,7 @@ class AppHeader extends StatelessWidget {
     );
   }
 
-  Widget _buildLeading() {
+  Widget _buildLeading(BuildContext context) {
     if (leading != null) {
       return leading!;
     }
@@ -80,7 +80,10 @@ class AppHeader extends StatelessWidget {
     if (automaticallyImplyLeading && Get.previousRoute.isNotEmpty) {
       return IconButton(
         padding: EdgeInsets.all(AppDimens.size(20)),
-        icon: const Icon(Icons.arrow_back, color: AppColor.gray600),
+        icon: Icon(
+          Icons.arrow_back,
+          color: AppThemeColors.iconColor(context),
+        ),
         onPressed: onLeadingPressed ?? () => Get.back(),
         splashRadius: 24,
         highlightColor: Colors.transparent,

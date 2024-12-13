@@ -8,6 +8,7 @@ abstract class AppFontWeight {
   static FontWeight medium = FontWeight.w500;
   static FontWeight semibold = FontWeight.w600;
   static FontWeight bold = FontWeight.w700;
+  static FontWeight black = FontWeight.w900;
 }
 
 abstract class AppFontSize {

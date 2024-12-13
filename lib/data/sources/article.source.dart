@@ -66,7 +66,10 @@ class ArticleDatasourceImpl implements ArticleDatasource {
   Future<Either<Failure, List<Article>>> getArticles(
       GetArticlesParams params) async {
     try {
-      var query = provider.client.from(TABLE).select('*, sources(*)');
+      var query = provider.client
+          .from(TABLE)
+          .select('*, sources(*)')
+          .eq("completed", true);
 
       // search 파라미터가 있을 경우에만 textSearch 조건 추가
       if (params.search != null && params.search!.isNotEmpty) {

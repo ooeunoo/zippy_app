@@ -92,9 +92,11 @@ class BookmarkService extends GetxService {
   /// Initialization Methods
   ///*********************************
   Future<void> _initialize() async {
+    _listenUser();
     await _fetchUserBookmarkFolders();
     await _fetchUserBookmark();
-    _listenUser();
+
+    print("in");
   }
 
   ///*********************************
@@ -128,6 +130,7 @@ class BookmarkService extends GetxService {
     }, (data) {
       userBookmarks.assignAll(data);
     });
+    print("out");
   }
 
   ///*********************************

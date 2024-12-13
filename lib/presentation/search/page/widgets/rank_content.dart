@@ -9,7 +9,7 @@ import 'package:zippy/domain/model/keyword_rank_snaoshot.model.dart';
 
 class RankContent extends StatelessWidget {
   final List<KeywordRankSnapshot> trendingKeywords;
-  final Function(String) onKeywordTap; // 추가
+  final Function(String) onKeywordTap;
 
   const RankContent({
     super.key,
@@ -33,12 +33,18 @@ class RankContent extends StatelessWidget {
         itemCount: trendingKeywords.length,
         itemBuilder: (context, index) {
           final item = trendingKeywords[index];
-          return _buildRankItem(
-            context,
-            index + 1,
-            item.keyword,
-            item.descriptions ?? [],
-            item.rankChange,
+          return Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppDimens.width(12),
+              vertical: AppDimens.height(4),
+            ),
+            child: _buildRankItem(
+              context,
+              index + 1,
+              item.keyword,
+              item.descriptions ?? [],
+              item.rankChange,
+            ),
           );
         },
       ),
@@ -47,28 +53,29 @@ class RankContent extends StatelessWidget {
 
   Widget _buildRankItem(BuildContext context, int rank, String title,
       List<String> descriptions, int rankChange) {
-    return GestureDetector(
-      onTap: () => onKeywordTap(title),
-      behavior: HitTestBehavior.opaque,
-      child: Container(
-        margin: EdgeInsets.symmetric(
-            horizontal: AppDimens.width(20), vertical: AppDimens.height(8)),
-        padding: EdgeInsets.all(AppDimens.width(18)),
-        decoration: BoxDecoration(
-          color: AppColor.graymodern900,
-          borderRadius: BorderRadius.circular(AppDimens.radius(10)),
-        ),
-        child: Row(
-          children: [
-            AppSpacerH(value: AppDimens.width(10)),
-            _buildRankNumber(context, rank),
-            AppSpacerH(value: AppDimens.width(20)),
-            _buildRankItemContent(context, title, descriptions),
-            _buildDeltaIndicator(context, rankChange),
-            AppSpacerH(value: AppDimens.width(20)),
-          ],
-        ),
+    return Card(
+      elevation: 1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
       ),
+      color: AppThemeColors.articleItemBoxBackgroundColor(context),
+      child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () => onKeywordTap(title),
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: AppDimens.width(8)),
+            padding: EdgeInsets.all(AppDimens.width(18)),
+            child: Row(
+              children: [
+                AppSpacerH(value: AppDimens.width(4)),
+                _buildRankNumber(context, rank),
+                AppSpacerH(value: AppDimens.width(20)),
+                _buildRankItemContent(context, title, descriptions),
+                _buildDeltaIndicator(context, rankChange),
+                AppSpacerH(value: AppDimens.width(4)),
+              ],
+            ),
+          )),
     );
   }
 
@@ -99,7 +106,7 @@ class RankContent extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.textMD.copyWith(
-                  color: AppColor.gray50,
+                  color: AppThemeColors.textMedium(context),
                   fontWeight: AppFontWeight.semibold,
                 ),
           ),
@@ -113,7 +120,7 @@ class RankContent extends StatelessWidget {
       return AppText(
         '－',
         style: Theme.of(context).textTheme.textMD.copyWith(
-              color: AppColor.gray200,
+              color: AppThemeColors.textLow(context),
             ),
       );
     }

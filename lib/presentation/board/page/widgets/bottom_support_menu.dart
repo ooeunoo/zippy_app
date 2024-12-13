@@ -32,9 +32,9 @@ class BottomSupportMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      decoration: const BoxDecoration(
-        color: AppColor.graymodern900,
-        borderRadius: BorderRadius.only(
+      decoration: BoxDecoration(
+        color: AppThemeColors.bottomSheetBackground(context),
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(12.0),
           topRight: Radius.circular(12.0),
         ),
@@ -42,21 +42,29 @@ class BottomSupportMenu extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildMenuItem(context, "원문 보기", Icons.web, AppColor.graymodern300,
+          _buildMenuItem(
+              context,
+              "원문 보기",
+              AppThemeColors.isDarkMode(context)
+                  ? Icons.web_asset_outlined
+                  : Icons.web_asset,
+              AppThemeColors.iconColor(context),
               originalArticle),
-          const AppDivider(),
+          AppDivider(color: AppThemeColors.dividerColor(context)),
           _buildMenuItem(
               context,
               "북마크하기",
-              Icons.bookmark,
-              isBookmarked ? AppColor.brand600 : AppColor.graymodern300,
+              isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+              isBookmarked
+                  ? AppThemeColors.bookmarkedIconColor(context)
+                  : AppThemeColors.iconColor(context),
               bookmark),
-          const AppDivider(),
-          _buildMenuItem(
-              context, "공유하기", Icons.share, AppColor.graymodern300, share),
-          const AppDivider(),
-          _buildMenuItem(
-              context, "신고하기", Icons.report, AppColor.graymodern300, report),
+          AppDivider(color: AppThemeColors.dividerColor(context)),
+          _buildMenuItem(context, "공유하기", Icons.share,
+              AppThemeColors.iconColor(context), share),
+          AppDivider(color: AppThemeColors.dividerColor(context)),
+          _buildMenuItem(context, "신고하기", Icons.report_gmailerrorred,
+              AppThemeColors.iconColor(context), report),
           AppSpacerV(
             value: AppDimens.height(30),
           ),
@@ -75,7 +83,10 @@ class BottomSupportMenu extends StatelessWidget {
         });
       },
       child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
+          padding: EdgeInsets.symmetric(
+            vertical: AppDimens.height(16),
+            horizontal: AppDimens.width(12),
+          ),
           child: Row(
             children: [
               SizedBox(width: AppDimens.width(24)),
@@ -87,7 +98,8 @@ class BottomSupportMenu extends StatelessWidget {
               AppSpacerH(value: AppDimens.width(12)),
               AppText(title,
                   style: Theme.of(context).textTheme.textSM.copyWith(
-                        color: AppColor.graymodern100,
+                        color: AppThemeColors.textHighest(context),
+                        fontWeight: AppFontWeight.medium,
                       )),
               const Spacer(),
             ],

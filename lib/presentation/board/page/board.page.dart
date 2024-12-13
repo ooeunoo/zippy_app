@@ -1,12 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:zippy/app/styles/color.dart';
-import 'package:zippy/app/styles/dimens.dart';
-import 'package:zippy/app/styles/theme.dart';
-import 'package:zippy/app/utils/assets.dart';
-import 'package:zippy/app/widgets/app_divider.dart';
-import 'package:zippy/app/widgets/app_header.dart';
-import 'package:zippy/app/widgets/app_svg.dart';
-import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/ad_article.model.dart';
 import 'package:zippy/presentation/board/controller/board.controller.dart';
 import 'package:flutter/gestures.dart';
@@ -15,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_ad_article_card.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_article_card.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_article_drawer.dart';
-import 'package:zippy/presentation/search/page/widgets/article_row_item.dart';
 
 class BoardPage extends StatefulWidget {
   const BoardPage({super.key});
@@ -71,16 +63,16 @@ class _BoardPageState extends State<BoardPage> {
     return GetX<BoardController>(
       builder: (controller) {
         if (controller.isLoadingContents.value) {
-          return const Center(
+          return Center(
             child: CupertinoActivityIndicator(
-              color: AppColor.brand600,
+              color: AppThemeColors.loadingColor(context),
             ),
           );
         }
 
         return RefreshIndicator(
-          color: AppColor.brand600,
-          backgroundColor: AppColor.graymodern950,
+          color: AppThemeColors.loadingColor(context),
+          backgroundColor: AppThemeColors.background(context),
           displacement: 50,
           strokeWidth: 3,
           onRefresh: controller.onHandleFetchRecommendedArticles,

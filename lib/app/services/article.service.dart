@@ -65,7 +65,6 @@ class ArticleService extends GetxService {
   ///*********************************
   Source? getSourceById(int sourceId) {
     Source? source = sources.value[sourceId];
-
     if (source != null) {
       return source;
     } else {
@@ -102,6 +101,12 @@ class ArticleService extends GetxService {
   }
 
   Future<void> onHandleBookmarkArticle(Article article) async {
+    if (bookmarkService.isBookmarked(article.id!) != null) {
+      bookmarkService.onHandleDeleteUserBookmark(
+          bookmarkService.isBookmarked(article.id!)!.id);
+      return;
+    }
+
     showModalBottomSheet(
       context: Get.context!,
       backgroundColor: Colors.transparent,
@@ -117,11 +122,6 @@ class ArticleService extends GetxService {
         },
       ),
     );
-  }
-
-  Future<void> onHandleClickUserBookmark(UserBookmarkItem bookmark) async {
-    //  const article = getArticleById()
-    // onHandleGoToArticleView(bookmark.toModel());
   }
 
   Future<List<ArticleComment>> onHandleGetArticleComments(int articleId) async {

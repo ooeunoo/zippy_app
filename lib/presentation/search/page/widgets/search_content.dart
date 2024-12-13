@@ -19,16 +19,20 @@ class SearchContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-      // padding: EdgeInsets.all(AppDimens.width(20)),
       itemCount: searchArticles.length,
       separatorBuilder: (context, index) =>
-          AppSpacerV(value: AppDimens.height(20)),
+          AppSpacerV(value: AppDimens.height(4)),
       itemBuilder: (context, index) {
-        return ArticleRowItem(
-          article: searchArticles[index],
-          searchText: searchController.text,
-          onHandleClickArticle: () =>
-              onHandleClickArticle(searchArticles[index]),
+        return Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: AppDimens.width(12),
+          ),
+          child: ArticleRowItem(
+            article: searchArticles[index],
+            searchText: searchController.text,
+            onHandleClickArticle: () =>
+                onHandleClickArticle(searchArticles[index]),
+          ),
         );
       },
     );

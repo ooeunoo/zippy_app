@@ -53,18 +53,14 @@ class _BasePageState extends State<BasePage> {
           children: [
             Material(
               elevation: 1,
-              color: AppColor.transparent,
+              color: AppThemeColors.transparent(context),
               child: Container(
                 height: kBottomNavigationBarHeight,
                 decoration: BoxDecoration(
                   color: AppThemeColors.background(context),
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(AppDimens.size(20)),
-                    topLeft: Radius.circular(AppDimens.size(20)),
-                  ),
                   border: Border(
                     top: BorderSide(
-                      color: AppThemeColors.background(context),
+                      color: AppThemeColors.bottomNavigationBarBorder(context),
                     ),
                   ),
                 ),
@@ -86,7 +82,7 @@ class _BasePageState extends State<BasePage> {
             ),
             if (!isKeyboardVisible)
               Positioned(
-                bottom: -16,
+                bottom: -20,
                 left: 0,
                 right: 0,
                 child: _buildAdWidget(),
@@ -97,7 +93,6 @@ class _BasePageState extends State<BasePage> {
       body: Navigator(
         key: Get.nestedKey(1), // 중첩 네비게이션을 위한 키
         initialRoute: Routes.board,
-
         onGenerateRoute: (settings) {
           switch (settings.name) {
             case Routes.board:
@@ -151,8 +146,8 @@ class _BasePageState extends State<BasePage> {
             child: AppSvg(
               iconPath,
               color: controller.currentIndex.value == index
-                  ? AppColor.graymodern100
-                  : AppColor.graymodern600,
+                  ? AppThemeColors.bottomNavigationBarSelectedItem(context)
+                  : AppThemeColors.bottomNavigationBarUnselectedItem(context),
             ),
           ),
         ),

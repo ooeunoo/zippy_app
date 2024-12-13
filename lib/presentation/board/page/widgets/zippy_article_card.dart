@@ -1,16 +1,23 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:get/get.dart';
+import 'package:zippy/app/services/article.service.dart';
+import 'package:zippy/app/services/bookmark.service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
+import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/format.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
+import 'package:zippy/app/widgets/app_spacer_v.dart';
+import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/article.model.dart';
 
-class ZippyArticleCard extends StatelessWidget {
+class ZippyArticleCard extends StatefulWidget {
   final Article article;
 
   const ZippyArticleCard({
@@ -19,13 +26,25 @@ class ZippyArticleCard extends StatelessWidget {
   });
 
   @override
+  State<ZippyArticleCard> createState() => _ZippyArticleCardState();
+}
+
+class _ZippyArticleCardState extends State<ZippyArticleCard> {
+  final ArticleService articleService = Get.find();
+  final BookmarkService bookmarkService = Get.find();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: MediaQuery.of(context).size.width * 2,
       child: Stack(
         children: [
           _buildMainImage(),
-          _buildTopTag(context),
           _buildBottomContent(context),
         ],
       ),
@@ -34,9 +53,9 @@ class ZippyArticleCard extends StatelessWidget {
 
   Widget _buildMainImage() {
     return Positioned.fill(
-      child: article.images.isNotEmpty
+      child: widget.article.images.isNotEmpty
           ? CachedNetworkImage(
-              imageUrl: article.images[0],
+              imageUrl: widget.article.images[0],
               fit: BoxFit.cover,
               placeholder: (context, url) => _buildPlaceholderImage(),
               errorWidget: (context, url, error) => _buildErrorImage(),
@@ -57,100 +76,100 @@ class ZippyArticleCard extends StatelessWidget {
 
   Widget _buildPlaceholderImage() {
     return Container(
-      color: AppColor.gray900,
-      child: const Icon(
+      color: AppThemeColors.background(context),
+      child: Icon(
         Icons.image,
-        color: AppColor.gray400,
+        color: AppThemeColors.iconColor(context),
       ),
     );
   }
 
   Widget _buildErrorImage() {
     return Container(
-      color: AppColor.gray900,
-      child: const Icon(
+      color: AppThemeColors.background(context),
+      child: Icon(
         Icons.error,
-        color: AppColor.gray400,
-      ),
-    );
-  }
-
-  Widget _buildTopTag(BuildContext context) {
-    return Positioned(
-      top: MediaQuery.of(context).padding.top + AppDimens.height(20),
-      left: AppDimens.width(16),
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: AppDimens.width(16),
-          vertical: AppDimens.height(6),
-        ),
-        decoration: BoxDecoration(
-          color: AppColor.graymodern400,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.25),
-              spreadRadius: 0,
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-          border: Border.all(
-            color: Colors.white.withOpacity(0.2),
-            width: 1,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AppText(
-              '테크',
-              style: Theme.of(context).textTheme.textXS.copyWith(
-                color: AppColor.white,
-                shadows: [
-                  Shadow(
-                    offset: const Offset(0, 1),
-                    blurRadius: 2.0,
-                    color: Colors.black.withOpacity(0.3),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+        color: AppThemeColors.iconColor(context),
       ),
     );
   }
 
   Widget _buildBottomContent(BuildContext context) {
+    final isDark = AppThemeColors.isDarkMode(context);
+    final baseColor = isDark ? AppColor.graymodern950 : AppColor.graymodern50;
+
     return Positioned(
       left: AppDimens.width(0),
-      right: AppDimens.width(0),
+      right: AppDimens.width(0), 
       bottom: AppDimens.height(0),
+      top: MediaQuery.of(context).size.width * 0.6,
       child: Container(
-        padding: EdgeInsets.all(AppDimens.width(16)),
+        padding: EdgeInsets.only(
+          left: AppDimens.width(16),
+          right: AppDimens.width(16),
+          bottom: AppDimens.height(16),
+        ),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
               Colors.transparent,
-              Colors.black.withOpacity(0.4),
-              Colors.black.withOpacity(0.7),
-              Colors.black.withOpacity(0.9),
-              Colors.black.withOpacity(0.95),
+              baseColor.withOpacity(0.05),
+              baseColor.withOpacity(0.1),
+              baseColor.withOpacity(0.15),
+              baseColor.withOpacity(0.2),
+              baseColor.withOpacity(0.25),
+              baseColor.withOpacity(0.3),
+              baseColor.withOpacity(0.35),
+              baseColor.withOpacity(0.4),
+              baseColor.withOpacity(0.45),
+              baseColor.withOpacity(0.5),
+              baseColor.withOpacity(0.55),
+              baseColor.withOpacity(0.6),
+              baseColor.withOpacity(0.65),
+              baseColor.withOpacity(0.7),
+              baseColor.withOpacity(0.75),
+              baseColor.withOpacity(0.8),
+              baseColor.withOpacity(0.85),
+              baseColor.withOpacity(0.9),
+              baseColor.withOpacity(0.95),
+              baseColor.withOpacity(0.98),
             ],
-            stops: const [0.0, 0.3, 0.5, 0.8, 1.0],
+            stops: const [
+              0.0,
+              0.05,
+              0.1,
+              0.15,
+              0.2,
+              0.25,
+              0.3,
+              0.35,
+              0.4,
+              0.45,
+              0.5,
+              0.55,
+              0.6,
+              0.65,
+              0.7,
+              0.75,
+              0.8,
+              0.85,
+              0.9,
+              0.95,
+              1.0
+            ],
           ),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildTitle(context),
-            const SizedBox(height: 8),
+            AppSpacerV(value: AppDimens.height(8)),
             _buildSummary(context),
-            const SizedBox(height: 16),
+            AppSpacerV(value: AppDimens.height(16)),
             _buildInteractionBar(context),
           ],
         ),
@@ -159,21 +178,24 @@ class ZippyArticleCard extends StatelessWidget {
   }
 
   Widget _buildTitle(BuildContext context) {
+    final isDark = AppThemeColors.isDarkMode(context);
+    final baseColor = isDark ? AppColor.graymodern950 : AppColor.graymodern50;
+
     return AppText(
-      article.title,
+      widget.article.title,
       style: Theme.of(context).textTheme.text2XL.copyWith(
-        color: AppColor.graymodern50,
-        fontWeight: FontWeight.bold,
+        color: AppThemeColors.textHighest(context),
+        fontWeight: AppFontWeight.bold,
         shadows: [
           Shadow(
-            offset: Offset(0, 1),
+            offset: const Offset(0, 1),
             blurRadius: 3.0,
-            color: Colors.black.withOpacity(0.8),
+            color: baseColor.withOpacity(0.2),
           ),
           Shadow(
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
             blurRadius: 6.0,
-            color: Colors.black.withOpacity(0.6),
+            color: baseColor.withOpacity(0.2),
           ),
         ],
       ),
@@ -183,20 +205,24 @@ class ZippyArticleCard extends StatelessWidget {
   }
 
   Widget _buildSummary(BuildContext context) {
+    final isDark = AppThemeColors.isDarkMode(context);
+    final baseColor = isDark ? AppColor.graymodern950 : AppColor.graymodern50;
+
     return AppText(
-      cleanMarkdownText(article.excerpt),
+      cleanMarkdownText(widget.article.excerpt),
       style: Theme.of(context).textTheme.textSM.copyWith(
-        color: AppColor.graymodern200,
-        fontSize: 14,
+        color: AppThemeColors.textHighest(context),
+        height: 1.5,
+        letterSpacing: -0.3,
         shadows: [
           Shadow(
-            offset: Offset(0, 1),
+            offset: const Offset(0, 1),
             blurRadius: 2.0,
-            color: Colors.black.withOpacity(0.6),
+            color: baseColor.withOpacity(0.6),
           ),
         ],
       ),
-      maxLines: 2,
+      maxLines: 3,
       overflow: TextOverflow.ellipsis,
     );
   }
@@ -208,33 +234,48 @@ class ZippyArticleCard extends StatelessWidget {
         Row(children: [
           _buildInteractionItem(
             icon: Icons.remove_red_eye_outlined,
-            text: '1200',
+            text: widget.article.metadata?.viewCount.toString() ?? '0',
             context: context,
           ),
           AppSpacerH(value: AppDimens.width(16)),
           _buildInteractionItem(
             icon: Icons.favorite_border,
-            text: '1200',
+            text: widget.article.metadata?.likeCount.toString() ?? '0',
             context: context,
           ),
           AppSpacerH(value: AppDimens.width(16)),
           _buildInteractionItem(
             icon: Icons.chat_bubble_outline,
-            text: '324',
+            text: widget.article.metadata?.commentCount.toString() ?? '0',
             context: context,
           ),
         ]),
         Row(children: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              articleService.onHandleShareArticle(widget.article);
+            },
             icon: Icon(Icons.share,
-                color: AppColor.white, size: AppDimens.size(30)),
+                color: AppThemeColors.iconColor(context),
+                size: AppDimens.size(24)),
           ),
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.bookmark_border_rounded,
-                color: AppColor.white, size: AppDimens.size(30)),
-          ),
+          Obx(() {
+            final isBookmarked =
+                bookmarkService.isBookmarked(widget.article.id!) != null;
+
+            return IconButton(
+              icon: isBookmarked
+                  ? Icon(Icons.bookmark,
+                      color: AppThemeColors.bookmarkedIconColor(context),
+                      size: AppDimens.size(24))
+                  : Icon(Icons.bookmark_border,
+                      color: AppThemeColors.iconColor(context),
+                      size: AppDimens.size(24)),
+              onPressed: () {
+                articleService.onHandleBookmarkArticle(widget.article);
+              },
+            );
+          })
         ]),
       ],
     );
@@ -247,12 +288,13 @@ class ZippyArticleCard extends StatelessWidget {
   }) {
     return Row(
       children: [
-        Icon(icon, color: AppColor.white, size: 20),
+        Icon(icon,
+            color: AppThemeColors.iconColor(context), size: AppDimens.size(20)),
         AppSpacerH(value: AppDimens.width(4)),
         AppText(
           text,
           style: Theme.of(context).textTheme.textSM.copyWith(
-                color: AppColor.white,
+                color: AppThemeColors.textMedium(context),
               ),
         ),
       ],

@@ -22,6 +22,7 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   final AppSearchController controller = Get.find();
   final TextEditingController _searchController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
   bool _showSearchBar = false;
   Timer? _debounce; // 추가
 
@@ -37,6 +38,7 @@ class _SearchPageState extends State<SearchPage> {
       _showSearchBar = true;
       _searchController.text = keyword;
     });
+
     controller.onHandleFetchArticlesByKeyword(keyword);
   }
 
@@ -96,44 +98,51 @@ class _SearchPageState extends State<SearchPage> {
     return AppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: AppColor.gray100),
-        onPressed: () {
-          setState(() {
-            _showSearchBar = false;
-            controller.searchArticles.clear(); // 검색 결과 초기화 추가
-          });
-        },
-      ),
+          icon:
+              Icon(Icons.arrow_back, color: AppThemeColors.iconColor(context)),
+          onPressed: () {
+            setState(() {
+              _showSearchBar = false;
+              controller.searchArticles.clear(); // 검색 결과 초기화 추가
+            });
+          },
+          padding: EdgeInsets.zero),
       title: TextField(
         controller: _searchController,
+        focusNode: _focusNode,
         style: Theme.of(context)
             .textTheme
             .textSM
-            .copyWith(color: AppColor.gray100),
+            .copyWith(color: AppThemeColors.textHigh(context)),
         decoration: InputDecoration(
           hintText: '검색어를 입력하세요',
           hintStyle: Theme.of(context)
               .textTheme
               .textSM
-              .copyWith(color: AppColor.gray400),
+              .copyWith(color: AppThemeColors.textLowest(context)),
           border: InputBorder.none,
         ),
-        autofocus: true,
         onChanged: _onSearchChanged, // 변경
       ),
       actions: [
-        IconButton(
-          icon: const Icon(Icons.clear, color: AppColor.gray100),
-          onPressed: () {
-            if (_searchController.text.isEmpty) {
-              setState(() {
-                _showSearchBar = false;
-              });
-            } else {
-              _searchController.clear();
-              controller.searchArticles.clear(); // 검색 결과 초기화 추가
-            }
-          },
+        Padding(
+          padding: EdgeInsets.only(right: AppDimens.width(12)),
+          child: IconButton(
+            icon: Icon(
+              Icons.clear,
+              color: AppThemeColors.iconColor(context),
+            ),
+            onPressed: () {
+              if (_searchController.text.isEmpty) {
+                setState(() {
+                  _showSearchBar = false;
+                });
+              } else {
+                _searchController.clear();
+                controller.searchArticles.clear(); // 검색 결과 초기화 추가
+              }
+            },
+          ),
         ),
       ],
     );
@@ -144,10 +153,10 @@ class _SearchPageState extends State<SearchPage> {
       title: AppText(
         '실시간 순위',
         style: Theme.of(context).textTheme.textXL.copyWith(
-            color: AppColor.gray100, fontWeight: AppFontWeight.medium),
+            color: AppThemeColors.textHighest(context),
+            fontWeight: AppFontWeight.medium),
       ),
-      automaticallyImplyLeading: false,
-      leading: const SizedBox.shrink(),
+      noLeading: true,
       actions: [
         Padding(
           padding: EdgeInsets.only(right: AppDimens.width(12)),
@@ -155,9 +164,10 @@ class _SearchPageState extends State<SearchPage> {
             onPressed: () {
               setState(() {
                 _showSearchBar = true;
+                _focusNode.requestFocus();
               });
             },
-            icon: const Icon(Icons.search, color: AppColor.gray100),
+            icon: Icon(Icons.search, color: AppThemeColors.iconColor(context)),
           ),
         ),
       ],
