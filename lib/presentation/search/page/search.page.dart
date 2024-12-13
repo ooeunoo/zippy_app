@@ -59,20 +59,29 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: _buildAppBar(),
       body: SafeArea(
-        child: _showSearchBar
-            ? Obx(() => SearchContent(
-                  searchArticles: controller.searchArticles.value,
-                  searchController: _searchController,
-                  onHandleClickArticle: controller.onHandleClickArticle,
-                ))
-            : Obx(
-                () => RankContent(
-                  trendingKeywords: controller.trendingKeywords.value,
-                  onKeywordTap: _handleSearch,
-                ),
-              ),
+        child: Column(
+          // Column 추가
+          children: [
+            Expanded(
+              // Expanded를 Column 내부로 이동
+              child: _showSearchBar
+                  ? Obx(() => SearchContent(
+                        searchArticles: controller.searchArticles.value,
+                        searchController: _searchController,
+                        onHandleClickArticle: controller.onHandleClickArticle,
+                      ))
+                  : Obx(
+                      () => RankContent(
+                        trendingKeywords: controller.trendingKeywords.value,
+                        onKeywordTap: _handleSearch,
+                      ),
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }

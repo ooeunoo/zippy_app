@@ -19,7 +19,7 @@ class SearchContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-      padding: EdgeInsets.all(AppDimens.width(20)),
+      // padding: EdgeInsets.all(AppDimens.width(20)),
       itemCount: searchArticles.length,
       separatorBuilder: (context, index) =>
           AppSpacerV(value: AppDimens.height(20)),

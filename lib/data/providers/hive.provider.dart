@@ -3,8 +3,6 @@
 import 'package:hive_flutter/adapters.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:zippy/data/entity/app_metadata.entity.dart';
-import 'package:zippy/data/entity/user_bookmark_item.entity.dart';
-import 'package:zippy/data/entity/user_bookmark_folder.entity.dart';
 
 String APP_METADATA_BOX = 'APP_METADATA';
 // String USER_BOOKMARKS_BOX = 'USER_BOOKMARKS';

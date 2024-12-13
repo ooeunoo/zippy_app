@@ -6,6 +6,7 @@ import 'package:zippy/app/services/auth.service.dart';
 import 'package:zippy/app/services/webview.service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
+import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/utils/constants.dart';
@@ -118,11 +119,11 @@ class ProfilePage extends GetView<ProfileController> {
             _buildProviderIcon(provider),
             AppSpacerH(value: AppDimens.width(12)),
             Expanded(
-              child: Text(
+              child: AppText(
                 email,
                 style: Theme.of(context).textTheme.textSM.copyWith(
                       color: AppColor.graymodern100,
-                      letterSpacing: 0.2,
+                      fontWeight: AppFontWeight.regular,
                     ),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -182,6 +183,7 @@ class ProfilePage extends GetView<ProfileController> {
   Widget _buildMenu(BuildContext context, WebViewService webViewService) {
     final List<MenuSection> menu = [
       _buildMySection(),
+      _buildSettingsSection(),
       _buildSupportSection(webViewService),
     ];
 
@@ -204,6 +206,21 @@ class ProfilePage extends GetView<ProfileController> {
           title: '저장한 콘텐츠',
           onTap: () {
             controller.onClickBookmark();
+          },
+        ),
+      ],
+    );
+  }
+
+  MenuSection _buildSettingsSection() {
+    return MenuSection(
+      section: '설정',
+      items: [
+        MenuItem(
+          icon: Assets.settings02,
+          title: '앱 설정',
+          onTap: () {
+            controller.onClickAppSettings();
           },
         ),
       ],

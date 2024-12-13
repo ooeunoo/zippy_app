@@ -67,7 +67,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
         automaticallyImplyLeading: true,
         title: AppText(
           "저장한 콘텐츠",
-          style: Theme.of(context).textTheme.textXL.copyWith(
+          style: Theme.of(context).textTheme.textMD.copyWith(
               color: AppColor.gray100, fontWeight: AppFontWeight.medium),
         ),
       ),

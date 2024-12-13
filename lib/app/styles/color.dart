@@ -1,5 +1,31 @@
 import 'package:flutter/material.dart';
 
+class AppThemeColors {
+  static final instance = AppThemeColors._();
+  AppThemeColors._();
+
+  static bool isDarkMode(BuildContext context) =>
+      MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+
+  static Color background(BuildContext context) =>
+      isDarkMode(context) ? AppColor.graymodern950 : AppColor.graymodern50;
+
+  static Color textHighest(BuildContext context) =>
+      isDarkMode(context) ? AppColor.graymodern100 : AppColor.graymodern900;
+
+  static Color textHigh(BuildContext context) =>
+      isDarkMode(context) ? AppColor.graymodern200 : AppColor.graymodern800;
+
+  static Color textMedium(BuildContext context) =>
+      isDarkMode(context) ? AppColor.graymodern300 : AppColor.graymodern700;
+
+  static Color textLow(BuildContext context) =>
+      isDarkMode(context) ? AppColor.graymodern400 : AppColor.graymodern600;
+
+  static Color textLowest(BuildContext context) =>
+      isDarkMode(context) ? AppColor.graymodern500 : AppColor.graymodern50;
+}
+
 abstract class AppColor {
   AppColor._();
 
@@ -19,17 +45,17 @@ abstract class AppColor {
   static const Color gray800 = Color(0xff182230);
   static const Color gray900 = Color(0xff101828);
 
-  static const Color brand25 = Color(0xffFCFAFF);
-  static const Color brand50 = Color(0xffF9F5FF);
-  static const Color brand100 = Color(0xffF4EBFF);
-  static const Color brand200 = Color(0xffE9D7FE);
-  static const Color brand300 = Color(0xffD6BBFB);
-  static const Color brand400 = Color(0xffB692F6);
-  static const Color brand500 = Color(0xff9E77ED);
-  static const Color brand600 = Color(0xff7F56D9);
-  static const Color brand700 = Color(0xff6941C6);
-  static const Color brand800 = Color(0xff53389E);
-  static const Color brand900 = Color(0xff42307D);
+  // static const Color brand25 = Color(0xffFCFAFF);
+  // static const Color brand50 = Color(0xffF9F5FF);
+  // static const Color brand100 = Color(0xffF4EBFF);
+  // static const Color brand200 = Color(0xffE9D7FE);
+  // static const Color brand300 = Color(0xffD6BBFB);
+  // static const Color brand400 = Color(0xffB692F6);
+  // static const Color brand500 = Color(0xff9E77ED);
+  // static const Color brand600 = Color(0xff7F56D9);
+  // static const Color brand700 = Color(0xff6941C6);
+  // static const Color brand800 = Color(0xff53389E);
+  // static const Color brand900 = Color(0xff42307D);
 
   static const Color error25 = Color(0xffFFFBFA);
   static const Color error50 = Color(0xffFEF3F2);
@@ -200,6 +226,20 @@ abstract class AppColor {
   static const Color teal900 = Color(0xff124E48);
   static const Color teal950 = Color(0xff0A2926);
 
+// 부드러운 파란색 계열의 브랜드 컬러
+// 라이트/다크 모드 모두에서 잘 보이는 부드러운 파란색 계열
+  static const Color brand25 = Color(0xffF6FAFF); // 배경 - 라이트 모드의 미세한 강조
+  static const Color brand50 = Color(0xffF0F7FF); // 라이트 모드 호버 배경
+  static const Color brand100 = Color(0xffE3F1FF); // 연한 강조 배경
+  static const Color brand200 = Color(0xffC7E2FF); // 밝은 강조 요소
+  static const Color brand300 = Color(0xff94C6FF); // 중간 강조 (라이트 모드 텍스트 가능)
+  static const Color brand400 = Color(0xff5AA5F5); // 진한 강조 (라이트 모드 주요 텍스트)
+  static const Color brand500 = Color(0xff4289DB); // 메인 브랜드 컬러
+  static const Color brand600 = Color(0xff3474C2); // 진한 강조
+  static const Color brand700 = Color(0xff2860A9); // 다크 모드 텍스트
+  static const Color brand800 = Color(0xff1E4B85); // 매우 진한 강조
+  static const Color brand900 = Color(0xff153862); // 다크 모드 진한 텍스트
+  static const Color brand950 = Color(0xff0F2847); // 가장 진한 강조
   static const Color cyan25 = Color(0xffF5FEFF);
   static const Color cyan50 = Color(0xffECFDFF);
   static const Color cyan100 = Color(0xffCFF9FE);

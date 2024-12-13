@@ -17,7 +17,12 @@ class AppMetadataDatasourceImpl implements AppMetadataDatasource {
 
   AppMetadataEntity _getOrCreateEntity() {
     if (box.isEmpty) {
-      final newEntity = AppMetadataEntity(lookaround: false);
+      final newEntity = AppMetadataEntity(
+        lookaround: false,
+        themeMode: 'system',
+        onBoardingBoardPage: false,
+        onBoardingBookmarkPage: false,
+      );
       box.add(newEntity); // 키 없이 저장
       return newEntity;
     }
@@ -47,9 +52,19 @@ class AppMetadataDatasourceImpl implements AppMetadataDatasource {
           case 'lookaround':
             entity.lookaround = value as bool;
             break;
+          case 'themeMode':
+            entity.themeMode = value as String;
+            break;
+          case 'onBoardingBoardPage':
+            entity.onBoardingBoardPage = value as bool;
+            break;
+          case 'onBoardingBookmarkPage':
+            entity.onBoardingBookmarkPage = value as bool;
+            break;
         }
       });
 
+      print('entity.themeMode: ${entity.themeMode}');
       await entity.save();
       return Right(entity.toModel());
     } catch (e, stackTrace) {

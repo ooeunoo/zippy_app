@@ -10,7 +10,7 @@ class GetRecommendedArticlesParams extends Equatable {
 
   const GetRecommendedArticlesParams({
     this.userId,
-    this.timeRange = '7 days',
+    this.timeRange = '100 days',
     this.excludeViewed = true,
     this.limit = 100,
   });

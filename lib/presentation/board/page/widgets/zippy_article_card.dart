@@ -20,14 +20,12 @@ class ZippyArticleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(article.id);
     return SizedBox(
       height: MediaQuery.of(context).size.width * 2,
       child: Stack(
         children: [
           _buildMainImage(),
           _buildTopTag(context),
-          _buildBookmarkButton(),
           _buildBottomContent(context),
         ],
       ),
@@ -79,11 +77,11 @@ class ZippyArticleCard extends StatelessWidget {
 
   Widget _buildTopTag(BuildContext context) {
     return Positioned(
-      top: AppDimens.height(16),
+      top: MediaQuery.of(context).padding.top + AppDimens.height(20),
       left: AppDimens.width(16),
       child: Container(
         padding: EdgeInsets.symmetric(
-          horizontal: AppDimens.width(12),
+          horizontal: AppDimens.width(16),
           vertical: AppDimens.height(6),
         ),
         decoration: BoxDecoration(
@@ -119,31 +117,6 @@ class ZippyArticleCard extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBookmarkButton() {
-    return Positioned(
-      top: AppDimens.height(16),
-      right: AppDimens.width(16),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: EdgeInsets.all(AppDimens.width(8)),
-          child: const Icon(
-            Icons.bookmark_border_rounded,
-            color: AppColor.white,
-            size: 24,
-            shadows: [
-              Shadow(
-                color: AppColor.black,
-                blurRadius: 12,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -188,7 +161,7 @@ class ZippyArticleCard extends StatelessWidget {
   Widget _buildTitle(BuildContext context) {
     return AppText(
       article.title,
-      style: Theme.of(context).textTheme.displayXS.copyWith(
+      style: Theme.of(context).textTheme.text2XL.copyWith(
         color: AppColor.graymodern50,
         fontWeight: FontWeight.bold,
         shadows: [
@@ -230,27 +203,39 @@ class ZippyArticleCard extends StatelessWidget {
 
   Widget _buildInteractionBar(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildInteractionItem(
-          icon: Icons.favorite_border,
-          text: '1200',
-          context: context,
-        ),
-        AppSpacerH(value: AppDimens.width(16)),
-        _buildInteractionItem(
-          icon: Icons.chat_bubble_outline,
-          text: '324',
-          context: context,
-        ),
-        AppSpacerH(value: AppDimens.width(16)),
-        const Icon(Icons.share, color: AppColor.white, size: 20),
-        const Spacer(),
-        AppText(
-          '2.5만 조회',
-          style: Theme.of(context).textTheme.textSM.copyWith(
-                color: AppColor.white,
-              ),
-        ),
+        Row(children: [
+          _buildInteractionItem(
+            icon: Icons.remove_red_eye_outlined,
+            text: '1200',
+            context: context,
+          ),
+          AppSpacerH(value: AppDimens.width(16)),
+          _buildInteractionItem(
+            icon: Icons.favorite_border,
+            text: '1200',
+            context: context,
+          ),
+          AppSpacerH(value: AppDimens.width(16)),
+          _buildInteractionItem(
+            icon: Icons.chat_bubble_outline,
+            text: '324',
+            context: context,
+          ),
+        ]),
+        Row(children: [
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.share,
+                color: AppColor.white, size: AppDimens.size(30)),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.bookmark_border_rounded,
+                color: AppColor.white, size: AppDimens.size(30)),
+          ),
+        ]),
       ],
     );
   }

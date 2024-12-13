@@ -15,6 +15,8 @@ import 'package:zippy/presentation/profile/page/profile.page.dart';
 import 'package:zippy/presentation/search/binding/search.binding.dart';
 import 'package:zippy/presentation/search/page/search.page.dart';
 
+double AD_HEIGHT = AppDimens.height(32);
+
 class BasePage extends StatefulWidget {
   const BasePage({super.key});
 
@@ -43,55 +45,52 @@ class _BasePageState extends State<BasePage> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
     return Scaffold(
       bottomNavigationBar: SafeArea(
         child: Stack(
+          clipBehavior: Clip.none,
           children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Obx(() => Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(AppDimens.size(20)),
-                          topLeft: Radius.circular(AppDimens.size(20)),
-                        ),
-                        border: const Border(
-                          top: BorderSide(
-                            color: AppColor.graymodern900,
-                          ),
-                        ),
-                      ),
-                      height: AppDimens.height(80),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(AppDimens.size(20)),
-                          topRight: Radius.circular(AppDimens.size(20)),
-                        ),
-                        child: BottomNavigationBar(
-                          elevation: 1,
-                          currentIndex: controller.currentIndex.value,
-                          onTap: controller.changeTab,
-                          selectedFontSize: 0,
-                          unselectedFontSize: 0,
-                          type: BottomNavigationBarType.fixed,
-                          items: [
-                            tabItem(Assets.home01, '', 0),
-                            tabItem(Assets.search, '', 1),
-                            tabItem(Assets.user01, '', 2),
-                          ],
-                        ),
-                      ),
-                    )),
-              ],
+            Material(
+              elevation: 1,
+              color: AppColor.transparent,
+              child: Container(
+                height: kBottomNavigationBarHeight,
+                decoration: BoxDecoration(
+                  color: AppThemeColors.background(context),
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(AppDimens.size(20)),
+                    topLeft: Radius.circular(AppDimens.size(20)),
+                  ),
+                  border: Border(
+                    top: BorderSide(
+                      color: AppThemeColors.background(context),
+                    ),
+                  ),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(AppDimens.size(20)),
+                    topRight: Radius.circular(AppDimens.size(20)),
+                  ),
+                  child: Obx(() => Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          _buildNavItem(Assets.home01, 0),
+                          _buildNavItem(Assets.search, 1),
+                          _buildNavItem(Assets.user01, 2),
+                        ],
+                      )),
+                ),
+              ),
             ),
-            Positioned(
-              bottom: -12,
-              left: 0,
-              right: 0,
-              child: _buildAdWidget(),
-            ),
+            if (!isKeyboardVisible)
+              Positioned(
+                bottom: -16,
+                left: 0,
+                right: 0,
+                child: _buildAdWidget(),
+              ),
           ],
         ),
       ),
@@ -139,19 +138,25 @@ class _BasePageState extends State<BasePage> {
     );
   }
 
-  BottomNavigationBarItem tabItem(String iconPath, String label, int index) {
-    return BottomNavigationBarItem(
-      icon: Container(
-        padding: EdgeInsets.only(bottom: 0), // 하단 패딩 제거
-        height: 24, // 아이콘 컨테이너 높이 지정
-        child: AppSvg(
-          iconPath,
-          color: controller.currentIndex.value == index
-              ? AppColor.graymodern100
-              : AppColor.graymodern600,
+  Widget _buildNavItem(String iconPath, int index) {
+    return GestureDetector(
+      onTap: () => controller.changeTab(index),
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        height: kBottomNavigationBarHeight,
+        padding: EdgeInsets.symmetric(horizontal: AppDimens.width(20)),
+        child: Center(
+          child: SizedBox(
+            height: AppDimens.height(24),
+            child: AppSvg(
+              iconPath,
+              color: controller.currentIndex.value == index
+                  ? AppColor.graymodern100
+                  : AppColor.graymodern600,
+            ),
+          ),
         ),
       ),
-      label: label,
     );
   }
 
@@ -164,23 +169,25 @@ class _BasePageState extends State<BasePage> {
         return const SizedBox.shrink();
       }
 
-      // 각 AdWidget 인스턴스에 유니크한 키를 부여
-      return Padding(
-        padding: EdgeInsets.symmetric(horizontal: AppDimens.width(10)),
-        child: SizedBox(
-          width: double.infinity,
-          height: 32,
-          child: Builder(
-            builder: (context) {
-              try {
-                return AdWidget(
-                    key: ValueKey('ad_widget_${ad.hashCode}'), // 유니크한 키 추가
-                    ad: ad);
-              } catch (e) {
-                print('Error building AdWidget: $e');
-                return const SizedBox.shrink();
-              }
-            },
+      return GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTapDown: (_) => {},
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: AppDimens.width(0)),
+          child: SizedBox(
+            width: double.infinity,
+            height: AD_HEIGHT,
+            child: Builder(
+              builder: (context) {
+                try {
+                  return AdWidget(
+                      key: ValueKey('ad_widget_${ad.hashCode}'), ad: ad);
+                } catch (e) {
+                  print('Error building AdWidget: $e');
+                  return const SizedBox.shrink();
+                }
+              },
+            ),
           ),
         ),
       );

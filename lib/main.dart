@@ -3,6 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/data/providers/hive.provider.dart';
+import 'package:zippy/data/sources/app_metadata.source.dart';
+import 'package:zippy/domain/repositories/app_metadata.repository.dart';
+import 'package:zippy/domain/usecases/get_app_metadata.usecase.dart';
 import 'package:zippy/zippy.app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +23,7 @@ void main() async {
       // }
 
       await initHive();
+      await initAppMetadata();
       await MobileAds.instance.initialize();
       await dotenv.load(fileName: kReleaseMode ? Assets.env : Assets.envDev);
       await initializeDateFormatting('ko_KR', null);
@@ -42,4 +46,10 @@ Future<void> initHive() async {
   await hiveProvider.init();
   await hiveProvider.openBox();
   Get.put<HiveProvider>(hiveProvider, permanent: true);
+}
+
+Future<void> initAppMetadata() async {
+  Get.put<AppMetadataDatasource>(AppMetadataDatasourceImpl());
+  Get.put<AppMetadataRepository>(AppMetadataRepositoryImpl(Get.find()));
+  Get.put<GetAppMetadata>(GetAppMetadata(Get.find()));
 }

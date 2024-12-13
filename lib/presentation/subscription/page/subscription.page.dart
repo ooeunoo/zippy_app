@@ -26,7 +26,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(context),
+      appBar: _buildAppBar(context),
       body: Padding(
         padding: EdgeInsets.symmetric(
             horizontal: AppDimens.width(20), vertical: AppDimens.height(10)),
@@ -45,14 +45,14 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
     );
   }
 
-  PreferredSizeWidget appBar(BuildContext context) {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppHeaderWrap(
       child: AppHeader(
         backgroundColor: AppColor.transparent,
         automaticallyImplyLeading: true,
         title: AppText(
           "나의 채널 관리하기",
-          style: Theme.of(context).textTheme.textXL.copyWith(
+          style: Theme.of(context).textTheme.textMD.copyWith(
               color: AppColor.gray100, fontWeight: AppFontWeight.medium),
         ),
       ),

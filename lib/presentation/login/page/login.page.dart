@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
@@ -48,11 +47,10 @@ class LoginPage extends GetView<LoginController> {
                       width: AppDimens.width(70),
                       color: AppColor.transparent,
                       borderColor: AppColor.transparent,
-                      titleStyle:
-                          Theme.of(context).textTheme.display2XL.copyWith(
-                                color: AppColor.white,
-                                fontWeight: AppFontWeight.semibold,
-                              ),
+                      titleStyle: Theme.of(context).textTheme.text2XL.copyWith(
+                            color: AppColor.white,
+                            fontWeight: AppFontWeight.semibold,
+                          ),
                       onPressed: () => Get.offAllNamed(Routes.base),
                     ),
                   ),

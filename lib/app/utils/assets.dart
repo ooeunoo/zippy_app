@@ -22,7 +22,7 @@ class Assets {
   static const String message = 'assets/icons/message.svg';
   static const String flag01 = 'assets/icons/flag-01.svg';
   static const String dotsVertical = 'assets/icons/dots-vertical.svg';
-
+  static const String settings02 = 'assets/icons/settings-02.svg';
   // images
   static const String humorunivLogo = 'assets/images/humoruniv.png';
   static const String dcinsideLogo = 'assets/images/dcinside.png';

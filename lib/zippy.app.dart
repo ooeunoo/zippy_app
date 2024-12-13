@@ -19,8 +19,8 @@ class ZippyApp extends StatefulWidget {
 class _ZippyAppState extends State<ZippyApp> {
   @override
   void initState() {
-    initPlugin();
     super.initState();
+    initPlugin();
   }
 
   @override
@@ -35,7 +35,9 @@ class _ZippyAppState extends State<ZippyApp> {
             initialBinding: ZippyBindings(),
             getPages: AppPages.routes,
             initialRoute: AppPages.initial,
-            theme: themeDark(context),
+            theme: AppTheme.lightTheme(context),
+            darkTheme: AppTheme.darkTheme(context),
+            themeMode: ThemeMode.system, // 시스템 설정만 따르도록 고정
             translations: ZippyTranslations(),
             locale: Get.deviceLocale,
             fallbackLocale: const Locale('ko', 'KR'),
@@ -45,7 +47,6 @@ class _ZippyAppState extends State<ZippyApp> {
         });
   }
 
-  // App Tracking Transparency
   Future<void> initPlugin() async {
     if (await AppTrackingTransparency.trackingAuthorizationStatus ==
         TrackingStatus.notDetermined) {

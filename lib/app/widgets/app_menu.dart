@@ -43,7 +43,7 @@ class AppMenu extends StatelessWidget {
 
   Widget _buildSection(BuildContext context, String sectionTitle) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: AppDimens.height(5)),
+      padding: EdgeInsets.symmetric(vertical: AppDimens.height(8)),
       child: AppText(sectionTitle,
           style: Theme.of(context)
               .textTheme
@@ -59,7 +59,7 @@ class AppMenu extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.symmetric(
-          horizontal: AppDimens.width(10), vertical: AppDimens.height(12)),
+          horizontal: AppDimens.width(10), vertical: AppDimens.height(8)),
       child: GestureDetector(
         onTap: () {
           onTap();
@@ -78,7 +78,7 @@ class AppMenu extends StatelessWidget {
                   maxLines: 1,
                   style: Theme.of(context)
                       .textTheme
-                      .textLG
+                      .textMD
                       .copyWith(color: AppColor.graymodern100)),
             ),
           ],
