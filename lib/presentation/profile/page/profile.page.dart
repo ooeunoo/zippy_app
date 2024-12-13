@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:in_app_review/in_app_review.dart';
-import 'package:random_avatar/random_avatar.dart';
 import 'package:zippy/app/services/auth.service.dart';
 import 'package:zippy/app/services/webview.service.dart';
 import 'package:zippy/app/styles/color.dart';
@@ -188,7 +187,6 @@ class ProfilePage extends GetView<ProfileController> {
   Widget _buildMenu(BuildContext context, WebViewService webViewService) {
     final List<MenuSection> menu = [
       _buildMySection(),
-      _buildSettingsSection(),
       _buildSupportSection(webViewService),
     ];
 

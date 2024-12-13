@@ -31,6 +31,7 @@ import 'package:zippy/domain/usecases/get_sources.usecase.dart';
 import 'package:zippy/domain/usecases/update_user_interaction.usecase.dart';
 import 'package:zippy/presentation/board/page/widgets/bookmark_folder_modal.dart';
 import 'package:zippy/presentation/board/page/widgets/bottom_support_menu.dart';
+import 'package:zippy/presentation/board/page/widgets/zippy_article_comment.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_article_news_view.dart';
 import 'dart:async';
 
@@ -179,6 +180,15 @@ class ArticleService extends GetxService {
     Get.to(
       () => view,
       transition: Transition.rightToLeftWithFade,
+    );
+  }
+
+  void onHandleArticleComment(Article article) {
+    showCommentBottomSheet(
+      Get.context!,
+      article.id!,
+      onHandleGetArticleComments,
+      onHandleCreateArticleComment,
     );
   }
 

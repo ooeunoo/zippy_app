@@ -35,7 +35,7 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
   DateTime? _startTime;
 
   final scrollController = ScrollController();
-  final PageController _pageController = PageController();
+  final PageController pageController = PageController();
   final Map<String, GlobalKey> sectionKeys = {};
   final Map<String, bool> expandedSections = {};
 
@@ -51,7 +51,7 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
 
   @override
   void dispose() {
-    _pageController.dispose();
+    pageController.dispose();
     scrollController.dispose();
     _handleUserInteraction();
 

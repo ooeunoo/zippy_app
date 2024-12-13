@@ -13,7 +13,6 @@ import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/article_comment.model.dart';
 import 'package:zippy/domain/model/params/create_article_comment.params.dart';
-import 'package:zippy/presentation/login/page/login.page.dart';
 
 void showCommentBottomSheet(
     BuildContext context,
@@ -91,9 +90,9 @@ class _ZippyArticleCommentState extends State<ZippyArticleComment> {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.8,
-      decoration: const BoxDecoration(
-        color: AppColor.graymodern950,
-        borderRadius: BorderRadius.only(
+      decoration: BoxDecoration(
+        color: AppThemeColors.bottomSheetBackground(context),
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
         ),
@@ -114,9 +113,11 @@ class _ZippyArticleCommentState extends State<ZippyArticleComment> {
         horizontal: AppDimens.width(20),
         vertical: AppDimens.height(15),
       ),
-      decoration: const BoxDecoration(
-        border:
-            Border(bottom: BorderSide(color: AppColor.graymodern800, width: 1)),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom:
+              BorderSide(color: AppThemeColors.dividerColor(context), width: 1),
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -124,12 +125,14 @@ class _ZippyArticleCommentState extends State<ZippyArticleComment> {
           AppText(
             "댓글",
             style: Theme.of(context).textTheme.textXL.copyWith(
-                  color: AppColor.graymodern100,
+                  color: AppThemeColors.textHigh(context),
                 ),
           ),
           IconButton(
             onPressed: () => Get.back(),
-            icon: const Icon(Icons.close, color: AppColor.graymodern100),
+            icon: Icon(Icons.close,
+                color: AppThemeColors.iconColor(context),
+                size: AppDimens.size(24)),
           ),
         ],
       ),
@@ -191,10 +194,12 @@ class _ZippyArticleCommentState extends State<ZippyArticleComment> {
         children: [
           Container(
             padding: EdgeInsets.all(AppDimens.width(20)),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               border: Border(
-                  top: BorderSide(color: AppColor.graymodern800, width: 1)),
-              color: AppColor.graymodern950,
+                  top: BorderSide(
+                      color: AppThemeColors.bottomSheetBorder(context),
+                      width: 1)),
+              color: AppThemeColors.bottomSheetBackground(context),
             ),
             child: InkWell(
               onTap: () => Get.toNamed(Routes.login),
@@ -203,9 +208,10 @@ class _ZippyArticleCommentState extends State<ZippyArticleComment> {
                   vertical: AppDimens.height(12),
                 ),
                 decoration: BoxDecoration(
-                  color: AppColor.graymodern900,
+                  color: AppThemeColors.bottomSheetBackground(context),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: AppColor.graymodern800),
+                  border: Border.all(
+                      color: AppThemeColors.bottomSheetBorder(context)),
                 ),
                 child: Padding(
                   padding: EdgeInsets.symmetric(
@@ -214,7 +220,7 @@ class _ZippyArticleCommentState extends State<ZippyArticleComment> {
                   child: AppText(
                     "🔒 로그인 후 댓글을 작성할 수 있습니다",
                     style: Theme.of(context).textTheme.textMD.copyWith(
-                          color: AppColor.graymodern400,
+                          color: AppThemeColors.textLow(context),
                         ),
                   ),
                 ),
@@ -231,9 +237,11 @@ class _ZippyArticleCommentState extends State<ZippyArticleComment> {
       children: [
         Container(
           padding: EdgeInsets.all(AppDimens.width(20)),
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             border: Border(
-                top: BorderSide(color: AppColor.graymodern800, width: 1)),
+                top: BorderSide(
+                    color: AppThemeColors.bottomSheetBorder(context),
+                    width: 1)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -247,17 +255,17 @@ class _ZippyArticleCommentState extends State<ZippyArticleComment> {
                       AppText(
                         '${replyingTo!.author?.name ?? "익명"}님에게 답글 작성 중',
                         style: Theme.of(context).textTheme.textSM.copyWith(
-                              color: AppColor.graymodern400,
+                              color: AppThemeColors.textMedium(context),
                             ),
                       ),
                       AppSpacerH(value: AppDimens.width(8)),
                       GestureDetector(
                         onTap: () => setState(() => replyingTo = null),
                         behavior: HitTestBehavior.opaque,
-                        child: const Icon(
+                        child: Icon(
                           Icons.close,
-                          size: 16,
-                          color: AppColor.graymodern400,
+                          size: AppDimens.size(16),
+                          color: AppThemeColors.iconColor(context),
                         ),
                       ),
                     ],
@@ -267,23 +275,43 @@ class _ZippyArticleCommentState extends State<ZippyArticleComment> {
                 children: [
                   Expanded(
                     child: TextField(
+                      onTapOutside: (event) => FocusScope.of(context).unfocus(),
                       controller: _commentController,
                       style: Theme.of(context).textTheme.textMD.copyWith(
-                            color: AppColor.graymodern100,
+                            color: AppThemeColors.textHigh(context),
                           ),
                       decoration: InputDecoration(
                         hintText:
                             replyingTo == null ? "댓글을 입력하세요" : "답글을 입력하세요",
                         hintStyle: Theme.of(context).textTheme.textMD.copyWith(
-                              color: AppColor.graymodern400,
+                              color: AppThemeColors.textLow(context),
                             ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
-                          borderSide:
-                              const BorderSide(color: AppColor.graymodern800),
+                          borderSide: BorderSide(
+                            color:
+                                AppThemeColors.bottomSheetSecondaryBackground(
+                                    context),
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: BorderSide(
+                            color:
+                                AppThemeColors.bottomSheetSecondaryBackground(
+                                    context),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: const BorderSide(
+                            width: 2,
+                            color: AppColor.brand600,
+                          ),
                         ),
                         filled: true,
-                        fillColor: AppColor.graymodern900,
+                        fillColor:
+                            AppThemeColors.bottomSheetBackground(context),
                       ),
                     ),
                   ),
@@ -324,19 +352,20 @@ class CommentItem extends StatelessWidget {
         if (isReply)
           Padding(
             padding: EdgeInsets.only(right: AppDimens.width(8)),
-            child: const Icon(
+            child: Icon(
               Icons.subdirectory_arrow_right,
-              size: 16,
-              color: AppColor.graymodern600,
+              size: AppDimens.size(16),
+              color: AppThemeColors.iconColor(context),
             ),
           ),
         CircleAvatar(
           radius: 15,
-          backgroundColor: AppColor.graymodern800,
+          backgroundColor:
+              AppThemeColors.bottomSheetSecondaryBackground(context),
           child: AppText(
             (comment.author?.name ?? "익명")[0],
             style: Theme.of(context).textTheme.textSM.copyWith(
-                  color: AppColor.graymodern100,
+                  color: AppThemeColors.textHigh(context),
                 ),
           ),
         ),
@@ -350,14 +379,14 @@ class CommentItem extends StatelessWidget {
                   AppText(
                     comment.author?.name ?? "익명",
                     style: Theme.of(context).textTheme.textSM.copyWith(
-                          color: AppColor.graymodern100,
+                          color: AppThemeColors.textHigh(context),
                         ),
                   ),
                   AppSpacerH(value: AppDimens.width(8)),
                   AppText(
                     comment.createdAt.timeAgo(),
                     style: Theme.of(context).textTheme.textXS.copyWith(
-                          color: AppColor.graymodern400,
+                          color: AppThemeColors.textLow(context),
                         ),
                   ),
                 ],
@@ -366,7 +395,7 @@ class CommentItem extends StatelessWidget {
               AppText(
                 comment.content,
                 style: Theme.of(context).textTheme.textSM.copyWith(
-                      color: AppColor.graymodern200,
+                      color: AppThemeColors.textHigh(context),
                     ),
               ),
               // 대댓글이 아닐 때만 답글달기 버튼 표시

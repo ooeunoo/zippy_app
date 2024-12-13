@@ -1,6 +1,3 @@
-import 'dart:math';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
@@ -13,7 +10,6 @@ import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/format.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
-import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/article.model.dart';
 
@@ -96,13 +92,13 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
 
   Widget _buildBottomContent(BuildContext context) {
     final isDark = AppThemeColors.isDarkMode(context);
-    final baseColor = isDark ? AppColor.graymodern950 : AppColor.graymodern50;
+    final baseColor = isDark ? AppColor.graymodern950 : AppColor.graymodern100;
 
     return Positioned(
       left: AppDimens.width(0),
-      right: AppDimens.width(0), 
+      right: AppDimens.width(0),
       bottom: AppDimens.height(0),
-      top: MediaQuery.of(context).size.width * 0.6,
+      top: MediaQuery.of(context).size.width * 0.98,
       child: Container(
         padding: EdgeInsets.only(
           left: AppDimens.width(16),
@@ -248,6 +244,9 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
             icon: Icons.chat_bubble_outline,
             text: widget.article.metadata?.commentCount.toString() ?? '0',
             context: context,
+            onTap: () {
+              articleService.onHandleArticleComment(widget.article);
+            },
           ),
         ]),
         Row(children: [
@@ -285,19 +284,24 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
     required IconData icon,
     required String text,
     required BuildContext context,
+    Function()? onTap,
   }) {
-    return Row(
-      children: [
-        Icon(icon,
-            color: AppThemeColors.iconColor(context), size: AppDimens.size(20)),
-        AppSpacerH(value: AppDimens.width(4)),
-        AppText(
-          text,
-          style: Theme.of(context).textTheme.textSM.copyWith(
-                color: AppThemeColors.textMedium(context),
-              ),
-        ),
-      ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Row(
+        children: [
+          Icon(icon,
+              color: AppThemeColors.iconColor(context),
+              size: AppDimens.size(20)),
+          AppSpacerH(value: AppDimens.width(4)),
+          AppText(
+            text,
+            style: Theme.of(context).textTheme.textSM.copyWith(
+                  color: AppThemeColors.textMedium(context),
+                ),
+          ),
+        ],
+      ),
     );
   }
 }

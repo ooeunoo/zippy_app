@@ -15,11 +15,14 @@ class AppThemeColors {
   static Color bottomSheetBackground(BuildContext context) =>
       isDarkMode(context) ? AppColor.graymodern900 : AppColor.graymodern50;
 
+  static Color bottomSheetSecondaryBackground(BuildContext context) =>
+      isDarkMode(context) ? AppColor.graymodern800 : AppColor.graymodern300;
+
   static Color bottomSheetBorder(BuildContext context) =>
-      isDarkMode(context) ? AppColor.graymodern900 : AppColor.graymodern100;
+      isDarkMode(context) ? AppColor.graymodern900 : AppColor.graymodern200;
 
   static Color bottomNavigationBarBorder(BuildContext context) =>
-      isDarkMode(context) ? AppColor.graymodern700 : AppColor.graymodern200;
+      isDarkMode(context) ? AppColor.graymodern800 : AppColor.graymodern200;
 
   static Color bottomNavigationBarSelectedItem(BuildContext context) =>
       isDarkMode(context) ? AppColor.graymodern100 : AppColor.graymodern900;
