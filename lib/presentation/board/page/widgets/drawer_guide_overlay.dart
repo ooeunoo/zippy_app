@@ -30,13 +30,19 @@ class _DrawerGuideOverlayState extends State<DrawerGuideOverlay>
   late final Animation<double> _edgeAnimation;
   final AppMetadataService _appMetadataService = Get.find();
   bool _showGuide = false;
+  bool _isInitialCheck = true;
 
   @override
   void initState() {
     super.initState();
+    _setupAnimations();
+    _initGuideCheck();
+  }
+
+  void _setupAnimations() {
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2000),
+      duration: const Duration(milliseconds: 3000),
     );
 
     _animation = TweenSequence<double>([
@@ -97,32 +103,39 @@ class _DrawerGuideOverlayState extends State<DrawerGuideOverlay>
       parent: _controller,
       curve: const Interval(0.0, 0.3, curve: Curves.easeOut),
     ));
-
-    _checkIfShouldShowGuide();
   }
 
-  Future<void> _checkIfShouldShowGuide() async {
-    final result = await _appMetadataService.onHandleFetchOnBoardingBoardPage();
-    if (!result) {
-      _startAnimation();
-      await _appMetadataService.onHandleUpdateOnBoardingBoardPage();
-    } else {
-      setState(() {
-        _showGuide = false;
-      });
-    }
-  }
+  Future<void> _initGuideCheck() async {
+    if (!_isInitialCheck) return;
+    _isInitialCheck = false;
 
-  void _startAnimation() {
-    setState(() {
-      _showGuide = true; // 추가
-    });
-    _controller.repeat();
-    Future.delayed(const Duration(milliseconds: 3500), () {
-      if (mounted) {
-        _controller.stop();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final hasSeenGuide =
+          await _appMetadataService.getOnBoardingBoardPageStatus();
+      print('Initial guide check - Has seen guide: $hasSeenGuide');
+
+      if (!hasSeenGuide && mounted) {
         setState(() {
-          _showGuide = false;
+          _showGuide = true;
+        });
+        _controller.repeat();
+
+        // Update the status and stop animation after delay
+        Future.delayed(const Duration(milliseconds: 3500), () async {
+          if (!mounted) return;
+
+          final result =
+              await _appMetadataService.updateOnBoardingBoardPage(status: true);
+          result.fold(
+              (failure) => print('Failed to update guide status: $failure'),
+              (_) => print('Successfully updated guide status'));
+
+          _controller.stop();
+          if (mounted) {
+            setState(() {
+              _showGuide = false;
+            });
+          }
         });
       }
     });

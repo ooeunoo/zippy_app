@@ -24,7 +24,8 @@ void showCommentBottomSheet(
         articleId: articleId,
         onHandleGetArticleComments: onHandleGetArticleComments,
         onHandleCreateArticleComment: onHandleCreateArticleComment),
-    isScrollControlled: true,
+    isScrollControlled: false,
+    enableDrag: true,
     backgroundColor: Colors.transparent,
   );
 }
@@ -100,7 +101,7 @@ class _ZippyArticleCommentState extends State<ZippyArticleComment> {
       child: Column(
         children: [
           _buildBottomSheetHeader(context),
-          _buildCommentList(context, comments),
+          Expanded(child: _buildCommentList(context, comments)),
           _buildCommentInput(context),
         ],
       ),
@@ -144,46 +145,43 @@ class _ZippyArticleCommentState extends State<ZippyArticleComment> {
     // 최상위 댓글만 필터링
     final topLevelComments = comments.where((c) => c.parentId == null).toList();
 
-    return Expanded(
-      child: ListView.builder(
-        padding: EdgeInsets.all(AppDimens.width(20)),
-        itemCount: topLevelComments.length,
-        itemBuilder: (context, index) {
-          final comment = topLevelComments[index];
-          // 해당 댓글의 대댓글들 찾기
-          final replies =
-              comments.where((c) => c.parentId == comment.id).toList();
+    return ListView.builder(
+      padding: EdgeInsets.all(AppDimens.width(20)),
+      itemCount: topLevelComments.length,
+      itemBuilder: (context, index) {
+        final comment = topLevelComments[index];
+        // 해당 댓글의 대댓글들 찾기
+        final replies =
+            comments.where((c) => c.parentId == comment.id).toList();
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CommentItem(
-                comment: comment,
-                onReply: () => setState(() => replyingTo = comment),
-              ),
-              if (replies.isNotEmpty)
-                Padding(
-                  padding: EdgeInsets.only(left: AppDimens.width(40)),
-                  child: Column(
-                    children: replies
-                        .map((reply) => Padding(
-                              padding:
-                                  EdgeInsets.only(top: AppDimens.height(10)),
-                              child: CommentItem(
-                                comment: reply,
-                                isReply: true,
-                                onReply: () =>
-                                    setState(() => replyingTo = comment),
-                              ),
-                            ))
-                        .toList(),
-                  ),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CommentItem(
+              comment: comment,
+              onReply: () => setState(() => replyingTo = comment),
+            ),
+            if (replies.isNotEmpty)
+              Padding(
+                padding: EdgeInsets.only(left: AppDimens.width(40)),
+                child: Column(
+                  children: replies
+                      .map((reply) => Padding(
+                            padding: EdgeInsets.only(top: AppDimens.height(10)),
+                            child: CommentItem(
+                              comment: reply,
+                              isReply: true,
+                              onReply: () =>
+                                  setState(() => replyingTo = comment),
+                            ),
+                          ))
+                      .toList(),
                 ),
-              AppSpacerV(value: AppDimens.height(15)),
-            ],
-          );
-        },
-      ),
+              ),
+            AppSpacerV(value: AppDimens.height(15)),
+          ],
+        );
+      },
     );
   }
 

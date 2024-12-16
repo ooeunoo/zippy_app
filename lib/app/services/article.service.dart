@@ -20,7 +20,6 @@ import 'package:zippy/domain/model/params/get_aritlces.params.dart';
 import 'package:zippy/domain/model/params/get_recommend_aritlces.params.dart';
 import 'package:zippy/domain/model/params/update_user_interaction.params.dart';
 import 'package:zippy/domain/model/source.model.dart';
-import 'package:zippy/domain/model/user_bookmark_item.model.dart';
 import 'package:zippy/domain/model/user_interaction.model.dart';
 import 'package:zippy/domain/usecases/create_article_comment.usecase.dart';
 import 'package:zippy/domain/usecases/create_user_interaction.usecase.dart';

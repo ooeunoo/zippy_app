@@ -7,7 +7,6 @@ import 'package:zippy/app/services/subscription.service.dart';
 import 'package:zippy/app/services/webview.service.dart';
 import 'package:zippy/data/providers/kakao.provider.dart';
 import 'package:zippy/data/providers/supabase.provider.dart';
-import 'package:zippy/data/sources/app_metadata.source.dart';
 import 'package:zippy/data/sources/article.source.dart';
 import 'package:zippy/data/sources/article_comment.source.dart';
 import 'package:zippy/data/sources/auth.source.dart';
@@ -76,7 +75,6 @@ class ZippyBindings implements Bindings {
   }
 
   void _initDatasource() {
-    Get.lazyPut<AppMetadataDatasource>(() => AppMetadataDatasourceImpl());
     Get.lazyPut<ArticleDatasource>(() => ArticleDatasourceImpl());
     Get.lazyPut<AuthDatasource>(() => AuthDatasourceImpl());
     Get.lazyPut<PlatformDatasource>(() => PlatformDatasourceImpl());

@@ -55,10 +55,7 @@ class _BoardPageState extends State<BoardPage> {
         handleFetchArticles: _controller.onHandleFetchRecommendedArticles,
         handleClickBookmark: _controller.onHandleClickBookmark,
       ),
-      // appBar: _buildHeader(),
-      body: DrawerGuideOverlay(
-        child: _buildPageContent(),
-      ),
+      body: _buildPageContent(),
     );
   }
 

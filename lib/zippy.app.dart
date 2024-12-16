@@ -35,7 +35,7 @@ class _ZippyAppState extends State<ZippyApp> {
             initialBinding: ZippyBindings(),
             getPages: AppPages.routes,
             initialRoute: AppPages.initial,
-            theme: AppTheme.lightTheme(context),
+            theme: AppTheme.darkTheme(context),
             darkTheme: AppTheme.darkTheme(context),
             themeMode: ThemeMode.system, // 시스템 설정만 따르도록 고정
             translations: ZippyTranslations(),

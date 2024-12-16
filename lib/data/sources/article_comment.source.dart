@@ -31,9 +31,10 @@ class ArticleCommentDatasourceImpl implements ArticleCommentDatasource {
       int articleId) async {
     try {
       // 계층형 구조로 댓글 조회
-      final response = await provider.client.rpc(
-          RPC.GET_ARTICLE_COMMENTS.function,
-          params: {'p_article_id': articleId});
+      final response = await provider.client
+          .rpc(RPC.GET_ARTICLE_COMMENTS.function, params: {
+        'p_article_id': articleId
+      }).order('created_at', ascending: false);
 
       List<ArticleComment> comments = (response as List)
           .map((json) => ArticleCommentEntity.fromJson(json).toModel())

@@ -50,7 +50,6 @@ class ArticleDatasourceImpl implements ArticleDatasource {
           }
           result.add(ArticleEntity.fromJson(r).toModel());
         } catch (e, stackTrace) {
-          print(r['id']);
           // TODO: 올바르지않은 형태의 데이터가 들어있는경우, 로깅 필요!!
           print('Error:$e \n stackTrace:$stackTrace');
           continue;
@@ -68,14 +67,21 @@ class ArticleDatasourceImpl implements ArticleDatasource {
   Future<Either<Failure, List<Article>>> getSearchArticles(
       GetSearchArticlesParams params) async {
     try {
-      var query = provider.client
+      var response = await provider.client
           .rpc(RPC.getSearchArticles.function, params: params.toJson());
 
-      final response =
-          await query.limit(params.limit).order('published', ascending: false);
-
-      List<Article> result =
-          response.map((r) => ArticleEntity.fromJson(r).toModel()).toList();
+      List<Article> result = [];
+      for (var r in (response as List)) {
+        try {
+          if (r['link'].startsWith('https://www.youtube.com/')) {
+            continue;
+          }
+          result.add(ArticleEntity.fromJson(r).toModel());
+        } catch (e, stackTrace) {
+          print('Error:$e \n stackTrace:$stackTrace');
+          continue;
+        }
+      }
 
       return Right(result);
     } catch (e, stackTrace) {

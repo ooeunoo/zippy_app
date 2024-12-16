@@ -12,30 +12,43 @@ class HiveProvider {
   Future<void> init() async {
     await Hive.initFlutter();
     Hive.registerAdapter(AppMetadataEntityAdapter());
-    // // 기존 박스가 있다면 삭제
-    // await Hive.deleteBoxFromDisk(APP_METADATA);
-
-    // // 새로운 박스 열기
-    // appMetadata = await Hive.openBox(APP_METADATA);
-
-    // // 박스 클리어
-    // await appMetadata?.clear();
   }
 
-  openBox() async {
-    appMetadata = await Hive.openBox(APP_METADATA);
+  Future<void> openBox() async {
+    if (appMetadata == null || !appMetadata!.isOpen) {
+      appMetadata = await Hive.openBox(APP_METADATA);
+      // 데이터 영속성 보장을 위한 flush
+      await appMetadata?.flush();
+    }
   }
 
-  closeBox() async {
-    await appMetadata?.close();
+  Future<void> closeBox() async {
+    if (appMetadata != null && appMetadata!.isOpen) {
+      // 닫기 전에 데이터 영속화 보장
+      await appMetadata?.flush();
+      await appMetadata?.close();
+    }
   }
 
   // 데이터 초기화 메서드
   Future<void> clearAllData() async {
     try {
+      await openBox(); // 박스가 닫혀있을 수 있으므로 먼저 열기 시도
       await appMetadata?.clear();
+      await appMetadata?.flush(); // 클리어 후 변경사항 즉시 저장
     } catch (e) {
       print('Error clearing data: $e');
+    }
+  }
+
+  // 데이터 즉시 저장 메서드
+  Future<void> flushData() async {
+    try {
+      if (appMetadata != null && appMetadata!.isOpen) {
+        await appMetadata?.flush();
+      }
+    } catch (e) {
+      print('Error flushing data: $e');
     }
   }
 }

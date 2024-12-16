@@ -3,12 +3,12 @@ import 'package:zippy/domain/model/app_metadata.model.dart';
 import 'package:zippy/domain/repositories/app_metadata.repository.dart';
 import 'package:dartz/dartz.dart';
 
-class GetAppMetadata {
+class SaveAppMetadata {
   final AppMetadataRepository repo;
 
-  GetAppMetadata(this.repo);
+  SaveAppMetadata(this.repo);
 
-  Future<Either<Failure, AppMetadata?>> execute() {
-    return repo.getAppMetadata();
+  Future<Either<Failure, Unit>> execute(AppMetadata metadata) {
+    return repo.saveAppMetadata(metadata);
   }
 }

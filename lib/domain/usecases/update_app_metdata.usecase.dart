@@ -9,7 +9,7 @@ class UpdateAppMetadata {
 
   UpdateAppMetadata(this.repo);
 
-  Future<Either<Failure, AppMetadata>> execute(UpdateAppMetadataParams params) {
+  Future<Either<Failure, Unit>> execute(UpdateAppMetadataParams params) {
     return repo.updateAppMetadata(params);
   }
 }

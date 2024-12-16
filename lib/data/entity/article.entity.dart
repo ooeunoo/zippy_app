@@ -15,7 +15,6 @@ class ArticleEntity extends Equatable {
   final String summary;
   final String content;
   final String excerpt;
-  final List<SectionEntity> sections;
   final List<AttachmentEntity>? attachments;
   final List<String> keyPoints;
   final List<String> keywords;
@@ -33,7 +32,6 @@ class ArticleEntity extends Equatable {
     required this.summary,
     required this.content,
     required this.excerpt,
-    required this.sections,
     required this.keyPoints,
     required this.keywords,
     required this.published,
@@ -66,8 +64,6 @@ class ArticleEntity extends Equatable {
       excerpt: json['excerpt'],
       keyPoints: convertToStringList(json['key_points']),
       keywords: convertToStringList(json['keywords']),
-      sections: List<SectionEntity>.from((json['sections'] as List)
-          .map((section) => SectionEntity.fromJson(section))),
       published: json['published'] != null
           ? DateTime.parse(json['published'])
           : DateTime.now(), // 또는 다른 기본값
@@ -92,8 +88,6 @@ class ArticleEntity extends Equatable {
       excerpt: excerpt,
       content: content,
       summary: summary,
-      sections: List<Section>.from(
-          sections.map((SectionEntity section) => section.toModel())),
       keyPoints: keyPoints,
       keywords: keywords,
       published: published,

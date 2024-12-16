@@ -51,7 +51,8 @@ Future<void> initHive() async {
 }
 
 Future<void> initAppMetadata() async {
-  Get.put<AppMetadataDatasource>(AppMetadataDatasourceImpl());
+  Get.put<AppMetadataDataSource>(
+      AppMetadataDataSourceImpl(hiveProvider: Get.find()));
   Get.put<AppMetadataRepository>(AppMetadataRepositoryImpl(Get.find()));
   Get.put<UpdateAppMetadata>(UpdateAppMetadata(Get.find()));
   Get.put<GetAppMetadata>(GetAppMetadata(Get.find()));

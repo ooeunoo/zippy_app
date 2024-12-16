@@ -13,7 +13,6 @@ class Article extends Equatable {
   final String excerpt;
   final List<dynamic> images;
   final String summary;
-  final List<Section> sections;
   final List<String> keyPoints;
   final List<String> keywords;
   final DateTime published;
@@ -34,7 +33,6 @@ class Article extends Equatable {
     required this.images,
     required this.excerpt,
     required this.summary,
-    required this.sections,
     required this.keyPoints,
     required this.keywords,
     required this.published,
@@ -64,7 +62,6 @@ class Article extends Equatable {
         "content": content,
         "excerpt": excerpt,
         "summary": summary,
-        "sections": sections.map((section) => section.toJson()),
         "keyPoints": keyPoints,
         "keywords": keywords,
         "published": published,

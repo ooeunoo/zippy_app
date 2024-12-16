@@ -6,15 +6,22 @@ class UpdateAppMetadataParams extends Equatable {
   final bool? lookaround;
   final ThemeMode? themeMode;
   final bool? onBoardingBoardPage;
+  final bool? onBoardingBookmarkPage;
 
   const UpdateAppMetadataParams({
     this.lookaround,
     this.themeMode,
     this.onBoardingBoardPage,
+    this.onBoardingBookmarkPage,
   });
 
   @override
-  List<Object?> get props => [lookaround, themeMode, onBoardingBoardPage];
+  List<Object?> get props => [
+        lookaround,
+        themeMode,
+        onBoardingBoardPage,
+        onBoardingBookmarkPage,
+      ];
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
@@ -29,6 +36,10 @@ class UpdateAppMetadataParams extends Equatable {
 
     if (onBoardingBoardPage != null) {
       data['onBoardingBoardPage'] = onBoardingBoardPage;
+    }
+
+    if (onBoardingBookmarkPage != null) {
+      data['onBoardingBookmarkPage'] = onBoardingBookmarkPage;
     }
 
     return data;

@@ -159,14 +159,13 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
           ),
         ),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildTitle(context),
             AppSpacerV(value: AppDimens.height(8)),
             _buildSummary(context),
-            AppSpacerV(value: AppDimens.height(8)),
+            AppSpacerV(value: AppDimens.height(16)),
             _buildPublishedDate(context),
             AppSpacerV(value: AppDimens.height(16)),
             _buildInteractionBar(context),
@@ -228,12 +227,12 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
 
   Widget _buildPublishedDate(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         AppText(
           widget.article.published.timeAgo(),
           style: Theme.of(context).textTheme.textSM.copyWith(
-                color: AppThemeColors.textMedium(context),
+                color: AppThemeColors.textLow(context),
               ),
         ),
       ],

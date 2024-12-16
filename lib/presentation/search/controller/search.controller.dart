@@ -35,7 +35,6 @@ class AppSearchController extends GetxController {
   Future<void> _fetchTrendingKeywords() async {
     const params = GetTrandingKeywordsParams(contentType: null);
     final result = await getTrendingKeywords.execute(params);
-    print(result);
     result.fold(
         (l) => null, (keywords) => trendingKeywords.assignAll(keywords));
   }

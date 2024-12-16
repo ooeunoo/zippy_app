@@ -36,16 +36,10 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
 
   final scrollController = ScrollController();
   final PageController pageController = PageController();
-  final Map<String, GlobalKey> sectionKeys = {};
-  final Map<String, bool> expandedSections = {};
 
   @override
   void initState() {
     super.initState();
-    for (var section in widget.article.sections) {
-      sectionKeys[section.title] = GlobalKey();
-      expandedSections[section.title] = false;
-    }
     _startTime = DateTime.now();
   }
 

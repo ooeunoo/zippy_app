@@ -30,7 +30,6 @@ class GetSearchArticlesParams extends Equatable {
         'p_query': query,
         'p_time_range': timeRange,
         'p_limit': limit,
-        'p_search': search,
         'p_similarity_threshold': similarityThreshold,
       };
 

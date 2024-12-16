@@ -11,7 +11,6 @@ class AdArticle extends Article {
     super.title = '',
     super.link = '',
     super.author = '',
-    super.sections = const [],
     super.images = const [],
     super.summary = '',
     super.keyPoints = const [],
