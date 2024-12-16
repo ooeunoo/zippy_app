@@ -10,7 +10,7 @@ class Article extends Equatable {
   final String link;
   final String author;
   final String content;
-  final String excerpt;
+  final String? excerpt;
   final List<dynamic> images;
   final String summary;
   final List<String> keyPoints;
@@ -31,7 +31,7 @@ class Article extends Equatable {
     required this.author,
     required this.content,
     required this.images,
-    required this.excerpt,
+    this.excerpt,
     required this.summary,
     required this.keyPoints,
     required this.keywords,

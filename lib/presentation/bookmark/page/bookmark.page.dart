@@ -288,7 +288,9 @@ class _BookmarkPageState extends State<BookmarkPage> {
           final bookmark = bookmarks[index];
           return ArticleRowItem(
             article: bookmark.article!,
-            onHandleClickArticle: () {},
+            onHandleClickArticle: () {
+              articleService.onHandleGoToArticleView(bookmark.article!);
+            },
           );
         },
       );

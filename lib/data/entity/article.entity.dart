@@ -14,7 +14,7 @@ class ArticleEntity extends Equatable {
   final List<dynamic> images;
   final String summary;
   final String content;
-  final String excerpt;
+  final String? excerpt;
   final List<AttachmentEntity>? attachments;
   final List<String> keyPoints;
   final List<String> keywords;
@@ -31,7 +31,7 @@ class ArticleEntity extends Equatable {
     required this.images,
     required this.summary,
     required this.content,
-    required this.excerpt,
+    this.excerpt,
     required this.keyPoints,
     required this.keywords,
     required this.published,

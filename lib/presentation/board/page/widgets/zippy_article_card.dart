@@ -207,7 +207,7 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
     final baseColor = isDark ? AppColor.graymodern950 : AppColor.graymodern50;
 
     return AppText(
-      cleanMarkdownText(widget.article.excerpt),
+      cleanMarkdownText(widget.article.excerpt ?? ''),
       style: Theme.of(context).textTheme.textSM.copyWith(
         color: AppThemeColors.textHighest(context),
         height: 1.5,
