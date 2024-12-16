@@ -10,7 +10,8 @@ import 'package:dartz/dartz.dart';
 abstract class ArticleRepository {
   Future<Either<Failure, List<Article>>> getRecommendedArticles(
       GetRecommendedArticlesParams params);
-  Future<Either<Failure, List<Article>>> getArticles(GetArticlesParams params);
+  Future<Either<Failure, List<Article>>> getSearchArticles(
+      GetSearchArticlesParams params);
   Future<Either<Failure, List<Article>>> getArticlesByKeyword(
       GetArticlesByKeywordParams params);
   Future<Either<Failure, Article>> getArticle(int id);
@@ -28,8 +29,9 @@ class ArticleRepositoryImpl implements ArticleRepository {
   }
 
   @override
-  Future<Either<Failure, List<Article>>> getArticles(GetArticlesParams params) {
-    return datasource.getArticles(params);
+  Future<Either<Failure, List<Article>>> getSearchArticles(
+      GetSearchArticlesParams params) {
+    return datasource.getSearchArticles(params);
   }
 
   @override

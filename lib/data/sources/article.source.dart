@@ -14,6 +14,7 @@ String TABLE = 'articles';
 
 enum RPC {
   getRecommendedArticles('get_recommended_articles'),
+  getSearchArticles('get_search_articles'),
   ;
 
   final String function;
@@ -24,7 +25,8 @@ enum RPC {
 abstract class ArticleDatasource {
   Future<Either<Failure, List<Article>>> getRecommendedArticles(
       GetRecommendedArticlesParams params);
-  Future<Either<Failure, List<Article>>> getArticles(GetArticlesParams params);
+  Future<Either<Failure, List<Article>>> getSearchArticles(
+      GetSearchArticlesParams params);
   Future<Either<Failure, Article>> getArticle(int id);
   Future<Either<Failure, List<Article>>> getArticlesByKeyword(
       GetArticlesByKeywordParams params);
@@ -63,18 +65,11 @@ class ArticleDatasourceImpl implements ArticleDatasource {
   }
 
   @override
-  Future<Either<Failure, List<Article>>> getArticles(
-      GetArticlesParams params) async {
+  Future<Either<Failure, List<Article>>> getSearchArticles(
+      GetSearchArticlesParams params) async {
     try {
       var query = provider.client
-          .from(TABLE)
-          .select('*, sources(*)')
-          .eq("completed", true);
-
-      // search 파라미터가 있을 경우에만 textSearch 조건 추가
-      if (params.search != null && params.search!.isNotEmpty) {
-        query = query.textSearch('title', params.search!);
-      }
+          .rpc(RPC.getSearchArticles.function, params: params.toJson());
 
       final response =
           await query.limit(params.limit).order('published', ascending: false);

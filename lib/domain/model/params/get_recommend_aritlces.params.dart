@@ -7,12 +7,14 @@ class GetRecommendedArticlesParams extends Equatable {
   final String timeRange;
   final bool excludeViewed;
   final int limit;
+  final double similarityThreshold;
 
   const GetRecommendedArticlesParams({
     this.userId,
     this.timeRange = '100 days',
     this.excludeViewed = true,
     this.limit = 100,
+    this.similarityThreshold = 0.85,
   });
 
   @override
@@ -21,6 +23,7 @@ class GetRecommendedArticlesParams extends Equatable {
       timeRange,
       excludeViewed,
       limit,
+      similarityThreshold,
     ];
   }
 
@@ -29,6 +32,7 @@ class GetRecommendedArticlesParams extends Equatable {
         'p_time_range': timeRange,
         'p_exclude_viewed': excludeViewed,
         'p_limit': limit,
+        'p_similarity_threshold': similarityThreshold,
       };
 
   @override

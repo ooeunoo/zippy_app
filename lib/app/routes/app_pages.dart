@@ -60,11 +60,11 @@ class AppPages {
         page: () => const BookmarkPage(),
         transition: Transition.rightToLeft,
         binding: BookmarkBinding()),
-    GetPage(
-        name: _Paths.setting,
-        page: () => const SettingPage(),
-        transition: Transition.rightToLeft,
-        binding: SettingBinding()),
+    // GetPage(
+    //     name: _Paths.setting,
+    //     page: () => const SettingPage(),
+    //     transition: Transition.rightToLeft,
+    //     binding: SettingBinding()),
   ];
 }
 
@@ -77,7 +77,7 @@ abstract class Routes {
   static const profile = _Paths.profile;
   static const subscription = _Paths.subscription;
   static const bookmark = _Paths.bookmark;
-  static const setting = _Paths.setting;
+  // static const setting = _Paths.setting;
 }
 
 abstract class _Paths {
@@ -89,5 +89,5 @@ abstract class _Paths {
   static const profile = '/profile';
   static const subscription = '/subscription';
   static const bookmark = '/bookmark';
-  static const setting = '/setting';
+  // static const setting = '/setting';
 }

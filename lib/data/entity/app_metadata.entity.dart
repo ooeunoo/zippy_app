@@ -37,4 +37,13 @@ class AppMetadataEntity extends HiveObject {
       onBoardingBookmarkPage: onBoardingBookmarkPage,
     );
   }
+
+  @override
+  String toString() {
+    return toModel().toJson().toString();
+  }
+
+  Map<String, dynamic> toJson() {
+    return toModel().toJson();
+  }
 }

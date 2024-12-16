@@ -39,7 +39,7 @@ class _SearchPageState extends State<SearchPage> {
       _searchController.text = keyword;
     });
 
-    controller.onHandleFetchArticlesByKeyword(keyword);
+    controller.onHandleFetchArticlesBySearch(keyword);
   }
 
   // 검색 디바운스 처리
@@ -97,12 +97,19 @@ class _SearchPageState extends State<SearchPage> {
   AppHeader _buildSearchAppBar() {
     return AppHeader(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      onLeadingPressed: () {
-        setState(() {
-          _showSearchBar = false;
-          controller.searchArticles.clear(); // 검색 결과 초기화 추가
-        });
-      },
+      leading: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: IconButton(
+          onPressed: () {
+            setState(() {
+              _showSearchBar = false;
+              controller.searchArticles.clear(); // 검색 결과 초기화 추가
+            });
+          },
+          icon:
+              Icon(Icons.arrow_back, color: AppThemeColors.iconColor(context)),
+        ),
+      ),
       title: TextField(
         controller: _searchController,
         focusNode: _focusNode,

@@ -215,20 +215,20 @@ class ProfilePage extends GetView<ProfileController> {
     );
   }
 
-  MenuSection _buildSettingsSection() {
-    return MenuSection(
-      section: '설정',
-      items: [
-        MenuItem(
-          icon: Assets.settings02,
-          title: '앱 설정',
-          onTap: () {
-            controller.onClickAppSettings();
-          },
-        ),
-      ],
-    );
-  }
+  // MenuSection _buildSettingsSection() {
+  //   return MenuSection(
+  //     section: '설정',
+  //     items: [
+  //       MenuItem(
+  //         icon: Assets.settings02,
+  //         title: '앱 설정',
+  //         onTap: () {
+  //           controller.onClickAppSettings();
+  //         },
+  //       ),
+  //     ],
+  //   );
+  // }
 
   MenuSection _buildSupportSection(WebViewService webViewService) {
     return MenuSection(

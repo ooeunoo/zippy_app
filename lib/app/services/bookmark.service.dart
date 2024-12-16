@@ -95,8 +95,6 @@ class BookmarkService extends GetxService {
     _listenUser();
     await _fetchUserBookmarkFolders();
     await _fetchUserBookmark();
-
-    print("in");
   }
 
   ///*********************************
@@ -130,7 +128,6 @@ class BookmarkService extends GetxService {
     }, (data) {
       userBookmarks.assignAll(data);
     });
-    print("out");
   }
 
   ///*********************************

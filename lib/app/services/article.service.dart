@@ -87,10 +87,9 @@ class ArticleService extends GetxService {
     );
   }
 
-  Future<List<Article>> onHandleFetchArticle() async {
-    final result = await getArticles.execute(const GetArticlesParams(
-      limit: 10,
-    ));
+  Future<List<Article>> onHandleFetchSearchArticles(
+      GetSearchArticlesParams params) async {
+    final result = await getArticles.execute(params);
     return result.fold(
       (failure) {
         return [];
@@ -183,7 +182,7 @@ class ArticleService extends GetxService {
     );
   }
 
-  void onHandleArticleComment(Article article) {
+  void onHandleShowArticleComment(Article article) {
     showCommentBottomSheet(
       Get.context!,
       article.id!,

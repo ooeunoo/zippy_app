@@ -122,10 +122,16 @@ class ArticleRowItem extends StatelessWidget {
         AppSpacerH(value: AppDimens.width(12)),
 
         // Like Count
+        // _buildStatItem(
+        //   context,
+        //   Icons.thumb_up_outlined,
+        //   article.metadata?.likeCount.toString() ?? '0',
+        // ),
+
         _buildStatItem(
           context,
-          Icons.thumb_up_outlined,
-          article.metadata?.likeCount.toString() ?? '0',
+          Icons.chat_bubble_outline,
+          article.metadata?.commentCount.toString() ?? '0',
         ),
       ],
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
+import 'package:zippy/app/extensions/datetime.dart';
 import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/services/bookmark.service.dart';
 import 'package:zippy/app/styles/color.dart';
@@ -165,6 +166,8 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
             _buildTitle(context),
             AppSpacerV(value: AppDimens.height(8)),
             _buildSummary(context),
+            AppSpacerV(value: AppDimens.height(8)),
+            _buildPublishedDate(context),
             AppSpacerV(value: AppDimens.height(16)),
             _buildInteractionBar(context),
           ],
@@ -223,6 +226,20 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
     );
   }
 
+  Widget _buildPublishedDate(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        AppText(
+          widget.article.published.timeAgo(),
+          style: Theme.of(context).textTheme.textSM.copyWith(
+                color: AppThemeColors.textMedium(context),
+              ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildInteractionBar(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -235,46 +252,50 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
           ),
           AppSpacerH(value: AppDimens.width(16)),
           _buildInteractionItem(
-            icon: Icons.favorite_border,
-            text: widget.article.metadata?.likeCount.toString() ?? '0',
-            context: context,
-          ),
-          AppSpacerH(value: AppDimens.width(16)),
-          _buildInteractionItem(
             icon: Icons.chat_bubble_outline,
             text: widget.article.metadata?.commentCount.toString() ?? '0',
             context: context,
             onTap: () {
-              articleService.onHandleArticleComment(widget.article);
+              articleService.onHandleShowArticleComment(widget.article);
             },
           ),
         ]),
         Row(children: [
-          IconButton(
-            onPressed: () {
+          _buildActionItem(
+            icon: Icons.share,
+            color: AppThemeColors.iconColor(context),
+            context: context,
+            onTap: () {
               articleService.onHandleShareArticle(widget.article);
             },
-            icon: Icon(Icons.share,
-                color: AppThemeColors.iconColor(context),
-                size: AppDimens.size(24)),
           ),
           Obx(() {
             final isBookmarked =
                 bookmarkService.isBookmarked(widget.article.id!) != null;
 
-            return IconButton(
-              icon: isBookmarked
-                  ? Icon(Icons.bookmark,
-                      color: AppThemeColors.bookmarkedIconColor(context),
-                      size: AppDimens.size(24))
-                  : Icon(Icons.bookmark_border,
-                      color: AppThemeColors.iconColor(context),
-                      size: AppDimens.size(24)),
-              onPressed: () {
-                articleService.onHandleBookmarkArticle(widget.article);
-              },
-            );
-          })
+            return _buildActionItem(
+                icon: isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                color: isBookmarked
+                    ? AppThemeColors.bookmarkedIconColor(context)
+                    : AppThemeColors.iconColor(context),
+                context: context,
+                onTap: () {
+                  articleService.onHandleBookmarkArticle(widget.article);
+                });
+
+            // return IconButton(
+            //   icon: isBookmarked
+            //       ? Icon(Icons.bookmark,
+            //           color: AppThemeColors.bookmarkedIconColor(context),
+            //           size: AppDimens.size(24))
+            //       : Icon(Icons.bookmark_border,
+            //           color: AppThemeColors.iconColor(context),
+            //           size: AppDimens.size(24)),
+            //   onPressed: () {
+            //     articleService.onHandleBookmarkArticle(widget.article);
+            //   },
+            // );
+          }),
         ]),
       ],
     );
@@ -289,19 +310,32 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
     return GestureDetector(
       onTap: onTap,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(icon,
               color: AppThemeColors.iconColor(context),
-              size: AppDimens.size(20)),
+              size: AppDimens.size(24)),
           AppSpacerH(value: AppDimens.width(4)),
           AppText(
             text,
-            style: Theme.of(context).textTheme.textSM.copyWith(
+            style: Theme.of(context).textTheme.textMD.copyWith(
                   color: AppThemeColors.textMedium(context),
                 ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildActionItem({
+    required IconData icon,
+    required Color color,
+    required BuildContext context,
+    Function()? onTap,
+  }) {
+    return IconButton(
+      icon: Icon(icon, color: color, size: AppDimens.size(24)),
+      onPressed: onTap,
     );
   }
 }

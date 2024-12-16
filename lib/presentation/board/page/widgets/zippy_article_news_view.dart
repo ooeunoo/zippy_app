@@ -247,7 +247,7 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppText(
-                      '10초 요약 ',
+                      'AI 요약',
                       style: Theme.of(context).textTheme.textMD.copyWith(
                             color:
                                 AppThemeColors.summaryButtonTextColor(context),
@@ -319,19 +319,18 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox.shrink(),
-          // Padding(
-          //   padding: EdgeInsets.symmetric(
-          //     horizontal: AppDimens.width(16),
-          //   ),
-          //   child: AppText(
-          //     '10초 요약',
-          //     style: Theme.of(context).textTheme.textLG.copyWith(
-          //           color: AppThemeColors.textHighest(context),
-          //           fontWeight: AppFontWeight.bold,
-          //         ),
-          //   ),
-          // ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppDimens.width(16),
+            ),
+            child: AppText(
+              'AI 요약',
+              style: Theme.of(context).textTheme.textLG.copyWith(
+                    color: AppThemeColors.textHighest(context),
+                    fontWeight: AppFontWeight.bold,
+                  ),
+            ),
+          ),
           IconButton(
             icon: Icon(
               Icons.close,

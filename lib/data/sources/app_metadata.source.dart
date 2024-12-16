@@ -14,25 +14,27 @@ abstract class AppMetadataDatasource {
 
 class AppMetadataDatasourceImpl implements AppMetadataDatasource {
   final box = Get.find<HiveProvider>().appMetadata!;
+  static const String APP_METADATA_KEY = 'app_metadata_key';
 
   AppMetadataEntity _getOrCreateEntity() {
-    if (box.isEmpty) {
+    if (!box.containsKey(APP_METADATA_KEY)) {
       final newEntity = AppMetadataEntity(
         lookaround: false,
         themeMode: 'system',
         onBoardingBoardPage: false,
         onBoardingBookmarkPage: false,
       );
-      box.add(newEntity); // 키 없이 저장
+      box.put(APP_METADATA_KEY, newEntity);
       return newEntity;
     }
-    return box.getAt(0) as AppMetadataEntity; // 첫 번째(유일한) 엔티티 반환
+    return box.get(APP_METADATA_KEY) as AppMetadataEntity;
   }
 
   @override
   Future<Either<Failure, AppMetadata>> getAppMetadata() async {
     try {
       final entity = _getOrCreateEntity();
+      print('[Get] Current AppMetadata: ${entity.toJson()}');
       return Right(entity.toModel());
     } catch (e, stackTrace) {
       print('Error:$e \n stackTrace:$stackTrace');
@@ -45,6 +47,7 @@ class AppMetadataDatasourceImpl implements AppMetadataDatasource {
       UpdateAppMetadataParams params) async {
     try {
       final entity = _getOrCreateEntity();
+      print('[Update] Before: ${entity.toJson()}');
 
       final updates = params.toJson();
       updates.forEach((key, value) {
@@ -64,9 +67,13 @@ class AppMetadataDatasourceImpl implements AppMetadataDatasource {
         }
       });
 
-      print('entity.themeMode: ${entity.themeMode}');
-      await entity.save();
-      return Right(entity.toModel());
+      await box.put(APP_METADATA_KEY, entity);
+
+      // 업데이트 후 즉시 확인
+      final updatedEntity = box.get(APP_METADATA_KEY) as AppMetadataEntity;
+      print('[Update] After: ${updatedEntity.toJson()}');
+
+      return Right(updatedEntity.toModel());
     } catch (e, stackTrace) {
       print('Error:$e \n stackTrace:$stackTrace');
       return Left(CacheFailure());

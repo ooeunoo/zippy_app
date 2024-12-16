@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:zippy/app/services/appmetadata.service.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/data/providers/hive.provider.dart';
 import 'package:zippy/data/sources/app_metadata.source.dart';
 import 'package:zippy/domain/repositories/app_metadata.repository.dart';
 import 'package:zippy/domain/usecases/get_app_metadata.usecase.dart';
+import 'package:zippy/domain/usecases/update_app_metdata.usecase.dart';
 import 'package:zippy/zippy.app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -51,5 +53,7 @@ Future<void> initHive() async {
 Future<void> initAppMetadata() async {
   Get.put<AppMetadataDatasource>(AppMetadataDatasourceImpl());
   Get.put<AppMetadataRepository>(AppMetadataRepositoryImpl(Get.find()));
+  Get.put<UpdateAppMetadata>(UpdateAppMetadata(Get.find()));
   Get.put<GetAppMetadata>(GetAppMetadata(Get.find()));
+  Get.put<AppMetadataService>(AppMetadataService());
 }

@@ -76,10 +76,9 @@ class AppHeader extends StatelessWidget {
     if (leading != null) {
       return leading!;
     }
-
     if (automaticallyImplyLeading && Get.previousRoute.isNotEmpty) {
       return IconButton(
-        padding: EdgeInsets.all(AppDimens.size(20)),
+        padding: EdgeInsets.all(AppDimens.width(20)),
         icon: Icon(
           Icons.arrow_back,
           color: AppThemeColors.iconColor(context),

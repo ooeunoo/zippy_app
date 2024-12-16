@@ -8,7 +8,8 @@ import 'package:zippy/domain/repositories/article.repository.dart';
 class GetArticles {
   final ArticleRepository repo = Get.find();
 
-  Future<Either<Failure, List<Article>>> execute(GetArticlesParams params) {
-    return repo.getArticles(params);
+  Future<Either<Failure, List<Article>>> execute(
+      GetSearchArticlesParams params) {
+    return repo.getSearchArticles(params);
   }
 }

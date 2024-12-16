@@ -5,6 +5,7 @@ import 'package:zippy/presentation/board/controller/board.controller.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:zippy/presentation/board/page/widgets/drawer_guide_overlay.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_ad_article_card.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_article_card.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_article_drawer.dart';
@@ -55,7 +56,9 @@ class _BoardPageState extends State<BoardPage> {
         handleClickBookmark: _controller.onHandleClickBookmark,
       ),
       // appBar: _buildHeader(),
-      body: _buildPageContent(),
+      body: DrawerGuideOverlay(
+        child: _buildPageContent(),
+      ),
     );
   }
 

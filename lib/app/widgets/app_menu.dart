@@ -59,7 +59,7 @@ class AppMenu extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.symmetric(
-          horizontal: AppDimens.width(4), vertical: AppDimens.height(8)),
+          horizontal: AppDimens.width(4), vertical: AppDimens.height(12)),
       child: GestureDetector(
         onTap: () {
           onTap();

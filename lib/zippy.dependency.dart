@@ -116,8 +116,6 @@ class ZippyBindings implements Bindings {
   }
 
   void _initUsecase() {
-    Get.lazyPut<GetAppMetadata>(() => GetAppMetadata(Get.find()));
-    Get.lazyPut<UpdateAppMetadata>(() => UpdateAppMetadata(Get.find()));
     Get.lazyPut<GetCurrentUser>(() => GetCurrentUser(Get.find()));
     Get.lazyPut<SubscribeAuthStatus>(() => SubscribeAuthStatus(Get.find()));
     Get.lazyPut<GetContentTypes>(() => GetContentTypes());
