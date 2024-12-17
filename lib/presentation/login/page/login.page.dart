@@ -71,8 +71,6 @@ class LoginPage extends GetView<LoginController> {
               // 로그인 버튼들
               Column(
                 children: [
-                  // 애플 로그인 버튼
-
                   // 카카오 로그인 버튼
                   AppButton(
                     '카카오로 시작하기',

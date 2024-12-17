@@ -5,7 +5,7 @@ import 'package:zippy/app/services/bookmark.service.dart';
 import 'package:zippy/app/services/webview.service.dart';
 import 'package:zippy/app/utils/share.dart';
 import 'package:zippy/app/utils/vibrates.dart';
-import 'package:zippy/app/widgets/app.snak_bar.dart';
+import 'package:zippy/app/widgets/app_snak_bar.dart';
 import 'package:zippy/app/widgets/app_dialog.dart';
 import 'package:zippy/data/providers/supabase.provider.dart';
 import 'package:zippy/domain/enum/article_view_type.enum.dart';
@@ -20,6 +20,7 @@ import 'package:zippy/domain/model/params/get_aritlces.params.dart';
 import 'package:zippy/domain/model/params/get_recommend_aritlces.params.dart';
 import 'package:zippy/domain/model/params/update_user_interaction.params.dart';
 import 'package:zippy/domain/model/source.model.dart';
+import 'package:zippy/domain/model/user.model.dart';
 import 'package:zippy/domain/model/user_interaction.model.dart';
 import 'package:zippy/domain/usecases/create_article_comment.usecase.dart';
 import 'package:zippy/domain/usecases/create_user_interaction.usecase.dart';
@@ -100,6 +101,13 @@ class ArticleService extends GetxService {
   }
 
   Future<void> onHandleBookmarkArticle(Article article) async {
+    User? user = authService.currentUser.value;
+
+    if (user == null) {
+      showLoginDialog();
+      return;
+    }
+
     if (bookmarkService.isBookmarked(article.id!) != null) {
       bookmarkService.onHandleDeleteUserBookmark(
           bookmarkService.isBookmarked(article.id!)!.id);

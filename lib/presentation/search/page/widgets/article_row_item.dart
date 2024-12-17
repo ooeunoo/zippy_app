@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:zippy/app/extensions/datetime.dart';
 import 'package:zippy/app/styles/color.dart';
@@ -36,7 +38,7 @@ class ArticleRowItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         onTap: () => onHandleClickArticle(),
         child: SizedBox(
-          height: AppDimens.height(90),
+          height: AppDimens.height(Platform.isAndroid ? 100 : 90),
           child: Padding(
             padding: EdgeInsets.all(AppDimens.width(12)),
             child: Row(

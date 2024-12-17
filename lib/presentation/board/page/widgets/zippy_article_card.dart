@@ -92,8 +92,7 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
   }
 
   Widget _buildBottomContent(BuildContext context) {
-    final isDark = AppThemeColors.isDarkMode(context);
-    final baseColor = isDark ? AppColor.graymodern950 : AppColor.graymodern100;
+    final baseColor = AppThemeColors.boardCardBaseColor(context);
 
     return Positioned(
       left: AppDimens.width(0),
@@ -176,8 +175,7 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
   }
 
   Widget _buildTitle(BuildContext context) {
-    final isDark = AppThemeColors.isDarkMode(context);
-    final baseColor = isDark ? AppColor.graymodern950 : AppColor.graymodern50;
+    final baseColor = AppThemeColors.boardCardBaseColor(context);
 
     return AppText(
       widget.article.title,
@@ -203,8 +201,7 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
   }
 
   Widget _buildSummary(BuildContext context) {
-    final isDark = AppThemeColors.isDarkMode(context);
-    final baseColor = isDark ? AppColor.graymodern950 : AppColor.graymodern50;
+    final baseColor = AppThemeColors.boardCardBaseColor(context);
 
     return AppText(
       cleanMarkdownText(widget.article.excerpt ?? ''),

@@ -9,7 +9,7 @@ import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/utils/constants.dart';
-import 'package:zippy/app/widgets/app.snak_bar.dart';
+import 'package:zippy/app/widgets/app_snak_bar.dart';
 import 'package:zippy/app/widgets/app_button.dart';
 import 'package:zippy/app/widgets/app_menu.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
@@ -80,11 +80,9 @@ class ProfilePage extends GetView<ProfileController> {
   }
 
   Widget _buildUserInfo(BuildContext context, AuthService authService) {
-    final isDarkMode = AppThemeColors.isDarkMode(context);
-    final baseColor =
-        isDarkMode ? AppColor.graymodern950 : AppColor.graymodern100;
+    final baseColor = AppThemeColors.boardCardBaseColor(context);
     final baseColor2 =
-        isDarkMode ? AppColor.graymodern800 : AppColor.graymodern200;
+        AppThemeColors.boardCardBaseColor(context).withOpacity(0.2);
 
     return Obx(() {
       final user = authService.currentUser.value;
@@ -187,6 +185,7 @@ class ProfilePage extends GetView<ProfileController> {
   Widget _buildMenu(BuildContext context, WebViewService webViewService) {
     final List<MenuSection> menu = [
       _buildMySection(),
+      _buildSettingsSection(),
       _buildSupportSection(webViewService),
     ];
 
@@ -215,20 +214,20 @@ class ProfilePage extends GetView<ProfileController> {
     );
   }
 
-  // MenuSection _buildSettingsSection() {
-  //   return MenuSection(
-  //     section: '설정',
-  //     items: [
-  //       MenuItem(
-  //         icon: Assets.settings02,
-  //         title: '앱 설정',
-  //         onTap: () {
-  //           controller.onClickAppSettings();
-  //         },
-  //       ),
-  //     ],
-  //   );
-  // }
+  MenuSection _buildSettingsSection() {
+    return MenuSection(
+      section: '설정',
+      items: [
+        MenuItem(
+          icon: Assets.bellRinging02,
+          title: '키워드 알람 설정',
+          onTap: () {
+            controller.onClickKeywordNotification();
+          },
+        ),
+      ],
+    );
+  }
 
   MenuSection _buildSupportSection(WebViewService webViewService) {
     return MenuSection(

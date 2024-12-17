@@ -7,96 +7,89 @@ class AppThemeColors {
   static bool isDarkMode(BuildContext context) =>
       MediaQuery.platformBrightnessOf(context) == Brightness.dark;
 
+  static Color boardCardBaseColor(BuildContext context) =>
+      AppColor.graymodern950;
+
+  static Color switchActiveColor(BuildContext context) => AppColor.brand500;
+
+  static Color switchActiveTrackColor(BuildContext context) =>
+      AppColor.brand500.withOpacity(0.3);
+
   static Color transparent(BuildContext context) => AppColor.transparent;
 
-  static Color background(BuildContext context) =>
-      isDarkMode(context) ? AppColor.graymodern950 : AppColor.graymodern50;
+  static Color background(BuildContext context) => AppColor.graymodern950;
 
   static Color bottomSheetBackground(BuildContext context) =>
-      isDarkMode(context) ? AppColor.graymodern900 : AppColor.graymodern50;
+      AppColor.graymodern900;
 
   static Color bottomSheetSecondaryBackground(BuildContext context) =>
-      isDarkMode(context) ? AppColor.graymodern800 : AppColor.graymodern300;
+      AppColor.graymodern800;
 
   static Color bottomSheetBorder(BuildContext context) =>
-      isDarkMode(context) ? AppColor.graymodern900 : AppColor.graymodern200;
+      AppColor.graymodern900;
 
   static Color bottomNavigationBarBorder(BuildContext context) =>
-      isDarkMode(context) ? AppColor.graymodern800 : AppColor.graymodern200;
+      AppColor.graymodern800;
 
   static Color bottomNavigationBarSelectedItem(BuildContext context) =>
-      isDarkMode(context) ? AppColor.graymodern100 : AppColor.graymodern900;
+      AppColor.graymodern100;
 
   static Color bottomNavigationBarUnselectedItem(BuildContext context) =>
-      isDarkMode(context) ? AppColor.graymodern600 : AppColor.graymodern400;
+      AppColor.graymodern600;
 
   static Color loadingColor(BuildContext context) => AppColor.brand600;
 
-  static Color iconColor(BuildContext context) =>
-      isDarkMode(context) ? AppColor.graymodern100 : AppColor.graymodern600;
+  static Color iconColor(BuildContext context) => AppColor.graymodern100;
 
-  static Color iconHighlight(BuildContext context) =>
-      isDarkMode(context) ? AppColor.brand300 : AppColor.brand700;
+  static Color iconHighlight(BuildContext context) => AppColor.brand300;
 
-  static Color dividerColor(BuildContext context) =>
-      isDarkMode(context) ? AppColor.graymodern700 : AppColor.graymodern300;
+  static Color dividerColor(BuildContext context) => AppColor.graymodern700;
 
   static Color articleItemBoxBackgroundColor(BuildContext context) =>
-      isDarkMode(context) ? AppColor.graymodern900 : AppColor.graytrue25;
+      AppColor.graymodern900;
 
   static Color articleItemBoxBorderColor(BuildContext context) =>
-      isDarkMode(context) ? AppColor.graymodern800 : AppColor.graymodern200;
+      AppColor.graymodern800;
 
-  static Color bookmarkedIconColor(BuildContext context) =>
-      isDarkMode(context) ? AppColor.brand500 : AppColor.brand500;
+  static Color bookmarkedIconColor(BuildContext context) => AppColor.brand500;
 
-  static Color summaryButtonColor(BuildContext context) => isDarkMode(context)
-      ? AppColor.brand700.withOpacity(0.55)
-      : AppColor.brand200.withOpacity(0.55);
+  static Color summaryButtonColor(BuildContext context) =>
+      AppColor.brand700.withOpacity(0.55);
 
   static Color summaryButtonBorderColor(BuildContext context) =>
-      isDarkMode(context)
-          ? AppColor.brand400.withOpacity(0.2)
-          : AppColor.brand600.withOpacity(0.2);
+      AppColor.brand400.withOpacity(0.2);
 
   static Color summaryButtonIconColor(BuildContext context) =>
-      isDarkMode(context) ? AppColor.brand300 : AppColor.brand700;
+      AppColor.brand300;
 
   static Color summaryButtonTextColor(BuildContext context) =>
-      isDarkMode(context) ? AppColor.brand300 : AppColor.brand700;
+      AppColor.brand300;
 
-  static Color buttonBackgroundColor(BuildContext context) =>
-      isDarkMode(context) ? AppColor.brand600 : AppColor.brand600;
+  static Color buttonBackgroundColor(BuildContext context) => AppColor.brand600;
 
-  static Color buttonBorderColor(BuildContext context) =>
-      isDarkMode(context) ? AppColor.brand700 : AppColor.brand700;
+  static Color buttonBorderColor(BuildContext context) => AppColor.brand700;
 
   static Color buttonDisableBackgroundColor(BuildContext context) =>
-      isDarkMode(context) ? AppColor.gray200 : AppColor.gray200;
+      AppColor.gray500;
 
   static Color buttonDisableBorderColor(BuildContext context) =>
-      isDarkMode(context) ? AppColor.gray300 : AppColor.gray300;
+      AppColor.gray200;
 
-  static Color textHighest(BuildContext context) =>
-      isDarkMode(context) ? AppColor.graymodern100 : AppColor.graymodern900;
+  static Color buttonDisableTextColor(BuildContext context) => AppColor.gray400;
 
-  static Color textHighestHighlight(BuildContext context) =>
-      isDarkMode(context) ? AppColor.brand300 : AppColor.brand700;
+  static Color textHighest(BuildContext context) => AppColor.graymodern100;
 
-  static Color textHigh(BuildContext context) =>
-      isDarkMode(context) ? AppColor.graymodern200 : AppColor.graymodern800;
+  static Color textHighestHighlight(BuildContext context) => AppColor.brand300;
 
-  static Color textMedium(BuildContext context) =>
-      isDarkMode(context) ? AppColor.graymodern300 : AppColor.graymodern700;
+  static Color textHigh(BuildContext context) => AppColor.graymodern200;
 
-  static Color textMediumHighlight(BuildContext context) =>
-      isDarkMode(context) ? AppColor.brand300 : AppColor.brand700;
+  static Color textMedium(BuildContext context) => AppColor.graymodern300;
 
-  static Color textLow(BuildContext context) =>
-      isDarkMode(context) ? AppColor.graymodern400 : AppColor.graymodern600;
+  static Color textMediumHighlight(BuildContext context) => AppColor.brand300;
 
-  static Color textLowest(BuildContext context) =>
-      isDarkMode(context) ? AppColor.graymodern500 : AppColor.graymodern500;
+  static Color textLow(BuildContext context) => AppColor.graymodern400;
+
+  static Color textLowest(BuildContext context) => AppColor.graymodern500;
 }
 
 abstract class AppColor {
@@ -486,3 +479,107 @@ abstract class AppColor {
   static const Color googleBackground = Color(0xffffffff);
   static const Color naverBackground = Color(0xff03C75A);
 }
+
+
+
+// class AppThemeColors {
+//   static final instance = AppThemeColors._();
+//   AppThemeColors._();
+
+//   static bool isDarkMode(BuildContext context) =>
+//       MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+
+//  static Color boardCardBaseColor(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.graymodern950 : AppColor.graymodern50;
+
+//   static Color transparent(BuildContext context) => AppColor.transparent;
+
+//   static Color background(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.graymodern950 : AppColor.graymodern50;
+
+//   static Color bottomSheetBackground(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.graymodern900 : AppColor.graymodern50;
+
+//   static Color bottomSheetSecondaryBackground(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.graymodern800 : AppColor.graymodern300;
+
+//   static Color bottomSheetBorder(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.graymodern900 : AppColor.graymodern200;
+
+//   static Color bottomNavigationBarBorder(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.graymodern800 : AppColor.graymodern200;
+
+//   static Color bottomNavigationBarSelectedItem(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.graymodern100 : AppColor.graymodern900;
+
+//   static Color bottomNavigationBarUnselectedItem(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.graymodern600 : AppColor.graymodern400;
+
+//   static Color loadingColor(BuildContext context) => AppColor.brand600;
+
+//   static Color iconColor(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.graymodern100 : AppColor.graymodern600;
+
+//   static Color iconHighlight(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.brand300 : AppColor.brand700;
+
+//   static Color dividerColor(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.graymodern700 : AppColor.graymodern300;
+
+//   static Color articleItemBoxBackgroundColor(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.graymodern900 : AppColor.graytrue25;
+
+//   static Color articleItemBoxBorderColor(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.graymodern800 : AppColor.graymodern200;
+
+//   static Color bookmarkedIconColor(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.brand500 : AppColor.brand500;
+
+//   static Color summaryButtonColor(BuildContext context) => isDarkMode(context)
+//       ? AppColor.brand700.withOpacity(0.55)
+//       : AppColor.brand200.withOpacity(0.55);
+
+//   static Color summaryButtonBorderColor(BuildContext context) =>
+//       isDarkMode(context)
+//           ? AppColor.brand400.withOpacity(0.2)
+//           : AppColor.brand600.withOpacity(0.2);
+
+//   static Color summaryButtonIconColor(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.brand300 : AppColor.brand700;
+
+//   static Color summaryButtonTextColor(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.brand300 : AppColor.brand700;
+
+//   static Color buttonBackgroundColor(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.brand600 : AppColor.brand600;
+
+//   static Color buttonBorderColor(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.brand700 : AppColor.brand700;
+
+//   static Color buttonDisableBackgroundColor(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.gray200 : AppColor.gray200;
+
+//   static Color buttonDisableBorderColor(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.gray300 : AppColor.gray300;
+
+//   static Color textHighest(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.graymodern100 : AppColor.graymodern900;
+
+//   static Color textHighestHighlight(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.brand300 : AppColor.brand700;
+
+//   static Color textHigh(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.graymodern200 : AppColor.graymodern800;
+
+//   static Color textMedium(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.graymodern300 : AppColor.graymodern700;
+
+//   static Color textMediumHighlight(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.brand300 : AppColor.brand700;
+
+//   static Color textLow(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.graymodern400 : AppColor.graymodern600;
+
+//   static Color textLowest(BuildContext context) =>
+//       isDarkMode(context) ? AppColor.graymodern500 : AppColor.graymodern500;
+// }

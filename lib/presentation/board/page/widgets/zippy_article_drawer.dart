@@ -4,7 +4,7 @@ import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
-import 'package:zippy/app/widgets/app.snak_bar.dart';
+import 'package:zippy/app/widgets/app_snak_bar.dart';
 import 'package:zippy/app/widgets/app_divider.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';

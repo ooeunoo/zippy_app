@@ -5,10 +5,10 @@ import 'package:zippy/presentation/board/page/board.page.dart';
 import 'package:zippy/presentation/bookmark/binding/bookmark.binding.dart';
 import 'package:zippy/presentation/bookmark/page/bookmark.page.dart';
 import 'package:get/route_manager.dart';
+import 'package:zippy/presentation/keyword_notification/binding/keyword_notification.binding.dart';
+import 'package:zippy/presentation/keyword_notification/page/keyword_notification.page.dart';
 import 'package:zippy/presentation/login/binding/login.binding.dart';
 import 'package:zippy/presentation/login/page/login.page.dart';
-import 'package:zippy/presentation/setting/binding/setting.binding.dart';
-import 'package:zippy/presentation/setting/page/setting.page.dart';
 import 'package:zippy/presentation/subscription/binding/subscription.binding.dart';
 import 'package:zippy/presentation/subscription/page/subscription.page.dart';
 import 'package:zippy/presentation/profile/binding/profile.binding.dart';
@@ -60,6 +60,11 @@ class AppPages {
         page: () => const BookmarkPage(),
         transition: Transition.rightToLeft,
         binding: BookmarkBinding()),
+    GetPage(
+        name: _Paths.keywordNotification,
+        page: () => const KeywordNotificationView(),
+        transition: Transition.rightToLeft,
+        binding: KeywordNotificationBinding()),
     // GetPage(
     //     name: _Paths.setting,
     //     page: () => const SettingPage(),
@@ -77,6 +82,7 @@ abstract class Routes {
   static const profile = _Paths.profile;
   static const subscription = _Paths.subscription;
   static const bookmark = _Paths.bookmark;
+  static const keywordNotification = _Paths.keywordNotification;
   // static const setting = _Paths.setting;
 }
 
@@ -89,5 +95,6 @@ abstract class _Paths {
   static const profile = '/profile';
   static const subscription = '/subscription';
   static const bookmark = '/bookmark';
+  static const keywordNotification = '/keyword_notification';
   // static const setting = '/setting';
 }

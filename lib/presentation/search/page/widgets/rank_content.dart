@@ -4,6 +4,7 @@ import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
+import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/keyword_rank_snaoshot.model.dart';
 
@@ -23,6 +24,7 @@ class RankContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildRankList(context),
+        AppSpacerV(value: AppDimens.height(12)),
       ],
     );
   }

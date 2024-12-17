@@ -145,3 +145,22 @@ notifyPreparing() {
     ),
   );
 }
+
+notifyAlreadyExists() {
+  Get.showSnackbar(
+    GetSnackBar(
+      messageText: AppText("이미 존재하는 키워드에요",
+          align: TextAlign.center,
+          style: Theme.of(Get.context!)
+              .textTheme
+              .textSM
+              .copyWith(color: AppColor.white)),
+      backgroundColor: AppColor.brand800,
+      snackPosition: SnackPosition.TOP,
+      borderRadius: AppDimens.size(10),
+      duration: const Duration(seconds: 1),
+      animationDuration: const Duration(seconds: 1),
+      margin: EdgeInsets.symmetric(horizontal: AppDimens.width(80)),
+    ),
+  );
+}

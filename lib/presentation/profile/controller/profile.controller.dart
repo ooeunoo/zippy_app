@@ -26,6 +26,14 @@ class ProfileController extends GetxController {
     }
   }
 
+  void onClickKeywordNotification() {
+    if (authService.isLoggedIn.value) {
+      Get.toNamed(Routes.keywordNotification);
+    } else {
+      showLoginDialog();
+    }
+  }
+
   //////////////////////////////////////////////////////////////////
   /// private methods
   //////////////////////////////////////////////////////////////////

@@ -37,7 +37,7 @@ class _ZippyAppState extends State<ZippyApp> {
             initialRoute: AppPages.initial,
             theme: AppTheme.darkTheme(context),
             darkTheme: AppTheme.darkTheme(context),
-            themeMode: ThemeMode.system, // 시스템 설정만 따르도록 고정
+            // themeMode: ThemeMode.system,
             translations: ZippyTranslations(),
             locale: Get.deviceLocale,
             fallbackLocale: const Locale('ko', 'KR'),

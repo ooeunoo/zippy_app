@@ -106,6 +106,59 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
     );
   }
 
+  void _showImageDialog(String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: EdgeInsets.zero,
+          child: Stack(
+            children: [
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: Colors.black.withOpacity(0.7),
+                ),
+              ),
+              Center(
+                child: InteractiveViewer(
+                  panEnabled: true,
+                  // boundaryMargin: const EdgeInsets.all(20),
+                  // minScale: 0.5,
+                  // maxScale: 4,
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    fit: BoxFit.contain,
+                    placeholder: (context, url) => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: AppDimens.height(10),
+                right: AppDimens.width(16),
+                child: IconButton(
+                  icon: Icon(
+                    Icons.close,
+                    color: Colors.white,
+                    size: AppDimens.size(30),
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -415,20 +468,23 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        CachedNetworkImage(
-          imageUrl: uri.toString(),
-          fit: BoxFit.cover,
-          placeholder: (context, url) => Container(
-            height: AppDimens.height(200),
-            color: AppColor.graymodern900,
-            child: const Center(
-              child: CircularProgressIndicator(),
+        GestureDetector(
+          onTap: () => _showImageDialog(uri.toString()),
+          child: CachedNetworkImage(
+            imageUrl: uri.toString(),
+            fit: BoxFit.cover,
+            placeholder: (context, url) => Container(
+              height: AppDimens.height(200),
+              color: AppColor.graymodern900,
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
             ),
-          ),
-          errorWidget: (context, url, error) => Container(
-            height: AppDimens.height(200),
-            color: AppColor.graymodern900,
-            child: const Icon(Icons.error),
+            errorWidget: (context, url, error) => Container(
+              height: AppDimens.height(200),
+              color: AppColor.graymodern900,
+              child: const Icon(Icons.error),
+            ),
           ),
         ),
         if (alt != null && alt.isNotEmpty && alt != "사진설명")

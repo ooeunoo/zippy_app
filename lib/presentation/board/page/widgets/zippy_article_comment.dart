@@ -11,6 +11,7 @@ import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
+import 'package:zippy/app/widgets/app_text_input.dart';
 import 'package:zippy/domain/model/article_comment.model.dart';
 import 'package:zippy/domain/model/params/create_article_comment.params.dart';
 
@@ -49,6 +50,7 @@ class _ZippyArticleCommentState extends State<ZippyArticleComment> {
   final AuthService authService = Get.find<AuthService>();
   List<ArticleComment> comments = [];
   final TextEditingController _commentController = TextEditingController();
+  final FocusNode _commentFocusNode = FocusNode();
   ArticleComment? replyingTo; // 대댓글 작성 시 부모 댓글 저장
 
   @override
@@ -60,6 +62,7 @@ class _ZippyArticleCommentState extends State<ZippyArticleComment> {
   @override
   void dispose() {
     _commentController.dispose();
+    _commentFocusNode.dispose();
     super.dispose();
   }
 
@@ -272,45 +275,12 @@ class _ZippyArticleCommentState extends State<ZippyArticleComment> {
               Row(
                 children: [
                   Expanded(
-                    child: TextField(
-                      onTapOutside: (event) => FocusScope.of(context).unfocus(),
+                    child: AppTextInput(
                       controller: _commentController,
-                      style: Theme.of(context).textTheme.textMD.copyWith(
-                            color: AppThemeColors.textHigh(context),
-                          ),
-                      decoration: InputDecoration(
-                        hintText:
-                            replyingTo == null ? "댓글을 입력하세요" : "답글을 입력하세요",
-                        hintStyle: Theme.of(context).textTheme.textMD.copyWith(
-                              color: AppThemeColors.textLow(context),
-                            ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide(
-                            color:
-                                AppThemeColors.bottomSheetSecondaryBackground(
-                                    context),
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide(
-                            color:
-                                AppThemeColors.bottomSheetSecondaryBackground(
-                                    context),
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: const BorderSide(
-                            width: 2,
-                            color: AppColor.brand600,
-                          ),
-                        ),
-                        filled: true,
-                        fillColor:
-                            AppThemeColors.bottomSheetBackground(context),
-                      ),
+                      focusNode: _commentFocusNode,
+                      autofocus: false,
+                      onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                      hintText: replyingTo == null ? "댓글을 입력하세요" : "답글을 입력하세요",
                     ),
                   ),
                   AppSpacerH(value: AppDimens.width(10)),

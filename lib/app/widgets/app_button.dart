@@ -95,7 +95,8 @@ class AppButton extends StatelessWidget {
             color: AppThemeColors.textHigh(context));
 
     if (disable) {
-      style = style.copyWith(color: AppThemeColors.textHigh(context));
+      style =
+          style.copyWith(color: AppThemeColors.buttonDisableTextColor(context));
     }
 
     return style;

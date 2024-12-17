@@ -8,6 +8,7 @@ import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/widgets/app_button.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
+import 'package:zippy/app/widgets/app_text.dart';
 
 /**
  * 로그인이 필요한 경우 사용하는 다이얼로그
@@ -34,6 +35,17 @@ showVersionUpdateDialog(
     confirmText: "업데이트",
     onlyConfirm: true,
     onConfirm: onConfirm,
+  );
+}
+
+showKeywordDeleteDialog(String keyword, VoidCallback onConfirm) {
+  showAppDialog(
+    "키워드 삭제",
+    message: '\'$keyword\' 키워드를 삭제하시겠습니까?',
+    confirmText: '삭제',
+    onConfirm: onConfirm,
+    confirmButtonColor: AppColor.rose500,
+    confirmTextColor: AppColor.white,
   );
 }
 
@@ -130,12 +142,12 @@ class AppDialog extends StatelessWidget {
           ),
           AppSpacerV(value: AppDimens.height(15)),
           if (message != null) ...[
-            Text(
+            AppText(
               message!,
               style: Theme.of(context).textTheme.textSM.copyWith(
                     color: AppThemeColors.textHigh(context),
                   ),
-              textAlign: TextAlign.center,
+              align: TextAlign.center,
             ),
           ],
           if (child != null) ...[
@@ -175,6 +187,7 @@ class AppDialog extends StatelessWidget {
                     onConfirm();
                   },
                   color: confirmButtonColor,
+                  borderColor: confirmButtonColor,
                   titleStyle: Theme.of(context).textTheme.textMD.copyWith(
                         color: confirmTextColor,
                         fontWeight: AppFontWeight.semibold,

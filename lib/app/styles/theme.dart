@@ -3,16 +3,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zippy/app/styles/color.dart';
 
 class AppTheme {
-  static ThemeData lightTheme(BuildContext context) => ThemeData(
-        fontFamily: 'Suit',
-        useMaterial3: true,
-        highlightColor: AppColor.transparent,
-        splashColor: AppColor.transparent,
-        scaffoldBackgroundColor: AppColor.graymodern50,
-        appBarTheme: const AppBarTheme(
-            backgroundColor: AppColor.graymodern50,
-            surfaceTintColor: AppColor.graymodern50),
-      );
+  // static ThemeData lightTheme(BuildContext context) => ThemeData(
+  //       fontFamily: 'Suit',
+  //       useMaterial3: true,
+  //       highlightColor: AppColor.transparent,
+  //       splashColor: AppColor.transparent,
+  //       scaffoldBackgroundColor: AppColor.graymodern50,
+  //       appBarTheme: const AppBarTheme(
+  //           backgroundColor: AppColor.graymodern50,
+  //           surfaceTintColor: AppColor.graymodern50),
+  //     );
 
   static ThemeData darkTheme(BuildContext context) => ThemeData(
         fontFamily: 'Suit',

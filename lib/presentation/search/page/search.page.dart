@@ -96,7 +96,7 @@ class _SearchPageState extends State<SearchPage> {
 
   AppHeader _buildSearchAppBar() {
     return AppHeader(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      // backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       leading: Padding(
         padding: const EdgeInsets.all(8.0),
         child: IconButton(

@@ -45,6 +45,20 @@
             android:value="false" />
         <!-- ###### -->
 
+        <!-- 카카오 로그인 커스텀 URL 스킴 설정 -->
+        <activity
+            android:name="com.kakao.sdk.flutter.AuthCodeCustomTabsActivity"
+            android:exported="true">
+            <intent-filter android:label="flutter_web_auth">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+            <!-- 카카오 로그인 Redirect URI -->
+                <data android:scheme="kakao3cdec7fb8a31c80a2caf92178fcbad33" android:host="oauth"/>
+            </intent-filter>
+        </activity>
+
     </application>
     <queries>
         <intent>

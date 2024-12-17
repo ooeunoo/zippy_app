@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/services.dart';
@@ -133,6 +132,7 @@ class AuthDatasourceImpl implements AuthDatasource {
   @override
   Future<Either<Failure, bool>> loginInWithKakao() async {
     try {
+      print("in");
       // await provider.client.auth.signInWithOAuth(
       //   supabase.OAuthProvider.kakao,
       //   redirectTo: kIsWeb
@@ -144,6 +144,7 @@ class AuthDatasourceImpl implements AuthDatasource {
       //           .inAppWebView, // Launch the auth screen in a new webview on mobile.
       // );
       OAuthToken? token;
+      print(await isKakaoTalkInstalled());
       if (await isKakaoTalkInstalled()) {
         try {
           token = await UserApi.instance.loginWithKakaoTalk();
