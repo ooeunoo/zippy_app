@@ -8,10 +8,10 @@ import 'package:zippy/app/widgets/app_dialog.dart';
 import 'package:zippy/domain/model/ad_article.model.dart';
 import 'package:zippy/domain/model/article.model.dart';
 import 'package:get/get.dart';
-import 'package:zippy/domain/model/params/get_recommend_aritlces.params.dart';
+import 'package:zippy/domain/model/params/get_random_articles.params.dart';
 import 'package:zippy/app/services/article.service.dart';
 
-class BoardController extends GetxController {
+class BoardController extends SuperController {
   AuthService authService = Get.find<AuthService>();
   AdmobService admobService = Get.find<AdmobService>();
   ArticleService articleService = Get.find<ArticleService>();
@@ -23,21 +23,22 @@ class BoardController extends GetxController {
   final isLoadingContents = true.obs;
   final isLoadingUserSubscription = true.obs;
   final error = Rxn<String>();
-  Future<void> onHandleFetchRecommendedArticles() async {
+
+  Future<void> onHandleFetchRandomArticles() async {
     try {
       isLoadingContents.value = true;
 
-      final fetchedArticles =
-          await articleService.onHandleFetchRecommendedArticles(
-        GetRecommendedArticlesParams(
+      final fetchedArticles = await articleService.onHandleFetchRandomArticles(
+        GetRandomArticlesParams(
           userId: authService.currentUser.value?.id,
-          excludeViewed: false,
           limit: 100,
         ),
       );
+      print('fetchedArticles: ${fetchedArticles}');
 
       if (fetchedArticles.isNotEmpty) {
-        articles.assignAll(fetchedArticles);
+        articles.clear();
+        articles.addAll(fetchedArticles);
 
         // 이미지 미리 캐시
         for (var article in fetchedArticles) {
@@ -85,15 +86,32 @@ class BoardController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _initialize();
+    onHandleFetchRandomArticles();
   }
 
-  Future<void> _initialize() async {
-    // 세션 초기화 상태 감지
-    ever(authService.isInitializedSession, (bool initialized) {
-      if (initialized) {
-        onHandleFetchRecommendedArticles();
-      }
-    });
+  @override
+  void onDetached() {
+    // TODO: implement onDetached
+  }
+
+  @override
+  void onHidden() {
+    // TODO: implement onHidden
+  }
+
+  @override
+  void onInactive() {
+    // TODO: implement onInactive
+  }
+
+  @override
+  void onPaused() {
+    print('onPaused');
+    // TODO: implement onPaused
+  }
+
+  @override
+  void onResumed() {
+    // TODO: implement onResumed
   }
 }

@@ -17,6 +17,7 @@ import 'package:zippy/domain/model/params/create_article_comment.params.dart';
 import 'package:zippy/domain/model/params/create_bookmark_item.params.dart';
 import 'package:zippy/domain/model/params/create_user_interaction.params.dart';
 import 'package:zippy/domain/model/params/get_aritlces.params.dart';
+import 'package:zippy/domain/model/params/get_random_articles.params.dart';
 import 'package:zippy/domain/model/params/get_recommend_aritlces.params.dart';
 import 'package:zippy/domain/model/params/update_user_interaction.params.dart';
 import 'package:zippy/domain/model/source.model.dart';
@@ -26,6 +27,7 @@ import 'package:zippy/domain/usecases/create_article_comment.usecase.dart';
 import 'package:zippy/domain/usecases/create_user_interaction.usecase.dart';
 import 'package:zippy/domain/usecases/get_article_comments.usecase.dart';
 import 'package:zippy/domain/usecases/get_articles.usecase.dart';
+import 'package:zippy/domain/usecases/get_random_articles.dart';
 import 'package:zippy/domain/usecases/get_recommend_articles.usecase.dart';
 import 'package:zippy/domain/usecases/get_sources.usecase.dart';
 import 'package:zippy/domain/usecases/update_user_interaction.usecase.dart';
@@ -45,6 +47,7 @@ class ArticleService extends GetxService {
 
   final GetSources getSources = Get.find();
   final GetArticles getArticles = Get.find();
+  final GetRandomArticles getRandomArticles = Get.find();
   final GetRecommendedArticles getRecommendedArticles = Get.find();
   final CreateUserInteraction createUserInteraction = Get.find();
   final UpdateUserInteraction updateUserInteraction = Get.find();
@@ -71,6 +74,16 @@ class ArticleService extends GetxService {
     } else {
       return null;
     }
+  }
+
+  Future<List<Article>> onHandleFetchRandomArticles(
+      GetRandomArticlesParams params) async {
+    final result = await getRandomArticles.execute(params);
+    return result.fold((failure) {
+      return [];
+    }, (data) {
+      return data;
+    });
   }
 
   Future<List<Article>> onHandleFetchRecommendedArticles(

@@ -14,19 +14,26 @@ class BaseController extends GetxController {
     switch (index) {
       case 0:
         Get.toNamed(
-          Routes.board,
+          Routes.home,
           id: 1,
           preventDuplicates: false,
         );
         break;
       case 1:
         Get.toNamed(
-          Routes.search,
+          Routes.board,
           id: 1,
           preventDuplicates: false,
         );
         break;
       case 2:
+        Get.toNamed(
+          Routes.search,
+          id: 1,
+          preventDuplicates: false,
+        );
+        break;
+      case 3:
         Get.toNamed(
           Routes.profile,
           id: 1,

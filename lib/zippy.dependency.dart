@@ -43,6 +43,7 @@ import 'package:zippy/domain/usecases/get_articles.usecase.dart';
 import 'package:zippy/domain/usecases/get_content_types.usecase.dart';
 import 'package:zippy/domain/usecases/get_current_user.usecase.dart';
 import 'package:zippy/domain/usecases/get_platforms.usecase.dart';
+import 'package:zippy/domain/usecases/get_random_articles.dart';
 import 'package:zippy/domain/usecases/get_recommend_articles.usecase.dart';
 import 'package:zippy/domain/usecases/get_sources.usecase.dart';
 import 'package:zippy/domain/usecases/get_user_bookmarks.usecase.dart';
@@ -133,6 +134,7 @@ class ZippyBindings implements Bindings {
     Get.lazyPut<GetArticleComments>(() => GetArticleComments());
     Get.lazyPut<CreateArticleComment>(() => CreateArticleComment());
     Get.lazyPut<GetRecommendedArticles>(() => GetRecommendedArticles());
+    Get.lazyPut<GetRandomArticles>(() => GetRandomArticles());
     Get.lazyPut<GetContentTypes>(() => GetContentTypes());
     Get.lazyPut<ToggleUserSubscription>(
         () => ToggleUserSubscription(Get.find()));

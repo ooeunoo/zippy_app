@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zippy/presentation/board/binding/board.binding.dart';
 import 'package:zippy/presentation/board/page/board.page.dart';
+import 'package:zippy/presentation/home/binding/home.binding.dart';
+import 'package:zippy/presentation/home/page/home.page.dart';
 import 'package:zippy/presentation/profile/binding/profile.binding.dart';
 import 'package:zippy/presentation/profile/page/profile.page.dart';
 import 'package:zippy/presentation/search/binding/search.binding.dart';
@@ -73,8 +75,9 @@ class _BasePageState extends State<BasePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           _buildNavItem(Assets.home01, 0),
-                          _buildNavItem(Assets.search, 1),
-                          _buildNavItem(Assets.user01, 2),
+                          _buildNavItem(Assets.flexAlignRight, 1),
+                          _buildNavItem(Assets.search, 2),
+                          _buildNavItem(Assets.user01, 3),
                         ],
                       )),
                 ),
@@ -92,9 +95,17 @@ class _BasePageState extends State<BasePage> {
       ),
       body: Navigator(
         key: Get.nestedKey(1), // 중첩 네비게이션을 위한 키
-        initialRoute: Routes.board,
+        initialRoute: Routes.home,
         onGenerateRoute: (settings) {
           switch (settings.name) {
+            case Routes.home:
+              return GetPageRoute(
+                routeName: Routes.home,
+                page: () => const HomePage(),
+                binding: HomeBinding(),
+                transition: Transition.noTransition,
+                gestureWidth: (context) => 0, // Disable swipe
+              );
             case Routes.board:
               return GetPageRoute(
                 routeName: Routes.board,
@@ -103,6 +114,7 @@ class _BasePageState extends State<BasePage> {
                 transition: Transition.noTransition,
                 gestureWidth: (context) => 0, // Disable swipe
               );
+
             case Routes.search:
               return GetPageRoute(
                 routeName: Routes.search,

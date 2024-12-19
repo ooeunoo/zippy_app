@@ -1,8 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/extensions/datetime.dart';
 import 'package:zippy/app/services/article.service.dart';
@@ -146,16 +143,16 @@ class _ZippyArticleYoutubeViewState extends State<ZippyArticleYoutubeView> {
     List<String> allImages = List<String>.from(widget.article.images);
     List<String> allVideos = [];
 
-    if (widget.article.attachments != null) {
-      for (var attachment in widget.article.attachments!) {
-        if (attachment.contentType.startsWith('image/') &&
-            !allImages.contains(attachment.contentUrl)) {
-          allImages.add(attachment.contentUrl);
-        } else if (attachment.contentType.startsWith('video/')) {
-          allVideos.add(attachment.contentUrl);
-        }
-      }
-    }
+    // if (widget.article.attachments != null) {
+    //   for (var attachment in widget.article.attachments!) {
+    //     if (attachment.contentType.startsWith('image/') &&
+    //         !allImages.contains(attachment.contentUrl)) {
+    //       allImages.add(attachment.contentUrl);
+    //     } else if (attachment.contentType.startsWith('video/')) {
+    //       allVideos.add(attachment.contentUrl);
+    //     }
+    //   }
+    // }
 
     if (allImages.isEmpty && allVideos.isEmpty) {
       return SizedBox(

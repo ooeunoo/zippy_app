@@ -16,7 +16,6 @@ class AuthService extends GetxService {
   final Rx<User?> currentUser = Rx<User?>(null);
   final RxBool isLoading = false.obs;
   RxBool get isLoggedIn => RxBool(currentUser.value != null);
-  final isInitializedSession = false.obs; // 추가
 
   @override
   void onInit() {
@@ -32,9 +31,9 @@ class AuthService extends GetxService {
       final user = change.value2;
       currentUser.value = user;
 
-      if (event == supabase.AuthChangeEvent.initialSession) {
-        isInitializedSession.value = true;
-      }
+      // if (event == supabase.AuthChangeEvent.initialSession) {
+      //   isInitializedSession.value = true;
+      // }
 
       if (event == supabase.AuthChangeEvent.signedIn) {
         Get.offAllNamed(Routes.base);

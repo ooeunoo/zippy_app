@@ -19,6 +19,8 @@ class AppSearchController extends SuperController {
   RxList<KeywordRankSnapshot> trendingKeywords =
       RxList<KeywordRankSnapshot>([]);
 
+  DateTime? _pausedTime;
+
   @override
   onInit() async {
     super.onInit();
@@ -27,7 +29,13 @@ class AppSearchController extends SuperController {
 
   @override
   void onResumed() {
-    _initialize();
+    if (_pausedTime != null) {
+      final difference = DateTime.now().difference(_pausedTime!);
+      if (difference.inMinutes >= 10) {
+        _initialize();
+      }
+    }
+    _pausedTime = null;
   }
 
   ///*********************************
@@ -60,21 +68,25 @@ class AppSearchController extends SuperController {
 
   @override
   void onDetached() {
+    print('onDetached');
     // TODO: implement onDetached
   }
 
   @override
   void onHidden() {
+    print('onHidden');
     // TODO: implement onHidden
   }
 
   @override
   void onInactive() {
+    print('onInactive');
     // TODO: implement onInactive
   }
 
   @override
   void onPaused() {
-    // TODO: implement onPaused
+    _pausedTime = DateTime.now();
+    print('onPaused');
   }
 }

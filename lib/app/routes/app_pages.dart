@@ -5,6 +5,8 @@ import 'package:zippy/presentation/board/page/board.page.dart';
 import 'package:zippy/presentation/bookmark/binding/bookmark.binding.dart';
 import 'package:zippy/presentation/bookmark/page/bookmark.page.dart';
 import 'package:get/route_manager.dart';
+import 'package:zippy/presentation/home/binding/home.binding.dart';
+import 'package:zippy/presentation/home/page/home.page.dart';
 import 'package:zippy/presentation/keyword_notification/binding/keyword_notification.binding.dart';
 import 'package:zippy/presentation/keyword_notification/page/keyword_notification.page.dart';
 import 'package:zippy/presentation/login/binding/login.binding.dart';
@@ -27,6 +29,11 @@ class AppPages {
       transition: Transition.noTransition,
       children: [
         GetPage(
+            name: Routes.home,
+            page: () => const HomePage(),
+            binding: HomeBinding(),
+            transition: Transition.noTransition),
+        GetPage(
           name: Routes.board,
           page: () => const BoardPage(),
           binding: BoardBinding(),
@@ -34,7 +41,7 @@ class AppPages {
         ),
         GetPage(
           name: Routes.search,
-          page: () => SearchPage(),
+          page: () => const SearchPage(),
           binding: SearchBinding(),
           transition: Transition.noTransition,
         ),
@@ -77,6 +84,7 @@ abstract class Routes {
   Routes._();
   static const login = _Paths.login;
   static const base = _Paths.base;
+  static const home = _Paths.home;
   static const board = _Paths.board;
   static const search = _Paths.search;
   static const profile = _Paths.profile;
@@ -90,6 +98,7 @@ abstract class _Paths {
   _Paths._();
   static const login = '/login';
   static const base = '/';
+  static const home = '/home';
   static const board = '/board';
   static const search = '/search';
   static const profile = '/profile';

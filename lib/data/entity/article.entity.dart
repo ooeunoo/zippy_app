@@ -12,10 +12,8 @@ class ArticleEntity extends Equatable {
   final String link;
   final String author;
   final List<dynamic> images;
-  final String summary;
   final String content;
   final String? excerpt;
-  final List<AttachmentEntity>? attachments;
   final List<String> keyPoints;
   final List<String> keywords;
   final DateTime published;
@@ -29,13 +27,11 @@ class ArticleEntity extends Equatable {
     required this.link,
     required this.author,
     required this.images,
-    required this.summary,
     required this.content,
     this.excerpt,
     required this.keyPoints,
     required this.keywords,
     required this.published,
-    this.attachments,
     this.metadata,
   });
 
@@ -59,7 +55,6 @@ class ArticleEntity extends Equatable {
       link: json['link'],
       author: json['author'],
       images: json['images'],
-      summary: json['summary'],
       content: json['content'],
       excerpt: json['excerpt'],
       keyPoints: convertToStringList(json['key_points']),
@@ -67,10 +62,6 @@ class ArticleEntity extends Equatable {
       published: json['published'] != null
           ? DateTime.parse(json['published'])
           : DateTime.now(), // 또는 다른 기본값
-      attachments: json['attachments'] != null
-          ? List<AttachmentEntity>.from(json['attachments']
-              .map((attachment) => AttachmentEntity.fromJson(attachment)))
-          : null,
       metadata: json['article_metadata'] != null
           ? ArticleMetadataEntity.fromJson(json['article_metadata'])
           : null,
@@ -87,15 +78,10 @@ class ArticleEntity extends Equatable {
       images: images,
       excerpt: excerpt,
       content: content,
-      summary: summary,
       keyPoints: keyPoints,
       keywords: keywords,
       published: published,
       metadata: metadata?.toModel(),
-      attachments: attachments != null
-          ? List<Attachment>.from(attachments!
-              .map((AttachmentEntity attachment) => attachment.toModel()))
-          : [],
     );
   }
 }

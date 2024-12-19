@@ -8,6 +8,7 @@ import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
 import 'package:zippy/domain/model/params/get_aritlces.params.dart';
 import 'package:zippy/domain/model/params/get_articles_by_keyword.params.dart';
+import 'package:zippy/domain/model/params/get_random_articles.params.dart';
 import 'package:zippy/domain/model/params/get_recommend_aritlces.params.dart';
 
 String TABLE = 'articles';
@@ -15,7 +16,7 @@ String TABLE = 'articles';
 enum RPC {
   getRecommendedArticles('get_recommended_articles'),
   getSearchArticles('get_search_articles'),
-  ;
+  getRandomArticles('get_random_articles');
 
   final String function;
 
@@ -30,6 +31,9 @@ abstract class ArticleDatasource {
   Future<Either<Failure, Article>> getArticle(int id);
   Future<Either<Failure, List<Article>>> getArticlesByKeyword(
       GetArticlesByKeywordParams params);
+
+  Future<Either<Failure, List<Article>>> getRandomArticles(
+      GetRandomArticlesParams params);
 }
 
 class ArticleDatasourceImpl implements ArticleDatasource {
@@ -121,6 +125,36 @@ class ArticleDatasourceImpl implements ArticleDatasource {
           .single();
 
       Article result = ArticleEntity.fromJson(response).toModel();
+
+      return Right(result);
+    } catch (e, stackTrace) {
+      print('Error:$e \n stackTrace:$stackTrace');
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Article>>> getRandomArticles(
+      GetRandomArticlesParams params) async {
+    try {
+      print(params.toJson());
+      var response = await provider.client
+          .rpc(RPC.getRandomArticles.function, params: params.toJson());
+
+      print('response: $response');
+
+      List<Article> result = [];
+      for (var r in (response as List)) {
+        try {
+          if (r['link'].startsWith('https://www.youtube.com/')) {
+            continue;
+          }
+          result.add(ArticleEntity.fromJson(r).toModel());
+        } catch (e, stackTrace) {
+          print('Error:$e \n stackTrace:$stackTrace');
+          continue;
+        }
+      }
 
       return Right(result);
     } catch (e, stackTrace) {
