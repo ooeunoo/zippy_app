@@ -297,7 +297,7 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
 
   Widget _buildSingleRanking(KeywordRankSnapshot ranking) {
     return GestureDetector(
-      onTap: () => Get.to(() => SearchView(keyword: ranking.keyword)),
+      onTap: () => controller.onHandleGoToSearchView(ranking.keyword),
       child: Row(
         children: [
           SizedBox(

@@ -1,8 +1,6 @@
-// lib/presentation/home/page/widgets/news_section.dart
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:zippy/app/extensions/datetime.dart';
 import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/styles/color.dart';
@@ -10,7 +8,7 @@ import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/widgets/app_custom_bottom_sheet.dart';
-import 'package:zippy/app/widgets/app_divider.dart';
+import 'package:zippy/app/widgets/app_shimmer.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
@@ -20,9 +18,7 @@ import 'package:zippy/domain/model/source.model.dart';
 import 'package:zippy/presentation/home/controller/home.controller.dart';
 
 class NewsSection extends StatefulWidget {
-  const NewsSection({
-    super.key,
-  });
+  const NewsSection({super.key});
 
   @override
   State<NewsSection> createState() => _NewsSectionState();
@@ -35,11 +31,6 @@ class _NewsSectionState extends State<NewsSection> {
   final ScrollController _tabScrollController = ScrollController();
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
     _pageController.dispose();
     _tabScrollController.dispose();
@@ -49,9 +40,7 @@ class _NewsSectionState extends State<NewsSection> {
   void _showContentTypeBottomSheet() {
     openCustomBottomSheet(
       Container(
-        padding: EdgeInsets.symmetric(
-          vertical: AppDimens.height(30),
-        ),
+        padding: EdgeInsets.symmetric(vertical: AppDimens.height(30)),
         height: MediaQuery.of(context).size.height * 0.5,
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -124,12 +113,15 @@ class _NewsSectionState extends State<NewsSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _buildNewsHeader(),
-        _buildNewsItems(),
-      ],
+    return SliverToBoxAdapter(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildNewsHeader(),
+          AppSpacerV(value: AppDimens.height(12)),
+          _buildNewsContent(),
+        ],
+      ),
     );
   }
 
@@ -184,9 +176,7 @@ class _NewsSectionState extends State<NewsSection> {
           child: ListView.builder(
             controller: _tabScrollController,
             scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.only(
-              left: AppDimens.width(12),
-            ),
+            padding: EdgeInsets.only(left: AppDimens.width(12)),
             physics: const BouncingScrollPhysics(),
             itemCount: ArticleCategoryType.values.length,
             itemBuilder: (context, index) {
@@ -198,17 +188,20 @@ class _NewsSectionState extends State<NewsSection> {
                   onTap: () {
                     controller.selectedCategory.value = category;
                     _pageController.jumpToPage(index);
-                    final tabWidth = AppDimens.width(100);
-                    final screenWidth = MediaQuery.of(context).size.width;
-                    final offset =
-                        (index * tabWidth) - (screenWidth / 2) + (tabWidth / 2);
+                    if (_tabScrollController.hasClients) {
+                      final tabWidth = AppDimens.width(100);
+                      final screenWidth = MediaQuery.of(context).size.width;
+                      final offset = (index * tabWidth) -
+                          (screenWidth / 2) +
+                          (tabWidth / 2);
 
-                    _tabScrollController.animateTo(
-                      offset.clamp(
-                          0, _tabScrollController.position.maxScrollExtent),
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    );
+                      _tabScrollController.animateTo(
+                        offset.clamp(
+                            0, _tabScrollController.position.maxScrollExtent),
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    }
                   },
                   child: _buildCategoryTab(category, isSelected),
                 );
@@ -258,98 +251,147 @@ class _NewsSectionState extends State<NewsSection> {
     );
   }
 
-  Widget _buildNewsItems() {
+  Widget _buildNewsContent() {
     return Obx(() {
       if (controller.selectedContentType.value == null) {
         return const SizedBox.shrink();
       }
 
-      if (controller.isLoading.value) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      }
-
       final selectedType = controller.selectedContentType.value;
-
-      // 현재 선택된 카테고리의 기사들을 가져와 전체 높이 계산
       final currentArticles = controller.articleWithCategory[selectedType]
               ?[controller.selectedCategory.value] ??
           [];
-      final totalHeight = currentArticles.isEmpty
-          ? AppDimens.height(500) // 빈 상태 메시지를 위한 최소 높이
-          : currentArticles.length * (AppDimens.height(120));
+
+      if (controller.isLoading.value) {
+        return _buildShimmerLoading();
+      }
+
+      if (currentArticles.isEmpty) {
+        return _buildEmptyState();
+      }
 
       return SizedBox(
-        height: totalHeight.toDouble(),
+        height: MediaQuery.of(context).size.height - AppDimens.height(200),
         child: PageView.builder(
           controller: _pageController,
+          physics: const BouncingScrollPhysics(),
           onPageChanged: (index) {
+            if (!mounted) return;
             controller.selectedCategory.value =
                 ArticleCategoryType.values[index];
+            if (_tabScrollController.hasClients) {
+              final tabWidth = AppDimens.width(100);
+              final screenWidth = MediaQuery.of(context).size.width;
+              final offset =
+                  (index * tabWidth) - (screenWidth / 2) + (tabWidth / 2);
 
-            final tabWidth = AppDimens.width(100);
-            final screenWidth = MediaQuery.of(context).size.width;
-            final offset =
-                (index * tabWidth) - (screenWidth / 2) + (tabWidth / 2);
-
-            _tabScrollController.animateTo(
-              offset.clamp(0, _tabScrollController.position.maxScrollExtent),
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-            );
+              _tabScrollController.animateTo(
+                offset.clamp(0, _tabScrollController.position.maxScrollExtent),
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            }
           },
           itemCount: ArticleCategoryType.values.length,
           itemBuilder: (context, pageIndex) {
             final category = ArticleCategoryType.values[pageIndex];
             final articles =
                 controller.articleWithCategory[selectedType]?[category] ?? [];
-            if (articles.isEmpty) {
-              return Container(
-                alignment: Alignment.center,
-                padding: EdgeInsets.symmetric(
-                  vertical: AppDimens.height(40),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.article_outlined,
-                      size: AppDimens.height(48),
-                      color: AppColor.graymodern300,
-                    ),
-                    AppSpacerV(value: AppDimens.height(16)),
-                    AppText(
-                      '가져올 수 있는 기사가 없어요 🥲',
-                      style: Theme.of(context).textTheme.textMD.copyWith(
-                            color: AppColor.graymodern400,
-                            fontWeight: AppFontWeight.bold,
-                          ),
-                    ),
-                    AppSpacerV(value: AppDimens.height(8)),
-                    AppText(
-                      '잠시 후 다시 확인해주세요',
-                      style: Theme.of(context).textTheme.textSM.copyWith(
-                            color: AppColor.graymodern300,
-                          ),
-                    ),
-                  ],
-                ),
-              );
-            }
 
-            return SingleChildScrollView(
-              physics: const NeverScrollableScrollPhysics(),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children:
-                    articles.map((article) => _buildNewsItem(article)).toList(),
-              ),
+            return ListView.builder(
+              physics:
+                  const NeverScrollableScrollPhysics(), // 개별 ListView의 스크롤을 비활성화
+              itemCount: articles.length,
+              shrinkWrap: true,
+              itemBuilder: (context, index) => _buildNewsItem(articles[index]),
             );
           },
         ),
       );
     });
+  }
+
+  Widget _buildEmptyState() {
+    return FutureBuilder(
+      future: Future.delayed(const Duration(seconds: 3)),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _buildShimmerLoading();
+        }
+        return Container(
+          alignment: Alignment.center,
+          padding: EdgeInsets.symmetric(vertical: AppDimens.height(40)),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.article_outlined,
+                size: AppDimens.height(48),
+                color: AppColor.graymodern300,
+              ),
+              AppSpacerV(value: AppDimens.height(16)),
+              AppText(
+                '가져올 수 있는 기사가 없어요 🥲',
+                style: Theme.of(context).textTheme.textMD.copyWith(
+                      color: AppColor.graymodern400,
+                      fontWeight: AppFontWeight.bold,
+                    ),
+              ),
+              AppSpacerV(value: AppDimens.height(8)),
+              AppText(
+                '잠시 후 다시 확인해주세요',
+                style: Theme.of(context).textTheme.textSM.copyWith(
+                      color: AppColor.graymodern300,
+                    ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildShimmerLoading() {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: 5,
+      itemBuilder: (context, index) {
+        return Container(
+          height: AppDimens.height(120),
+          padding: EdgeInsets.symmetric(
+            horizontal: AppDimens.width(16),
+            vertical: AppDimens.height(16),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppShimmer(
+                      width: double.infinity,
+                      height: AppDimens.height(20),
+                    ),
+                    AppSpacerV(value: AppDimens.height(8)),
+                    AppShimmer(
+                      width: AppDimens.width(120),
+                      height: AppDimens.height(16),
+                    ),
+                  ],
+                ),
+              ),
+              AppSpacerH(value: AppDimens.width(16)),
+              AppShimmer(
+                width: AppDimens.width(100),
+                height: AppDimens.width(100),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildNewsItem(Article article) {
@@ -379,6 +421,8 @@ class _NewsSectionState extends State<NewsSection> {
                     children: [
                       AppText(
                         article.title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.textSM.copyWith(
                               color: AppColor.white,
                             ),
@@ -390,7 +434,6 @@ class _NewsSectionState extends State<NewsSection> {
                               color: AppColor.graymodern400,
                             ),
                       ),
-                      AppSpacerV(value: AppDimens.height(8)),
                     ],
                   ),
                 ),
@@ -407,6 +450,7 @@ class _NewsSectionState extends State<NewsSection> {
                   ),
               ],
             ),
+            AppSpacerV(value: AppDimens.height(8)),
           ],
         ),
       ),

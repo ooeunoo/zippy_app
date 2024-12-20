@@ -27,14 +27,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Scaffold(
       appBar: const AppHeaderWrap(child: HomeHeader()),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              AppSpacerV(value: AppDimens.height(16)),
-              const KeywordRankingsSection(),
-              const NewsSection(),
-            ],
-          ),
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverPadding(
+              padding: EdgeInsets.only(top: AppDimens.height(16)),
+              sliver: const SliverToBoxAdapter(
+                child: KeywordRankingsSection(),
+              ),
+            ),
+            const NewsSection(),
+          ],
         ),
       ),
     );

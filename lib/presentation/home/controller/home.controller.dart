@@ -12,6 +12,7 @@ import 'package:zippy/domain/model/params/get_tranding_keywords.params.dart';
 import 'package:zippy/domain/model/top_articles_by_content_type.model.dart';
 import 'package:zippy/domain/usecases/get_article_with_category.dart';
 import 'package:zippy/domain/usecases/get_trending_keywords.usecase.dart';
+import 'package:zippy/presentation/home/page/views/search.dart';
 
 class HomeController extends GetxController {
   final ArticleService articleService = Get.find();
@@ -120,10 +121,13 @@ class HomeController extends GetxController {
     }
   }
 
-    Future<void> refreshSearch() async {
+  Future<void> refreshSearch() async {
     if (currentQuery.value.isNotEmpty) {
       await onHandleFetchArticlesBySearch(currentQuery.value, refresh: true);
     }
   }
 
+  onHandleGoToSearchView(String? search) {
+    Get.to(() => SearchView(keyword: search));
+  }
 }

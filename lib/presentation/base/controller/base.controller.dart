@@ -19,25 +19,25 @@ class BaseController extends GetxController {
           preventDuplicates: false,
         );
         break;
-      case 1:
-        if (index == 1) {
-          boardController.onHandleFetchRandomArticles();
-        }
+      // case 1:
+      //   if (index == 1) {
+      //     boardController.onHandleFetchRandomArticles();
+      //   }
 
-        Get.toNamed(
-          Routes.board,
-          id: 1,
-          preventDuplicates: false,
-        );
-        break;
-      case 2:
-        Get.toNamed(
-          Routes.search,
-          id: 1,
-          preventDuplicates: false,
-        );
-        break;
-      case 3:
+      //   Get.toNamed(
+      //     Routes.board,
+      //     id: 1,
+      //     preventDuplicates: false,
+      //   );
+      //   break;
+      // case 2:
+      //   Get.toNamed(
+      //     Routes.search,
+      //     id: 1,
+      //     preventDuplicates: false,
+      //   );
+      //   break;
+      case 1:
         Get.toNamed(
           Routes.profile,
           id: 1,
