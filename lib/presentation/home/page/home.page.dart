@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/widgets/app_header.dart';
+import 'package:zippy/app/widgets/app_spacer_v.dart';
 
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/presentation/home/page/widgets/header_section.dart';
@@ -25,9 +26,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppHeaderWrap(child: HomeHeader()),
-      body: const SafeArea(
+      body: SafeArea(
         child: CustomScrollView(
           slivers: [
+            SliverToBoxAdapter(
+              child: AppSpacerV(value: AppDimens.height(16)),
+            ),
             SliverToBoxAdapter(
               child: KeywordRankingsSection(),
             ),

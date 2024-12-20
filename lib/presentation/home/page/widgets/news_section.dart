@@ -28,6 +28,7 @@ class NewsSection extends StatefulWidget {
 class _NewsSectionState extends State<NewsSection> {
   final HomeController controller = Get.find();
   final PageController _pageController = PageController();
+  final ScrollController _tabScrollController = ScrollController();
 
   @override
   void initState() {
@@ -37,12 +38,83 @@ class _NewsSectionState extends State<NewsSection> {
   @override
   void dispose() {
     _pageController.dispose();
+    _tabScrollController.dispose();
     super.dispose();
   }
 
   void _showContentTypeBottomSheet() {
     openCustomBottomSheet(
-      Container(),
+      Container(
+        padding: EdgeInsets.symmetric(
+          vertical: AppDimens.height(30),
+        ),
+        height: MediaQuery.of(context).size.height * 0.5,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Obx(() {
+                final contentTypes = controller.contentTypes;
+                return GridView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: AppDimens.height(8),
+                    crossAxisSpacing: AppDimens.width(8),
+                    childAspectRatio: 2.5, // 1.5에서 2.5로 변경하여 높이를 줄임
+                  ),
+                  itemCount: contentTypes.length,
+                  itemBuilder: (context, index) {
+                    final contentType = contentTypes[index];
+                    return GestureDetector(
+                      onTap: () {
+                        controller.selectedContentType.value = contentType;
+                        Get.back();
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: AppDimens.width(12),
+                          vertical: AppDimens.height(8), // 패딩도 12에서 8로 줄임
+                        ),
+                        decoration: BoxDecoration(
+                          color: controller.selectedContentType.value?.id ==
+                                  contentType.id
+                              ? AppColor.brand500
+                              : AppColor.transparent,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            AppText(
+                              contentType.name,
+                              style:
+                                  Theme.of(context).textTheme.textMD.copyWith(
+                                        color: AppColor.white,
+                                      ),
+                            ),
+                            AppSpacerV(value: AppDimens.height(2)), // 4에서 2로 줄임
+                            AppText(
+                              contentType.description,
+                              style:
+                                  Theme.of(context).textTheme.textXS.copyWith(
+                                        color: AppColor.graymodern200,
+                                      ),
+                              maxLines: 1, // 2에서 1로 줄임
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -106,9 +178,10 @@ class _NewsSectionState extends State<NewsSection> {
         SizedBox(
           height: AppDimens.height(36),
           child: ListView.builder(
+            controller: _tabScrollController,
             scrollDirection: Axis.horizontal,
             padding: EdgeInsets.only(
-              right: AppDimens.width(16),
+              left: AppDimens.width(12),
             ),
             physics: const BouncingScrollPhysics(),
             itemCount: ArticleCategoryType.values.length,
@@ -117,36 +190,54 @@ class _NewsSectionState extends State<NewsSection> {
               return Obx(() {
                 final isSelected =
                     controller.selectedCategory.value == category;
-                return Padding(
-                  padding: EdgeInsets.only(
-                    left: index == 0 ? AppDimens.width(16) : AppDimens.width(8),
-                  ),
-                  child: GestureDetector(
-                    onTap: () {
-                      controller.selectedCategory.value = category;
-                      _pageController.animateToPage(
-                        index,
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                      );
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: AppDimens.width(12),
-                        vertical: AppDimens.height(6),
-                      ),
-                      decoration: BoxDecoration(
+                return GestureDetector(
+                  onTap: () {
+                    controller.selectedCategory.value = category;
+                    _pageController.animateToPage(
+                      index,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    margin: EdgeInsets.only(right: AppDimens.width(8)),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppDimens.width(12),
+                      vertical: AppDimens.height(6),
+                    ),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? AppColor.brand500
+                          : AppColor.graymodern800.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
                         color: isSelected
-                            ? AppColor.brand500
+                            ? AppColor.brand400
                             : AppColor.transparent,
-                        borderRadius: BorderRadius.circular(12),
+                        width: 1,
                       ),
-                      child: AppText(
-                        category.value,
-                        style: Theme.of(context).textTheme.textXS.copyWith(
-                              color: AppColor.white,
-                            ),
-                      ),
+                      boxShadow: isSelected
+                          ? [
+                              BoxShadow(
+                                color: AppColor.brand500.withOpacity(0.4),
+                                spreadRadius: 0,
+                                blurRadius: 3,
+                                offset: const Offset(0, 2),
+                              )
+                            ]
+                          : null,
+                    ),
+                    child: AppText(
+                      category.value,
+                      style: Theme.of(context).textTheme.textXS.copyWith(
+                            color: isSelected
+                                ? AppColor.white
+                                : AppColor.graymodern400,
+                            fontWeight: isSelected
+                                ? FontWeight.w600
+                                : FontWeight.normal,
+                          ),
                     ),
                   ),
                 );
@@ -169,18 +260,34 @@ class _NewsSectionState extends State<NewsSection> {
         child: PageView.builder(
           controller: _pageController,
           onPageChanged: (index) {
-            controller.selectedCategory.value = ArticleCategoryType.values[index];
+            controller.selectedCategory.value =
+                ArticleCategoryType.values[index];
+                
+            // 선택된 탭이 보이도록 스크롤
+            final tabWidth = AppDimens.width(100); // 대략적인 탭 너비
+            final screenWidth = MediaQuery.of(context).size.width;
+            final offset = (index * tabWidth) - (screenWidth / 2) + (tabWidth / 2);
+            
+            _tabScrollController.animateTo(
+              offset.clamp(0, _tabScrollController.position.maxScrollExtent),
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
           },
           itemCount: ArticleCategoryType.values.length,
           itemBuilder: (context, pageIndex) {
-            final selectedType = controller.selectedContentType.value;
-            final category = ArticleCategoryType.values[pageIndex];
-            final articles = controller.articleWithCategory[selectedType]?[category] ?? [];
+            return Obx(() {
+              final selectedType = controller.selectedContentType.value;
+              final category = ArticleCategoryType.values[pageIndex];
+              final articles =
+                  controller.articleWithCategory[selectedType]?[category] ?? [];
 
-            return ListView.builder(
-              itemCount: articles.length,
-              itemBuilder: (context, index) => _buildNewsItem(articles[index]),
-            );
+              return ListView.builder(
+                itemCount: articles.length,
+                itemBuilder: (context, index) =>
+                    _buildNewsItem(articles[index]),
+              );
+            });
           },
         ),
       );

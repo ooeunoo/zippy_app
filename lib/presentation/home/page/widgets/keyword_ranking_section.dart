@@ -142,7 +142,9 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
       }
 
       return Material(
-        color: AppColor.graymodern950,
+        color: isExpanded
+            ? AppColor.graymodern950.withOpacity(0.5)
+            : Colors.transparent,
         child: GestureDetector(
           onTap: _handleTap,
           behavior: HitTestBehavior.opaque,
@@ -152,7 +154,7 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
             ),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 300),
-              height: isExpanded ? AppDimens.height(480) : AppDimens.height(60),
+              height: isExpanded ? AppDimens.height(500) : AppDimens.height(60),
               child: Column(
                 children: [
                   _buildRankingHeader(),
@@ -241,7 +243,7 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
           return Column(
             children: [
               AppDivider(height: AppDimens.height(2)),
-              AppSpacerV(value: AppDimens.height(12)),
+              AppSpacerV(value: AppDimens.height(30)),
             ],
           );
         }
