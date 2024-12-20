@@ -29,6 +29,7 @@ class HomeController extends GetxController {
   final articleWithCategory =
       RxMap<ContentType, Map<ArticleCategoryType, List<Article>>>({});
 
+  // Search related
   final int pageSize = 10;
   RxInt currentPage = 1.obs;
   RxBool isSearchLoading = false.obs;
@@ -41,84 +42,139 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    ever(contentTypeService.contentTypes, (value) {
+    _initializeContentTypeListener();
+    _initializeSelectedContentTypeListener();
+    onHandleFetchTrendingKeywords();
+  }
+
+  void _initializeContentTypeListener() {
+    ever(contentTypeService.contentTypes, (List<ContentType> value) {
       contentTypes.value = value;
       if (contentTypes.isNotEmpty) {
         selectedContentType.value = contentTypes.first;
-        onHandleFetchArticleWithCategory(contentTypes.first);
+        _loadArticlesForContentType(contentTypes.first);
       }
     });
-    ever(selectedContentType, (value) {
+  }
+
+  void _initializeSelectedContentTypeListener() {
+    ever(selectedContentType, (ContentType? value) {
       if (value != null) {
-        if (articleWithCategory[value] == null) {
-          isLoading.value = true;
-          onHandleFetchArticleWithCategory(value);
-          isLoading.value = false;
+        _loadArticlesForContentType(value);
+      }
+    });
+
+    // 카테고리 변경 리스너 추가
+    ever(selectedCategory, (ArticleCategoryType category) {
+      if (selectedContentType.value != null) {
+        // 현재 컨텐츠 타입에 대한 데이터가 없으면 로드
+        if (!articleWithCategory.containsKey(selectedContentType.value)) {
+          _loadArticlesForContentType(selectedContentType.value!);
         }
       }
     });
-    onHandleFetchTrendingKeywords();
+  }
+
+  Future<void> _loadArticlesForContentType(ContentType contentType) async {
+    if (articleWithCategory.containsKey(contentType) &&
+        articleWithCategory[contentType]?[selectedCategory.value] != null) {
+      return; // 이미 현재 카테고리의 데이터가 있으면 스킵
+    }
+
+    isLoading.value = true;
+    try {
+      await onHandleFetchArticleWithCategory(contentType);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<void> onHandleFetchArticleWithCategory(ContentType contentType) async {
     final result = await getArticleWithCategory.execute(contentType.id);
-    result.fold((failure) {}, (articles) {
-      articleWithCategory[contentType] = articles.result;
-    });
+    result.fold(
+      (failure) {
+        // 에러 처리를 추가할 수 있습니다.
+      },
+      (articles) {
+        articleWithCategory[contentType] = articles.result;
+      },
+    );
   }
 
   Future<void> onHandleFetchTrendingKeywords() async {
-    final result =
-        await getTrendingKeywords.execute(const GetTrandingKeywordsParams(
-      contentType: null,
-    ));
-    result.fold((failure) {}, (keywords) {
-      trendingKeywords.clear();
-      trendingKeywords.addAll(keywords);
-    });
+    final result = await getTrendingKeywords.execute(
+      const GetTrandingKeywordsParams(contentType: null),
+    );
+
+    result.fold(
+      (failure) {
+        // 에러 처리를 추가할 수 있습니다.
+      },
+      (keywords) {
+        trendingKeywords
+          ..clear()
+          ..addAll(keywords);
+      },
+    );
   }
 
-  Future<List<Article>> onHandleFetchArticlesBySearch(String keyword,
-      {bool refresh = false}) async {
-    // If refresh is true or it's a new search, reset pagination
-    if (refresh || currentQuery.value != keyword) {
-      currentPage.value = 1;
-      hasMoreSearchData.value = true;
-      searchArticles.clear();
-      currentQuery.value = keyword;
+  Future<List<Article>> onHandleFetchArticlesBySearch(
+    String keyword, {
+    bool refresh = false,
+  }) async {
+    if (_shouldResetSearch(refresh, keyword)) {
+      _resetSearchState();
     }
 
-    // If we're already loading or there's no more data, return
-    if (isSearchLoading.value || !hasMoreSearchData.value) {
-      isSearchLoading.value = false;
+    if (!_canLoadMoreSearchResults) {
       return searchArticles;
     }
 
     isSearchLoading.value = true;
-
     try {
-      final params = GetSearchArticlesParams(
-        query: keyword,
-        page: currentPage.value,
-        size: pageSize,
-      );
-
-      final result = await articleService.onHandleFetchSearchArticles(params);
-      if (result.length < pageSize) {
-        hasMoreSearchData.value = false;
-      }
-
-      if (currentPage.value == 1) {
-        searchArticles.clear();
-      }
-
-      searchArticles.addAll(result);
-      currentPage.value++;
-
-      return result;
+      return await _fetchSearchResults(keyword);
     } finally {
       isSearchLoading.value = false;
     }
+  }
+
+  bool _shouldResetSearch(bool refresh, String keyword) {
+    return refresh || currentQuery.value != keyword;
+  }
+
+  void _resetSearchState() {
+    currentPage.value = 1;
+    hasMoreSearchData.value = true;
+    searchArticles.clear();
+  }
+
+  bool get _canLoadMoreSearchResults {
+    return !isSearchLoading.value && hasMoreSearchData.value;
+  }
+
+  Future<List<Article>> _fetchSearchResults(String keyword) async {
+    final params = GetSearchArticlesParams(
+      query: keyword,
+      page: currentPage.value,
+      size: pageSize,
+    );
+
+    final result = await articleService.onHandleFetchSearchArticles(params);
+
+    _updateSearchState(keyword, result);
+    return result;
+  }
+
+  void _updateSearchState(String keyword, List<Article> result) {
+    currentQuery.value = keyword;
+    hasMoreSearchData.value = result.length >= pageSize;
+
+    if (currentPage.value == 1) {
+      searchArticles.clear();
+    }
+
+    searchArticles.addAll(result);
+    currentPage.value++;
   }
 
   Future<void> refreshSearch() async {
@@ -127,7 +183,14 @@ class HomeController extends GetxController {
     }
   }
 
-  onHandleGoToSearchView(String? search) {
+  void onHandleGoToSearchView(String? search) {
     Get.to(() => SearchView(keyword: search));
+  }
+
+  // 데이터 리프레시를 위한 메서드 추가
+  Future<void> refreshCurrentContent() async {
+    if (selectedContentType.value != null) {
+      await _loadArticlesForContentType(selectedContentType.value!);
+    }
   }
 }

@@ -26,6 +26,7 @@ class WebViewService extends GetxService {
 
   void showArticleWebView(
     Article article,
+    Function? handleUpdateInteraction,
   ) {
     final uri = _validateAndNormalizeUrl(article.link);
     if (uri == null) {
@@ -41,6 +42,7 @@ class WebViewService extends GetxService {
     Get.bottomSheet(
       AppArticleInWebView(
         article: article,
+        handleUpdateInteraction: handleUpdateInteraction,
       ),
       isScrollControlled: true,
       enableDrag: true,

@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:zippy/app/extensions/datetime.dart';
+import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/font.dart';
@@ -9,9 +11,11 @@ import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/widgets/app_circle_image.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
+import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/article.model.dart';
+import 'package:zippy/domain/model/source.model.dart';
 
-class ArticleRowItem extends StatelessWidget {
+class ArticleRowItem extends StatefulWidget {
   final Article article;
   final Function onHandleClickArticle;
   final String? searchText;
@@ -26,6 +30,13 @@ class ArticleRowItem extends StatelessWidget {
   });
 
   @override
+  State<ArticleRowItem> createState() => _ArticleRowItemState();
+}
+
+class _ArticleRowItemState extends State<ArticleRowItem> {
+  final articleService = Get.find<ArticleService>();
+
+  @override
   Widget build(BuildContext context) {
     final isDarkMode = AppThemeColors.isDarkMode(context);
     return Card(
@@ -36,7 +47,7 @@ class ArticleRowItem extends StatelessWidget {
       color: AppThemeColors.articleItemBoxBackgroundColor(context),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () => onHandleClickArticle(),
+        onTap: () => widget.onHandleClickArticle(),
         child: SizedBox(
           height: AppDimens.height(Platform.isAndroid ? 100 : 90),
           child: Padding(
@@ -60,7 +71,9 @@ class ArticleRowItem extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: AppCircleImage(
-                      article.images.isNotEmpty ? article.images[0] : null,
+                      widget.article.images.isNotEmpty
+                          ? widget.article.images[0]
+                          : null,
                       size: AppDimens.size(40),
                     ),
                   ),
@@ -75,7 +88,7 @@ class ArticleRowItem extends StatelessWidget {
                     children: [
                       // Title
                       Text(
-                        article.title,
+                        widget.article.title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.textXS.copyWith(
@@ -89,16 +102,17 @@ class ArticleRowItem extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          _buildMetadata(context),
                           // Engagement Stats
-                          _buildEngagementStats(context),
+                          // _buildEngagementStats(context),
 
                           // Timestamp
-                          Text(
-                            article.published.timeAgo(),
-                            style: Theme.of(context).textTheme.textXS.copyWith(
-                                  color: AppThemeColors.textHigh(context),
-                                ),
-                          ),
+                          // Text(
+                          //   widget.article.published.timeAgo(),
+                          //   style: Theme.of(context).textTheme.textXS.copyWith(
+                          //         color: AppThemeColors.textHigh(context),
+                          //       ),
+                          // ),
                         ],
                       ),
                     ],
@@ -112,44 +126,12 @@ class ArticleRowItem extends StatelessWidget {
     );
   }
 
-  Widget _buildEngagementStats(BuildContext context) {
+  Widget _buildMetadata(BuildContext context) {
+    Source? source = articleService.getSourceById(widget.article.sourceId);
     return Row(
       children: [
-        // View Count
-        _buildStatItem(
-          context,
-          Icons.remove_red_eye_outlined,
-          article.metadata?.viewCount.toString() ?? '0',
-        ),
-        AppSpacerH(value: AppDimens.width(12)),
-
-        // Like Count
-        // _buildStatItem(
-        //   context,
-        //   Icons.thumb_up_outlined,
-        //   article.metadata?.likeCount.toString() ?? '0',
-        // ),
-
-        _buildStatItem(
-          context,
-          Icons.chat_bubble_outline,
-          article.metadata?.commentCount.toString() ?? '0',
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStatItem(BuildContext context, IconData icon, String count) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: AppDimens.size(14),
-          color: AppThemeColors.iconColor(context),
-        ),
-        AppSpacerH(value: AppDimens.width(4)),
-        Text(
-          count,
+        AppText(
+          '${source?.platform?.name ?? ""} | ${widget.article.published.timeAgo()}',
           style: Theme.of(context).textTheme.textXS.copyWith(
                 color: AppThemeColors.textHigh(context),
               ),

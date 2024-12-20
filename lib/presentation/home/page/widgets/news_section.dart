@@ -27,8 +27,58 @@ class NewsSection extends StatefulWidget {
 class _NewsSectionState extends State<NewsSection> {
   final ArticleService articleService = Get.find();
   final HomeController controller = Get.find();
-  final PageController _pageController = PageController();
+  late PageController _pageController;
   final ScrollController _tabScrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(
+        initialPage: ArticleCategoryType.values
+            .indexOf(controller.selectedCategory.value));
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _scrollToSelectedTab(
+            ArticleCategoryType.values
+                .indexOf(controller.selectedCategory.value),
+            animate: true);
+      }
+    });
+  }
+
+  void _scrollToSelectedTab(int index, {bool animate = true}) {
+    if (!mounted || !_tabScrollController.hasClients) return;
+
+    try {
+      final tabWidth = AppDimens.width(100);
+      final screenWidth = MediaQuery.of(context).size.width;
+      final maxScroll = _tabScrollController.position.maxScrollExtent;
+
+      if (maxScroll <= 0) return;
+
+      final offset = (index * tabWidth) - (screenWidth / 2) + (tabWidth / 2);
+      final safeOffset = offset.clamp(0.0, maxScroll);
+
+      if (animate && mounted && _tabScrollController.hasClients) {
+        _tabScrollController.animateTo(
+          safeOffset,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      } else if (mounted && _tabScrollController.hasClients) {
+        _tabScrollController.jumpTo(safeOffset);
+      }
+    } catch (e) {
+      debugPrint('Error scrolling to tab: $e');
+    }
+  }
+
+  void _onPageChanged(int index) {
+    if (!mounted) return;
+    controller.selectedCategory.value = ArticleCategoryType.values[index];
+    _scrollToSelectedTab(index);
+  }
 
   @override
   void dispose() {
@@ -86,16 +136,6 @@ class _NewsSectionState extends State<NewsSection> {
                                   Theme.of(context).textTheme.textMD.copyWith(
                                         color: AppColor.white,
                                       ),
-                            ),
-                            AppSpacerV(value: AppDimens.height(2)),
-                            AppText(
-                              contentType.description,
-                              style:
-                                  Theme.of(context).textTheme.textXS.copyWith(
-                                        color: AppColor.graymodern200,
-                                      ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
@@ -188,20 +228,7 @@ class _NewsSectionState extends State<NewsSection> {
                   onTap: () {
                     controller.selectedCategory.value = category;
                     _pageController.jumpToPage(index);
-                    if (_tabScrollController.hasClients) {
-                      final tabWidth = AppDimens.width(100);
-                      final screenWidth = MediaQuery.of(context).size.width;
-                      final offset = (index * tabWidth) -
-                          (screenWidth / 2) +
-                          (tabWidth / 2);
-
-                      _tabScrollController.animateTo(
-                        offset.clamp(
-                            0, _tabScrollController.position.maxScrollExtent),
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                      );
-                    }
+                    _scrollToSelectedTab(index);
                   },
                   child: _buildCategoryTab(category, isSelected),
                 );
@@ -257,50 +284,34 @@ class _NewsSectionState extends State<NewsSection> {
         return const SizedBox.shrink();
       }
 
-      final selectedType = controller.selectedContentType.value;
-      final currentArticles = controller.articleWithCategory[selectedType]
-              ?[controller.selectedCategory.value] ??
-          [];
-
-      if (controller.isLoading.value) {
-        return _buildShimmerLoading();
-      }
-
-      if (currentArticles.isEmpty) {
-        return _buildEmptyState();
-      }
+      final selectedType = controller.selectedContentType.value!;
+      // 현재 선택된 컨텐츠 타입의 데이터가 있는지 확인
+      final hasData = controller.articleWithCategory.containsKey(selectedType);
 
       return SizedBox(
         height: MediaQuery.of(context).size.height - AppDimens.height(200),
         child: PageView.builder(
           controller: _pageController,
           physics: const BouncingScrollPhysics(),
-          onPageChanged: (index) {
-            if (!mounted) return;
-            controller.selectedCategory.value =
-                ArticleCategoryType.values[index];
-            if (_tabScrollController.hasClients) {
-              final tabWidth = AppDimens.width(100);
-              final screenWidth = MediaQuery.of(context).size.width;
-              final offset =
-                  (index * tabWidth) - (screenWidth / 2) + (tabWidth / 2);
-
-              _tabScrollController.animateTo(
-                offset.clamp(0, _tabScrollController.position.maxScrollExtent),
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              );
-            }
-          },
+          onPageChanged: _onPageChanged,
           itemCount: ArticleCategoryType.values.length,
           itemBuilder: (context, pageIndex) {
             final category = ArticleCategoryType.values[pageIndex];
+
+            // 데이터가 아직 로드되지 않았거나 로딩 중인 경우
+            if (!hasData || controller.isLoading.value) {
+              return _buildShimmerLoading();
+            }
+
             final articles =
                 controller.articleWithCategory[selectedType]?[category] ?? [];
 
+            if (articles.isEmpty) {
+              return _buildEmptyState();
+            }
+
             return ListView.builder(
-              physics:
-                  const NeverScrollableScrollPhysics(), // 개별 ListView의 스크롤을 비활성화
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: articles.length,
               shrinkWrap: true,
               itemBuilder: (context, index) => _buildNewsItem(articles[index]),
@@ -313,7 +324,7 @@ class _NewsSectionState extends State<NewsSection> {
 
   Widget _buildEmptyState() {
     return FutureBuilder(
-      future: Future.delayed(const Duration(seconds: 3)),
+      future: Future.delayed(const Duration(seconds: 1)),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return _buildShimmerLoading();

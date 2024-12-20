@@ -212,8 +212,12 @@ class ArticleService extends GetxService {
   }
 
   void onHandleOpenOriginalArticle(Article article) async {
+    final handleUpdateInteraction =
+        await _createViewInteractionCallback(article);
+
     webViewService.showArticleWebView(
       article,
+      handleUpdateInteraction,
     );
   }
 

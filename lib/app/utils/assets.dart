@@ -31,6 +31,7 @@ class Assets {
   static const String ppomppuLogo = 'assets/images/ppomppu.png';
   static const String instizLogo = 'assets/images/instiz.png';
   static const String clienLogo = 'assets/images/clien.png';
+  static const String trend = 'assets/images/trend.png';
 
   // animation
   static const String gestureSwipeUp = 'assets/animation/gesture_swipe_up.json';

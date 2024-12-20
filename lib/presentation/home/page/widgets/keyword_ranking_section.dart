@@ -5,7 +5,9 @@ import 'package:get/get.dart';
 import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
+import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
+import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/widgets/app_divider.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
@@ -191,7 +193,12 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        AppSpacerH(value: AppDimens.width(12)),
+        Image.asset(
+          Assets.trend,
+          width: AppDimens.width(18),
+          height: AppDimens.height(18),
+        ),
+        AppSpacerH(value: AppDimens.width(20)),
         Expanded(
           child: _buildSingleRanking(
               controller.trendingKeywords[currentRankingIndex]),
@@ -295,21 +302,23 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
     );
   }
 
-  Widget _buildSingleRanking(KeywordRankSnapshot ranking) {
+  Widget _buildSingleRanking(
+    KeywordRankSnapshot ranking,
+  ) {
     return GestureDetector(
       onTap: () => controller.onHandleGoToSearchView(ranking.keyword),
       child: Row(
         children: [
           SizedBox(
             width: AppDimens.width(24),
-            child: Text(
+            child: AppText(
               '${ranking.currentRank}',
-              style: TextStyle(
-                color: ranking.currentRank <= 3
-                    ? AppColor.yellow400
-                    : AppColor.graymodern400,
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(context).textTheme.textSM.copyWith(
+                    color: ranking.currentRank <= 3
+                        ? AppColor.yellow400
+                        : AppColor.graymodern400,
+                    fontWeight: AppFontWeight.bold,
+                  ),
             ),
           ),
           AppSpacerH(value: AppDimens.width(12)),
@@ -323,6 +332,7 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
             ),
           ),
           _buildChangeIndicator(ranking.rankChange),
+          if (!isExpanded) AppSpacerH(value: AppDimens.width(12)),
         ],
       ),
     );
