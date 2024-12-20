@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
@@ -12,6 +13,7 @@ import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/app/widgets/app_shimmer.dart';
 import 'package:zippy/domain/model/keyword_rank_snaoshot.model.dart';
 import 'package:zippy/presentation/home/controller/home.controller.dart';
+import 'package:zippy/presentation/home/page/views/search.dart';
 
 class KeywordRankingsSection extends StatefulWidget {
   const KeywordRankingsSection({
@@ -24,6 +26,7 @@ class KeywordRankingsSection extends StatefulWidget {
 
 class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
     with TickerProviderStateMixin {
+  final ArticleService articleService = Get.find();
   final HomeController controller = Get.find();
 
   bool isExpanded = false;
@@ -293,32 +296,35 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
   }
 
   Widget _buildSingleRanking(KeywordRankSnapshot ranking) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 24,
-          child: Text(
-            '${ranking.currentRank}',
-            style: TextStyle(
-              color: ranking.currentRank <= 3
-                  ? AppColor.yellow400
-                  : AppColor.graymodern400,
-              fontWeight: FontWeight.bold,
+    return GestureDetector(
+      onTap: () => Get.to(() => SearchView(keyword: ranking.keyword)),
+      child: Row(
+        children: [
+          SizedBox(
+            width: AppDimens.width(24),
+            child: Text(
+              '${ranking.currentRank}',
+              style: TextStyle(
+                color: ranking.currentRank <= 3
+                    ? AppColor.yellow400
+                    : AppColor.graymodern400,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-        AppSpacerH(value: AppDimens.width(12)),
-        Expanded(
-          child: AppText(
-            ranking.keyword,
-            style: Theme.of(context)
-                .textTheme
-                .textSM
-                .copyWith(color: AppColor.white),
+          AppSpacerH(value: AppDimens.width(12)),
+          Expanded(
+            child: AppText(
+              ranking.keyword,
+              style: Theme.of(context)
+                  .textTheme
+                  .textSM
+                  .copyWith(color: AppColor.white),
+            ),
           ),
-        ),
-        _buildChangeIndicator(ranking.rankChange),
-      ],
+          _buildChangeIndicator(ranking.rankChange),
+        ],
+      ),
     );
   }
 

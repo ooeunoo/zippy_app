@@ -14,8 +14,11 @@ import 'package:zippy/presentation/search/page/widgets/article_row_item.dart';
 import 'package:zippy/presentation/search/page/widgets/feature_article_item.dart';
 
 class SearchView extends StatefulWidget {
+  final String? keyword;
+
   const SearchView({
     super.key,
+    this.keyword,
   });
 
   @override
@@ -35,6 +38,11 @@ class _SearchViewState extends State<SearchView> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+
+    if (widget.keyword != null) {
+      _searchController.text = widget.keyword!;
+      _onSearchChanged(widget.keyword!);
+    }
   }
 
   @override

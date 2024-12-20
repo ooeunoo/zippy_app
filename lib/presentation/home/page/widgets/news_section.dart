@@ -400,7 +400,7 @@ class _NewsSectionState extends State<NewsSection> {
                     borderRadius: BorderRadius.circular(8),
                     child: CachedNetworkImage(
                       imageUrl: article.images.first.toString(),
-                      width: AppDimens.width(80),
+                      width: AppDimens.width(100),
                       height: AppDimens.height(80),
                       fit: BoxFit.cover,
                     ),
