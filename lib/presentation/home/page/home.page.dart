@@ -3,12 +3,26 @@ import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
+import 'package:zippy/app/widgets/app_custom_bottom_sheet.dart';
 import 'package:zippy/app/widgets/app_header.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
+import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'dart:async';
 
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
+
+enum NewsCategory {
+  topNews('🔥 TOP 뉴스'),
+  todayPick('👍 오늘의 키워드'),
+  weeklyPick('🫡 주간 키워드'),
+  monthlyPick('� 월간 키워드'),
+  ;
+
+  final String value;
+
+  const NewsCategory(this.value);
+}
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -23,6 +37,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late Timer _timer;
   late List<AnimationController> _controllers;
   late List<Animation<double>> _animations;
+  String selectedContentType = '전체';
+  NewsCategory selectedCategory = NewsCategory.todayPick;
+
+  final List<String> contentTypes = [
+    '전체',
+    '국내',
+    '해외',
+    '암호화폐',
+    '부동산',
+  ];
 
   final List<Map<String, dynamic>> rankings = [
     {'rank': 1, 'keyword': '삼성전자', 'change': 2},
@@ -101,6 +125,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
+  void _showContentTypeBottomSheet() {
+    openCustomBottomSheet(
+      Container(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,6 +139,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: CustomScrollView(
           slivers: [
             _buildKeywordRankings(),
+            _buildNewsHeader(),
             _buildNewsItems(),
           ],
         ),
@@ -168,44 +199,71 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       padding: EdgeInsets.symmetric(
         horizontal: AppDimens.width(16),
       ),
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppDimens.width(8),
-              vertical: AppDimens.height(4),
-            ),
-            decoration: BoxDecoration(
-              color: AppColor.brand800,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Row(
+      child: !isExpanded
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(Icons.trending_up,
-                    color: AppColor.white, size: AppDimens.size(16)),
-                AppSpacerH(value: AppDimens.width(4)),
-                AppText(
-                  'Live',
-                  style: Theme.of(context)
-                      .textTheme
-                      .textXS
-                      .copyWith(color: AppColor.white),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppDimens.width(8),
+                    vertical: AppDimens.height(4),
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColor.brand800,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.trending_up,
+                          color: AppColor.white, size: AppDimens.size(16)),
+                      AppSpacerH(value: AppDimens.width(4)),
+                      AppText(
+                        'Live',
+                        style: Theme.of(context)
+                            .textTheme
+                            .textSM
+                            .copyWith(color: AppColor.white),
+                      ),
+                    ],
+                  ),
+                ),
+                AppSpacerH(value: AppDimens.width(12)),
+                Expanded(
+                    child: _buildSingleRanking(rankings[currentRankingIndex])),
+                const Icon(
+                  Icons.keyboard_arrow_down,
+                  color: Colors.white,
+                ),
+              ],
+            )
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppText(
+                      "실시간 인기 검색어",
+                      style: Theme.of(context)
+                          .textTheme
+                          .textSM
+                          .copyWith(color: AppColor.white),
+                    ),
+                    AppText(
+                      "오늘 11:11 기준",
+                      style: Theme.of(context)
+                          .textTheme
+                          .textXS
+                          .copyWith(color: AppColor.graymodern400),
+                    ),
+                  ],
+                ),
+                const Icon(
+                  Icons.keyboard_arrow_up,
+                  color: Colors.white,
                 ),
               ],
             ),
-          ),
-          AppSpacerH(value: AppDimens.width(12)),
-          Expanded(
-            child: !isExpanded
-                ? _buildSingleRanking(rankings[currentRankingIndex])
-                : const SizedBox(),
-          ),
-          Icon(
-            isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-            color: Colors.white,
-          ),
-        ],
-      ),
     );
   }
 
@@ -286,6 +344,96 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildNewsHeader() {
+    return SliverToBoxAdapter(
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.only(
+              left: AppDimens.width(16),
+              right: AppDimens.width(4),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                AppText(
+                  '추천 뉴스',
+                  style: Theme.of(context).textTheme.textMD.copyWith(
+                        color: AppColor.white,
+                      ),
+                ),
+                GestureDetector(
+                  onTap: _showContentTypeBottomSheet,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppDimens.width(12),
+                      vertical: AppDimens.height(6),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AppText(
+                          selectedContentType,
+                          style: Theme.of(context).textTheme.textSM.copyWith(
+                                color: AppColor.white,
+                              ),
+                        ),
+                        const Icon(
+                          Icons.keyboard_arrow_down,
+                          color: AppColor.white,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          AppSpacerV(value: AppDimens.height(12)),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: EdgeInsets.only(
+              right: AppDimens.width(16),
+            ),
+            child: Row(
+              children: NewsCategory.values.map((category) {
+                final isSelected = selectedCategory == category;
+                return Padding(
+                  padding: EdgeInsets.only(right: AppDimens.width(8)),
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedCategory = category;
+                      });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: AppDimens.width(12),
+                        vertical: AppDimens.height(6),
+                      ),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? AppColor.brand500
+                            : AppColor.transparent,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: AppText(
+                        category.value,
+                        style: Theme.of(context).textTheme.textXS.copyWith(
+                              color: AppColor.white,
+                            ),
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

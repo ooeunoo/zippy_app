@@ -15,7 +15,7 @@ class AppTheme {
   //     );
 
   static ThemeData darkTheme(BuildContext context) => ThemeData(
-        fontFamily: 'Suit',
+        fontFamily: 'Pretendard',
         useMaterial3: true,
         highlightColor: AppColor.transparent,
         splashColor: AppColor.transparent,
