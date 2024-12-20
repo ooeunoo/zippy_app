@@ -9,7 +9,7 @@ class SearchBinding implements Bindings {
   void dependencies() {
     Get.lazyPut(() => GetContentTypes());
     Get.lazyPut(() => GetArticlesByKeyword());
-    Get.lazyPut(() => GetTrendingKeywords());
+    Get.lazyPut(() => GetTrendingKeywords(Get.find()));
     Get.lazyPut(() => AppSearchController());
   }
 }

@@ -1,23 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_text.dart';
-
-class RankingItem {
-  final int rank;
-  final String keyword;
-  final int change;
-
-  RankingItem({
-    required this.rank,
-    required this.keyword,
-    required this.change,
-  });
-}
+import 'package:zippy/app/widgets/app_shimmer.dart';
+import 'package:zippy/domain/model/keyword_rank_snaoshot.model.dart';
+import 'package:zippy/presentation/home/controller/home.controller.dart';
 
 class KeywordRankingsSection extends StatefulWidget {
   const KeywordRankingsSection({
@@ -30,34 +22,46 @@ class KeywordRankingsSection extends StatefulWidget {
 
 class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
     with TickerProviderStateMixin {
+  final HomeController controller = Get.find();
+
   bool isExpanded = false;
   int currentRankingIndex = 0;
-  late Timer _timer;
-  late List<AnimationController> _controllers;
-  late List<Animation<double>> _animations;
+  Timer? _timer;
+  Timer? _shimmerTimer;
+  bool _showShimmer = true;
+  List<AnimationController> _controllers = [];
+  List<Animation<double>> _animations = [];
 
-  final List<RankingItem> rankings = [
-    RankingItem(rank: 1, keyword: '삼성전자', change: 2),
-    RankingItem(rank: 2, keyword: '애플', change: -1),
-    RankingItem(rank: 3, keyword: 'LG에너지솔루션', change: 0),
-    RankingItem(rank: 4, keyword: 'SK하이닉스', change: 3),
-    RankingItem(rank: 5, keyword: '현대차', change: -2),
-    RankingItem(rank: 6, keyword: '카카오', change: 1),
-    RankingItem(rank: 7, keyword: '네이버', change: -1),
-    RankingItem(rank: 8, keyword: '기아', change: 4),
-    RankingItem(rank: 9, keyword: 'LG전자', change: -2),
-    RankingItem(rank: 10, keyword: '포스코', change: 0),
-  ];
   @override
   void initState() {
     super.initState();
     _initializeAnimations();
     _startTimer();
+    _startShimmerTimer();
+  }
+
+  void _startShimmerTimer() {
+    _shimmerTimer = Timer(const Duration(seconds: 3), () {
+      if (mounted) {
+        setState(() {
+          _showShimmer = false;
+        });
+      }
+    });
   }
 
   void _initializeAnimations() {
+    // Clear existing controllers first
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
+    _controllers.clear();
+    _animations.clear();
+
+    if (controller.trendingKeywords.isEmpty) return;
+
     _controllers = List.generate(
-      rankings.length,
+      controller.trendingKeywords.length,
       (index) => AnimationController(
         duration: Duration(milliseconds: 300 + (index * 100)),
         vsync: this,
@@ -70,10 +74,12 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 2), (timer) {
-      if (!isExpanded) {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      if (!isExpanded && controller.trendingKeywords.isNotEmpty) {
         setState(() {
-          currentRankingIndex = (currentRankingIndex + 1) % rankings.length;
+          currentRankingIndex =
+              (currentRankingIndex + 1) % controller.trendingKeywords.length;
         });
       }
     });
@@ -81,7 +87,8 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
+    _shimmerTimer?.cancel();
     for (var controller in _controllers) {
       controller.dispose();
     }
@@ -89,6 +96,8 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
   }
 
   void _handleTap() {
+    if (controller.trendingKeywords.isEmpty) return;
+
     setState(() {
       isExpanded = !isExpanded;
       if (!isExpanded) {
@@ -97,7 +106,7 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
           controller.reverse();
         }
       } else {
-        _timer.cancel();
+        _timer?.cancel();
         for (var controller in _controllers) {
           controller.forward();
         }
@@ -107,30 +116,49 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: _handleTap,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            height: isExpanded ? 480 : 60,
-            child: Column(
-              children: [
-                _buildRankingHeader(),
-                if (isExpanded)
-                  Expanded(
-                    child: _buildRankingList(),
-                  ),
-              ],
+    return Obx(() {
+      if (_controllers.length != controller.trendingKeywords.length) {
+        _initializeAnimations();
+      }
+
+      if (controller.trendingKeywords.isEmpty) {
+        if (_showShimmer) {
+          return SizedBox(
+            height: AppDimens.height(60),
+            child: const AppShimmer(
+              width: double.infinity,
+              height: double.infinity,
+            ),
+          );
+        }
+        return const SizedBox.shrink();
+      }
+
+      return Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: _handleTap,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              height: isExpanded ? AppDimens.height(480) : AppDimens.height(60),
+              child: Column(
+                children: [
+                  _buildRankingHeader(),
+                  if (isExpanded)
+                    Expanded(
+                      child: _buildRankingList(),
+                    ),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _buildRankingHeader() {
@@ -143,6 +171,10 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
   }
 
   Widget _buildCollapsedHeader() {
+    if (controller.trendingKeywords.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -172,7 +204,8 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
         ),
         AppSpacerH(value: AppDimens.width(12)),
         Expanded(
-          child: _buildSingleRanking(rankings[currentRankingIndex]),
+          child: _buildSingleRanking(
+              controller.trendingKeywords[currentRankingIndex]),
         ),
         const Icon(
           Icons.keyboard_arrow_down,
@@ -218,8 +251,10 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
       padding: EdgeInsets.zero,
       physics: const BouncingScrollPhysics(),
       shrinkWrap: true,
-      itemCount: rankings.length,
+      itemCount: controller.trendingKeywords.length,
       itemBuilder: (context, index) {
+        if (index >= _animations.length) return const SizedBox.shrink();
+
         return ScaleTransition(
           scale: _animations[index],
           child: SlideTransition(
@@ -228,8 +263,11 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
               end: Offset.zero,
             ).animate(_animations[index]),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: _buildSingleRanking(rankings[index]),
+              padding: EdgeInsets.symmetric(
+                horizontal: AppDimens.width(16),
+                vertical: AppDimens.height(12),
+              ),
+              child: _buildSingleRanking(controller.trendingKeywords[index]),
             ),
           ),
         );
@@ -237,40 +275,44 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
     );
   }
 
-  Widget _buildSingleRanking(RankingItem ranking) {
+  Widget _buildSingleRanking(KeywordRankSnapshot ranking) {
     return Row(
       children: [
         SizedBox(
           width: 24,
           child: Text(
-            '${ranking.rank}',
+            '${ranking.currentRank}',
             style: TextStyle(
-              color: ranking.rank <= 3 ? Colors.amber : Colors.grey[400],
-              fontSize: 16,
+              color: ranking.currentRank <= 3
+                  ? AppColor.yellow400
+                  : AppColor.graymodern400,
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
-        const SizedBox(width: 12),
+        AppSpacerH(value: AppDimens.width(12)),
         Expanded(
-          child: Text(
+          child: AppText(
             ranking.keyword,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-            ),
+            style: Theme.of(context)
+                .textTheme
+                .textSM
+                .copyWith(color: AppColor.white),
           ),
         ),
-        _buildChangeIndicator(ranking.change),
+        _buildChangeIndicator(ranking.rankChange),
       ],
     );
   }
 
   Widget _buildChangeIndicator(int change) {
     if (change == 0) {
-      return const Text(
+      return AppText(
         '-',
-        style: TextStyle(color: Colors.grey),
+        style: Theme.of(context)
+            .textTheme
+            .textSM
+            .copyWith(color: AppColor.graymodern400),
       );
     }
 
@@ -280,14 +322,14 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
         Icon(
           change > 0 ? Icons.arrow_upward : Icons.arrow_downward,
           color: change > 0 ? Colors.red : Colors.blue,
-          size: 14,
+          size: AppDimens.size(14),
         ),
-        const SizedBox(width: 4),
-        Text(
+        AppSpacerH(value: AppDimens.width(4)),
+        AppText(
           change.abs().toString(),
           style: TextStyle(
             color: change > 0 ? Colors.red : Colors.blue,
-            fontSize: 12,
+            fontSize: AppDimens.size(12),
           ),
         ),
       ],

@@ -6,7 +6,9 @@ import 'package:dartz/dartz.dart';
 import 'package:zippy/domain/repositories/keyword_rank_snapshot.repository.dart';
 
 class GetTrendingKeywords {
-  final KeywordRankSnapshotRepository repo = Get.find();
+  final KeywordRankSnapshotRepository repo;
+
+  GetTrendingKeywords(this.repo);
 
   Future<Either<Failure, List<KeywordRankSnapshot>>> execute(
       GetTrandingKeywordsParams params) {
