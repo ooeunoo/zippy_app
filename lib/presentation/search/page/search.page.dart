@@ -42,7 +42,6 @@ class _SearchPageState extends State<SearchPage> {
     controller.onHandleFetchArticlesBySearch(keyword);
   }
 
-  // 검색 디바운스 처리
   void _onSearchChanged(String value) {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
 
@@ -53,7 +52,7 @@ class _SearchPageState extends State<SearchPage> {
 
     _debounce = Timer(const Duration(milliseconds: 500), () {
       if (value.isNotEmpty) {
-        controller.onHandleFetchArticlesBySearch(value);
+        controller.onHandleFetchArticlesBySearch(value, refresh: true);
       }
     });
   }
@@ -71,15 +70,17 @@ class _SearchPageState extends State<SearchPage> {
               // Expanded를 Column 내부로 이동
               child: _showSearchBar
                   ? Obx(() => SearchContent(
-                        searchArticles: controller.searchArticles.value,
+                        searchArticles: controller.searchArticles,
                         searchController: _searchController,
                         onHandleClickArticle: controller.onHandleClickArticle,
+                        onLoadMore: () =>
+                            controller.onHandleFetchArticlesBySearch(
+                                _searchController.text),
+                        isLoading: controller.isLoading.value,
+                        hasMoreData: controller.hasMoreData.value,
                       ))
-                  : Obx(
-                      () => RankContent(
-                        trendingKeywords: controller.trendingKeywords.value,
-                        onKeywordTap: _handleSearch,
-                      ),
+                  : RankContent(
+                      onKeywordTap: _handleSearch,
                     ),
             ),
           ],

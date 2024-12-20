@@ -10,7 +10,7 @@ class GetTrandingKeywordsParams extends Equatable {
 
   const GetTrandingKeywordsParams({
     this.limit = 10,
-    this.timeWindow = '1 hour',
+    this.timeWindow = '24 hour',
     this.contentType,
   });
 

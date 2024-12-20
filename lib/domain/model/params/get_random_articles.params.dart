@@ -7,15 +7,13 @@ class GetRandomArticlesParams extends Equatable {
   final int limit;
   final int minHours;
   final int maxHours;
-  final double similarityThreshold;
   final int candidatesPerType;
 
   const GetRandomArticlesParams({
     this.userId,
-    this.limit = 10,
-    this.minHours = 1,
-    this.maxHours = 168, // 7 days
-    this.similarityThreshold = 0.7,
+    this.limit = 50,
+    this.minHours = 24,
+    this.maxHours = 720, // 30일
     this.candidatesPerType = 30,
   });
 
@@ -25,7 +23,6 @@ class GetRandomArticlesParams extends Equatable {
       limit,
       minHours,
       maxHours,
-      similarityThreshold,
       candidatesPerType,
     ];
   }
@@ -35,7 +32,6 @@ class GetRandomArticlesParams extends Equatable {
         'p_limit': limit,
         'p_min_hours': minHours,
         'p_max_hours': maxHours,
-        'p_similarity_threshold': similarityThreshold,
         'p_candidates_per_type': candidatesPerType,
       };
 

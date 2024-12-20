@@ -79,8 +79,6 @@ class KeywordNotificationController extends GetxController {
       isActive: true,
     );
 
-    print(keyword);
-
     if (keyword.isEmpty) return;
     if (userKeywordNotifications.any((n) => n.keyword == keyword)) {
       notifyAlreadyExists();

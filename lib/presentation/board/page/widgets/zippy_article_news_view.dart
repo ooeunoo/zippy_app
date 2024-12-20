@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get/get.dart';
+import 'package:zippy/app/extensions/datetime.dart';
 import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
@@ -235,22 +236,40 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildMetaInfoRow(
-          context,
-          '${source?.platform?.name ?? ''} | ${widget.article.author} | ${_formatDateTime(widget.article.published)}',
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMetaInfoRow(BuildContext context, String text) {
-    return Row(
-      children: [
-        AppText(
-          text,
-          style: Theme.of(context).textTheme.textXS.copyWith(
-                color: AppThemeColors.textLow(context),
+        Row(
+          children: [
+            if (source?.platform?.name != null) ...[
+              AppText(
+                source!.platform!.name,
+                style: Theme.of(context).textTheme.textXS.copyWith(
+                      color: AppThemeColors.textLow(context),
+                    ),
               ),
+              AppText(
+                ' | ',
+                style: Theme.of(context).textTheme.textXS.copyWith(
+                      color: AppThemeColors.textLow(context),
+                    ),
+              ),
+            ],
+            SizedBox(
+              width: AppDimens.width(100),
+              child: AppText(
+                widget.article.author,
+                maxLines: 1,
+                style: Theme.of(context).textTheme.textXS.copyWith(
+                      color: AppThemeColors.textLow(context),
+                    ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            AppText(
+              ' | ${widget.article.published.timeAgo()}',
+              style: Theme.of(context).textTheme.textXS.copyWith(
+                    color: AppThemeColors.textLow(context),
+                  ),
+            ),
+          ],
         ),
       ],
     );

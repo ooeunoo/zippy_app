@@ -11,6 +11,7 @@ class ContentTypeEntity extends Equatable {
   final String? description_en;
   final String image_url;
   final String color;
+  final bool show_rank;
 
   const ContentTypeEntity({
     required this.id,
@@ -20,6 +21,7 @@ class ContentTypeEntity extends Equatable {
     this.description_en,
     required this.image_url,
     required this.color,
+    required this.show_rank,
   });
 
   @override
@@ -36,6 +38,7 @@ class ContentTypeEntity extends Equatable {
       description_en: json['description_en'],
       image_url: json['image_url'],
       color: json['color'],
+      show_rank: json['show_rank'],
     );
   }
 
@@ -48,6 +51,7 @@ class ContentTypeEntity extends Equatable {
       descriptionEn: description_en,
       imageUrl: image_url,
       color: color,
+      showRank: show_rank,
     );
   }
 }

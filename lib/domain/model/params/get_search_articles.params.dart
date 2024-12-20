@@ -4,33 +4,28 @@ import 'package:flutter/material.dart';
 @immutable
 class GetSearchArticlesParams extends Equatable {
   final String query;
-  final String timeRange;
-  final int limit;
-  final String? search;
-  final double? similarityThreshold;
+  final int page;
+  final int size;
 
   const GetSearchArticlesParams({
     required this.query,
-    this.timeRange = '30 days',
-    this.limit = 100,
-    this.search,
-    this.similarityThreshold = 0.9,
+    this.page = 1,
+    this.size = 20,
   });
 
   @override
   List<Object> get props {
     return [
       query,
-      timeRange,
-      limit,
+      page,
+      size,
     ];
   }
 
   Map<String, dynamic> toJson() => {
         'p_query': query,
-        'p_time_range': timeRange,
-        'p_limit': limit,
-        'p_similarity_threshold': similarityThreshold,
+        'p_page': page,
+        'p_size': size,
       };
 
   @override

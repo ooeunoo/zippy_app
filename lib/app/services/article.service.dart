@@ -16,9 +16,9 @@ import 'package:zippy/domain/model/article_comment.model.dart';
 import 'package:zippy/domain/model/params/create_article_comment.params.dart';
 import 'package:zippy/domain/model/params/create_bookmark_item.params.dart';
 import 'package:zippy/domain/model/params/create_user_interaction.params.dart';
-import 'package:zippy/domain/model/params/get_aritlces.params.dart';
 import 'package:zippy/domain/model/params/get_random_articles.params.dart';
 import 'package:zippy/domain/model/params/get_recommend_aritlces.params.dart';
+import 'package:zippy/domain/model/params/get_search_articles.params.dart';
 import 'package:zippy/domain/model/params/update_user_interaction.params.dart';
 import 'package:zippy/domain/model/source.model.dart';
 import 'package:zippy/domain/model/user.model.dart';
@@ -26,7 +26,7 @@ import 'package:zippy/domain/model/user_interaction.model.dart';
 import 'package:zippy/domain/usecases/create_article_comment.usecase.dart';
 import 'package:zippy/domain/usecases/create_user_interaction.usecase.dart';
 import 'package:zippy/domain/usecases/get_article_comments.usecase.dart';
-import 'package:zippy/domain/usecases/get_articles.usecase.dart';
+import 'package:zippy/domain/usecases/get_search_articles.usecase.dart';
 import 'package:zippy/domain/usecases/get_random_articles.dart';
 import 'package:zippy/domain/usecases/get_recommend_articles.usecase.dart';
 import 'package:zippy/domain/usecases/get_sources.usecase.dart';
@@ -46,7 +46,7 @@ class ArticleService extends GetxService {
   final bookmarkService = Get.find<BookmarkService>();
 
   final GetSources getSources = Get.find();
-  final GetArticles getArticles = Get.find();
+  final GetSearchArticles getSearchArticles = Get.find();
   final GetRandomArticles getRandomArticles = Get.find();
   final GetRecommendedArticles getRecommendedArticles = Get.find();
   final CreateUserInteraction createUserInteraction = Get.find();
@@ -102,7 +102,7 @@ class ArticleService extends GetxService {
 
   Future<List<Article>> onHandleFetchSearchArticles(
       GetSearchArticlesParams params) async {
-    final result = await getArticles.execute(params);
+    final result = await getSearchArticles.execute(params);
     return result.fold(
       (failure) {
         return [];

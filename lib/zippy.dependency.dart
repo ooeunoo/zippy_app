@@ -3,7 +3,6 @@ import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/services/auth.service.dart';
 import 'package:zippy/app/services/bookmark.service.dart';
 import 'package:zippy/app/services/content_type.service.dart';
-import 'package:zippy/app/services/subscription.service.dart';
 import 'package:zippy/app/services/webview.service.dart';
 import 'package:zippy/data/providers/kakao.provider.dart';
 import 'package:zippy/data/providers/supabase.provider.dart';
@@ -17,7 +16,6 @@ import 'package:zippy/data/sources/platform.source.dart';
 import 'package:zippy/data/sources/user.source.dart';
 import 'package:zippy/data/sources/user_bookmark.source.dart';
 import 'package:zippy/data/sources/user_interaction.source.dart';
-import 'package:zippy/data/sources/user_subscription.source.dart';
 import 'package:zippy/domain/repositories/app_metadata.repository.dart';
 import 'package:zippy/domain/repositories/article.repository.dart';
 import 'package:zippy/domain/repositories/article_comment.repository.dart';
@@ -28,7 +26,6 @@ import 'package:zippy/domain/repositories/source.repository.dart';
 import 'package:zippy/domain/repositories/platform.repository.dart';
 import 'package:zippy/domain/repositories/user.repository.dart';
 import 'package:zippy/domain/repositories/user_bookmark.repository.dart';
-import 'package:zippy/domain/repositories/user_category.repository.dart';
 import 'package:get/get.dart';
 import 'package:zippy/domain/repositories/user_interaction.repository.dart';
 import 'package:zippy/domain/usecases/create_article_comment.usecase.dart';
@@ -37,25 +34,21 @@ import 'package:zippy/domain/usecases/create_user_bookmark_folder.usecase.dart';
 import 'package:zippy/domain/usecases/create_user_interaction.usecase.dart';
 import 'package:zippy/domain/usecases/delete_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/delete_user_bookmark_folder.usecase.dart';
-import 'package:zippy/domain/usecases/get_app_metadata.usecase.dart';
 import 'package:zippy/domain/usecases/get_article_comments.usecase.dart';
-import 'package:zippy/domain/usecases/get_articles.usecase.dart';
+import 'package:zippy/domain/usecases/get_search_articles.usecase.dart';
 import 'package:zippy/domain/usecases/get_content_types.usecase.dart';
 import 'package:zippy/domain/usecases/get_current_user.usecase.dart';
 import 'package:zippy/domain/usecases/get_platforms.usecase.dart';
 import 'package:zippy/domain/usecases/get_random_articles.dart';
 import 'package:zippy/domain/usecases/get_recommend_articles.usecase.dart';
 import 'package:zippy/domain/usecases/get_sources.usecase.dart';
+import 'package:zippy/domain/usecases/get_top_articles_by_content_type.usecase.dart';
 import 'package:zippy/domain/usecases/get_user_bookmarks.usecase.dart';
 import 'package:zippy/domain/usecases/get_user_bookmark_folder.usecase.dart';
-import 'package:zippy/domain/usecases/get_user_subscriptions.usecase.dart';
 import 'package:zippy/domain/usecases/logout.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_bookmark.usecase.dart';
-import 'package:zippy/domain/usecases/get_user_subscriptions_stream.usecase.dart';
 import 'package:zippy/domain/usecases/subscirbe_user_bookmark_folder.usecase.dart';
 import 'package:zippy/domain/usecases/subscribe_auth_status.usecase.dart';
-import 'package:zippy/domain/usecases/toggle_user_subscription.usecase.dart';
-import 'package:zippy/domain/usecases/update_app_metdata.usecase.dart';
 import 'package:zippy/domain/usecases/update_user_interaction.usecase.dart';
 
 class ZippyBindings implements Bindings {
@@ -83,8 +76,8 @@ class ZippyBindings implements Bindings {
     Get.lazyPut<UserBookmarkDatasource>(() => UserBookmarkDatasourceImpl());
     Get.lazyPut<UserInteractionDatasource>(
         () => UserInteractionDatasourceImpl());
-    Get.lazyPut<UserSubscriptionDatasource>(
-        () => UserSubscriptionDatasourceImpl());
+    // Get.lazyPut<UserSubscriptionDatasource>(
+    //     () => UserSubscriptionDatasourceImpl());
     Get.lazyPut<UserDatasource>(() => UserDatasourceImpl());
     Get.lazyPut<ContentTypeDatasource>(() => ContentTypeDatasourceImpl());
     Get.lazyPut<ArticleCommentDatasource>(() => ArticleCommentDatasourceImpl());
@@ -103,8 +96,8 @@ class ZippyBindings implements Bindings {
         () => UserBookmarkRepositoryImpl(Get.find()));
     Get.lazyPut<UserInteractionRepository>(
         () => UserInteractionRepositoryImpl(Get.find()));
-    Get.lazyPut<UserSubscriptionRepository>(
-        () => UserSubscriptionRepositoryImpl(Get.find()));
+    // Get.lazyPut<UserSubscriptionRepository>(
+    //     () => UserSubscriptionRepositoryImpl(Get.find()));
     Get.lazyPut<UserRepository>(() => UserRepositoryImpl(Get.find()));
     Get.lazyPut<ContentTypeRepository>(
         () => ContentTypeRepositoryImpl(Get.find()));
@@ -121,14 +114,14 @@ class ZippyBindings implements Bindings {
     Get.lazyPut<Logout>(() => Logout(Get.find()));
     Get.lazyPut<GetPlatforms>(() => GetPlatforms(Get.find()));
     Get.lazyPut<GetSources>(() => GetSources());
-    Get.lazyPut<GetArticles>(() => GetArticles());
+    Get.lazyPut<GetSearchArticles>(() => GetSearchArticles());
     Get.lazyPut<GetUserBookmarks>(() => GetUserBookmarks(Get.find()));
     Get.lazyPut<CreateUserBookmark>(() => CreateUserBookmark(Get.find()));
     Get.lazyPut<DeleteUserBookmark>(() => DeleteUserBookmark(Get.find()));
     Get.lazyPut<SubscribeUserBookmark>(() => SubscribeUserBookmark(Get.find()));
-    Get.lazyPut<GetUserSubscriptionsStream>(
-        () => GetUserSubscriptionsStream(Get.find()));
-    Get.lazyPut<GetUserSubscriptions>(() => GetUserSubscriptions(Get.find()));
+    // Get.lazyPut<GetUserSubscriptionsStream>(
+    //     () => GetUserSubscriptionsStream(Get.find()));
+    // Get.lazyPut<GetUserSubscriptions>(() => GetUserSubscriptions(Get.find()));
     Get.lazyPut<CreateUserInteraction>(() => CreateUserInteraction(Get.find()));
     Get.lazyPut<UpdateUserInteraction>(() => UpdateUserInteraction(Get.find()));
     Get.lazyPut<GetArticleComments>(() => GetArticleComments());
@@ -136,8 +129,8 @@ class ZippyBindings implements Bindings {
     Get.lazyPut<GetRecommendedArticles>(() => GetRecommendedArticles());
     Get.lazyPut<GetRandomArticles>(() => GetRandomArticles());
     Get.lazyPut<GetContentTypes>(() => GetContentTypes());
-    Get.lazyPut<ToggleUserSubscription>(
-        () => ToggleUserSubscription(Get.find()));
+    // Get.lazyPut<ToggleUserSubscription>(
+    //     () => ToggleUserSubscription(Get.find()));
     Get.lazyPut<CreateUserBookmarkFolder>(
         () => CreateUserBookmarkFolder(Get.find()));
     Get.lazyPut<GetUserBookmarkFolders>(
@@ -146,6 +139,8 @@ class ZippyBindings implements Bindings {
         () => DeleteUserBookmarkFolder(Get.find()));
     Get.lazyPut<SubscribeUserBookmarkFolder>(
         () => SubscribeUserBookmarkFolder(Get.find()));
+    Get.lazyPut<GetTopArticlesByContentType>(
+        () => GetTopArticlesByContentType(Get.find()));
   }
 
   _initService() {
@@ -155,6 +150,6 @@ class ZippyBindings implements Bindings {
     Get.put<ContentTypeService>(ContentTypeService(), permanent: true);
     Get.put<BookmarkService>(BookmarkService(), permanent: true);
     Get.put<ArticleService>(ArticleService(), permanent: true);
-    Get.put<SubscriptionService>(SubscriptionService(), permanent: true);
+    // Get.put<SubscriptionService>(SubscriptionService(), permanent: true);
   }
 }

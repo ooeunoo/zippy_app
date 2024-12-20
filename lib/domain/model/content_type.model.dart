@@ -11,6 +11,7 @@ class ContentType extends Equatable {
   final String? descriptionEn;
   final String imageUrl;
   final String color;
+  final bool showRank;
 
   const ContentType({
     required this.id,
@@ -20,6 +21,7 @@ class ContentType extends Equatable {
     this.descriptionEn,
     required this.imageUrl,
     required this.color,
+    this.showRank = false,
   });
 
   @override
@@ -30,22 +32,13 @@ class ContentType extends Equatable {
   dynamic toJson() => {
         'id': id,
         'name': name,
-        'name_en': nameEn,
+        'nameEn': nameEn,
         'description': description,
-        'description_en': descriptionEn,
-        'image_url': imageUrl,
+        'descriptionEn': descriptionEn,
+        'imageUrl': imageUrl,
         'color': color,
+        'showRank': showRank,
       };
-
-  ContentTypeEntity toCreateEntity() => ContentTypeEntity(
-        id: id,
-        name: name,
-        name_en: nameEn,
-        description: description,
-        description_en: descriptionEn,
-        image_url: imageUrl,
-        color: color,
-      );
 
   @override
   String toString() {

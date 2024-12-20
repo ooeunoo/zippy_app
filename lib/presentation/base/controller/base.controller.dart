@@ -1,15 +1,15 @@
 import 'package:get/get.dart';
 import 'package:zippy/app/routes/app_pages.dart';
-import 'package:zippy/app/utils/vibrates.dart';
+import 'package:zippy/presentation/board/controller/board.controller.dart';
 
 class BaseController extends GetxController {
+  final BoardController boardController = Get.find<BoardController>();
+
   RxInt currentIndex = 0.obs;
 
   void changeTab(int index) {
-    if (currentIndex.value == index) return;
-
+    // if (currentIndex.value == index) return;
     currentIndex.value = index;
-    // onHeavyVibration();
 
     switch (index) {
       case 0:
@@ -20,6 +20,10 @@ class BaseController extends GetxController {
         );
         break;
       case 1:
+        if (index == 1) {
+          boardController.onHandleFetchRandomArticles();
+        }
+
         Get.toNamed(
           Routes.board,
           id: 1,

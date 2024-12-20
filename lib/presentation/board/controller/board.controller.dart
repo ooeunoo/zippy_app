@@ -31,10 +31,10 @@ class BoardController extends SuperController {
       final fetchedArticles = await articleService.onHandleFetchRandomArticles(
         GetRandomArticlesParams(
           userId: authService.currentUser.value?.id,
-          limit: 100,
+          limit: 50,
+          maxHours: 30 * 24 * 60, // 30일
         ),
       );
-      print('fetchedArticles: ${fetchedArticles}');
 
       if (fetchedArticles.isNotEmpty) {
         articles.clear();

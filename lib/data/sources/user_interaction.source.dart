@@ -25,7 +25,8 @@ class UserInteractionDatasourceImpl implements UserInteractionDatasource {
     try {
       var result = await provider.client
           .from(TABLE)
-          .upsert(params.toJson())
+          .upsert(params.toJson(),
+              onConflict: 'user_id, article_id, interaction_type')
           .select('*')
           .single();
 

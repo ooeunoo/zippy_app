@@ -132,7 +132,6 @@ class AuthDatasourceImpl implements AuthDatasource {
   @override
   Future<Either<Failure, bool>> loginInWithKakao() async {
     try {
-      print("in");
       // await provider.client.auth.signInWithOAuth(
       //   supabase.OAuthProvider.kakao,
       //   redirectTo: kIsWeb

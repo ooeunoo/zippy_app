@@ -111,18 +111,6 @@ abstract class AppColor {
   static const Color gray800 = Color(0xff182230);
   static const Color gray900 = Color(0xff101828);
 
-  // static const Color brand25 = Color(0xffFCFAFF);
-  // static const Color brand50 = Color(0xffF9F5FF);
-  // static const Color brand100 = Color(0xffF4EBFF);
-  // static const Color brand200 = Color(0xffE9D7FE);
-  // static const Color brand300 = Color(0xffD6BBFB);
-  // static const Color brand400 = Color(0xffB692F6);
-  // static const Color brand500 = Color(0xff9E77ED);
-  // static const Color brand600 = Color(0xff7F56D9);
-  // static const Color brand700 = Color(0xff6941C6);
-  // static const Color brand800 = Color(0xff53389E);
-  // static const Color brand900 = Color(0xff42307D);
-
   static const Color error25 = Color(0xffFFFBFA);
   static const Color error50 = Color(0xffFEF3F2);
   static const Color error100 = Color(0xffFEE4E2);

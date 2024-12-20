@@ -23,7 +23,7 @@ class ContentTypeDatasourceImpl implements ContentTypeDatasource {
           .from(TABLE)
           .select('*')
           .eq("status", true)
-          .order('id', ascending: true);
+          .order('sort_order', ascending: true);
 
       List<ContentType> result =
           response.map((r) => ContentTypeEntity.fromJson(r).toModel()).toList();

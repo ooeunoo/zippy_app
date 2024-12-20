@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_ad_article_card.dart';
 import 'package:zippy/presentation/board/page/widgets/zippy_article_card.dart';
-import 'package:zippy/presentation/board/page/widgets/zippy_article_drawer.dart';
 
 class BoardPage extends StatefulWidget {
   const BoardPage({super.key});
@@ -48,12 +47,12 @@ class _BoardPageState extends State<BoardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      drawer: ZippyArticleDrawer(
-        articles: _controller.articles,
-        handleJumpToArticle: _handleJumpToArticle,
-        handleFetchArticles: _controller.onHandleFetchRandomArticles,
-        handleClickBookmark: _controller.onHandleClickBookmark,
-      ),
+      // drawer: ZippyArticleDrawer(
+      //   articles: _controller.articles,
+      //   handleJumpToArticle: _handleJumpToArticle,
+      //   handleFetchArticles: _controller.onHandleFetchRandomArticles,
+      //   handleClickBookmark: _controller.onHandleClickBookmark,
+      // ),
       body: _buildPageContent(),
     );
   }

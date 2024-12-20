@@ -185,7 +185,7 @@ class ProfilePage extends GetView<ProfileController> {
   Widget _buildMenu(BuildContext context, WebViewService webViewService) {
     final List<MenuSection> menu = [
       _buildMySection(),
-      _buildSettingsSection(),
+      // _buildSettingsSection(),
       _buildSupportSection(webViewService),
     ];
 
@@ -196,13 +196,13 @@ class ProfilePage extends GetView<ProfileController> {
     return MenuSection(
       section: 'My',
       items: [
-        MenuItem(
-          icon: Assets.sliders04,
-          title: '구독 관리',
-          onTap: () {
-            controller.onClickSubscriptionManagement();
-          },
-        ),
+        // MenuItem(
+        //   icon: Assets.sliders04,
+        //   title: '구독 관리',
+        //   onTap: () {
+        //     controller.onClickSubscriptionManagement();
+        //   },
+        // ),
         MenuItem(
           icon: Assets.bookmarkLine,
           title: '저장한 콘텐츠',
