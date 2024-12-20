@@ -212,7 +212,9 @@ class ArticleService extends GetxService {
   }
 
   void onHandleOpenOriginalArticle(Article article) async {
-    webViewService.showWebView(article.link);
+    webViewService.showArticleWebView(
+      article,
+    );
   }
 
   Future<void> onHandleArticleSupportMenu(Article article) async {

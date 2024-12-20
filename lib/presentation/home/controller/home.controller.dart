@@ -4,10 +4,8 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:zippy/app/services/content_type.service.dart';
 import 'package:zippy/domain/enum/article_category_type.dart';
 import 'package:zippy/domain/model/article.model.dart';
-import 'package:zippy/domain/model/article_cached.model.dart';
 import 'package:zippy/domain/model/content_type.model.dart';
 import 'package:zippy/domain/model/keyword_rank_snaoshot.model.dart';
-import 'package:zippy/domain/model/params/get_top_articles_by_content_type.params.dart';
 import 'package:zippy/domain/model/params/get_tranding_keywords.params.dart';
 import 'package:zippy/domain/model/top_articles_by_content_type.model.dart';
 import 'package:zippy/domain/usecases/get_article_with_category.dart';
@@ -32,12 +30,20 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Check if contentTypes is not empty before accessing first element
     ever(contentTypeService.contentTypes, (value) {
       contentTypes.value = value;
       if (contentTypes.isNotEmpty) {
         selectedContentType.value = contentTypes.first;
         onHandleFetchArticleWithCategory(contentTypes.first);
+      }
+    });
+    ever(selectedContentType, (value) {
+      if (value != null) {
+        if (articleWithCategory[value] == null) {
+          isLoading.value = true;
+          onHandleFetchArticleWithCategory(value);
+          isLoading.value = false;
+        }
       }
     });
     onHandleFetchTrendingKeywords();

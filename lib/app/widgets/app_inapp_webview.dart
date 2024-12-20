@@ -1,51 +1,40 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
+import 'package:zippy/app/services/article.service.dart';
+import 'package:zippy/app/services/bookmark.service.dart';
 import 'package:zippy/app/styles/color.dart';
+import 'package:zippy/app/styles/dimens.dart';
+import 'package:zippy/app/utils/assets.dart';
+import 'package:zippy/app/widgets/app_header.dart';
+import 'package:zippy/app/widgets/app_svg.dart';
+import 'package:zippy/domain/model/article.model.dart';
 
-class AppInAppWebView extends StatefulWidget {
-  final Uri uri;
+class AppArticleInWebView extends StatefulWidget {
+  final Article article;
 
-  const AppInAppWebView({
-    Key? key,
-    required this.uri,
-  }) : super(key: key);
+  const AppArticleInWebView({
+    super.key,
+    required this.article,
+  });
 
   @override
-  _AppInAppWebViewState createState() => _AppInAppWebViewState();
+  State<AppArticleInWebView> createState() => _AppArticleInWebViewState();
 }
 
-class _AppInAppWebViewState extends State<AppInAppWebView> {
-  late final WebViewController _webViewController;
-  final RxBool _isLoading = true.obs;
-  final RxDouble _progress = 0.0.obs;
-
-  @override
-  void initState() {
-    super.initState();
-    _initWebView();
-  }
-
-  void _initWebView() {
-    _webViewController = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onPageStarted: _onLoadStart,
-          onPageFinished: _onLoadStop,
-          onProgress: _onProgressChanged,
-          onWebResourceError: _onReceivedError,
-        ),
-      )
-      ..loadRequest(widget.uri);
-  }
+class _AppArticleInWebViewState extends State<AppArticleInWebView> {
+  final ArticleService articleService = Get.find();
+  final BookmarkService bookmarkService = Get.find();
+  bool _isScrolledDown = false;
+  double _lastScrollY = 0;
+  late InAppWebViewController _webViewController;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: Get.height * 0.9,
+      height: MediaQuery.of(context).size.height * 0.9,
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -53,86 +42,96 @@ class _AppInAppWebViewState extends State<AppInAppWebView> {
           topRight: Radius.circular(20),
         ),
       ),
-      child: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(),
-            Obx(() => _isLoading.value
-                ? LinearProgressIndicator(
-                    value: _progress.value,
-                    backgroundColor: Colors.white,
-                    valueColor:
-                        const AlwaysStoppedAnimation<Color>(AppColor.brand600),
-                  )
-                : const SizedBox.shrink()),
-            Expanded(child: _buildWebView()),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Container(
-      height: 60,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      clipBehavior: Clip.hardEdge,
+      child: Stack(
         children: [
-          IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () => Get.back(),
-            color: AppColor.graymodern400,
-          ),
-          IconButton(
-            icon: const Icon(Icons.refresh_outlined),
-            onPressed: () => _webViewController.reload(),
-            color: AppColor.graymodern400,
+          Column(
+            children: [
+              AppHeader(
+                leading: IconButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  icon: const Icon(Icons.close),
+                ),
+                title: const SizedBox.shrink(),
+                actions: [
+                  Padding(
+                    padding: EdgeInsets.only(right: AppDimens.width(12)),
+                    child: IconButton(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      icon: Obx(
+                        () => AppSvg(
+                          bookmarkService.isBookmarked(widget.article.id!) !=
+                                  null
+                              ? Assets.bookmark
+                              : Assets.bookmarkLine,
+                          color: bookmarkService
+                                      .isBookmarked(widget.article.id!) !=
+                                  null
+                              ? AppColor.brand500
+                              : AppColor.black,
+                        ),
+                      ),
+                      onPressed: () => articleService.onHandleBookmarkArticle(
+                        widget.article,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: InAppWebView(
+                  initialUrlRequest: URLRequest(
+                    url: WebUri(widget.article.link!),
+                  ),
+                  initialSettings: InAppWebViewSettings(
+                    javaScriptEnabled: true,
+                    mediaPlaybackRequiresUserGesture: false,
+                    allowsInlineMediaPlayback: true,
+                    transparentBackground: true,
+                  ),
+                  onReceivedError: (controller, request, error) {},
+                  onWebViewCreated: (controller) {
+                    _webViewController = controller;
+                  },
+                  onLoadStart: (controller, url) {},
+                  onLoadStop: (controller, url) {},
+                  onProgressChanged: (controller, progress) {
+                    if (progress == 100 && mounted) {}
+                  },
+                  onScrollChanged: (controller, x, y) async {
+                    if (!mounted) return;
+
+                    if (y > _lastScrollY && y > 0) {
+                      setState(() {
+                        _isScrolledDown = true;
+                      });
+                    }
+
+                    if (y <= 0 && y < _lastScrollY) {
+                      if (!_isScrolledDown) {
+                        Get.back();
+                      }
+                    }
+
+                    if (y == 0) {
+                      setState(() {
+                        _isScrolledDown = false;
+                      });
+                    }
+
+                    _lastScrollY = y.toDouble();
+                  },
+                  gestureRecognizers: Set()
+                    ..add(Factory(() => VerticalDragGestureRecognizer())),
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
-  }
-
-  Widget _buildWebView() {
-    return Stack(
-      children: [
-        RefreshIndicator(
-          onRefresh: () async {
-            await _webViewController.reload();
-          },
-          color: AppColor.brand400,
-          child: WebViewWidget(
-            controller: _webViewController,
-            gestureRecognizers: {Factory(() => EagerGestureRecognizer())},
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _onLoadStart(String url) {
-    debugPrint("WebView Started Loading: $url");
-    _isLoading.value = true;
-  }
-
-  void _onLoadStop(String url) {
-    debugPrint("WebView Finished Loading: $url");
-    _isLoading.value = false;
-  }
-
-  void _onProgressChanged(int progress) {
-    debugPrint("WebView Progress: $progress");
-    _progress.value = progress / 100;
-  }
-
-  void _onReceivedError(WebResourceError error) {
-    debugPrint("WebView Error: ${error.errorCode} - ${error.description}");
-    _isLoading.value = false;
   }
 }

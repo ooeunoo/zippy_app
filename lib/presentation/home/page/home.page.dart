@@ -25,30 +25,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppHeaderWrap(child: HomeHeader()),
+      appBar: const AppHeaderWrap(child: HomeHeader()),
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: AppSpacerV(value: AppDimens.height(16)),
-            ),
-            SliverToBoxAdapter(
-              child: KeywordRankingsSection(),
-            ),
-            SliverToBoxAdapter(
-              child: NewsSection(),
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              AppSpacerV(value: AppDimens.height(16)),
+              const KeywordRankingsSection(),
+              const NewsSection(),
+            ],
+          ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return AppHeader(
-      leading: Padding(
-        padding: EdgeInsets.symmetric(horizontal: AppDimens.width(16)),
-        child: AppSvg(Assets.logo, size: AppDimens.width(60)),
       ),
     );
   }

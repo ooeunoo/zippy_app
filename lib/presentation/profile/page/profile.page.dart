@@ -247,7 +247,12 @@ class ProfilePage extends GetView<ProfileController> {
           icon: Assets.file06,
           title: '의견 보내기',
           onTap: () {
-            webViewService.showWebView(Constants.inquriyUrl);
+            // webViewService.showWebView(
+            //   // Article(
+            //   //   link: Constants.inquriyUrl,
+            //   // ),
+            //   // () {},
+            // );
           },
         ),
       ],

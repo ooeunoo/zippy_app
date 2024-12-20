@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/widgets/app_inapp_webview.dart';
+import 'package:zippy/domain/model/article.model.dart';
 
 class WebViewService extends GetxService {
   // URL 유효성 검사 및 정규화
@@ -23,8 +24,10 @@ class WebViewService extends GetxService {
     }
   }
 
-  void showWebView(String url) {
-    final uri = _validateAndNormalizeUrl(url);
+  void showArticleWebView(
+    Article article,
+  ) {
+    final uri = _validateAndNormalizeUrl(article.link);
     if (uri == null) {
       Get.snackbar(
         '오류',
@@ -36,7 +39,9 @@ class WebViewService extends GetxService {
     }
 
     Get.bottomSheet(
-      AppInAppWebView(uri: uri),
+      AppArticleInWebView(
+        article: article,
+      ),
       isScrollControlled: true,
       enableDrag: true,
       backgroundColor: Colors.transparent,
