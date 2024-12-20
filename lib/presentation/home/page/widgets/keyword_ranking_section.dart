@@ -5,7 +5,9 @@ import 'package:get/get.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
+import 'package:zippy/app/widgets/app_divider.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
+import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/app/widgets/app_shimmer.dart';
 import 'package:zippy/domain/model/keyword_rank_snaoshot.model.dart';
@@ -63,13 +65,16 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
     _controllers = List.generate(
       controller.trendingKeywords.length,
       (index) => AnimationController(
-        duration: Duration(milliseconds: 300 + (index * 100)),
+        duration: Duration(milliseconds: 800 + (index * 50)),
         vsync: this,
-      ),
+      )..reset(), // 생성 시 초기화
     );
 
     _animations = _controllers.map((controller) {
-      return CurvedAnimation(parent: controller, curve: Curves.easeOutBack);
+      return CurvedAnimation(
+        parent: controller,
+        curve: Curves.easeOutCubic,
+      );
     }).toList();
   }
 
@@ -103,11 +108,13 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
       if (!isExpanded) {
         _startTimer();
         for (var controller in _controllers) {
+          controller.reset(); // 애니메이션 상태 리셋
           controller.reverse();
         }
       } else {
         _timer?.cancel();
         for (var controller in _controllers) {
+          controller.reset(); // 애니메이션 상태 리셋
           controller.forward();
         }
       }
@@ -135,9 +142,10 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
       }
 
       return Material(
-        color: Colors.transparent,
-        child: InkWell(
+        color: AppColor.graymodern950,
+        child: GestureDetector(
           onTap: _handleTap,
+          behavior: HitTestBehavior.opaque,
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
@@ -178,30 +186,6 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: AppDimens.width(8),
-            vertical: AppDimens.height(4),
-          ),
-          decoration: BoxDecoration(
-            color: AppColor.brand800,
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Row(
-            children: [
-              Icon(Icons.trending_up,
-                  color: AppColor.white, size: AppDimens.size(16)),
-              AppSpacerH(value: AppDimens.width(4)),
-              AppText(
-                'Live',
-                style: Theme.of(context)
-                    .textTheme
-                    .textSM
-                    .copyWith(color: AppColor.white),
-              ),
-            ],
-          ),
-        ),
         AppSpacerH(value: AppDimens.width(12)),
         Expanded(
           child: _buildSingleRanking(
@@ -251,17 +235,48 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
       padding: EdgeInsets.zero,
       physics: const BouncingScrollPhysics(),
       shrinkWrap: true,
-      itemCount: controller.trendingKeywords.length,
+      itemCount: controller.trendingKeywords.length + 1,
       itemBuilder: (context, index) {
+        if (index == controller.trendingKeywords.length) {
+          return Column(
+            children: [
+              AppDivider(height: AppDimens.height(2)),
+              AppSpacerV(value: AppDimens.height(12)),
+            ],
+          );
+        }
+
         if (index >= _animations.length) return const SizedBox.shrink();
 
-        return ScaleTransition(
-          scale: _animations[index],
+        // 각 아이템마다 살짝 다른 딜레이를 줘서 cascade 효과 생성
+        final delay = index * 50;
+        _controllers[index].duration = Duration(milliseconds: 800 + delay);
+
+        return AnimatedBuilder(
+          animation: _animations[index],
+          builder: (context, child) {
+            return Transform.translate(
+              offset: Offset(
+                0,
+                (1 - _animations[index].value) * 20, // 위에서 아래로 살짝 내려오는 효과
+              ),
+              child: Opacity(
+                opacity: _animations[index].value,
+                child: Transform.scale(
+                  scale: 0.8 + (_animations[index].value * 0.2), // 살짝 커지는 효과
+                  child: child,
+                ),
+              ),
+            );
+          },
           child: SlideTransition(
             position: Tween<Offset>(
-              begin: const Offset(1.0, 0),
+              begin: const Offset(0.3, 0),
               end: Offset.zero,
-            ).animate(_animations[index]),
+            ).animate(CurvedAnimation(
+              parent: _controllers[index],
+              curve: Curves.easeOutCubic, // 부드러운 감속 커브
+            )),
             child: Container(
               padding: EdgeInsets.symmetric(
                 horizontal: AppDimens.width(16),

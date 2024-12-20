@@ -8,11 +8,11 @@ class Article extends Equatable {
   final int sourceId;
   final String title;
   final String link;
-  final String author;
-  final String content;
-  final String? excerpt;
+  final String? author;
+  // final String content;
+  // final String? excerpt;
   final List<dynamic> images;
-  final List<String> keyPoints;
+  // final List<String> keyPoints;
   final List<String> keywords;
   final DateTime published;
 
@@ -26,11 +26,11 @@ class Article extends Equatable {
     required this.sourceId,
     required this.title,
     required this.link,
-    required this.author,
-    required this.content,
+    this.author,
+    // required this.content,
     required this.images,
-    this.excerpt,
-    required this.keyPoints,
+    // this.excerpt,
+    // required this.keyPoints,
     required this.keywords,
     required this.published,
     this.metadata,
@@ -43,7 +43,6 @@ class Article extends Equatable {
       sourceId,
       link,
       title,
-      author,
       isAd,
     ];
   }
@@ -55,9 +54,9 @@ class Article extends Equatable {
         'title': title,
         "author": author,
         "images": images,
-        "content": content,
-        "excerpt": excerpt,
-        "keyPoints": keyPoints,
+        // "content": content,
+        // "excerpt": excerpt,
+        // "keyPoints": keyPoints,
         "keywords": keywords,
         "published": published,
         'isAd': isAd,

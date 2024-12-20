@@ -1,6 +1,7 @@
 import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/data/sources/article.source.dart';
 import 'package:zippy/domain/model/article.model.dart';
+import 'package:zippy/domain/model/article_cached.model.dart';
 import 'package:zippy/domain/model/params/get_articles_by_keyword.params.dart';
 import 'package:zippy/domain/model/params/get_random_articles.params.dart';
 import 'package:zippy/domain/model/params/get_recommend_aritlces.params.dart';
@@ -21,6 +22,8 @@ abstract class ArticleRepository {
       GetRandomArticlesParams params);
   Future<Either<Failure, List<TopArticlesByContentType>>>
       getTopArticlesByContentType(GetTopArticlesByContentTypeParams params);
+  Future<Either<Failure, ArticleWithCategoryGroup>> getArticlesForCategories(
+      int contentTypeId);
 }
 
 class ArticleRepositoryImpl implements ArticleRepository {
@@ -61,5 +64,11 @@ class ArticleRepositoryImpl implements ArticleRepository {
   Future<Either<Failure, List<TopArticlesByContentType>>>
       getTopArticlesByContentType(GetTopArticlesByContentTypeParams params) {
     return datasource.getTopArticlesByContentType(params);
+  }
+
+  @override
+  Future<Either<Failure, ArticleWithCategoryGroup>> getArticlesForCategories(
+      int contentTypeId) {
+    return datasource.getArticlesForCategories(contentTypeId);
   }
 }

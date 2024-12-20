@@ -12,13 +12,13 @@ class AdArticle extends Article {
     super.link = '',
     super.author = '',
     super.images = const [],
-    super.keyPoints = const [],
     super.keywords = const [],
-    super.content = '',
+    // super.keyPoints = const [],
+    // super.content = '',
+    // super.excerpt = '',
     DateTime? published,
     required this.nativeAd,
     super.isAd = true,
-    super.excerpt = '',
   }) : super(published: published ?? DateTime.now());
 
   @override

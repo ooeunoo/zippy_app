@@ -10,11 +10,11 @@ class ArticleEntity extends Equatable {
   final int source_id;
   final String title;
   final String link;
-  final String author;
+  final String? author;
   final List<dynamic> images;
-  final String content;
-  final String? excerpt;
-  final List<String> keyPoints;
+  // final String content;
+  // final String? excerpt;
+  // final List<String> keyPoints;
   final List<String> keywords;
   final DateTime published;
 
@@ -25,11 +25,11 @@ class ArticleEntity extends Equatable {
     required this.source_id,
     required this.title,
     required this.link,
-    required this.author,
+    this.author,
     required this.images,
-    required this.content,
-    this.excerpt,
-    required this.keyPoints,
+    // required this.content,
+    // this.excerpt,
+    // required this.keyPoints,
     required this.keywords,
     required this.published,
     this.metadata,
@@ -41,7 +41,6 @@ class ArticleEntity extends Equatable {
       source_id,
       title,
       link,
-      author,
       images,
       published,
     ];
@@ -55,9 +54,9 @@ class ArticleEntity extends Equatable {
       link: json['link'],
       author: json['author'],
       images: json['images'],
-      content: json['content'],
-      excerpt: json['excerpt'],
-      keyPoints: convertToStringList(json['key_points']),
+      // content: json['content'],
+      // excerpt: json['excerpt'],
+      // keyPoints: convertToStringList(json['key_points']),
       keywords: convertToStringList(json['keywords']),
       published: json['published'] != null
           ? DateTime.parse(json['published'])
@@ -76,9 +75,9 @@ class ArticleEntity extends Equatable {
       title: title,
       author: author,
       images: images,
-      excerpt: excerpt,
-      content: content,
-      keyPoints: keyPoints,
+      // excerpt: excerpt,
+      // content: content,
+      // keyPoints: keyPoints,
       keywords: keywords,
       published: published,
       metadata: metadata?.toModel(),

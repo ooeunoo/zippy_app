@@ -14,6 +14,7 @@ import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/article.model.dart';
+import 'package:zippy/domain/model/source.model.dart';
 
 class ZippyArticleYoutubeView extends StatefulWidget {
   final Article article;
@@ -241,9 +242,9 @@ class _ZippyArticleYoutubeViewState extends State<ZippyArticleYoutubeView> {
   }
 
   Widget _buildMetadataRow(BuildContext context) {
-    final platform =
-        articleService.getSourceById(widget.article.sourceId)?.platform;
-
+    // final platform =
+    //     articleService.getSourceById(widget.article.sourceId)?.platform;
+    Source? source = null;
     return Container(
       padding: EdgeInsets.symmetric(
         vertical: AppDimens.height(8),
@@ -257,7 +258,7 @@ class _ZippyArticleYoutubeViewState extends State<ZippyArticleYoutubeView> {
             //   borderRadius: BorderRadius.circular(AppDimens.radius(4)),
             // ),
             child: AppText(
-              platform?.name ?? "",
+              source?.platform?.name ?? "",
               style: Theme.of(context).textTheme.textSM.copyWith(
                     color: AppColor.graymodern300,
                     fontWeight: AppFontWeight.medium,
@@ -374,7 +375,8 @@ class _ZippyArticleYoutubeViewState extends State<ZippyArticleYoutubeView> {
             ),
             if (isKeyPointsExpanded) ...[
               AppSpacerV(value: AppDimens.height(16)),
-              ...widget.article.keyPoints.map((point) => Padding(
+              // ...widget.article.keyPoints.map((point) => Padding(
+              ...[].map((point) => Padding(
                     padding: EdgeInsets.only(bottom: AppDimens.height(12)),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,

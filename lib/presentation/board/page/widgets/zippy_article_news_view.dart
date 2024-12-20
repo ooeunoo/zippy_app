@@ -93,7 +93,8 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
                       _buildSummarySection(
                         context,
                         '주요 포인트',
-                        widget.article.keyPoints,
+                        [],
+                        // widget.article.keyPoints,
                         Icons.format_list_bulleted,
                       ),
                     ],
@@ -232,7 +233,8 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
   }
 
   Widget _buildMetaInfo(BuildContext context) {
-    Source? source = articleService.getSourceById(widget.article.sourceId);
+    // Source? source = articleService.getSourceById(widget.article.sourceId);
+    Source? source = null;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -255,7 +257,8 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
             SizedBox(
               width: AppDimens.width(100),
               child: AppText(
-                widget.article.author,
+                "",
+                // widget.article.author,
                 maxLines: 1,
                 style: Theme.of(context).textTheme.textXS.copyWith(
                       color: AppThemeColors.textLow(context),
@@ -349,7 +352,8 @@ class _ZippyArticleNewsViewState extends State<ZippyArticleNewsView> {
   }
 
   Widget _buildContent() {
-    final formattedContent = _formatContent(widget.article.content);
+    final formattedContent = '';
+    // final formattedContent = _formatContent(widget.article.content);
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: AppDimens.width(24),

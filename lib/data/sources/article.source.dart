@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:zippy/app/failures/failure.dart';
 import 'package:zippy/data/entity/article.entity.dart';
+import 'package:zippy/data/entity/article_with_category_group.entity.dart';
 import 'package:zippy/data/entity/get_top_article_by_content_type.entity.dart';
 import 'package:zippy/data/providers/supabase.provider.dart';
 import 'package:zippy/domain/model/article.model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
+import 'package:zippy/domain/model/article_cached.model.dart';
 import 'package:zippy/domain/model/params/get_articles_by_keyword.params.dart';
 import 'package:zippy/domain/model/params/get_random_articles.params.dart';
 import 'package:zippy/domain/model/params/get_recommend_aritlces.params.dart';
@@ -20,7 +22,8 @@ enum RPC {
   getRecommendedArticles('get_recommended_articles'),
   getSearchArticles('get_search_articles'),
   getRandomArticles('get_random_articles'),
-  getTopArticlesByContentType('get_top_articles_by_content_type');
+  getTopArticlesByContentType('get_top_articles_by_content_type'),
+  getArticlesForCategories('get_articles_for_categories');
 
   final String function;
 
@@ -40,6 +43,8 @@ abstract class ArticleDatasource {
       GetRandomArticlesParams params);
   Future<Either<Failure, List<TopArticlesByContentType>>>
       getTopArticlesByContentType(GetTopArticlesByContentTypeParams params);
+  Future<Either<Failure, ArticleWithCategoryGroup>> getArticlesForCategories(
+      int contentTypeId);
 }
 
 class ArticleDatasourceImpl implements ArticleDatasource {
@@ -178,6 +183,26 @@ class ArticleDatasourceImpl implements ArticleDatasource {
       for (var r in (response as List)) {
         result.add(TopArticlesByContentTypeEntity.fromJson(r).toModel());
       }
+
+      return Right(result);
+    } catch (e, stackTrace) {
+      print('Error:$e \n stackTrace:$stackTrace');
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, ArticleWithCategoryGroup>> getArticlesForCategories(
+      int contentTypeId) async {
+    try {
+      final response = await provider.client
+          .rpc(RPC.getArticlesForCategories.function, params: {
+        'p_content_type_id': contentTypeId,
+        'p_limit': 10,
+      });
+
+      ArticleWithCategoryGroup result =
+          ArticleWithCategoryGroupEntity.fromJson(response).toModel();
 
       return Right(result);
     } catch (e, stackTrace) {
