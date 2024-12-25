@@ -11,6 +11,7 @@ class ContentType extends Equatable {
   final String imageUrl;
   final String color;
   final bool showRank;
+  final String? emoji;
 
   const ContentType({
     required this.id,
@@ -21,6 +22,7 @@ class ContentType extends Equatable {
     required this.imageUrl,
     required this.color,
     this.showRank = false,
+    this.emoji,
   });
 
   @override
@@ -37,6 +39,7 @@ class ContentType extends Equatable {
         'imageUrl': imageUrl,
         'color': color,
         'showRank': showRank,
+        'emoji': emoji,
       };
 
   @override

@@ -16,6 +16,7 @@ import 'package:zippy/domain/enum/article_category_type.dart';
 import 'package:zippy/domain/model/article.model.dart';
 import 'package:zippy/domain/model/source.model.dart';
 import 'package:zippy/presentation/home/controller/home.controller.dart';
+import 'package:zippy/presentation/home/page/widgets/sheets/content_type_selector.sheet.dart';
 
 class NewsSection extends StatefulWidget {
   const NewsSection({super.key});
@@ -89,64 +90,12 @@ class _NewsSectionState extends State<NewsSection> {
 
   void _showContentTypeBottomSheet() {
     openCustomBottomSheet(
-      Container(
-        padding: EdgeInsets.symmetric(vertical: AppDimens.height(30)),
-        height: MediaQuery.of(context).size.height * 0.5,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Obx(() {
-                final contentTypes = controller.contentTypes;
-                return GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: AppDimens.height(8),
-                    crossAxisSpacing: AppDimens.width(8),
-                    childAspectRatio: 2.5,
-                  ),
-                  itemCount: contentTypes.length,
-                  itemBuilder: (context, index) {
-                    final contentType = contentTypes[index];
-                    return GestureDetector(
-                      onTap: () {
-                        controller.selectedContentType.value = contentType;
-                        Get.back();
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: AppDimens.width(12),
-                          vertical: AppDimens.height(8),
-                        ),
-                        decoration: BoxDecoration(
-                          color: controller.selectedContentType.value?.id ==
-                                  contentType.id
-                              ? AppColor.brand500
-                              : AppColor.transparent,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            AppText(
-                              contentType.name,
-                              style:
-                                  Theme.of(context).textTheme.textMD.copyWith(
-                                        color: AppColor.white,
-                                      ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }),
-            ),
-          ],
-        ),
+      ContentTypeSelectorSheet(
+        contentTypes: controller.contentTypes,
+        selectedContentType: controller.selectedContentType.value,
+        onHandleSelectedContentType: (contentType) {
+          controller.selectedContentType.value = contentType;
+        },
       ),
     );
   }

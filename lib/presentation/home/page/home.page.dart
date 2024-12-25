@@ -5,9 +5,9 @@ import 'package:zippy/app/widgets/app_header.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 
 import 'package:zippy/app/widgets/app_svg.dart';
-import 'package:zippy/presentation/home/page/widgets/header_section.dart';
-import 'package:zippy/presentation/home/page/widgets/news_section.dart';
-import 'package:zippy/presentation/home/page/widgets/keyword_ranking_section.dart';
+import 'package:zippy/presentation/home/page/widgets/section/header_section.dart';
+import 'package:zippy/presentation/home/page/widgets/section/news_section.dart';
+import 'package:zippy/presentation/home/page/widgets/section/keyword_ranking_section.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
