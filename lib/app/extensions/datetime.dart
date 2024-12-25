@@ -85,4 +85,10 @@ extension DateTimeExtension on DateTime {
       return '${year.toString().substring(2)}/${month.toString().padLeft(2, '0')}/${day.toString().padLeft(2, '0')}';
     }
   }
+
+  // 시간 분만 표기 format kst return 형식: 오늘 11:11 (kst로 변경 후 표기)
+  String timeOnly() {
+    final kst = this.toUtc().add(const Duration(hours: 9));
+    return '${kst.hour.toString().padLeft(2, '0')}시 ${kst.minute.toString().padLeft(2, '0')}분';
+  }
 }

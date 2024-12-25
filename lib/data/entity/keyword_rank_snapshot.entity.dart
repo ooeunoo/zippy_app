@@ -16,7 +16,7 @@ class KeywordRankSnapshotEntity extends Equatable {
   final int interaction_count;
   final double interaction_score;
   final List<String>? descriptions;
-
+  final DateTime? snapshot_time;
   const KeywordRankSnapshotEntity({
     required this.keyword,
     this.content_type_id,
@@ -29,6 +29,7 @@ class KeywordRankSnapshotEntity extends Equatable {
     required this.interaction_count,
     required this.interaction_score,
     this.descriptions,
+    this.snapshot_time,
   });
 
   @override
@@ -62,6 +63,9 @@ class KeywordRankSnapshotEntity extends Equatable {
               .map((e) => e.toString())
               .toList()
           : null,
+      snapshot_time: json['snapshot_time'] != null
+          ? DateTime.parse(json['snapshot_time'])
+          : null,
     );
   }
   KeywordRankSnapshot toModel() {
@@ -77,6 +81,7 @@ class KeywordRankSnapshotEntity extends Equatable {
       interactionCount: interaction_count,
       interactionScore: interaction_score,
       descriptions: descriptions,
+      snapshotTime: snapshot_time,
     );
   }
 }

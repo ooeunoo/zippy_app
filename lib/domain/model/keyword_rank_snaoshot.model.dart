@@ -14,6 +14,7 @@ class KeywordRankSnapshot extends Equatable {
   final int interactionCount;
   final double interactionScore;
   final List<String>? descriptions;
+  final DateTime? snapshotTime;
 
   const KeywordRankSnapshot({
     required this.keyword,
@@ -27,6 +28,7 @@ class KeywordRankSnapshot extends Equatable {
     required this.interactionCount,
     required this.interactionScore,
     this.descriptions,
+    this.snapshotTime,
   });
 
   @override
@@ -55,6 +57,7 @@ class KeywordRankSnapshot extends Equatable {
         'interaction_count': interactionCount,
         'interaction_score': interactionScore,
         'descriptions': descriptions,
+        'snapshot_time': snapshotTime,
       };
 
   @override

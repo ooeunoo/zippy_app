@@ -212,6 +212,7 @@ class ArticleService extends GetxService {
   }
 
   void onHandleOpenOriginalArticle(Article article) async {
+    print("Clicked!!!!: ${article.id}");
     final handleUpdateInteraction =
         await _createViewInteractionCallback(article);
 

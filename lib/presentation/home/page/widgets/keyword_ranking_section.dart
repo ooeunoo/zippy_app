@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:zippy/app/extensions/datetime.dart';
 import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
@@ -226,7 +227,7 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
                   .copyWith(color: AppColor.white),
             ),
             AppText(
-              "오늘 11:11 기준",
+              '오늘 ${controller.trendingKeywords[0].snapshotTime!.timeOnly()} 기준',
               style: Theme.of(context)
                   .textTheme
                   .textXS
