@@ -53,57 +53,57 @@ class _BoardPageState extends State<BoardPage> {
       //   handleFetchArticles: _controller.onHandleFetchRandomArticles,
       //   handleClickBookmark: _controller.onHandleClickBookmark,
       // ),
-      body: _buildPageContent(),
+      body: Container(),
     );
   }
 
-  Widget _buildPageContent() {
-    return GetX<BoardController>(
-      builder: (controller) {
-        if (controller.isLoadingContents.value) {
-          return Center(
-            child: CupertinoActivityIndicator(
-              color: AppThemeColors.loadingColor(context),
-            ),
-          );
-        }
+  // Widget _buildPageContent() {
+  //   return GetX<BoardController>(
+  //     builder: (controller) {
+  //       if (controller.isLoadingContents.value) {
+  //         return Center(
+  //           child: CupertinoActivityIndicator(
+  //             color: AppThemeColors.loadingColor(context),
+  //           ),
+  //         );
+  //       }
 
-        return RefreshIndicator(
-          color: AppThemeColors.loadingColor(context),
-          backgroundColor: AppThemeColors.background(context),
-          displacement: 50,
-          strokeWidth: 3,
-          onRefresh: controller.onHandleFetchRandomArticles,
-          child: PageView.builder(
-            scrollDirection: Axis.vertical,
-            pageSnapping: true,
-            dragStartBehavior: DragStartBehavior.start,
-            controller: _pageController,
-            onPageChanged: controller.onHandleChangedArticle,
-            physics: const BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics(),
-            ),
-            itemCount: controller.articles.length,
-            itemBuilder: _buildPageItem,
-          ),
-        );
-      },
-    );
-  }
+  //       return RefreshIndicator(
+  //         color: AppThemeColors.loadingColor(context),
+  //         backgroundColor: AppThemeColors.background(context),
+  //         displacement: 50,
+  //         strokeWidth: 3,
+  //         onRefresh: controller.onHandleFetchRandomArticles,
+  //         child: PageView.builder(
+  //           scrollDirection: Axis.vertical,
+  //           pageSnapping: true,
+  //           dragStartBehavior: DragStartBehavior.start,
+  //           controller: _pageController,
+  //           onPageChanged: controller.onHandleChangedArticle,
+  //           physics: const BouncingScrollPhysics(
+  //             parent: AlwaysScrollableScrollPhysics(),
+  //           ),
+  //           itemCount: controller.articles.length,
+  //           itemBuilder: _buildPageItem,
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
-  Widget _buildPageItem(BuildContext context, int index) {
-    final article = _controller.articles[index];
+  // Widget _buildPageItem(BuildContext context, int index) {
+  //   final article = _controller.articles[index];
 
-    if (article.isAd) {
-      return ZippyAdArticleCard(adArticle: article as AdArticle);
-    }
+  //   if (article.isAd) {
+  //     return ZippyAdArticleCard(adArticle: article as AdArticle);
+  //   }
 
-    return GestureDetector(
-      onTap: () => _controller.onHandleClickArticle(article),
-      behavior: HitTestBehavior.opaque,
-      child: ZippyArticleCard(
-        article: article,
-      ),
-    );
-  }
+  //   return GestureDetector(
+  //     onTap: () => _controller.onHandleClickArticle(article),
+  //     behavior: HitTestBehavior.opaque,
+  //     child: ZippyArticleCard(
+  //       article: article,
+  //     ),
+  //   );
+  // }
 }

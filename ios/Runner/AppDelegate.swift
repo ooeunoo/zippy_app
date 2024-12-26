@@ -19,7 +19,8 @@ import google_mobile_ads
        let bottomBannerFactory = BottomBannerAdFactory()
         FLTGoogleMobileAdsPlugin.registerNativeAdFactory(
             self,
-            factoryId: "bottomBannerAd",  
+            factoryId: "bottomBannerAd"
+            ,  
             nativeAdFactory: bottomBannerFactory)
 
         // Replace with your actual test device ID

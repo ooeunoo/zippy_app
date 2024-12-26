@@ -289,7 +289,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
           return ArticleRowItem(
             article: bookmark.article!,
             onHandleClickArticle: () {
-              articleService.onHandleGoToArticleView(bookmark.article!);
+              articleService.onHandleOpenOriginalArticle(bookmark.article!);
             },
           );
         },

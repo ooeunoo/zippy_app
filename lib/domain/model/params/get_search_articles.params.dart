@@ -10,7 +10,7 @@ class GetSearchArticlesParams extends Equatable {
   const GetSearchArticlesParams({
     required this.query,
     this.page = 1,
-    this.size = 20,
+    this.size = 10,
   });
 
   @override

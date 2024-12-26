@@ -36,6 +36,7 @@ class HomeController extends GetxController {
   RxBool hasMoreSearchData = true.obs;
   RxList<Article> searchArticles = RxList<Article>([]);
   RxString currentQuery = ''.obs;
+  RxBool isInitLoading = false.obs; // 초기 로딩 상태 추가
 
   final isLoading = false.obs;
 
@@ -124,17 +125,20 @@ class HomeController extends GetxController {
   }) async {
     if (_shouldResetSearch(refresh, keyword)) {
       _resetSearchState();
+      isInitLoading.value = true; // 초기 로딩 상태 설정
     }
 
-    if (!_canLoadMoreSearchResults) {
+    if (!hasMoreSearchData.value || isSearchLoading.value) {
       return searchArticles;
     }
 
     isSearchLoading.value = true;
+
     try {
       return await _fetchSearchResults(keyword);
     } finally {
-      isSearchLoading.value = false;
+      isInitLoading.value = false; // 초기 로딩 상태 해제
+      isSearchLoading.value = false; // 추가 페이지 로딩 상태 해제
     }
   }
 
@@ -160,19 +164,21 @@ class HomeController extends GetxController {
     );
 
     final result = await articleService.onHandleFetchSearchArticles(params);
-
+    print("result: ${result.length}");
     _updateSearchState(keyword, result);
     return result;
   }
 
   void _updateSearchState(String keyword, List<Article> result) {
     currentQuery.value = keyword;
-    hasMoreSearchData.value = result.length >= pageSize;
+
+    if (result.isEmpty) {
+      hasMoreSearchData.value = false;
+    }
 
     if (currentPage.value == 1) {
       searchArticles.clear();
     }
-
     searchArticles.addAll(result);
     currentPage.value++;
   }
@@ -184,7 +190,7 @@ class HomeController extends GetxController {
   }
 
   void onHandleGoToSearchView(String? search) {
-    Get.to(() => SearchView(keyword: search));
+    Get.to(() => SearchView(keyword: search), transition: Transition.cupertino);
   }
 
   // 데이터 리프레시를 위한 메서드 추가

@@ -6,6 +6,7 @@ import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
+import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/article.model.dart';
 
 class FeaturedArticleItem extends StatelessWidget {
@@ -22,7 +23,6 @@ class FeaturedArticleItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = AppThemeColors.isDarkMode(context);
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -75,13 +75,13 @@ class FeaturedArticleItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Title
-                  Text(
+                  AppText(
                     article.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.textLG.copyWith(
                           color: AppThemeColors.textHighest(context),
-                          fontWeight: AppFontWeight.bold,
+                          fontWeight: AppFontWeight.semibold,
                         ),
                   ),
                   AppSpacerV(value: AppDimens.height(12)),

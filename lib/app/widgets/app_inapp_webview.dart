@@ -14,6 +14,7 @@ import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/widgets/app_header.dart';
 import 'package:zippy/app/widgets/app_spacer_h.dart';
+import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/article.model.dart';
@@ -79,6 +80,7 @@ class _AppArticleInWebViewState extends State<AppArticleInWebView> {
         backgroundColor: Colors.transparent,
         insetPadding: EdgeInsets.symmetric(
           horizontal: AppDimens.width(16),
+          vertical: AppDimens.height(16),
         ),
         child: Container(
           width: double.infinity,
@@ -164,8 +166,8 @@ class _AppArticleInWebViewState extends State<AppArticleInWebView> {
               Flexible(
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppDimens.width(24),
                   ),
                   child: Column(
                     children:
@@ -239,6 +241,7 @@ class _AppArticleInWebViewState extends State<AppArticleInWebView> {
                   ),
                 ),
               ),
+              AppSpacerV(value: AppDimens.height(12)),
             ],
           ),
         ),

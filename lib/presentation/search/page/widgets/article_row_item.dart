@@ -87,7 +87,7 @@ class _ArticleRowItemState extends State<ArticleRowItem> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Title
-                      Text(
+                      AppText(
                         widget.article.title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,

@@ -24,36 +24,36 @@ class BoardController extends SuperController {
   final isLoadingUserSubscription = true.obs;
   final error = Rxn<String>();
 
-  Future<void> onHandleFetchRandomArticles() async {
-    try {
-      isLoadingContents.value = true;
+  // Future<void> onHandleFetchRandomArticles() async {
+  //   try {
+  //     isLoadingContents.value = true;
 
-      final fetchedArticles = await articleService.onHandleFetchRandomArticles(
-        GetRandomArticlesParams(
-          userId: authService.currentUser.value?.id,
-          limit: 50,
-          maxHours: 30 * 24 * 60, // 30일
-        ),
-      );
+  //     final fetchedArticles = await articleService.onHandleFetchRandomArticles(
+  //       GetRandomArticlesParams(
+  //         userId: authService.currentUser.value?.id,
+  //         limit: 50,
+  //         maxHours: 30 * 24 * 60, // 30일
+  //       ),
+  //     );
 
-      if (fetchedArticles.isNotEmpty) {
-        articles.clear();
-        articles.addAll(fetchedArticles);
+  //     if (fetchedArticles.isNotEmpty) {
+  //       articles.clear();
+  //       articles.addAll(fetchedArticles);
 
-        // 이미지 미리 캐시
-        for (var article in fetchedArticles) {
-          if (article.images.isNotEmpty) {
-            precacheImage(
-                CachedNetworkImageProvider(article.images[0]), Get.context!);
-          }
-        }
-      }
-    } catch (e) {
-      error.value = e.toString();
-    } finally {
-      isLoadingContents.value = false;
-    }
-  }
+  //       // 이미지 미리 캐시
+  //       for (var article in fetchedArticles) {
+  //         if (article.images.isNotEmpty) {
+  //           precacheImage(
+  //               CachedNetworkImageProvider(article.images[0]), Get.context!);
+  //         }
+  //       }
+  //     }
+  //   } catch (e) {
+  //     error.value = e.toString();
+  //   } finally {
+  //     isLoadingContents.value = false;
+  //   }
+  // }
 
   Future<void> onHandleChangedArticle(int curPageIndex) async {
     if (curPageIndex < prevPageIndex.value) return;
@@ -86,7 +86,7 @@ class BoardController extends SuperController {
   @override
   void onInit() {
     super.onInit();
-    onHandleFetchRandomArticles();
+    // onHandleFetchRandomArticles();
   }
 
   @override

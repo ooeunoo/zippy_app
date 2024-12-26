@@ -278,34 +278,39 @@ class _NewsSectionState extends State<NewsSection> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return _buildShimmerLoading();
         }
-        return Container(
-          alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(vertical: AppDimens.height(40)),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.article_outlined,
-                size: AppDimens.height(48),
-                color: AppColor.graymodern300,
+        return Column(
+          children: [
+            Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.symmetric(vertical: AppDimens.height(40)),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.article_outlined,
+                    size: AppDimens.height(48),
+                    color: AppColor.graymodern300,
+                  ),
+                  AppSpacerV(value: AppDimens.height(16)),
+                  AppText(
+                    '가져올 수 있는 기사가 없어요 🥲',
+                    style: Theme.of(context).textTheme.textMD.copyWith(
+                          color: AppColor.graymodern400,
+                          fontWeight: AppFontWeight.bold,
+                        ),
+                  ),
+                  AppSpacerV(value: AppDimens.height(8)),
+                  AppText(
+                    '잠시 후 다시 확인해주세요',
+                    style: Theme.of(context).textTheme.textSM.copyWith(
+                          color: AppColor.graymodern300,
+                        ),
+                  ),
+                ],
               ),
-              AppSpacerV(value: AppDimens.height(16)),
-              AppText(
-                '가져올 수 있는 기사가 없어요 🥲',
-                style: Theme.of(context).textTheme.textMD.copyWith(
-                      color: AppColor.graymodern400,
-                      fontWeight: AppFontWeight.bold,
-                    ),
-              ),
-              AppSpacerV(value: AppDimens.height(8)),
-              AppText(
-                '잠시 후 다시 확인해주세요',
-                style: Theme.of(context).textTheme.textSM.copyWith(
-                      color: AppColor.graymodern300,
-                    ),
-              ),
-            ],
-          ),
+            ),
+            AppSpacerV(value: AppDimens.height(10)),
+          ],
         );
       },
     );

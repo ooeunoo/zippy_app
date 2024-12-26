@@ -28,6 +28,7 @@ class AppSearchController extends SuperController {
   RxBool hasMoreData = true.obs;
   RxList<Article> searchArticles = RxList<Article>([]);
   RxString currentQuery = ''.obs;
+  RxBool isInitLoading = false.obs; // 초기 로딩 상태 추가
 
   DateTime? _pausedTime;
 
@@ -74,18 +75,16 @@ class AppSearchController extends SuperController {
   ///*********************************
   Future<List<Article>> onHandleFetchArticlesBySearch(String keyword,
       {bool refresh = false}) async {
-    // If refresh is true or it's a new search, reset pagination
+    // 첫 페이지나 새로고침일 때는 initLoading을 true로
     if (refresh || currentQuery.value != keyword) {
       currentPage.value = 1;
       hasMoreData.value = true;
       searchArticles.clear();
       currentQuery.value = keyword;
+      isInitLoading.value = true; // 초기 로딩 상태 설정
+    } else {
+      isLoading.value = true; // 추가 페이지 로딩 상태 설정
     }
-
-    // If we're already loading or there's no more data, return
-    if (isLoading.value || !hasMoreData.value) return searchArticles;
-
-    isLoading.value = true;
 
     try {
       final params = GetSearchArticlesParams(
@@ -108,7 +107,8 @@ class AppSearchController extends SuperController {
 
       return result;
     } finally {
-      isLoading.value = false;
+      isInitLoading.value = false; // 초기 로딩 상태 해제
+      isLoading.value = false; // 추가 페이지 로딩 상태 해제
     }
   }
 

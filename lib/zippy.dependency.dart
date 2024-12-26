@@ -127,7 +127,7 @@ class ZippyBindings implements Bindings {
     Get.lazyPut<GetArticleComments>(() => GetArticleComments());
     Get.lazyPut<CreateArticleComment>(() => CreateArticleComment());
     Get.lazyPut<GetRecommendedArticles>(() => GetRecommendedArticles());
-    Get.lazyPut<GetRandomArticles>(() => GetRandomArticles());
+    // Get.lazyPut<GetRandomArticles>(() => GetRandomArticles());
     Get.lazyPut<GetContentTypes>(() => GetContentTypes());
     // Get.lazyPut<ToggleUserSubscription>(
     //     () => ToggleUserSubscription(Get.find()));

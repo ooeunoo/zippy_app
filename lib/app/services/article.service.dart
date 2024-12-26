@@ -47,7 +47,7 @@ class ArticleService extends GetxService {
 
   final GetSources getSources = Get.find();
   final GetSearchArticles getSearchArticles = Get.find();
-  final GetRandomArticles getRandomArticles = Get.find();
+  // final GetRandomArticles getRandomArticles = Get.find();
   final GetRecommendedArticles getRecommendedArticles = Get.find();
   final CreateUserInteraction createUserInteraction = Get.find();
   final UpdateUserInteraction updateUserInteraction = Get.find();
@@ -76,15 +76,15 @@ class ArticleService extends GetxService {
     }
   }
 
-  Future<List<Article>> onHandleFetchRandomArticles(
-      GetRandomArticlesParams params) async {
-    final result = await getRandomArticles.execute(params);
-    return result.fold((failure) {
-      return [];
-    }, (data) {
-      return data;
-    });
-  }
+  // Future<List<Article>> onHandleFetchRandomArticles(
+  //     GetRandomArticlesParams params) async {
+  //   final result = await getRandomArticles.execute(params);
+  //   return result.fold((failure) {
+  //     return [];
+  //   }, (data) {
+  //     return data;
+  //   });
+  // }
 
   Future<List<Article>> onHandleFetchRecommendedArticles(
       GetRecommendedArticlesParams params) async {
@@ -102,6 +102,7 @@ class ArticleService extends GetxService {
 
   Future<List<Article>> onHandleFetchSearchArticles(
       GetSearchArticlesParams params) async {
+    print("params: ${params.toJson()}");
     final result = await getSearchArticles.execute(params);
     return result.fold(
       (failure) {
