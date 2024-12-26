@@ -39,6 +39,8 @@ class _AppArticleInWebViewState extends State<AppArticleInWebView> {
 
   DateTime? _startTime;
   bool _isScrolling = false;
+  bool _isScrolledDown = false;
+
   double _lastScrollY = 0;
   DateTime _lastScrollTime = DateTime.now();
   late InAppWebViewController? _webViewController;
@@ -321,6 +323,24 @@ class _AppArticleInWebViewState extends State<AppArticleInWebView> {
                   },
                   onScrollChanged: (controller, x, y) async {
                     if (!mounted) return;
+
+                    if (y > _lastScrollY && y > 0) {
+                      setState(() {
+                        _isScrolledDown = true;
+                      });
+                    }
+
+                    if (y <= 0 && y < _lastScrollY) {
+                      if (!_isScrolledDown) {
+                        Get.back();
+                      }
+                    }
+
+                    if (y == 0) {
+                      setState(() {
+                        _isScrolledDown = false;
+                      });
+                    }
 
                     final now = DateTime.now();
                     final scrollDelta = y - _lastScrollY;
