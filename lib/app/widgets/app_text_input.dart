@@ -20,6 +20,7 @@ class AppTextInput extends StatefulWidget {
   final TextInputAction? textInputAction;
   final bool autofocus;
   final FocusNode? focusNode;
+  final int? maxLines;
 
   const AppTextInput({
     super.key,
@@ -37,6 +38,7 @@ class AppTextInput extends StatefulWidget {
     this.textInputAction,
     this.autofocus = true,
     this.focusNode,
+    this.maxLines = 1,
   });
 
   @override
@@ -110,6 +112,7 @@ class _AppTextInputState extends State<AppTextInput> {
                     color: AppThemeColors.textHigh(context),
                     fontWeight: AppFontWeight.regular,
                   ),
+              maxLines: widget.maxLines,
               cursorHeight: AppDimens.height(16),
               cursorColor: AppThemeColors.textMedium(context),
               keyboardType: widget.inputType,

@@ -9,6 +9,7 @@ import 'package:zippy/app/styles/font.dart';
 import 'package:zippy/app/styles/theme.dart';
 import 'package:zippy/app/utils/assets.dart';
 import 'package:zippy/app/utils/constants.dart';
+import 'package:zippy/app/widgets/app_dialog.dart';
 import 'package:zippy/app/widgets/app_snak_bar.dart';
 import 'package:zippy/app/widgets/app_button.dart';
 import 'package:zippy/app/widgets/app_menu.dart';
@@ -16,6 +17,7 @@ import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
+import 'package:zippy/app/widgets/app_text_input.dart';
 import 'package:zippy/domain/enum/oauth_provider._type.enum.dart';
 import 'package:zippy/domain/model/menu.model.dart';
 import 'package:zippy/presentation/profile/controller/profile.controller.dart';
@@ -229,6 +231,67 @@ class ProfilePage extends GetView<ProfileController> {
     );
   }
 
+  void _showFeedbackDialog(BuildContext context) {
+    final TextEditingController feedbackController = TextEditingController();
+
+    showAppDialog(
+      '의견 보내기',
+      message: '다양한 의견을 남겨주세요',
+      child: Column(
+        children: [
+          AppTextInput(
+            controller: feedbackController,
+            inputType: TextInputType.multiline,
+            maxLines: 5,
+          ),
+        ],
+      ),
+      onConfirm: () {
+        controller.onHandleCreateFeedback(feedbackController.text);
+        notifyFeedbackSuccess();
+      },
+    );
+    // showDialog(
+    //   context: context,
+    //   builder: (BuildContext context) {
+    //     return AlertDialog(
+    //       title: Text('의견 보내기',
+    //           style: Theme.of(context).textTheme.titleMedium),
+    //       content: Column(
+    //         mainAxisSize: MainAxisSize.min,
+    //         children: [
+    //           TextField(
+    //             controller: feedbackController,
+    //             maxLines: 5,
+    //             decoration: InputDecoration(
+    //               hintText: '의견을 입력해주세요',
+    //               border: OutlineInputBorder(),
+    //             ),
+    //           ),
+    //         ],
+    //       ),
+    //       actions: [
+    //         TextButton(
+    //           child: Text('취소'),
+    //           onPressed: () => Navigator.pop(context),
+    //         ),
+    //         TextButton(
+    //           child: Text('보내기'),
+    //           onPressed: () {
+    //             // TODO: 피드백 전송 로직 구현
+    //             if (feedbackController.text.isNotEmpty) {
+    //               // 피드백 전송 로직
+    //               Navigator.pop(context);
+    //               Get.snackbar('알림', '의견이 전송되었습니다.');
+    //             }
+    //           },
+    //         ),
+    //       ],
+    //     );
+    //   },
+    // );
+  }
+
   MenuSection _buildSupportSection(WebViewService webViewService) {
     return MenuSection(
       section: '고객지원 및 정보',
@@ -247,12 +310,7 @@ class ProfilePage extends GetView<ProfileController> {
           icon: Assets.file06,
           title: '의견 보내기',
           onTap: () {
-            // webViewService.showWebView(
-            //   // Article(
-            //   //   link: Constants.inquriyUrl,
-            //   // ),
-            //   // () {},
-            // );
+            _showFeedbackDialog(Get.context!);
           },
         ),
       ],

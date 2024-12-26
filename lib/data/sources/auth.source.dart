@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -63,6 +65,12 @@ class AuthDatasourceImpl implements AuthDatasource {
 
       final Either<Failure, userModel.User?> result =
           await userDatasource.getUser(authUser.id);
+
+      if (result.isRight()) {
+        print('authUser.id:${authUser.id}');
+        _setupFCM(authUser.id);
+      }
+
       return result.fold(
         (failure) => Tuple2(event, null),
         (user) => Tuple2(event, user),
@@ -261,5 +269,40 @@ class AuthDatasourceImpl implements AuthDatasource {
       print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
     }
+  }
+
+  _setupFCM(String id) async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    print('messaging:$messaging');
+// 알림 권한 요청get (iOS는 필수, Android는 자동 승인)
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+    print('settings:${settings.authorizationStatus}');
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      // FCM 토큰 발급 및 저장
+      if (Platform.isIOS) {
+        final apnsToken = await messaging.getAPNSToken();
+        print('apnsToken:$apnsToken');
+        if (apnsToken == null) {
+          return null;
+        }
+      }
+      final fcmToken = await messaging.getToken();
+
+      if (fcmToken != null) {
+        userDatasource.updateFcmToken(id, fcmToken);
+      }
+    }
+    _listenFcmToken(id);
+  }
+
+  _listenFcmToken(String id) {
+    FirebaseMessaging.instance.onTokenRefresh.listen((token) {
+      userDatasource.updateFcmToken(id, token);
+    });
   }
 }

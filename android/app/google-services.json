@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "940310796536",
+    "project_id": "zippy-709cf",
+    "storage_bucket": "zippy-709cf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:940310796536:android:f60e898390da53249bc30d",
+        "android_client_info": {
+          "package_name": "com.miro.zippy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "940310796536-m04m8lmnjm2f04va1kdmoi6k65jfmrt6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAa2q_pcVbA2tY9Wc3K_3fKmV6YJ5hhtXA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "940310796536-m04m8lmnjm2f04va1kdmoi6k65jfmrt6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "940310796536-ege5fepeecqpdok0vtk94jhtbqkunnu9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.miro.zippy"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

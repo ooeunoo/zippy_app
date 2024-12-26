@@ -164,3 +164,22 @@ notifyAlreadyExists() {
     ),
   );
 }
+
+notifyFeedbackSuccess() {
+  Get.showSnackbar(
+    GetSnackBar(
+      messageText: AppText("의견이 전달되었습니다",
+          align: TextAlign.center,
+          style: Theme.of(Get.context!)
+              .textTheme
+              .textSM
+              .copyWith(color: AppColor.white)),
+      backgroundColor: AppColor.brand800,
+      snackPosition: SnackPosition.TOP,
+      borderRadius: AppDimens.size(10),
+      duration: const Duration(seconds: 1),
+      animationDuration: const Duration(seconds: 1),
+      margin: EdgeInsets.symmetric(horizontal: AppDimens.width(80)),
+    ),
+  );
+}

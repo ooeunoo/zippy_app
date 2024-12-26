@@ -15,6 +15,7 @@ import 'package:zippy/data/sources/source.source.dart';
 import 'package:zippy/data/sources/platform.source.dart';
 import 'package:zippy/data/sources/user.source.dart';
 import 'package:zippy/data/sources/user_bookmark.source.dart';
+import 'package:zippy/data/sources/user_feedback.source.dart';
 import 'package:zippy/data/sources/user_interaction.source.dart';
 import 'package:zippy/domain/repositories/app_metadata.repository.dart';
 import 'package:zippy/domain/repositories/article.repository.dart';
@@ -27,6 +28,7 @@ import 'package:zippy/domain/repositories/platform.repository.dart';
 import 'package:zippy/domain/repositories/user.repository.dart';
 import 'package:zippy/domain/repositories/user_bookmark.repository.dart';
 import 'package:get/get.dart';
+import 'package:zippy/domain/repositories/user_feedback.repository.dart';
 import 'package:zippy/domain/repositories/user_interaction.repository.dart';
 import 'package:zippy/domain/usecases/create_article_comment.usecase.dart';
 import 'package:zippy/domain/usecases/create_user_bookmark.usecase.dart';
@@ -83,6 +85,7 @@ class ZippyBindings implements Bindings {
     Get.lazyPut<ArticleCommentDatasource>(() => ArticleCommentDatasourceImpl());
     Get.lazyPut<KeywordRankSnapshotDatasource>(
         () => KeywordRankSnapshotDatasourceImpl());
+    Get.lazyPut<UserFeedbackDatasource>(() => UserFeedbackDatasourceImpl());
   }
 
   void _initRepository() {
@@ -105,6 +108,8 @@ class ZippyBindings implements Bindings {
         () => ArticleCommentRepositoryImpl(Get.find()));
     Get.lazyPut<KeywordRankSnapshotRepository>(
         () => KeywordRankSnapshotRepositoryImpl(Get.find()));
+    Get.lazyPut<UserFeedbackRepository>(
+        () => UserFeedbackRepositoryImpl(Get.find()));
   }
 
   void _initUsecase() {

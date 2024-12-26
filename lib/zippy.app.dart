@@ -1,4 +1,5 @@
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:zippy/app/routes/app_pages.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/theme.dart';
@@ -21,6 +22,36 @@ class _ZippyAppState extends State<ZippyApp> {
   void initState() {
     super.initState();
     initPlugin();
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      print('notification:$notification');
+      print('android:$android');
+
+      if (notification != null && android != null) {
+        // flutterLocalNotificationsPlugin.show(
+        //   notification.hashCode,
+        //   notification.title,
+        //   notification.body,
+        //   NotificationDetails(
+        //     android: AndroidNotificationDetails(
+        //       channel.id,
+        //       channel.name,
+        //       channelDescription: channel.description,
+        //       icon: '@mipmap/ic_launcher',
+        //     ),
+        //     iOS: DarwinNotificationDetails(),
+        //   ),
+        // );
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('Message clicked!');
+      print('message:${message.data}');
+      // 알림 클릭 시 특정 화면으로 이동
+    });
   }
 
   @override

@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:zippy/app/services/appmetadata.service.dart';
 import 'package:zippy/app/utils/assets.dart';
@@ -14,15 +17,27 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
   runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
 
-      // if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-      //   // await InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
-      // }
+      FirebaseMessaging.onBackgroundMessage(
+          _firebaseMessagingBackgroundHandler);
+
+      // 알림 설정
+      await FirebaseMessaging.instance
+          .setForegroundNotificationPresentationOptions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
 
       await initHive();
       await initAppMetadata();
@@ -57,4 +72,10 @@ Future<void> initAppMetadata() async {
   Get.put<UpdateAppMetadata>(UpdateAppMetadata(Get.find()));
   Get.put<GetAppMetadata>(GetAppMetadata(Get.find()));
   Get.put<AppMetadataService>(AppMetadataService());
+}
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print('Handling a background message: ${message.messageId}');
 }

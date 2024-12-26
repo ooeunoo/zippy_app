@@ -9,6 +9,7 @@ String TABLE = 'users';
 
 abstract class UserDatasource {
   Future<Either<Failure, User?>> getUser(String id);
+  Future<Either<Failure, bool>> updateFcmToken(String id, String token);
 }
 
 class UserDatasourceImpl implements UserDatasource {
@@ -26,6 +27,29 @@ class UserDatasourceImpl implements UserDatasource {
       User? result =
           response != null ? UserEntity.fromJson(response).toModel() : null;
       return Right(result);
+    } catch (e, stackTrace) {
+      print('Error:$e \n stackTrace:$stackTrace');
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> updateFcmToken(String id, String token) async {
+    try {
+      final currentUserId = provider.client.auth.currentUser?.id;
+      print('Current user ID: $currentUserId');
+      print('Updating user ID: $id');
+
+      if (currentUserId == null) {
+        print('User not authenticated');
+        return Left(ServerFailure());
+      }
+
+      await provider.client.from(TABLE).update({
+        'fcm_token': token,
+      }).eq('id', id);
+
+      return const Right(true);
     } catch (e, stackTrace) {
       print('Error:$e \n stackTrace:$stackTrace');
       return Left(ServerFailure());
