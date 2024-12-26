@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:zippy/app/extensions/datetime.dart';
+import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/styles/color.dart';
 import 'package:zippy/app/styles/dimens.dart';
 import 'package:zippy/app/styles/font.dart';
@@ -8,8 +10,9 @@ import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/article.model.dart';
+import 'package:zippy/domain/model/source.model.dart';
 
-class FeaturedArticleItem extends StatelessWidget {
+class FeaturedArticleItem extends StatefulWidget {
   final Article article;
   final Function onHandleClickArticle;
   final String? searchText;
@@ -22,6 +25,12 @@ class FeaturedArticleItem extends StatelessWidget {
   });
 
   @override
+  State<FeaturedArticleItem> createState() => _FeaturedArticleItemState();
+}
+
+class _FeaturedArticleItemState extends State<FeaturedArticleItem> {
+  final articleService = Get.find<ArticleService>();
+  @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
@@ -31,7 +40,7 @@ class FeaturedArticleItem extends StatelessWidget {
       color: AppThemeColors.articleItemBoxBackgroundColor(context),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: () => onHandleClickArticle(),
+        onTap: () => widget.onHandleClickArticle(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -41,9 +50,9 @@ class FeaturedArticleItem extends StatelessWidget {
                   const BorderRadius.vertical(top: Radius.circular(16)),
               child: SizedBox(
                 height: AppDimens.height(160),
-                child: article.images.isNotEmpty
+                child: widget.article.images.isNotEmpty
                     ? Image.network(
-                        article.images[0],
+                        widget.article.images[0],
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
@@ -76,7 +85,7 @@ class FeaturedArticleItem extends StatelessWidget {
                 children: [
                   // Title
                   AppText(
-                    article.title,
+                    widget.article.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.textLG.copyWith(
@@ -89,13 +98,7 @@ class FeaturedArticleItem extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildEngagementStats(context),
-                      Text(
-                        article.published.timeAgo(),
-                        style: Theme.of(context).textTheme.textSM.copyWith(
-                              color: AppThemeColors.textHigh(context),
-                            ),
-                      ),
+                      _buildMetadata(context),
                     ],
                   ),
                 ],
@@ -113,13 +116,27 @@ class FeaturedArticleItem extends StatelessWidget {
         _buildStatItem(
           context,
           Icons.remove_red_eye_outlined,
-          article.metadata?.viewCount.toString() ?? '0',
+          widget.article.metadata?.viewCount.toString() ?? '0',
         ),
         AppSpacerH(value: AppDimens.width(16)),
         _buildStatItem(
           context,
           Icons.chat_bubble_outline,
-          article.metadata?.commentCount.toString() ?? '0',
+          widget.article.metadata?.commentCount.toString() ?? '0',
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMetadata(BuildContext context) {
+    Source? source = articleService.getSourceById(widget.article.sourceId);
+    return Row(
+      children: [
+        AppText(
+          '${source?.platform?.name ?? ""} | ${widget.article.published.timeAgo()}',
+          style: Theme.of(context).textTheme.textSM.copyWith(
+                color: AppThemeColors.textHigh(context),
+              ),
         ),
       ],
     );

@@ -246,7 +246,7 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
   Widget _buildRankingList() {
     return ListView.builder(
       padding: EdgeInsets.zero,
-      physics: const BouncingScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: controller.trendingKeywords.length + 1,
       itemBuilder: (context, index) {
