@@ -39,35 +39,35 @@ class KeywordNotificationController extends GetxController {
     });
   }
 
-  Future<void> onHandleToggleOrCreateNotification(String keyword) async {
-    User? user = authService.currentUser.value;
-    if (user == null) return;
+  // Future<void> onHandleToggleOrCreateNotification(String keyword) async {
+  //   User? user = authService.currentUser.value;
+  //   if (user == null) return;
 
-    // Check if notification already exists
-    final existingNotification =
-        userKeywordNotifications.firstWhereOrNull((n) => n.keyword == keyword);
+  //   // Check if notification already exists
+  //   final existingNotification =
+  //       userKeywordNotifications.firstWhereOrNull((n) => n.keyword == keyword);
 
-    if (existingNotification != null) {
-      // Toggle existing notification
-      await toggleNotification(existingNotification);
-    } else {
-      // Create new notification
-      await onHandleCreateNotification(keyword);
-    }
+  //   if (existingNotification != null) {
+  //     // Toggle existing notification
+  //     await toggleNotification(existingNotification);
+  //   } else {
+  //     // Create new notification
+  //     await onHandleCreateNotification(keyword);
+  //   }
 
-    _fetchUserKeywordNotifications();
-  }
+  //   _fetchUserKeywordNotifications();
+  // }
 
-  Future<void> toggleNotification(UserKeywordNotification notification) async {
-    final result = await toggleUserKeywordNotification.execute(
-      notification.id,
-      !notification.isActive,
-    );
+  // Future<void> toggleNotification(UserKeywordNotification notification) async {
+  //   final result = await toggleUserKeywordNotification.execute(
+  //     notification.id,
+  //     !notification.isActive,
+  //   );
 
-    result.fold((failure) {}, (_) {
-      _fetchUserKeywordNotifications();
-    });
-  }
+  //   result.fold((failure) {}, (_) {
+  //     _fetchUserKeywordNotifications();
+  //   });
+  // }
 
   Future<void> onHandleCreateNotification(String keyword) async {
     User? user = authService.currentUser.value;
@@ -80,8 +80,15 @@ class KeywordNotificationController extends GetxController {
     );
 
     if (keyword.isEmpty) return;
+
     if (userKeywordNotifications.any((n) => n.keyword == keyword)) {
       notifyAlreadyExists();
+      return;
+    }
+
+    // 갯수 제한 인당 3개
+    if (userKeywordNotifications.length >= 3) {
+      notifyKeywordLimit();
       return;
     }
 

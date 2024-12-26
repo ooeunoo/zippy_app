@@ -187,7 +187,7 @@ class ProfilePage extends GetView<ProfileController> {
   Widget _buildMenu(BuildContext context, WebViewService webViewService) {
     final List<MenuSection> menu = [
       _buildMySection(),
-      // _buildSettingsSection(),
+      _buildSettingsSection(),
       _buildSupportSection(webViewService),
     ];
 
@@ -222,7 +222,7 @@ class ProfilePage extends GetView<ProfileController> {
       items: [
         MenuItem(
           icon: Assets.bellRinging02,
-          title: '키워드 알람 설정',
+          title: '뉴스 알리미',
           onTap: () {
             controller.onClickKeywordNotification();
           },
@@ -251,45 +251,6 @@ class ProfilePage extends GetView<ProfileController> {
         notifyFeedbackSuccess();
       },
     );
-    // showDialog(
-    //   context: context,
-    //   builder: (BuildContext context) {
-    //     return AlertDialog(
-    //       title: Text('의견 보내기',
-    //           style: Theme.of(context).textTheme.titleMedium),
-    //       content: Column(
-    //         mainAxisSize: MainAxisSize.min,
-    //         children: [
-    //           TextField(
-    //             controller: feedbackController,
-    //             maxLines: 5,
-    //             decoration: InputDecoration(
-    //               hintText: '의견을 입력해주세요',
-    //               border: OutlineInputBorder(),
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //       actions: [
-    //         TextButton(
-    //           child: Text('취소'),
-    //           onPressed: () => Navigator.pop(context),
-    //         ),
-    //         TextButton(
-    //           child: Text('보내기'),
-    //           onPressed: () {
-    //             // TODO: 피드백 전송 로직 구현
-    //             if (feedbackController.text.isNotEmpty) {
-    //               // 피드백 전송 로직
-    //               Navigator.pop(context);
-    //               Get.snackbar('알림', '의견이 전송되었습니다.');
-    //             }
-    //           },
-    //         ),
-    //       ],
-    //     );
-    //   },
-    // );
   }
 
   MenuSection _buildSupportSection(WebViewService webViewService) {

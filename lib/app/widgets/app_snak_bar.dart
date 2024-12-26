@@ -67,7 +67,7 @@ notifyErrorMessage(String message) {
 notifyReported() {
   Get.showSnackbar(
     GetSnackBar(
-      messageText: AppText("신고되었습니다 ",
+      messageText: AppText("신고되었습니다",
           align: TextAlign.center,
           style: Theme.of(Get.context!)
               .textTheme
@@ -130,7 +130,7 @@ notifyLogout() {
 notifyPreparing() {
   Get.showSnackbar(
     GetSnackBar(
-      messageText: AppText("기능을 준비중이에요",
+      messageText: AppText("기능을 준비 중입니다",
           align: TextAlign.center,
           style: Theme.of(Get.context!)
               .textTheme
@@ -149,7 +149,26 @@ notifyPreparing() {
 notifyAlreadyExists() {
   Get.showSnackbar(
     GetSnackBar(
-      messageText: AppText("이미 존재하는 키워드에요",
+      messageText: AppText("이미 등록된 키워드입니다",
+          align: TextAlign.center,
+          style: Theme.of(Get.context!)
+              .textTheme
+              .textSM
+              .copyWith(color: AppColor.white)),
+      backgroundColor: AppColor.brand800,
+      snackPosition: SnackPosition.TOP,
+      borderRadius: AppDimens.size(10),
+      duration: const Duration(seconds: 1),
+      animationDuration: const Duration(seconds: 1),
+      margin: EdgeInsets.symmetric(horizontal: AppDimens.width(80)),
+    ),
+  );
+}
+
+notifyKeywordLimit() {
+  Get.showSnackbar(
+    GetSnackBar(
+      messageText: AppText("키워드는 최대 3개까지 등록할 수 있습니다",
           align: TextAlign.center,
           style: Theme.of(Get.context!)
               .textTheme

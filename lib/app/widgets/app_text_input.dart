@@ -108,7 +108,7 @@ class _AppTextInputState extends State<AppTextInput> {
               textInputAction: widget.textInputAction,
               onChanged: widget.onChanged,
               textAlignVertical: TextAlignVertical.center,
-              style: Theme.of(context).textTheme.textMD.copyWith(
+              style: Theme.of(context).textTheme.textXS.copyWith(
                     color: AppThemeColors.textHigh(context),
                     fontWeight: AppFontWeight.regular,
                   ),
