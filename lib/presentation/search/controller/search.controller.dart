@@ -3,13 +3,12 @@ import 'package:zippy/app/services/article.service.dart';
 import 'package:zippy/app/services/auth.service.dart';
 import 'package:zippy/app/services/content_type.service.dart';
 import 'package:zippy/domain/model/article.model.dart';
+import 'package:zippy/domain/model/content_type.model.dart';
 import 'package:zippy/domain/model/keyword_rank_snaoshot.model.dart';
 import 'package:zippy/domain/model/params/get_search_articles.params.dart';
 import 'package:zippy/domain/model/params/get_tranding_keywords.params.dart';
 import 'package:zippy/domain/usecases/get_articles_by_keyword.usecase.dart';
 import 'package:zippy/domain/usecases/get_trending_keywords.usecase.dart';
-
-import '../../../domain/model/content_type.model.dart';
 
 class AppSearchController extends SuperController {
   final AuthService authService = Get.find();

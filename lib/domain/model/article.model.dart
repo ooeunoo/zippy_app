@@ -12,7 +12,7 @@ class Article extends Equatable {
   // final String content;
   // final String? excerpt;
   final List<dynamic> images;
-  // final List<String> keyPoints;
+  final List<String> keyPoints;
   final List<String> keywords;
   final DateTime published;
 
@@ -30,7 +30,7 @@ class Article extends Equatable {
     // required this.content,
     required this.images,
     // this.excerpt,
-    // required this.keyPoints,
+    required this.keyPoints,
     required this.keywords,
     required this.published,
     this.metadata,
@@ -56,7 +56,7 @@ class Article extends Equatable {
         "images": images,
         // "content": content,
         // "excerpt": excerpt,
-        // "keyPoints": keyPoints,
+        "keyPoints": keyPoints,
         "keywords": keywords,
         "published": published,
         'isAd': isAd,

@@ -13,7 +13,7 @@ class AdArticle extends Article {
     super.author = '',
     super.images = const [],
     super.keywords = const [],
-    // super.keyPoints = const [],
+    super.keyPoints = const [],
     // super.content = '',
     // super.excerpt = '',
     DateTime? published,
