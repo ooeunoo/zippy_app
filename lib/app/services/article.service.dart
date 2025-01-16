@@ -101,7 +101,6 @@ class ArticleService extends GetxService {
 
   Future<List<Article>> onHandleFetchSearchArticles(
       GetSearchArticlesParams params) async {
-    print("params: ${params.toJson()}");
     final result = await getSearchArticles.execute(params);
     return result.fold(
       (failure) {
@@ -212,7 +211,6 @@ class ArticleService extends GetxService {
   }
 
   void onHandleOpenOriginalArticle(Article article) async {
-    print("Clicked!!!!: ${article.id}");
     final handleUpdateInteraction =
         await _createViewInteractionCallback(article);
 

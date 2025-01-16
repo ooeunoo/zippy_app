@@ -164,7 +164,6 @@ class HomeController extends GetxController {
     );
 
     final result = await articleService.onHandleFetchSearchArticles(params);
-    print("result: ${result.length}");
     _updateSearchState(keyword, result);
     return result;
   }
