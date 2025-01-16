@@ -41,6 +41,7 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
   List<Animation<double>> _animations = [];
   bool _isRefreshing = false;
   DateTime? _lastRefreshTime;
+  late AnimationController _refreshAnimationController;
 
   @override
   void initState() {
@@ -48,6 +49,10 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
     _initializeAnimations();
     _startTimer();
     _startShimmerTimer();
+    _refreshAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
   }
 
   void _startShimmerTimer() {
@@ -105,8 +110,17 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
       _isRefreshing = true;
     });
 
+    _refreshAnimationController.repeat();
+
+    // 리프레시 애니메이션을 위한 딜레이
+    await Future.delayed(const Duration(milliseconds: 800));
+
     await controller.onHandleFetchTrendingKeywords();
     _lastRefreshTime = DateTime.now();
+
+    // 리프레시 완료 후 애니메이션 정지
+    _refreshAnimationController.stop();
+    _refreshAnimationController.reset();
 
     setState(() {
       _isRefreshing = false;
@@ -120,6 +134,7 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
     for (var controller in _controllers) {
       controller.dispose();
     }
+    _refreshAnimationController.dispose();
     super.dispose();
   }
 
@@ -250,40 +265,51 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AppText(
-                  "실시간 인기 검색어",
-                  style: Theme.of(context)
-                      .textTheme
-                      .textSM
-                      .copyWith(color: AppColor.white),
-                ),
-                AppText(
-                  '오늘 ${_getTimeText()} 기준',
-                  style: Theme.of(context)
-                      .textTheme
-                      .textXS
-                      .copyWith(color: AppColor.graymodern400),
-                ),
-              ],
-            ),
-            IconButton(
-              onPressed: _handleRefresh,
-              icon: AnimatedRotation(
-                duration: const Duration(milliseconds: 3000),
-                turns: _isRefreshing ? 2 : 0,
-                child: Icon(
-                  Icons.refresh,
-                  color: _isRefreshing ? AppColor.yellow400 : Colors.white,
-                  size: AppDimens.size(20),
+        Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AppText(
+                "실시간 인기 검색어",
+                style: Theme.of(context)
+                    .textTheme
+                    .textSM
+                    .copyWith(color: AppColor.white),
+              ),
+              SizedBox(
+                height: AppDimens.height(24),
+                child: Row(
+                  children: [
+                    AppText(
+                      '오늘 ${_getTimeText()} 기준',
+                      style: Theme.of(context)
+                          .textTheme
+                          .textXS
+                          .copyWith(color: AppColor.graymodern400),
+                    ),
+                    IconButton(
+                      onPressed: _handleRefresh,
+                      padding: EdgeInsets.zero,
+                      constraints: BoxConstraints(
+                        maxHeight: AppDimens.height(24),
+                        maxWidth: AppDimens.width(24),
+                      ),
+                      icon: RotationTransition(
+                        turns: Tween(begin: 0.0, end: 2.0)
+                            .animate(_refreshAnimationController),
+                        child: Icon(
+                          Icons.refresh,
+                          color: _isRefreshing ? AppColor.yellow400 : Colors.white,
+                          size: AppDimens.size(18),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         const Icon(
           Icons.keyboard_arrow_up,

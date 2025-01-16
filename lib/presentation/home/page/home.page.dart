@@ -36,6 +36,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 child: KeywordRankingsSection(),
               ),
             ),
+            AppSpacerV(value: AppDimens.height(16)),
             const NewsSection(),
           ],
         ),
