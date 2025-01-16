@@ -39,6 +39,8 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
   bool _showShimmer = true;
   List<AnimationController> _controllers = [];
   List<Animation<double>> _animations = [];
+  bool _isRefreshing = false;
+  DateTime? _lastRefreshTime;
 
   @override
   void initState() {
@@ -96,6 +98,21 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
     });
   }
 
+  Future<void> _handleRefresh() async {
+    if (_isRefreshing) return;
+
+    setState(() {
+      _isRefreshing = true;
+    });
+
+    await controller.onHandleFetchTrendingKeywords();
+    _lastRefreshTime = DateTime.now();
+
+    setState(() {
+      _isRefreshing = false;
+    });
+  }
+
   @override
   void dispose() {
     _timer?.cancel();
@@ -125,6 +142,23 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
         }
       }
     });
+  }
+
+  String _getTimeText() {
+    if (_lastRefreshTime != null) {
+      return _lastRefreshTime!.timeOnly();
+    }
+
+    final snapshotTime = DateTime.now();
+    final minutes = snapshotTime.minute;
+    final roundedMinutes = minutes >= 30 ? 30 : 0;
+    return DateTime(
+      snapshotTime.year,
+      snapshotTime.month,
+      snapshotTime.day,
+      snapshotTime.hour,
+      roundedMinutes,
+    ).timeOnly();
   }
 
   @override
@@ -216,22 +250,38 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Row(
           children: [
-            AppText(
-              "실시간 인기 검색어",
-              style: Theme.of(context)
-                  .textTheme
-                  .textSM
-                  .copyWith(color: AppColor.white),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppText(
+                  "실시간 인기 검색어",
+                  style: Theme.of(context)
+                      .textTheme
+                      .textSM
+                      .copyWith(color: AppColor.white),
+                ),
+                AppText(
+                  '오늘 ${_getTimeText()} 기준',
+                  style: Theme.of(context)
+                      .textTheme
+                      .textXS
+                      .copyWith(color: AppColor.graymodern400),
+                ),
+              ],
             ),
-            AppText(
-              '오늘 ${controller.trendingKeywords[0].snapshotTime!.timeOnly()} 기준',
-              style: Theme.of(context)
-                  .textTheme
-                  .textXS
-                  .copyWith(color: AppColor.graymodern400),
+            IconButton(
+              onPressed: _handleRefresh,
+              icon: AnimatedRotation(
+                duration: const Duration(milliseconds: 3000),
+                turns: _isRefreshing ? 2 : 0,
+                child: Icon(
+                  Icons.refresh,
+                  color: _isRefreshing ? AppColor.yellow400 : Colors.white,
+                  size: AppDimens.size(20),
+                ),
+              ),
             ),
           ],
         ),

@@ -152,10 +152,6 @@ class HomeController extends GetxController {
     searchArticles.clear();
   }
 
-  bool get _canLoadMoreSearchResults {
-    return !isSearchLoading.value && hasMoreSearchData.value;
-  }
-
   Future<List<Article>> _fetchSearchResults(String keyword) async {
     final params = GetSearchArticlesParams(
       query: keyword,
