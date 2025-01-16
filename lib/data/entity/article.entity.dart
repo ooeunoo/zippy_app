@@ -13,7 +13,7 @@ class ArticleEntity extends Equatable {
   final String? author;
   final List<dynamic> images;
   // final String content;
-  // final String? excerpt;
+  final String? excerpt;
   final List<String> keyPoints;
   final List<String> keywords;
   final DateTime published;
@@ -28,7 +28,7 @@ class ArticleEntity extends Equatable {
     this.author,
     required this.images,
     // required this.content,
-    // this.excerpt,
+    this.excerpt,
     required this.keyPoints,
     required this.keywords,
     required this.published,
@@ -55,12 +55,12 @@ class ArticleEntity extends Equatable {
       author: json['author'],
       images: json['images'],
       // content: json['content'],
-      // excerpt: json['excerpt'],
+      excerpt: json['excerpt'],
       keyPoints: convertToStringList(json['key_points']),
       keywords: convertToStringList(json['keywords']),
       published: json['published'] != null
-          ? DateTime.parse(json['published'])
-          : DateTime.now(), // 또는 다른 기본값
+          ? DateTime.parse(json['published']).add(const Duration(hours: 9))
+          : DateTime.now().add(const Duration(hours: 9)), // KST로 변환
       metadata: json['article_metadata'] != null
           ? ArticleMetadataEntity.fromJson(json['article_metadata'])
           : null,
@@ -75,7 +75,7 @@ class ArticleEntity extends Equatable {
       title: title,
       author: author,
       images: images,
-      // excerpt: excerpt,
+      excerpt: excerpt,
       // content: content,
       keyPoints: keyPoints,
       keywords: keywords,

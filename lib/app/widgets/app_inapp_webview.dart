@@ -184,15 +184,15 @@ class _AppArticleInWebViewState extends State<AppArticleInWebView> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              AppColor.graymodern800,
-                              AppColor.graymodern900,
+                              AppColor.graymodern800.withOpacity(0.5),
+                              AppColor.graymodern900.withOpacity(0.5),
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: AppColor.graymodern700,
+                            color: AppColor.graymodern700.withOpacity(0.3),
                             width: 1,
                           ),
                         ),
@@ -201,24 +201,24 @@ class _AppArticleInWebViewState extends State<AppArticleInWebView> {
                           children: [
                             Container(
                               padding: EdgeInsets.symmetric(
-                                horizontal: AppDimens.width(10),
-                                vertical: AppDimens.height(4),
+                                horizontal: AppDimens.width(6),
+                                vertical: AppDimens.height(2),
                               ),
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    AppColor.yellow500,
-                                    AppColor.yellow500.withOpacity(0.8),
+                                    AppColor.yellow500.withOpacity(0.9),
+                                    AppColor.yellow500.withOpacity(0.7),
                                   ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(4),
                               ),
                               child: AppText(
                                 '${index + 1}',
                                 style:
-                                    Theme.of(context).textTheme.textSM.copyWith(
+                                    Theme.of(context).textTheme.textXS.copyWith(
                                           color: AppColor.graymodern900,
                                           fontWeight: AppFontWeight.bold,
                                         ),
@@ -276,6 +276,17 @@ class _AppArticleInWebViewState extends State<AppArticleInWebView> {
                 ),
                 title: const SizedBox.shrink(),
                 actions: [
+                  Padding(
+                    padding: EdgeInsets.only(right: AppDimens.width(12)),
+                    child: IconButton(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      icon: const Icon(Icons.share),
+                      onPressed: () => articleService.onHandleShareArticle(
+                        widget.article,
+                      ),
+                    ),
+                  ),
                   Padding(
                     padding: EdgeInsets.only(right: AppDimens.width(12)),
                     child: IconButton(

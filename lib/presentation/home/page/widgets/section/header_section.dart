@@ -12,22 +12,22 @@ class HomeHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeController = Get.find<HomeController>();
+    // final homeController = Get.find<HomeController>();
     return AppHeader(
       leading: Padding(
         padding: EdgeInsets.symmetric(horizontal: AppDimens.width(16)),
         child: AppSvg(Assets.logo, size: AppDimens.width(60)),
       ),
       title: const SizedBox.shrink(),
-      actions: [
-        Padding(
-          padding: EdgeInsets.only(right: AppDimens.width(8)),
-          child: IconButton(
-            onPressed: () => homeController.onHandleGoToSearchView(null),
-            icon: Icon(Icons.search, color: AppThemeColors.iconColor(context)),
-          ),
-        ),
-      ],
+      // actions: [
+      //   Padding(
+      //     padding: EdgeInsets.only(right: AppDimens.width(8)),
+      //     child: IconButton(
+      //       onPressed: () => homeController.onHandleGoToSearchView(null),
+      //       icon: Icon(Icons.search, color: AppThemeColors.iconColor(context)),
+      //     ),
+      //   ),
+      // ],
     );
   }
 }

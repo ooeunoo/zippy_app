@@ -18,7 +18,7 @@ abstract class ArticleRepository {
   Future<Either<Failure, List<Article>>> getArticlesByKeyword(
       GetArticlesByKeywordParams params);
   Future<Either<Failure, Article>> getArticle(int id);
-  Future<Either<Failure, List<Article>>> getRandomArticles(
+  Future<Either<Failure, List<Article>>> GetRandomArticles(
       GetRandomArticlesParams params);
   Future<Either<Failure, List<TopArticlesByContentType>>>
       getTopArticlesByContentType(GetTopArticlesByContentTypeParams params);
@@ -55,9 +55,9 @@ class ArticleRepositoryImpl implements ArticleRepository {
   }
 
   @override
-  Future<Either<Failure, List<Article>>> getRandomArticles(
+  Future<Either<Failure, List<Article>>> GetRandomArticles(
       GetRandomArticlesParams params) {
-    return datasource.getRandomArticles(params);
+    return datasource.GetRandomArticles(params);
   }
 
   @override

@@ -307,7 +307,7 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
     KeywordRankSnapshot ranking,
   ) {
     return GestureDetector(
-      onTap: () => controller.onHandleGoToSearchView(ranking.keyword),
+      // onTap: () => controller.onHandleGoToSearchView(ranking.keyword),
       child: Row(
         children: [
           SizedBox(

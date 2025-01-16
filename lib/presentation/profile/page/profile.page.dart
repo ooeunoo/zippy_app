@@ -187,7 +187,7 @@ class ProfilePage extends GetView<ProfileController> {
   Widget _buildMenu(BuildContext context, WebViewService webViewService) {
     final List<MenuSection> menu = [
       _buildMySection(),
-      _buildSettingsSection(),
+      // _buildSettingsSection(),
       _buildSupportSection(webViewService),
     ];
 

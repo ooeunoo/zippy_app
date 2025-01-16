@@ -10,6 +10,6 @@ class GetRandomArticles {
 
   Future<Either<Failure, List<Article>>> execute(
       GetRandomArticlesParams params) {
-    return repo.getRandomArticles(params);
+    return repo.GetRandomArticles(params);
   }
 }

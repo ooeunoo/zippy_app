@@ -13,6 +13,7 @@ import 'package:zippy/app/widgets/app_spacer_h.dart';
 import 'package:zippy/app/widgets/app_spacer_v.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/article.model.dart';
+import 'package:zippy/domain/model/source.model.dart';
 
 class ZippyArticleCard extends StatefulWidget {
   final Article article;
@@ -162,10 +163,8 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildTitle(context),
-            AppSpacerV(value: AppDimens.height(8)),
+            AppSpacerV(value: AppDimens.height(12)),
             _buildSummary(context),
-            AppSpacerV(value: AppDimens.height(16)),
-            _buildPublishedDate(context),
             AppSpacerV(value: AppDimens.height(16)),
             _buildInteractionBar(context),
           ],
@@ -179,7 +178,7 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
 
     return AppText(
       widget.article.title,
-      style: Theme.of(context).textTheme.text2XL.copyWith(
+      style: Theme.of(context).textTheme.text3XL.copyWith(
         color: AppThemeColors.textHighest(context),
         fontWeight: AppFontWeight.bold,
         shadows: [
@@ -204,8 +203,7 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
     final baseColor = AppThemeColors.boardCardBaseColor(context);
 
     return AppText(
-      '',
-      // cleanMarkdownText(widget.article.excerpt ?? ''),
+      cleanMarkdownText(widget.article.excerpt ?? ''),
       style: Theme.of(context).textTheme.textSM.copyWith(
         color: AppThemeColors.textHighest(context),
         height: 1.5,
@@ -223,17 +221,14 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
     );
   }
 
-  Widget _buildPublishedDate(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        AppText(
-          widget.article.published.timeAgo(),
-          style: Theme.of(context).textTheme.textSM.copyWith(
-                color: AppThemeColors.textLow(context),
-              ),
-        ),
-      ],
+  Widget _buildMetaInfo(BuildContext context) {
+    Source? source = articleService.getSourceById(widget.article.sourceId);
+
+    return AppText(
+      '${source?.platform?.name ?? ""} | ${widget.article.published.timeAgo()}',
+      style: Theme.of(context).textTheme.textXS.copyWith(
+            color: AppColor.graymodern400,
+          ),
     );
   }
 
@@ -241,22 +236,23 @@ class _ZippyArticleCardState extends State<ZippyArticleCard> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(children: [
-          _buildInteractionItem(
-            icon: Icons.remove_red_eye_outlined,
-            text: widget.article.metadata?.viewCount.toString() ?? '0',
-            context: context,
-          ),
-          AppSpacerH(value: AppDimens.width(16)),
-          _buildInteractionItem(
-            icon: Icons.chat_bubble_outline,
-            text: widget.article.metadata?.commentCount.toString() ?? '0',
-            context: context,
-            onTap: () {
-              articleService.onHandleShowArticleComment(widget.article);
-            },
-          ),
-        ]),
+        _buildMetaInfo(context),
+        // Row(children: [
+        //   _buildInteractionItem(
+        //     icon: Icons.remove_red_eye_outlined,
+        //     text: widget.article.metadata?.viewCount.toString() ?? '0',
+        //     context: context,
+        //   ),
+        //   AppSpacerH(value: AppDimens.width(16)),
+        //   _buildInteractionItem(
+        //     icon: Icons.chat_bubble_outline,
+        //     text: widget.article.metadata?.commentCount.toString() ?? '0',
+        //     context: context,
+        //     onTap: () {
+        //       articleService.onHandleShowArticleComment(widget.article);
+        //     },
+        //   ),
+        // ]),
         Row(children: [
           _buildActionItem(
             icon: Icons.share,

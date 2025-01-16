@@ -32,7 +32,7 @@ class ContentTypeSelectorSheet extends StatelessWidget {
           Expanded(
             child: Obx(() {
               return Padding(
-                padding: EdgeInsets.symmetric(horizontal: AppDimens.width(16)),
+                padding: EdgeInsets.symmetric(horizontal: AppDimens.width(4)),
                 child: GridView.builder(
                   physics: const BouncingScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -44,7 +44,8 @@ class ContentTypeSelectorSheet extends StatelessWidget {
                   itemCount: contentTypes.length,
                   itemBuilder: (context, index) {
                     final contentType = contentTypes[index];
-                    final isSelected = selectedContentType?.id == contentType.id;
+                    final isSelected =
+                        selectedContentType?.id == contentType.id;
                     return GestureDetector(
                       onTap: () {
                         onHandleSelectedContentType(contentType);
@@ -61,8 +62,9 @@ class ContentTypeSelectorSheet extends StatelessWidget {
                               isSelected ? AppColor.brand500 : AppColor.gray800,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color:
-                                isSelected ? AppColor.brand400 : AppColor.gray700,
+                            color: isSelected
+                                ? AppColor.brand400
+                                : AppColor.gray700,
                             width: 1.5,
                           ),
                           boxShadow: isSelected
@@ -89,12 +91,13 @@ class ContentTypeSelectorSheet extends StatelessWidget {
                               child: AppText(
                                 contentType.name,
                                 align: TextAlign.center,
-                                style: Theme.of(context).textTheme.textMD.copyWith(
-                                      color: AppColor.white,
-                                      fontWeight: isSelected
-                                          ? FontWeight.bold
-                                          : FontWeight.w500,
-                                    ),
+                                style:
+                                    Theme.of(context).textTheme.textMD.copyWith(
+                                          color: AppColor.white,
+                                          fontWeight: isSelected
+                                              ? FontWeight.bold
+                                              : FontWeight.w500,
+                                        ),
                               ),
                             ),
                           ],

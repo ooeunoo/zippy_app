@@ -75,9 +75,8 @@ class _BasePageState extends State<BasePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           _buildNavItem(Assets.home01, 0),
-                          // _buildNavItem(Assets.flexAlignRight, 1),
-                          // _buildNavItem(Assets.search, 2),
-                          _buildNavItem(Assets.user01, 1),
+                          _buildNavItem(Assets.flexAlignRight, 1),
+                          _buildNavItem(Assets.user01, 2),
                         ],
                       )),
                 ),
@@ -106,23 +105,14 @@ class _BasePageState extends State<BasePage> {
                 transition: Transition.noTransition,
                 gestureWidth: (context) => 0, // Disable swipe
               );
-            // case Routes.board:
-            //   return GetPageRoute(
-            //     routeName: Routes.board,
-            //     page: () => const BoardPage(),
-            //     binding: BoardBinding(),
-            //     transition: Transition.noTransition,
-            //     gestureWidth: (context) => 0, // Disable swipe
-            //   );
-
-            // case Routes.search:
-            //   return GetPageRoute(
-            //     routeName: Routes.search,
-            //     page: () => const SearchPage(),
-            //     binding: SearchBinding(),
-            //     transition: Transition.noTransition,
-            //     gestureWidth: (context) => 0, // Disable swipe
-            //   );
+            case Routes.board:
+              return GetPageRoute(
+                routeName: Routes.board,
+                page: () => const BoardPage(),
+                binding: BoardBinding(),
+                transition: Transition.noTransition,
+                gestureWidth: (context) => 0, // Disable swipe
+              );
             case Routes.profile:
               return GetPageRoute(
                 routeName: Routes.profile,

@@ -120,6 +120,7 @@ class ZippyBindings implements Bindings {
     Get.lazyPut<GetPlatforms>(() => GetPlatforms(Get.find()));
     Get.lazyPut<GetSources>(() => GetSources());
     Get.lazyPut<GetSearchArticles>(() => GetSearchArticles());
+    Get.lazyPut<GetRandomArticles>(() => GetRandomArticles());
     Get.lazyPut<GetUserBookmarks>(() => GetUserBookmarks(Get.find()));
     Get.lazyPut<CreateUserBookmark>(() => CreateUserBookmark(Get.find()));
     Get.lazyPut<DeleteUserBookmark>(() => DeleteUserBookmark(Get.find()));

@@ -21,7 +21,7 @@ String TABLE = 'articles';
 enum RPC {
   getRecommendedArticles('get_recommended_articles'),
   getSearchArticles('get_search_articles'),
-  getRandomArticles('get_random_articles'),
+  getRandomRecentArticles('get_random_recent_articles'),
   getTopArticlesByContentType('get_top_articles_by_content_type'),
   getArticlesForCategories('get_articles_for_categories');
 
@@ -38,8 +38,7 @@ abstract class ArticleDatasource {
   Future<Either<Failure, Article>> getArticle(int id);
   Future<Either<Failure, List<Article>>> getArticlesByKeyword(
       GetArticlesByKeywordParams params);
-
-  Future<Either<Failure, List<Article>>> getRandomArticles(
+  Future<Either<Failure, List<Article>>> GetRandomArticles(
       GetRandomArticlesParams params);
   Future<Either<Failure, List<TopArticlesByContentType>>>
       getTopArticlesByContentType(GetTopArticlesByContentTypeParams params);
@@ -144,11 +143,11 @@ class ArticleDatasourceImpl implements ArticleDatasource {
   }
 
   @override
-  Future<Either<Failure, List<Article>>> getRandomArticles(
+  Future<Either<Failure, List<Article>>> GetRandomArticles(
       GetRandomArticlesParams params) async {
     try {
       var response = await provider.client
-          .rpc(RPC.getRandomArticles.function, params: params.toJson());
+          .rpc(RPC.getRandomRecentArticles.function, params: params.toJson());
 
       List<Article> result = [];
       for (var r in (response as List)) {
