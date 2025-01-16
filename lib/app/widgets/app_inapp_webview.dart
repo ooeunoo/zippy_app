@@ -86,164 +86,115 @@ class _AppArticleInWebViewState extends State<AppArticleInWebView> {
         ),
         child: Container(
           width: double.infinity,
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.6,
-          ),
+          height: MediaQuery.of(context).size.height * 0.7,
           decoration: BoxDecoration(
             color: AppColor.graymodern900,
-            borderRadius: BorderRadius.circular(32),
+            borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.25),
-                blurRadius: 30,
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
             ],
           ),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppDimens.width(12),
-                  vertical: AppDimens.height(20),
-                ),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColor.graymodern800,
-                      AppColor.graymodern900,
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(32),
-                    topRight: Radius.circular(32),
+                padding: EdgeInsets.all(AppDimens.size(16)),
+                decoration: BoxDecoration(
+                  color: AppColor.graymodern800,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(24),
+                    topRight: Radius.circular(24),
                   ),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(AppDimens.size(8)),
-                          child: Icon(
+                    Padding(
+                      padding: EdgeInsets.only(left: AppDimens.size(12)),
+                      child: Row(
+                        children: [
+                          Icon(
                             Icons.auto_awesome,
                             color: AppColor.yellow500,
-                            size: AppDimens.size(24),
+                            size: AppDimens.size(18),
                           ),
-                        ),
-                        AppSpacerH(value: AppDimens.width(16)),
-                        AppText(
-                          'AI 요약',
-                          style: Theme.of(context).textTheme.textMD.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: -0.5,
-                              ),
-                        ),
-                      ],
-                    ),
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(50),
-                        onTap: () => Get.back(),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Icon(
-                            Icons.close_rounded,
-                            color: AppColor.gray400,
-                            size: 28,
+                          AppSpacerH(value: AppDimens.width(8)),
+                          AppText(
+                            'AI 요약',
+                            style: Theme.of(context).textTheme.textSM.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                ),
                           ),
-                        ),
+                        ],
                       ),
+                    ),
+                    IconButton(
+                      onPressed: () => Get.back(),
+                      icon: Icon(
+                        Icons.close,
+                        color: AppColor.gray400,
+                        size: 20,
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
                     ),
                   ],
                 ),
               ),
-              Flexible(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppDimens.width(24),
-                  ),
-                  child: Column(
-                    children:
-                        widget.article.keyPoints.asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final point = entry.value;
-                      return Container(
-                        margin: EdgeInsets.only(
-                          bottom: AppDimens.height(12),
-                        ),
-                        padding: EdgeInsets.all(AppDimens.size(16)),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              AppColor.graymodern800.withOpacity(0.5),
-                              AppColor.graymodern900.withOpacity(0.5),
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: AppColor.graymodern700.withOpacity(0.3),
-                            width: 1,
-                          ),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: AppDimens.width(6),
-                                vertical: AppDimens.height(2),
-                              ),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    AppColor.yellow500.withOpacity(0.9),
-                                    AppColor.yellow500.withOpacity(0.7),
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: AppText(
-                                '${index + 1}',
-                                style:
-                                    Theme.of(context).textTheme.textXS.copyWith(
-                                          color: AppColor.graymodern900,
-                                          fontWeight: AppFontWeight.bold,
-                                        ),
-                              ),
+              Expanded(
+                child: ListView.separated(
+                  padding: EdgeInsets.all(AppDimens.size(16)),
+                  itemCount: widget.article.keyPoints.length,
+                  separatorBuilder: (context, index) =>
+                      AppSpacerV(value: AppDimens.height(16)),
+                  itemBuilder: (context, index) {
+                    return Container(
+                      padding: EdgeInsets.all(AppDimens.size(12)),
+                      decoration: BoxDecoration(
+                        color: AppColor.graymodern800.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: AppDimens.width(22),
+                            height: AppDimens.height(22),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: AppColor.yellow500,
+                              shape: BoxShape.circle,
                             ),
-                            AppSpacerH(value: AppDimens.width(12)),
-                            Expanded(
-                              child: Text(
-                                point,
-                                style:
-                                    Theme.of(context).textTheme.textMD.copyWith(
-                                          color: AppColor.white,
-                                          height: 1.5,
-                                          letterSpacing: -0.3,
-                                        ),
-                              ),
+                            child: AppText(
+                              '${index + 1}',
+                              style:
+                                  Theme.of(context).textTheme.textSM.copyWith(
+                                        color: AppColor.graymodern900,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                             ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-                  ),
+                          ),
+                          AppSpacerH(value: AppDimens.width(12)),
+                          Expanded(
+                            child: AppText(
+                              widget.article.keyPoints[index],
+                              style:
+                                  Theme.of(context).textTheme.textSM.copyWith(
+                                        color: Colors.white,
+                                        height: 1.4,
+                                      ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ),
-              AppSpacerV(value: AppDimens.height(12)),
             ],
           ),
         ),
