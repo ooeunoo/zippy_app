@@ -207,6 +207,9 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
             ),
+            padding: EdgeInsets.symmetric(
+              vertical: isExpanded ? AppDimens.height(12) : AppDimens.height(0),
+            ),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               height: isExpanded ? AppDimens.height(500) : AppDimens.height(60),
@@ -300,7 +303,8 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
                             .animate(_refreshAnimationController),
                         child: Icon(
                           Icons.refresh,
-                          color: _isRefreshing ? AppColor.yellow400 : Colors.white,
+                          color:
+                              _isRefreshing ? AppColor.yellow400 : Colors.white,
                           size: AppDimens.size(18),
                         ),
                       ),
