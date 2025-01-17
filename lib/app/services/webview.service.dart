@@ -1,6 +1,7 @@
 // lib/app/services/webview.service.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:zippy/app/widgets/app_article_view.dart';
 import 'package:zippy/app/widgets/app_inapp_webview.dart';
 import 'package:zippy/domain/model/article.model.dart';
 
@@ -39,6 +40,12 @@ class WebViewService extends GetxService {
       return;
     }
 
+    // Get.to(
+    //   () => AppArticleView(
+    //     article: article,
+    //     handleUpdateInteraction: handleUpdateInteraction,
+    //   ),
+    // );
     Get.bottomSheet(
       AppArticleInWebView(
         article: article,
@@ -46,6 +53,9 @@ class WebViewService extends GetxService {
       ),
       isScrollControlled: true,
       enableDrag: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
       backgroundColor: Colors.transparent,
       enterBottomSheetDuration: const Duration(milliseconds: 300),
       exitBottomSheetDuration: const Duration(milliseconds: 300),

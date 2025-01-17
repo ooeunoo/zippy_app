@@ -19,21 +19,21 @@ import 'package:zippy/app/widgets/app_svg.dart';
 import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/domain/model/article.model.dart';
 
-class AppArticleInWebView extends StatefulWidget {
+class AppArticleView extends StatefulWidget {
   final Article article;
   final Function? handleUpdateInteraction;
 
-  const AppArticleInWebView({
+  const AppArticleView({
     super.key,
     required this.article,
     this.handleUpdateInteraction,
   });
 
   @override
-  State<AppArticleInWebView> createState() => _AppArticleInWebViewState();
+  State<AppArticleView> createState() => _AppArticleViewState();
 }
 
-class _AppArticleInWebViewState extends State<AppArticleInWebView> {
+class _AppArticleViewState extends State<AppArticleView> {
   final ArticleService articleService = Get.find();
   final BookmarkService bookmarkService = Get.find();
 
@@ -51,7 +51,7 @@ class _AppArticleInWebViewState extends State<AppArticleInWebView> {
   void initState() {
     super.initState();
     _startTime = DateTime.now();
-    _isScrolling = false; // 초기 상태는 스크롤하지 않음
+    _isScrolling = false;
   }
 
   @override
@@ -220,147 +220,82 @@ class _AppArticleInWebViewState extends State<AppArticleInWebView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.9,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      clipBehavior: Clip.hardEdge,
-      child: Stack(
+    return Scaffold(
+      body: Stack(
         children: [
-          Column(
-            children: [
-              AppHeader(
-                leading: IconButton(
-                  onPressed: () => Get.back(),
-                  icon: const Icon(Icons.close),
-                ),
-                title: const SizedBox.shrink(),
-                actions: [
-                  Padding(
-                    padding: EdgeInsets.only(right: AppDimens.width(12)),
-                    child: IconButton(
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      icon: const Icon(Icons.share),
-                      onPressed: () => articleService.onHandleShareArticle(
-                        widget.article,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(right: AppDimens.width(12)),
-                    child: IconButton(
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      icon: Obx(
-                        () => AppSvg(
-                          bookmarkService.isBookmarked(widget.article.id!) !=
-                                  null
-                              ? Assets.bookmark
-                              : Assets.bookmarkLine,
-                          color: bookmarkService
-                                      .isBookmarked(widget.article.id!) !=
-                                  null
-                              ? AppColor.brand500
-                              : AppColor.black,
-                        ),
-                      ),
-                      onPressed: () => articleService.onHandleBookmarkArticle(
-                        widget.article,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: InAppWebView(
-                  initialUrlRequest: URLRequest(
-                    url: WebUri(widget.article.link),
-                  ),
-                  initialSettings: InAppWebViewSettings(
-                    javaScriptEnabled: true,
-                    mediaPlaybackRequiresUserGesture: false,
-                    allowsInlineMediaPlayback: true,
-                    transparentBackground: true,
-                  ),
-                  onReceivedError: (controller, request, error) {},
-                  onWebViewCreated: (controller) {
-                    _webViewController = controller;
-                  },
-                  onLoadStart: (controller, url) {},
-                  onLoadStop: (controller, url) {},
-                  onProgressChanged: (controller, progress) {
-                    if (progress == 100 && mounted) {}
-                  },
-                  onScrollChanged: (controller, x, y) async {
-                    if (!mounted) return;
+          InAppWebView(
+            initialUrlRequest: URLRequest(
+              url: WebUri(widget.article.link),
+            ),
+            initialSettings: InAppWebViewSettings(
+              javaScriptEnabled: true,
+              mediaPlaybackRequiresUserGesture: false,
+              allowsInlineMediaPlayback: true,
+              transparentBackground: true,
+            ),
+            onReceivedError: (controller, request, error) {},
+            onWebViewCreated: (controller) {
+              _webViewController = controller;
+            },
+            onLoadStart: (controller, url) {},
+            onLoadStop: (controller, url) {},
+            onProgressChanged: (controller, progress) {
+              if (progress == 100 && mounted) {}
+            },
+            onScrollChanged: (controller, x, y) async {
+              if (!mounted) return;
 
-                    if (y > _lastScrollY && y > 0) {
-                      setState(() {
-                        _isScrolledDown = true;
-                      });
-                    }
+              if (y > _lastScrollY && y > 0) {
+                setState(() {
+                  _isScrolledDown = true;
+                });
+              }
 
-                    if (y <= 0 && y < _lastScrollY) {
-                      if (!_isScrolledDown) {
-                        Get.back();
-                      }
-                    }
+              if (y <= 0 && y < _lastScrollY) {
+                if (!_isScrolledDown) {
+                  Get.back();
+                }
+              }
 
-                    if (y == 0) {
-                      setState(() {
-                        _isScrolledDown = false;
-                      });
-                    }
+              if (y == 0) {
+                setState(() {
+                  _isScrolledDown = false;
+                });
+              }
 
-                    final now = DateTime.now();
-                    final scrollDelta = y - _lastScrollY;
-                    final timeDelta =
-                        now.difference(_lastScrollTime).inMilliseconds;
+              final now = DateTime.now();
+              final scrollDelta = y - _lastScrollY;
+              final timeDelta = now.difference(_lastScrollTime).inMilliseconds;
 
-                    // 스크롤 속도 계산 (pixels/ms)
-                    final scrollSpeed =
-                        timeDelta > 0 ? scrollDelta.abs() / timeDelta : 0;
+              final scrollSpeed =
+                  timeDelta > 0 ? scrollDelta.abs() / timeDelta : 0;
 
-                    // 스크롤 중일 때
-                    if (scrollSpeed > 0) {
-                      setState(() {
-                        _isScrolling = true;
-                      });
+              if (scrollSpeed > 0) {
+                setState(() {
+                  _isScrolling = true;
+                });
 
-                      // 이전 타이머가 있다면 취소
-                      _scrollTimer?.cancel();
-                    }
+                _scrollTimer?.cancel();
+              }
 
-                    // 새로운 타이머 시작
-                    _scrollTimer = Timer(const Duration(milliseconds: 100), () {
-                      if (mounted) {
-                        final currentTime = DateTime.now();
-                        final idleTime =
-                            currentTime.difference(now).inMilliseconds;
+              _scrollTimer = Timer(const Duration(milliseconds: 100), () {
+                if (mounted) {
+                  final currentTime = DateTime.now();
+                  final idleTime = currentTime.difference(now).inMilliseconds;
 
-                        // 100ms 동안 새로운 스크롤 이벤트가 없었다면 스크롤이 멈춘 것으로 판단
-                        if (idleTime >= 100) {
-                          setState(() {
-                            _isScrolling = false;
-                          });
-                        }
-                      }
+                  if (idleTime >= 100) {
+                    setState(() {
+                      _isScrolling = false;
                     });
+                  }
+                }
+              });
 
-                    _lastScrollY = y.toDouble();
-                    _lastScrollTime = now;
-                  },
-                  gestureRecognizers: Set()
-                    ..add(Factory(() => VerticalDragGestureRecognizer())),
-                ),
-              ),
-            ],
+              _lastScrollY = y.toDouble();
+              _lastScrollTime = now;
+            },
+            gestureRecognizers: Set()
+              ..add(Factory(() => VerticalDragGestureRecognizer())),
           ),
           if (!_isKeyPointsModalOpen)
             Positioned(

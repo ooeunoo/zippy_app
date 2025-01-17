@@ -191,12 +191,10 @@ class HomeController extends GetxController {
   }
 
   void onHandleGoToKeywordArticlesView(String keyword, List<String> ids) async {
-    print('ids: $ids');
     List<int> articleIds = ids.map((e) => int.parse(e)).toList();
     isKeywordArticlesLoading.value = true;
     List<Article> articles =
         await articleService.onHandleFetchArticlesByIds(articleIds);
-    print('articles: $articles');
     Get.to(
         () => KeywordArticlesView(
               keyword: keyword,
