@@ -411,6 +411,25 @@ class _NewsSectionState extends State<NewsSection> {
                       width: AppDimens.width(100),
                       height: AppDimens.height(80),
                       fit: BoxFit.cover,
+                      placeholder: (context, url) => Container(
+                        color: AppColor.gray100,
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColor.brand400,
+                            strokeWidth: 2,
+                          ),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        color: AppColor.gray100,
+                        child: const Center(
+                          child: Icon(
+                            Icons.error_outline,
+                            color: AppColor.gray400,
+                            size: 32,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
               ],

@@ -38,6 +38,7 @@ class HomeController extends GetxController {
   RxList<Article> searchArticles = RxList<Article>([]);
   RxString currentQuery = ''.obs;
   RxBool isInitLoading = false.obs; // 초기 로딩 상태 추가
+  RxBool isKeywordArticlesLoading = false.obs;
 
   final isLoading = false.obs;
 
@@ -192,14 +193,17 @@ class HomeController extends GetxController {
   void onHandleGoToKeywordArticlesView(String keyword, List<String> ids) async {
     print('ids: $ids');
     List<int> articleIds = ids.map((e) => int.parse(e)).toList();
+    isKeywordArticlesLoading.value = true;
     List<Article> articles =
         await articleService.onHandleFetchArticlesByIds(articleIds);
+    print('articles: $articles');
     Get.to(
         () => KeywordArticlesView(
               keyword: keyword,
               articles: articles,
             ),
         transition: Transition.cupertino);
+    isKeywordArticlesLoading.value = false;
   }
 
   // 데이터 리프레시를 위한 메서드 추가
