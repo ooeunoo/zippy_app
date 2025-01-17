@@ -85,57 +85,73 @@ class _AppArticleInWebViewState extends State<AppArticleInWebView> {
     Get.dialog(
       Dialog(
         backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.symmetric(
-          horizontal: AppDimens.width(16),
-          vertical: AppDimens.height(16),
-        ),
+        insetPadding: EdgeInsets.zero,
         child: Container(
           width: double.infinity,
-          height: MediaQuery.of(context).size.height * 0.7,
+          height: MediaQuery.of(context).size.height * 0.85,
+          margin: EdgeInsets.symmetric(
+            horizontal: AppDimens.width(16),
+            vertical: AppDimens.height(40),
+          ),
           decoration: BoxDecoration(
-            color: AppColor.graymodern900,
-            borderRadius: BorderRadius.circular(24),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColor.graymodern900,
+                AppColor.graymodern800.withOpacity(0.95),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(32),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
+                color: Colors.black.withOpacity(0.4),
+                blurRadius: 30,
+                spreadRadius: 5,
+                offset: const Offset(0, 15),
               ),
             ],
           ),
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.all(AppDimens.size(16)),
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppDimens.size(24),
+                  vertical: AppDimens.size(20),
+                ),
                 decoration: BoxDecoration(
-                  color: AppColor.graymodern800,
+                  color: AppColor.graymodern800.withOpacity(0.5),
                   borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24),
+                    topLeft: Radius.circular(32),
+                    topRight: Radius.circular(32),
                   ),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: AppDimens.size(12)),
-                      child: Row(
-                        children: [
-                          Icon(
+                    Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(AppDimens.size(8)),
+                          decoration: BoxDecoration(
+                            color: AppColor.yellow500.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
                             Icons.auto_awesome,
                             color: AppColor.yellow500,
-                            size: AppDimens.size(18),
+                            size: AppDimens.size(20),
                           ),
-                          AppSpacerH(value: AppDimens.width(8)),
-                          AppText(
-                            'AI 요약',
-                            style: Theme.of(context).textTheme.textSM.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                          ),
-                        ],
-                      ),
+                        ),
+                        AppSpacerH(value: AppDimens.width(12)),
+                        AppText(
+                          'AI 요약',
+                          style: Theme.of(context).textTheme.textLG.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w800,
+                              ),
+                        ),
+                      ],
                     ),
                     IconButton(
                       onPressed: () {
@@ -144,59 +160,89 @@ class _AppArticleInWebViewState extends State<AppArticleInWebView> {
                         });
                         Get.back();
                       },
-                      icon: Icon(
-                        Icons.close,
-                        color: AppColor.gray400,
-                        size: 20,
+                      icon: Container(
+                        padding: EdgeInsets.all(AppDimens.size(8)),
+                        decoration: BoxDecoration(
+                          color: AppColor.graymodern700.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(
+                          Icons.close,
+                          color: AppColor.gray300,
+                          size: AppDimens.size(20),
+                        ),
                       ),
                       padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
                     ),
                   ],
                 ),
               ),
               Expanded(
                 child: ListView.separated(
-                  padding: EdgeInsets.all(AppDimens.size(16)),
+                  padding: EdgeInsets.all(AppDimens.size(24)),
                   itemCount: widget.article.keyPoints.length,
                   separatorBuilder: (context, index) =>
                       AppSpacerV(value: AppDimens.height(16)),
                   itemBuilder: (context, index) {
                     return Container(
-                      padding: EdgeInsets.all(AppDimens.size(12)),
+                      padding: EdgeInsets.all(AppDimens.size(16)),
                       decoration: BoxDecoration(
-                        color: AppColor.graymodern800.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(12),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            AppColor.graymodern800.withOpacity(0.6),
+                            AppColor.graymodern800.withOpacity(0.3),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: AppColor.graymodern700.withOpacity(0.3),
+                          width: 1,
+                        ),
                       ),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            width: AppDimens.width(22),
-                            height: AppDimens.height(22),
+                            width: AppDimens.width(28),
+                            height: AppDimens.height(28),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              color: AppColor.yellow500,
-                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  AppColor.yellow500,
+                                  AppColor.yellow400,
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColor.yellow500.withOpacity(0.3),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
                             ),
                             child: AppText(
                               '${index + 1}',
-                              style:
-                                  Theme.of(context).textTheme.textSM.copyWith(
-                                        color: AppColor.graymodern900,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                              style: Theme.of(context).textTheme.textSM.copyWith(
+                                    color: AppColor.graymodern900,
+                                    fontWeight: FontWeight.w900,
+                                  ),
                             ),
                           ),
-                          AppSpacerH(value: AppDimens.width(12)),
+                          AppSpacerH(value: AppDimens.width(16)),
                           Expanded(
                             child: AppText(
                               widget.article.keyPoints[index],
-                              style:
-                                  Theme.of(context).textTheme.textSM.copyWith(
-                                        color: Colors.white,
-                                        height: 1.4,
-                                      ),
+                              style: Theme.of(context).textTheme.textMD.copyWith(
+                                    color: Colors.white,
+                                    height: 1.6,
+                                    letterSpacing: 0.3,
+                                  ),
                             ),
                           ),
                         ],
@@ -210,7 +256,7 @@ class _AppArticleInWebViewState extends State<AppArticleInWebView> {
         ),
       ),
       barrierDismissible: true,
-      barrierColor: Colors.black.withOpacity(0.7),
+      barrierColor: Colors.black.withOpacity(0.8),
     ).whenComplete(() {
       setState(() {
         _isKeyPointsModalOpen = false;
