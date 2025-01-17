@@ -37,6 +37,7 @@ import 'package:zippy/domain/usecases/create_user_interaction.usecase.dart';
 import 'package:zippy/domain/usecases/delete_user_bookmark.usecase.dart';
 import 'package:zippy/domain/usecases/delete_user_bookmark_folder.usecase.dart';
 import 'package:zippy/domain/usecases/get_article_comments.usecase.dart';
+import 'package:zippy/domain/usecases/get_articles_by_ids.usecase.dart';
 import 'package:zippy/domain/usecases/get_search_articles.usecase.dart';
 import 'package:zippy/domain/usecases/get_content_types.usecase.dart';
 import 'package:zippy/domain/usecases/get_current_user.usecase.dart';
@@ -147,6 +148,7 @@ class ZippyBindings implements Bindings {
         () => SubscribeUserBookmarkFolder(Get.find()));
     Get.lazyPut<GetTopArticlesByContentType>(
         () => GetTopArticlesByContentType(Get.find()));
+    Get.lazyPut<GetArticlesByIds>(() => GetArticlesByIds());
   }
 
   _initService() {

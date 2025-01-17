@@ -13,6 +13,7 @@ class KeywordRankSnapshot extends Equatable {
   final int articleCount;
   final int interactionCount;
   final double interactionScore;
+  final List<String> articleIds;
   final List<String>? descriptions;
   final DateTime? snapshotTime;
 
@@ -27,6 +28,7 @@ class KeywordRankSnapshot extends Equatable {
     required this.articleCount,
     required this.interactionCount,
     required this.interactionScore,
+    required this.articleIds,
     this.descriptions,
     this.snapshotTime,
   });
@@ -42,6 +44,7 @@ class KeywordRankSnapshot extends Equatable {
       articleCount,
       interactionCount,
       interactionScore,
+      articleIds,
     ];
   }
 
@@ -56,6 +59,7 @@ class KeywordRankSnapshot extends Equatable {
         'article_count': articleCount,
         'interaction_count': interactionCount,
         'interaction_score': interactionScore,
+        'article_ids': articleIds,
         'descriptions': descriptions,
         'snapshot_time': snapshotTime,
       };

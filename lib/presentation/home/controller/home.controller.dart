@@ -12,7 +12,8 @@ import 'package:zippy/domain/model/params/get_tranding_keywords.params.dart';
 import 'package:zippy/domain/model/top_articles_by_content_type.model.dart';
 import 'package:zippy/domain/usecases/get_article_with_category.dart';
 import 'package:zippy/domain/usecases/get_trending_keywords.usecase.dart';
-import 'package:zippy/presentation/home/page/views/search.dart';
+import 'package:zippy/presentation/home/page/views/keyword_articles.view.dart';
+import 'package:zippy/presentation/home/page/views/search.view.dart';
 
 class HomeController extends GetxController {
   final ArticleService articleService = Get.find();
@@ -186,6 +187,19 @@ class HomeController extends GetxController {
 
   void onHandleGoToSearchView(String? search) {
     Get.to(() => SearchView(keyword: search), transition: Transition.cupertino);
+  }
+
+  void onHandleGoToKeywordArticlesView(String keyword, List<String> ids) async {
+    print('ids: $ids');
+    List<int> articleIds = ids.map((e) => int.parse(e)).toList();
+    List<Article> articles =
+        await articleService.onHandleFetchArticlesByIds(articleIds);
+    Get.to(
+        () => KeywordArticlesView(
+              keyword: keyword,
+              articles: articles,
+            ),
+        transition: Transition.cupertino);
   }
 
   // 데이터 리프레시를 위한 메서드 추가

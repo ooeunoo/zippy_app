@@ -24,6 +24,7 @@ abstract class ArticleRepository {
       getTopArticlesByContentType(GetTopArticlesByContentTypeParams params);
   Future<Either<Failure, ArticleWithCategoryGroup>> getArticlesForCategories(
       int contentTypeId);
+  Future<Either<Failure, List<Article>>> getArticlesByIds(List<int> ids);
 }
 
 class ArticleRepositoryImpl implements ArticleRepository {
@@ -70,5 +71,10 @@ class ArticleRepositoryImpl implements ArticleRepository {
   Future<Either<Failure, ArticleWithCategoryGroup>> getArticlesForCategories(
       int contentTypeId) {
     return datasource.getArticlesForCategories(contentTypeId);
+  }
+
+  @override
+  Future<Either<Failure, List<Article>>> getArticlesByIds(List<int> ids) {
+    return datasource.getArticlesByIds(ids);
   }
 }

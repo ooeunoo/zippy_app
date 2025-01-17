@@ -16,7 +16,7 @@ import 'package:zippy/app/widgets/app_text.dart';
 import 'package:zippy/app/widgets/app_shimmer.dart';
 import 'package:zippy/domain/model/keyword_rank_snaoshot.model.dart';
 import 'package:zippy/presentation/home/controller/home.controller.dart';
-import 'package:zippy/presentation/home/page/views/search.dart';
+import 'package:zippy/presentation/home/page/views/search.view.dart';
 
 class KeywordRankingsSection extends StatefulWidget {
   const KeywordRankingsSection({
@@ -387,7 +387,8 @@ class _KeywordRankingsSectionState extends State<KeywordRankingsSection>
     KeywordRankSnapshot ranking,
   ) {
     return GestureDetector(
-      // onTap: () => controller.onHandleGoToSearchView(ranking.keyword),
+      onTap: () => controller.onHandleGoToKeywordArticlesView(
+          ranking.keyword, ranking.articleIds),
       child: Row(
         children: [
           SizedBox(

@@ -44,6 +44,8 @@ abstract class ArticleDatasource {
       getTopArticlesByContentType(GetTopArticlesByContentTypeParams params);
   Future<Either<Failure, ArticleWithCategoryGroup>> getArticlesForCategories(
       int contentTypeId);
+
+  Future<Either<Failure, List<Article>>> getArticlesByIds(List<int> ids);
 }
 
 class ArticleDatasourceImpl implements ArticleDatasource {
@@ -202,6 +204,24 @@ class ArticleDatasourceImpl implements ArticleDatasource {
 
       ArticleWithCategoryGroup result =
           ArticleWithCategoryGroupEntity.fromJson(response).toModel();
+
+      return Right(result);
+    } catch (e, stackTrace) {
+      print('Error:$e \n stackTrace:$stackTrace');
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Article>>> getArticlesByIds(List<int> ids) async {
+    try {
+      List<Map<String, dynamic>> response = await provider.client
+          .from(TABLE)
+          .select('*, sources(*)')
+          .inFilter('id', ids);
+
+      List<Article> result =
+          response.map((r) => ArticleEntity.fromJson(r).toModel()).toList();
 
       return Right(result);
     } catch (e, stackTrace) {

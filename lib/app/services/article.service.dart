@@ -26,6 +26,7 @@ import 'package:zippy/domain/model/user_interaction.model.dart';
 import 'package:zippy/domain/usecases/create_article_comment.usecase.dart';
 import 'package:zippy/domain/usecases/create_user_interaction.usecase.dart';
 import 'package:zippy/domain/usecases/get_article_comments.usecase.dart';
+import 'package:zippy/domain/usecases/get_articles_by_ids.usecase.dart';
 import 'package:zippy/domain/usecases/get_search_articles.usecase.dart';
 import 'package:zippy/domain/usecases/get_random_articles.dart';
 import 'package:zippy/domain/usecases/get_recommend_articles.usecase.dart';
@@ -49,6 +50,7 @@ class ArticleService extends GetxService {
   final GetSearchArticles getSearchArticles = Get.find();
   final GetRandomArticles getRandomArticles = Get.find();
   final GetRecommendedArticles getRecommendedArticles = Get.find();
+  final GetArticlesByIds getArticlesByIds = Get.find();
   final CreateUserInteraction createUserInteraction = Get.find();
   final UpdateUserInteraction updateUserInteraction = Get.find();
 
@@ -78,6 +80,15 @@ class ArticleService extends GetxService {
 
   Future<List<Article>> onHandleFetchRandomArticles() async {
     final result = await getRandomArticles.execute(GetRandomArticlesParams());
+    return result.fold((failure) {
+      return [];
+    }, (data) {
+      return data;
+    });
+  }
+
+  Future<List<Article>> onHandleFetchArticlesByIds(List<int> ids) async {
+    final result = await getArticlesByIds.execute(ids);
     return result.fold((failure) {
       return [];
     }, (data) {
